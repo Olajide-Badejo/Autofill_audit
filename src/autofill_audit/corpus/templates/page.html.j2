@@ -1,0 +1,96 @@
+{% import 'controls.html.j2' as ctl %}
+<!DOCTYPE html>
+<html lang="{{ form.lang }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ form.title }}</title>
+<style>
+body { font-family: system-ui, sans-serif; margin: 0; padding: 1.5rem; }
+main { max-width: 44rem; margin: 0 auto; }
+.row { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.field { display: flex; flex-direction: column; flex: 1 1 12rem; margin-bottom: 0.75rem; }
+label { font-size: 0.85rem; margin-bottom: 0.25rem; }
+input, select, textarea { font: inherit; padding: 0.4rem; }
+fieldset { border: 1px solid #ccc; margin: 0 0 0.75rem; }
+.summary { background: #f4f4f4; padding: 0.75rem; margin-bottom: 1rem; }
+.canvas-note { font-size: 0.8rem; color: #555; }
+</style>
+</head>
+<body>
+<main>
+<h1>{{ form.title }}</h1>
+{% if form.summary %}
+<aside class="summary">
+<h2>{{ form.summary_heading }}</h2>
+<p>{{ form.summary_ship_to }}: {{ form.summary.name }}</p>
+<p>{{ form.summary.street }}, {{ form.summary.city }} {{ form.summary.postal_code }}, {{ form.summary.country }}</p>
+<p>{{ form.summary_contact_at }}: {{ form.summary.phone }}</p>
+</aside>
+{% endif %}
+<form name="{{ form.form_name }}" method="post" action="#">
+{% for section in form.sections %}
+<{{ section.tag }}{% if section.element_id %} id="{{ section.element_id }}"{% endif %} class="block">
+<h2>{{ section.heading }}</h2>
+{% for row in section.rows %}
+{% if row.tag == 'fieldset' %}
+<fieldset>
+<legend>{{ row.legend }}</legend>
+<div class="row">
+{% for entry in row.cells %}
+{{ ctl.cell(entry) }}
+{% endfor %}
+</div>
+</fieldset>
+{% else %}
+<div class="row">
+{% for entry in row.cells %}
+{{ ctl.cell(entry) }}
+{% endfor %}
+</div>
+{% endif %}
+{% endfor %}
+</{{ section.tag }}>
+{% endfor %}
+<div class="actions"><button type="submit">{{ form.submit_text }}</button></div>
+</form>
+</main>
+{% if form.shadow_fields %}
+<script>
+class AfField extends HTMLElement {
+  connectedCallback() {
+    if (this.shadowRoot) { return; }
+    var root = this.attachShadow({ mode: 'open' });
+    var el = document.createElement(this.dataset.tag || 'input');
+    if (this.dataset.type) { el.setAttribute('type', this.dataset.type); }
+    if (this.dataset.name) { el.setAttribute('name', this.dataset.name); }
+    if (this.dataset.placeholder) { el.setAttribute('placeholder', this.dataset.placeholder); }
+    root.appendChild(el);
+  }
+}
+customElements.define('af-field', AfField);
+</script>
+{% endif %}
+{% if form.injected_fields %}
+<script>
+window.setTimeout(function () {
+{% for field in form.injected_fields %}
+  var slot{{ loop.index }} = document.getElementById({{ field.injection_slot_id|tojson }});
+  if (slot{{ loop.index }}) {
+    var el{{ loop.index }} = document.createElement('input');
+    el{{ loop.index }}.setAttribute('type', {{ (field.input_type or 'text')|tojson }});
+    el{{ loop.index }}.setAttribute('id', {{ field.element_id|tojson }});
+{% if field.name %}
+    el{{ loop.index }}.setAttribute('name', {{ field.name|tojson }});
+{% endif %}
+{% if field.placeholder %}
+    el{{ loop.index }}.setAttribute('placeholder', {{ field.placeholder|tojson }});
+{% endif %}
+    slot{{ loop.index }}.appendChild(el{{ loop.index }});
+  }
+{% endfor %}
+}, {{ form.injection_delay_ms }});
+</script>
+{% endif %}
+</body>
+</html>

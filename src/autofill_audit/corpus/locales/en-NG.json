@@ -1,0 +1,270 @@
+{
+  "locale": "en-NG",
+  "html_lang": "en-NG",
+  "faker_locale": "en_NG",
+  "country_code": "NG",
+  "country_name": "Nigeria",
+  "phone_country_code": "+234",
+  "phone_pattern": "0800 000 00##",
+  "postal_pattern": "######",
+  "blocks": {
+    "name": {
+      "full": [
+        "full_name"
+      ],
+      "split": [
+        "given_name",
+        "family_name"
+      ],
+      "split_middle": [
+        "given_name",
+        "additional_name",
+        "family_name"
+      ],
+      "honorific": [
+        "honorific_prefix",
+        "given_name",
+        "family_name",
+        "honorific_suffix"
+      ]
+    },
+    "address": {
+      "lines": [
+        "address_line_1",
+        "address_line_2",
+        "city",
+        "admin_area",
+        "postal_code"
+      ],
+      "lines3": [
+        "address_line_1",
+        "address_line_2",
+        "address_line_3",
+        "city",
+        "admin_area",
+        "postal_code"
+      ],
+      "street": [
+        "street_address",
+        "city",
+        "admin_area",
+        "postal_code"
+      ],
+      "composite": [
+        "full_address_composite"
+      ]
+    },
+    "rows": [
+      [
+        "city",
+        "admin_area"
+      ]
+    ],
+    "optional": {
+      "postal_code": 0.25
+    }
+  },
+  "text": {
+    "labels": {
+      "honorific_prefix": "Title",
+      "honorific_suffix": "Suffix",
+      "given_name": "First name",
+      "additional_name": "Middle name",
+      "family_name": "Surname",
+      "given_name_kana": "First name (phonetic)",
+      "family_name_kana": "Surname (phonetic)",
+      "full_name": "Full name",
+      "nickname": "Display name",
+      "email_address": "Email address",
+      "phone": "Phone number",
+      "phone_country_code": "Country code",
+      "phone_national": "Phone number",
+      "phone_extension": "Extension",
+      "website": "Website",
+      "street_address": "Street address",
+      "address_line_1": "Street address",
+      "address_line_2": "Estate, apartment, landmark",
+      "address_line_3": "Additional directions",
+      "city": "City or town",
+      "admin_area": "State",
+      "postal_code": "Postal code",
+      "country_select": "Country",
+      "country_text": "Country",
+      "organization": "Company",
+      "full_address_composite": "Full address",
+      "card_holder": "Name on card",
+      "card_number": "Card number",
+      "card_expiry": "Expiry date",
+      "card_expiry_month": "Expiry month",
+      "card_expiry_year": "Expiry year",
+      "card_expiry_split_month": "Month",
+      "card_expiry_split_year": "Year",
+      "card_expiry_composite": "Expiry (MM/YY)",
+      "card_security_code": "CVV",
+      "card_type": "Card type",
+      "amount": "Amount",
+      "username": "Username",
+      "new_password": "Password",
+      "new_password_confirm": "Confirm password",
+      "current_password": "Password",
+      "one_time_code": "OTP",
+      "birth_date": "Date of birth",
+      "sex": "Gender",
+      "search": "Search",
+      "quantity": "Quantity",
+      "coupon": "Voucher code",
+      "comments": "Delivery instructions",
+      "consent": "I accept the terms of sale",
+      "marketing_opt_in": "Email me about offers",
+      "undeterminable": "Value"
+    },
+    "placeholders": {
+      "email_address": "you@example.com",
+      "address_line_1": "1 Example Close",
+      "address_line_2": "Example Estate",
+      "city": "Exampletown",
+      "postal_code": "100001",
+      "phone": "0800 000 0012",
+      "phone_national": "0800 000 0012",
+      "phone_extension": "1234",
+      "website": "https://example.com",
+      "card_number": "4242 4242 4242 4242",
+      "card_expiry_composite": "MM/YY",
+      "card_security_code": "123",
+      "one_time_code": "123456",
+      "amount": "0.00",
+      "coupon": "EXAMPLE10",
+      "search": "Search the store",
+      "full_address_composite": "Street, city, state",
+      "comments": "Call on arrival at the gate"
+    },
+    "identifiers": {
+      "postal_code": "postalcode",
+      "admin_area": "state",
+      "family_name": "surname",
+      "one_time_code": "otp",
+      "coupon": "vouchercode",
+      "address_line_2": "estate"
+    },
+    "sections": {
+      "contact": "Contact details",
+      "identity": "Your details",
+      "shipping": "Delivery address",
+      "billing": "Billing address",
+      "address": "Address",
+      "payment": "Payment",
+      "account": "Account",
+      "security": "Security",
+      "order": "Order",
+      "extras": "Additional information"
+    },
+    "page_titles": {
+      "checkout": "Checkout",
+      "signup": "Create an account",
+      "address": "Address book",
+      "payment": "Payment details",
+      "login": "Sign in"
+    },
+    "summary": {
+      "heading": "Order summary",
+      "ship_to": "Delivering to",
+      "contact_at": "We will contact you on"
+    }
+  },
+  "options": {
+    "titles": [
+      "Mr",
+      "Mrs",
+      "Miss",
+      "Dr",
+      "Chief",
+      "Engr"
+    ],
+    "sex_options": [
+      "Female",
+      "Male",
+      "Prefer not to say"
+    ],
+    "card_types": [
+      "Verve",
+      "Visa",
+      "Mastercard"
+    ],
+    "admin_areas": [
+      "Lagos",
+      "Abuja FCT",
+      "Kano",
+      "Rivers",
+      "Oyo",
+      "Enugu"
+    ],
+    "months": [
+      "01",
+      "02",
+      "03",
+      "04",
+      "05",
+      "06",
+      "07",
+      "08",
+      "09",
+      "10",
+      "11",
+      "12"
+    ]
+  },
+  "option_pairs": {
+    "countries": [
+      [
+        "NG",
+        "Nigeria"
+      ],
+      [
+        "GH",
+        "Ghana"
+      ],
+      [
+        "KE",
+        "Kenya"
+      ],
+      [
+        "ZA",
+        "South Africa"
+      ],
+      [
+        "GB",
+        "United Kingdom"
+      ],
+      [
+        "US",
+        "United States"
+      ]
+    ],
+    "phone_country_codes": [
+      [
+        "+234",
+        "Nigeria (+234)"
+      ],
+      [
+        "+233",
+        "Ghana (+233)"
+      ],
+      [
+        "+254",
+        "Kenya (+254)"
+      ],
+      [
+        "+27",
+        "South Africa (+27)"
+      ],
+      [
+        "+44",
+        "United Kingdom (+44)"
+      ],
+      [
+        "+1",
+        "United States (+1)"
+      ]
+    ]
+  }
+}

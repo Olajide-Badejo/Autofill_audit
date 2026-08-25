@@ -27,8 +27,10 @@ __all__ = [
     "ALL_LABELS",
     "EXTRA_LABELS",
     "GROUPS",
+    "GROUP_ORDER",
     "SPEC_TOKENS",
     "Label",
+    "declaration_for",
     "group_of",
     "is_spec_token",
 ]
@@ -192,14 +194,61 @@ SPEC_TOKENS: Final[frozenset[Label]] = IDENTITY | CONTACT | ADDRESS | PAYMENT | 
 ALL_LABELS: Final[frozenset[Label]] = SPEC_TOKENS | EXTRA_LABELS
 """Every label in the taxonomy."""
 
+GROUP_ORDER: Final[tuple[str, ...]] = (
+    "identity",
+    "contact",
+    "address",
+    "payment",
+    "credentials",
+    "extra",
+)
+"""Stable iteration order for the groups, so that a coverage table, a report
+row order, and a manifest key order never depend on set iteration."""
+
 _GROUP_OF: Final[dict[Label, str]] = {
     label: group for group, members in GROUPS.items() for label in members
 }
+
+_EXTRA_DECLARATION: Final[dict[Label, Label | None]] = {
+    Label.UNKNOWN: None,
+    Label.NOT_AUTOFILLABLE: None,
+    Label.CC_EXP_SPLIT_MONTH: Label.CC_EXP_MONTH,
+    Label.CC_EXP_SPLIT_YEAR: Label.CC_EXP_YEAR,
+    Label.COMPOSITE_UNSPLIT: None,
+}
+"""What a correctly built page declares for each extra label, where the label
+alone settles it.
+
+The two split-expiry labels do settle it: the pair is still declared with the
+specification's month and year tokens, and the extra label exists only to carry
+the structural fact that the two controls must be fixed together (spec 7.2).
+
+``UNKNOWN`` and ``NOT_AUTOFILLABLE`` declare nothing, which is the correct
+markup for a search box or a consent checkbox rather than an omission.
+
+``COMPOSITE_UNSPLIT`` is deliberately ``None`` even though a correct page does
+declare something for it, because what it declares depends on what the control
+composites: a single MM/YY input takes the combined expiry token and a single
+full-address textarea takes the street-address token. The caller that knows
+which composite it built supplies the token; the label on its own cannot."""
 
 
 def is_spec_token(label: Label) -> bool:
     """Return True when ``label`` is a WHATWG token usable as an autocomplete value."""
     return label in SPEC_TOKENS
+
+
+def declaration_for(label: Label) -> Label | None:
+    """Return the token a correct page declares for ``label``, or None.
+
+    None means one of two different things, and the caller must know which:
+    either the label is one a correct page declares nothing for, or it is
+    ``COMPOSITE_UNSPLIT``, whose declaration depends on the composite. See
+    ``_EXTRA_DECLARATION``.
+    """
+    if label in SPEC_TOKENS:
+        return label
+    return _EXTRA_DECLARATION[label]
 
 
 def group_of(label: Label) -> str:
@@ -220,3 +269,6 @@ assert len(SPEC_TOKENS) == 37, "spec token count fixed by spec section 7.1"
 assert len(EXTRA_LABELS) == 5, "extra label count fixed by spec section 7.2"
 assert len(_GROUP_OF) == len(Label), "groups must cover every label exactly once"
 assert len({label.value for label in Label}) == len(Label), "label values must be unique"
+assert set(GROUP_ORDER) == set(GROUPS), "the group order must name every group exactly once"
+assert len(GROUP_ORDER) == len(GROUPS), "the group order must not repeat a group"
+assert set(_EXTRA_DECLARATION) == EXTRA_LABELS, "every extra label needs a declaration entry"

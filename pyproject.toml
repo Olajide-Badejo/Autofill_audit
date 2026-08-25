@@ -79,7 +79,16 @@ version = { attr = "autofill_audit.__version__" }
 where = ["src"]
 
 [tool.setuptools.package-data]
-autofill_audit = ["py.typed"]
+# The locale tables, the Jinja fragments, and the answer-key schema are data the
+# generator reads at runtime, so they have to travel in the wheel. `corpus
+# generate` is part of the shipped command surface, and a wheel that omitted
+# them would install a command that cannot run.
+autofill_audit = [
+    "py.typed",
+    "corpus/locales/*.json",
+    "corpus/templates/*.j2",
+    "corpus/*.json",
+]
 
 [tool.ruff]
 line-length = 100
