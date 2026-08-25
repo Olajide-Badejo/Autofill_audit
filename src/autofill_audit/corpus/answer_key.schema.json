@@ -1,0 +1,388 @@
+{
+  "$id": "https://github.com/Olajide-Badejo/autofill-audit/answer_key.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Ground truth for one generated form: a CSS selector to taxonomy label mapping with per-field provenance, plus the page-level facts that are not form controls.",
+  "properties": {
+    "family": {
+      "enum": [
+        "address",
+        "checkout",
+        "login",
+        "payment",
+        "signup"
+      ],
+      "type": "string"
+    },
+    "fields": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "expected_modifiers": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "label": {
+            "enum": [
+              "CC_EXP_SPLIT_MONTH",
+              "CC_EXP_SPLIT_YEAR",
+              "COMPOSITE_UNSPLIT",
+              "NOT_AUTOFILLABLE",
+              "UNKNOWN",
+              "additional-name",
+              "address-level1",
+              "address-level2",
+              "address-line1",
+              "address-line2",
+              "address-line3",
+              "bday",
+              "cc-csc",
+              "cc-exp",
+              "cc-exp-month",
+              "cc-exp-year",
+              "cc-name",
+              "cc-number",
+              "cc-type",
+              "country",
+              "country-name",
+              "current-password",
+              "email",
+              "family-name",
+              "given-name",
+              "honorific-prefix",
+              "honorific-suffix",
+              "name",
+              "new-password",
+              "nickname",
+              "one-time-code",
+              "organization",
+              "postal-code",
+              "sex",
+              "street-address",
+              "tel",
+              "tel-country-code",
+              "tel-extension",
+              "tel-national",
+              "transaction-amount",
+              "url",
+              "username"
+            ],
+            "type": "string"
+          },
+          "provenance": {
+            "additionalProperties": false,
+            "properties": {
+              "control": {
+                "enum": [
+                  "input",
+                  "select",
+                  "textarea"
+                ],
+                "type": "string"
+              },
+              "declared_autocomplete": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "delivery": {
+                "enum": [
+                  "injected",
+                  "shadow",
+                  "static"
+                ],
+                "type": "string"
+              },
+              "element_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "identifier_style": {
+                "enum": [
+                  "bare",
+                  "hex_id",
+                  "legacy_name",
+                  "numbered",
+                  "semantic",
+                  "underscored"
+                ],
+                "type": "string"
+              },
+              "injection_slot": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "input_type": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "label_text": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "name": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "placeholder": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "role": {
+                "enum": [
+                  "additional_name",
+                  "address_line_1",
+                  "address_line_2",
+                  "address_line_3",
+                  "admin_area",
+                  "amount",
+                  "birth_date",
+                  "card_expiry",
+                  "card_expiry_composite",
+                  "card_expiry_month",
+                  "card_expiry_split_month",
+                  "card_expiry_split_year",
+                  "card_expiry_year",
+                  "card_holder",
+                  "card_number",
+                  "card_security_code",
+                  "card_type",
+                  "city",
+                  "comments",
+                  "consent",
+                  "country_select",
+                  "country_text",
+                  "coupon",
+                  "current_password",
+                  "email_address",
+                  "family_name",
+                  "family_name_kana",
+                  "full_address_composite",
+                  "full_name",
+                  "given_name",
+                  "given_name_kana",
+                  "honorific_prefix",
+                  "honorific_suffix",
+                  "marketing_opt_in",
+                  "new_password",
+                  "new_password_confirm",
+                  "nickname",
+                  "one_time_code",
+                  "organization",
+                  "phone",
+                  "phone_country_code",
+                  "phone_extension",
+                  "phone_national",
+                  "postal_code",
+                  "quantity",
+                  "search",
+                  "sex",
+                  "street_address",
+                  "undeterminable",
+                  "username",
+                  "website"
+                ],
+                "type": "string"
+              },
+              "section": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "selector_strategy": {
+                "enum": [
+                  "form_name",
+                  "id",
+                  "nth_of_type",
+                  "shadow"
+                ],
+                "type": "string"
+              },
+              "shadow_host": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "slot_key": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "tier": {
+                "enum": [
+                  "clean",
+                  "hostile",
+                  "mixed",
+                  "partial"
+                ],
+                "type": "string"
+              },
+              "transforms": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "slot_key",
+              "role",
+              "section",
+              "tier",
+              "control",
+              "input_type",
+              "delivery",
+              "selector_strategy",
+              "identifier_style",
+              "element_id",
+              "name",
+              "declared_autocomplete",
+              "label_text",
+              "placeholder",
+              "shadow_host",
+              "injection_slot",
+              "transforms"
+            ],
+            "type": "object"
+          },
+          "selector": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "selector",
+          "label",
+          "expected_modifiers",
+          "provenance"
+        ],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "form_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "generator_version": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "locale": {
+      "enum": [
+        "de-DE",
+        "en-GB",
+        "en-NG",
+        "en-US",
+        "fr-FR",
+        "ja-JP"
+      ],
+      "type": "string"
+    },
+    "page_notes": {
+      "additionalProperties": false,
+      "properties": {
+        "canvas_pseudo_fields": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "injected_selectors": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "shadow_hosts": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "canvas_pseudo_fields",
+        "shadow_hosts",
+        "injected_selectors"
+      ],
+      "type": "object"
+    },
+    "schema_version": {
+      "const": 1,
+      "type": "integer"
+    },
+    "template_id": {
+      "enum": [
+        "address-01",
+        "address-02",
+        "address-03",
+        "address-04",
+        "address-05",
+        "checkout-01",
+        "checkout-02",
+        "checkout-03",
+        "checkout-04",
+        "checkout-05",
+        "login-01",
+        "login-02",
+        "login-03",
+        "login-04",
+        "login-05",
+        "payment-01",
+        "payment-02",
+        "payment-03",
+        "payment-04",
+        "payment-05",
+        "signup-01",
+        "signup-02",
+        "signup-03",
+        "signup-04",
+        "signup-05"
+      ],
+      "type": "string"
+    },
+    "tier": {
+      "enum": [
+        "clean",
+        "hostile",
+        "mixed",
+        "partial"
+      ],
+      "type": "string"
+    },
+    "variant": {
+      "minimum": 0,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "schema_version",
+    "generator_version",
+    "form_id",
+    "family",
+    "template_id",
+    "locale",
+    "tier",
+    "variant",
+    "fields",
+    "page_notes"
+  ],
+  "title": "autofill-audit corpus answer key",
+  "type": "object"
+}

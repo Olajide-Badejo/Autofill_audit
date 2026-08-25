@@ -74,9 +74,16 @@ _SIMPLE_STEP: Final[re.Pattern[str]] = re.compile(
 )
 
 
-@dataclass(slots=True)
+@dataclass(slots=True, eq=False)
 class Element:
-    """One element in a parsed document."""
+    """One element in a parsed document.
+
+    ``eq=False`` is load bearing. A generated ``__eq__`` compares every field,
+    ``parent`` points back up the tree, and comparing two elements would recurse
+    until the stack ran out. Elements are identity objects: two of them are the
+    same element when they are the same object, which is also exactly what
+    ``list.index`` needs while resolving ``:nth-of-type``.
+    """
 
     tag: str
     attrs: dict[str, str] = field(default_factory=dict)
