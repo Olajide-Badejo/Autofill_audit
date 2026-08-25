@@ -489,3 +489,149 @@ The corollary is that the tests worth having are the ones that pin the
 judgements, not the ones that pin the traversal. The traversal has a handful of
 tests; the honeypot rule, the group detector, and the selector order have
 dozens.
+
+## 2026-08-26: P3, the rule baseline, the audit engine, and the CLI
+
+The phase that turns a corpus and an extractor into something worth installing.
+No machine learning in it, which is the whole point of the build order.
+
+### What was built
+
+`classify/rules_table.py` is the substance. It is a table of pattern, label,
+weight, and signal name, grouped by label, with a locale tag on every row whose
+wording belongs to one language. `classify/rules.py` owns the six-tier precedence
+of spec section 10.1 and owns no vocabulary at all, so adding a language never
+touches control flow and changing precedence never touches a word list. Around
+those: the finding catalogue with its fix templates as data, the ordered decision
+procedure, three renderers, the command surface, and the config file.
+
+### The design decision the phase turned on
+
+**Ties are the safety mechanism, not a shortcoming.**
+
+The specification says a tier decides when it yields a unique match and otherwise
+falls through, and that a tie surviving every tier is `UNKNOWN`. It reads like a
+tidy-up clause. It is the single most load-bearing sentence in section 10.1.
+
+German writes `Straße und Hausnummer` for both a whole street address and the
+first of several address lines. French writes `Adresse` for both. A field
+labelled only "Password" is a login field on one page and a registration field on
+the next. In each of those the wording genuinely does not distinguish two labels,
+and the correct answer is that the tool does not know.
+
+The moment that clicked, the table changed shape. Instead of writing a pattern
+per label and hoping they did not overlap, the overlaps became deliberate: both
+labels carry the same phrase at the same weight, the tier ties by construction,
+and the engine falls through to something that might separate them. The
+false-positive property fell out of that rather than being tuned into existence.
+It passed the first time it was run, across the whole correct-markup slice, with
+no findings at any severity at all.
+
+The alternative would have been to break each tie by picking a favourite. That
+produces a confident instruction to write the wrong token into somebody's
+production markup, which is precisely what law 1 exists to prevent, and it would
+have looked like better coverage on every metric except the one that matters.
+
+### Three places the specification had to be read rather than transcribed
+
+Written down here because a reader of the code should not have to reconstruct
+them, and because each is a place where two sections of the specification pull
+against each other.
+
+**`COMPOSITE_FIELD` has no branch in the pseudocode.** Section 11.1 gives its
+trigger as "inferred `COMPOSITE_UNSPLIT`", which taken literally fires a warning
+on every correctly declared MM/YY input; section 8.4 makes any finding above
+`INFO` on a correct form a defect. Both hold only if the finding is about the
+*absence* of the declaration, so it sits where `MISSING_AUTOCOMPLETE` sits and
+carries the composite's own fix.
+
+**`AUTOCOMPLETE_OFF` has no stop marker.** The pseudocode writes "; stop primary"
+on two branches and not on this one, but `autocomplete="off"` parses to a null
+token, so without the stop a field collects both `AUTOCOMPLETE_OFF` and
+`MISSING_AUTOCOMPLETE`: two primary findings with two contradictory fixes. The
+prose above the pseudocode says first match wins, so it stops.
+
+**The cross-origin frame fix text contradicts section 9.6.** Section 11.1's
+template ends "expose it in light DOM or declare autocomplete on the host", which
+is sound for a closed shadow root and nonsense for a frame the page does not own.
+Section 9.6 requires the text to say a hosted payment field is common and
+correct. The more specific section wins and the override is data beside the
+template rather than a branch in a renderer.
+
+### What went wrong
+
+**Two browsers, one thread.** Adding a session-scoped browser fixture for the
+audit suite made the extractor suite fail with "It looks like you are using
+Playwright Sync API inside the asyncio loop. Please use the Async API instead."
+Nothing was using the async API. Playwright's synchronous wrapper drives a
+greenlet on one event loop per thread, and a second live session finds that loop
+already running. The message names a symptom that has nothing to do with the
+cause, and it cost about twenty minutes of looking in the wrong place.
+
+There is now one browser fixture in the root `conftest.py`, shared by every
+suite. The same constraint is why the end-to-end CLI tests run the tool in a
+subprocess: the CLI opens a browser of its own and cannot do that while the test
+session's browser is alive. That turned out to be an improvement rather than a
+workaround, because a subprocess exercises the real exit codes as a shell sees
+them.
+
+**The pre-commit whitespace hook ate the golden snapshots.** `rich` pads a table
+row out to the full terminal width, `trailing-whitespace` trims it, and the first
+commit of the snapshots rewrote every one of them and left the suite failing
+against its own repository. The hook now skips `tests/golden/`, which is a narrow
+exemption for the one directory whose whole purpose is to be byte-exact.
+
+**A German placeholder read as a name field.** On the hostile tier the label is
+stripped and the placeholder is all that survives. The German email placeholder
+is `name@example.com`; the at sign does not survive normalisation, so the token
+stream is `name example com`, and the whole-name rule fired on it. The fix is a
+rule matching the reserved documentation domain of RFC 2606, which is what
+essentially every placeholder on the web uses, and it turned ten wrong criticals
+into ten right ones across the whole hostile slice rather than only fixing the
+German case.
+
+**A Japanese section heading read as a card verification code.** The rule for the
+Japanese security code matched the bare word for "security", which is what a
+form's own security section is headed with, so a login password field picked it
+up from the context tier. Narrowed to the full compound. Both of these were found
+by sweeping the generated corpus and cross-checking every declaration finding
+against the generator's own provenance, which is a check worth keeping.
+
+### The Japanese postal mark, and an honest dead rule
+
+Section 10.1 names the postal mark among the words `postal-code` must match. It
+cannot fire. The normalisation of section 9.7 treats a lone symbol character as a
+delimiter, so the mark never reaches a token stream, and the Japanese postal
+field is reached through its word form instead.
+
+The rule is in the table anyway, with a comment saying it cannot fire and why,
+and a test asserting both halves of that. Making it reachable means changing what
+counts as a token character, which changes every golden snapshot and every
+committed fixture expectation, and that is a deliberate decision with a cost
+rather than a quiet fix. It is written up in the notes for P4.
+
+### The thresholds are a mapping, and the file says so
+
+Section 11.3 has the two thresholds derived on the dev split at P4 against a
+precision target committed before the measurement. Until then the rule engine's
+tiers map to the same two bands. The mapping puts `HIGH` and `MEDIUM` in the
+confident band and `LOW` in the near-miss band, and the reasoning is in the
+committed file: `MEDIUM` is what an identifier, a placeholder, or an option list
+earns, and those are the only evidence a hostile page leaves standing. Putting
+them in the near-miss band would mean the tool could never say anything above a
+note about exactly the pages it exists for.
+
+Every key in that file that would hold a measurement is null, and the reports say
+in words that the thresholds behind their confidences are a mapping rather than a
+measurement. A plausible number sitting in a file the runtime reads would be a
+law 3 violation with a straight face.
+
+### What surprised me
+
+How much of the phase was deciding what *not* to report. The finding catalogue
+took an afternoon; the equivalence sets, the asymmetry that makes a declaration
+authoritative unless the tool is confident it is wrong, the tiers that fall
+through rather than guess, and the labels the table deliberately cannot separate
+took the rest of it. Every one of those makes the tool quieter, and every one of
+them is the difference between a check somebody keeps and a check somebody
+deletes.

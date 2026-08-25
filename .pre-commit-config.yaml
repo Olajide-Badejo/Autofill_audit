@@ -62,3 +62,10 @@ repos:
       - id: mixed-line-ending
         args: [--fix=lf]
       - id: trailing-whitespace
+        # The golden report snapshots are byte-exact copies of what the tool
+        # prints, and rich pads a table row out to the full terminal width. A
+        # hook that trimmed those trailing spaces would rewrite the committed
+        # expectation on every commit and the snapshot suite would fail against
+        # its own repository. The exemption is narrow, is only for this
+        # directory, and is the reason the directory exists.
+        exclude: ^tests/golden/

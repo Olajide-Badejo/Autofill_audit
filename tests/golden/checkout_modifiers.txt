@@ -1,0 +1,14 @@
+autofill-audit  fixture://checkout_modifiers.html
+
+No findings. Every control this tool could read is declared.
+
+                                                           
+ critical                                                0 
+ warning                                                 0 
+ info                                                    0 
+ note                                                    0 
+                                                           
+ autofill readiness   8 of 8 controls declare autocomplete 
+                                                           
+Confidences are rule tiers, not probabilities, and the thresholds behind them are a documented 
+mapping rather than a measurement (rule-tier-band-mapping).

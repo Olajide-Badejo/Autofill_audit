@@ -1,0 +1,684 @@
+{
+  "schema_version": 1,
+  "tool": {
+    "name": "autofill-audit",
+    "version": "0.1.0"
+  },
+  "target": "fixture://checkout_modifiers.html",
+  "engine": {
+    "engine": "rules",
+    "tool_version": "0.1.0",
+    "rule_table_version": "1.0.0",
+    "vocabulary_rules": "346",
+    "option_rules": "36",
+    "intrinsic_rules": "10",
+    "confidence_kind": "tier"
+  },
+  "thresholds": {
+    "tau_high": "0.7",
+    "tau_low": "0.4",
+    "basis": "rule-tier-band-mapping",
+    "source": "thresholds.json",
+    "measured": "false"
+  },
+  "summary": {
+    "counts": {
+      "critical": 0,
+      "warning": 0,
+      "info": 0,
+      "note": 0
+    },
+    "findings": 0,
+    "suppressed": 0,
+    "controls_audited": 8,
+    "controls_declaring_autocomplete": 8,
+    "controls_seen": 8,
+    "honeypots_excluded": 0,
+    "frames": 1,
+    "truncated": false
+  },
+  "findings": [],
+  "suppressed": [],
+  "page_notes": [],
+  "canvas_regions": [],
+  "descriptors": [
+    {
+      "selector": "#sh-name",
+      "frame_path": [],
+      "shadow_path": [],
+      "document_index": 0,
+      "tag": "input",
+      "input_type": "text",
+      "inputmode": null,
+      "pattern": null,
+      "maxlength": null,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "option_labels": [],
+      "option_values": [],
+      "name": "sh_name",
+      "element_id": "sh-name",
+      "css_classes": [],
+      "data_keys": [],
+      "framework_attrs": [],
+      "declared": {
+        "raw": "shipping name",
+        "token": "name",
+        "modifiers": [
+          "shipping"
+        ],
+        "section": null,
+        "is_off_spec": false,
+        "is_off": false
+      },
+      "text": {
+        "label_for": "Full name",
+        "label_ancestor": null,
+        "aria_label": null,
+        "aria_labelledby_text": null,
+        "aria_describedby_text": null,
+        "title": null,
+        "placeholder": null,
+        "preceding_text": null,
+        "legend": null,
+        "section_heading": "Delivery address",
+        "form_accessible_name": null
+      },
+      "norm": {
+        "label_tokens": [
+          "full",
+          "name"
+        ],
+        "label_source": "label_for",
+        "identifier_tokens": [
+          "sh",
+          "name",
+          "sh",
+          "name"
+        ],
+        "context_tokens": [
+          "delivery",
+          "address"
+        ],
+        "all_tokens": [
+          "full",
+          "name",
+          "sh",
+          "name",
+          "sh",
+          "name",
+          "delivery",
+          "address"
+        ],
+        "text_blob": "L:full L:name I:sh I:name I:sh I:name C:delivery C:address"
+      },
+      "form_index": 0,
+      "fieldset_index": null,
+      "sibling_control_count": 0,
+      "group_role": "none",
+      "group_id": null,
+      "is_visible": true,
+      "undetectable_reason": null
+    },
+    {
+      "selector": "#sh-street",
+      "frame_path": [],
+      "shadow_path": [],
+      "document_index": 1,
+      "tag": "input",
+      "input_type": "text",
+      "inputmode": null,
+      "pattern": null,
+      "maxlength": null,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "option_labels": [],
+      "option_values": [],
+      "name": "sh_street",
+      "element_id": "sh-street",
+      "css_classes": [],
+      "data_keys": [],
+      "framework_attrs": [],
+      "declared": {
+        "raw": "shipping street-address",
+        "token": "street-address",
+        "modifiers": [
+          "shipping"
+        ],
+        "section": null,
+        "is_off_spec": false,
+        "is_off": false
+      },
+      "text": {
+        "label_for": "Street address",
+        "label_ancestor": null,
+        "aria_label": null,
+        "aria_labelledby_text": null,
+        "aria_describedby_text": null,
+        "title": null,
+        "placeholder": null,
+        "preceding_text": null,
+        "legend": null,
+        "section_heading": "Delivery address",
+        "form_accessible_name": null
+      },
+      "norm": {
+        "label_tokens": [
+          "street",
+          "address"
+        ],
+        "label_source": "label_for",
+        "identifier_tokens": [
+          "sh",
+          "street",
+          "sh",
+          "street"
+        ],
+        "context_tokens": [
+          "delivery",
+          "address"
+        ],
+        "all_tokens": [
+          "street",
+          "address",
+          "sh",
+          "street",
+          "sh",
+          "street",
+          "delivery",
+          "address"
+        ],
+        "text_blob": "L:street L:address I:sh I:street I:sh I:street C:delivery C:address"
+      },
+      "form_index": 1,
+      "fieldset_index": null,
+      "sibling_control_count": 0,
+      "group_role": "none",
+      "group_id": null,
+      "is_visible": true,
+      "undetectable_reason": null
+    },
+    {
+      "selector": "#sh-city",
+      "frame_path": [],
+      "shadow_path": [],
+      "document_index": 2,
+      "tag": "input",
+      "input_type": "text",
+      "inputmode": null,
+      "pattern": null,
+      "maxlength": null,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "option_labels": [],
+      "option_values": [],
+      "name": "sh_city",
+      "element_id": "sh-city",
+      "css_classes": [],
+      "data_keys": [],
+      "framework_attrs": [],
+      "declared": {
+        "raw": "shipping address-level2",
+        "token": "address-level2",
+        "modifiers": [
+          "shipping"
+        ],
+        "section": null,
+        "is_off_spec": false,
+        "is_off": false
+      },
+      "text": {
+        "label_for": "Town or city",
+        "label_ancestor": null,
+        "aria_label": null,
+        "aria_labelledby_text": null,
+        "aria_describedby_text": null,
+        "title": null,
+        "placeholder": null,
+        "preceding_text": null,
+        "legend": null,
+        "section_heading": "Delivery address",
+        "form_accessible_name": null
+      },
+      "norm": {
+        "label_tokens": [
+          "town",
+          "or",
+          "city"
+        ],
+        "label_source": "label_for",
+        "identifier_tokens": [
+          "sh",
+          "city",
+          "sh",
+          "city"
+        ],
+        "context_tokens": [
+          "delivery",
+          "address"
+        ],
+        "all_tokens": [
+          "town",
+          "or",
+          "city",
+          "sh",
+          "city",
+          "sh",
+          "city",
+          "delivery",
+          "address"
+        ],
+        "text_blob": "L:town L:or L:city I:sh I:city I:sh I:city C:delivery C:address"
+      },
+      "form_index": 2,
+      "fieldset_index": null,
+      "sibling_control_count": 0,
+      "group_role": "none",
+      "group_id": null,
+      "is_visible": true,
+      "undetectable_reason": null
+    },
+    {
+      "selector": "#sh-postcode",
+      "frame_path": [],
+      "shadow_path": [],
+      "document_index": 3,
+      "tag": "input",
+      "input_type": "text",
+      "inputmode": null,
+      "pattern": null,
+      "maxlength": null,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "option_labels": [],
+      "option_values": [],
+      "name": "sh_postcode",
+      "element_id": "sh-postcode",
+      "css_classes": [],
+      "data_keys": [],
+      "framework_attrs": [],
+      "declared": {
+        "raw": "shipping postal-code",
+        "token": "postal-code",
+        "modifiers": [
+          "shipping"
+        ],
+        "section": null,
+        "is_off_spec": false,
+        "is_off": false
+      },
+      "text": {
+        "label_for": "Postcode",
+        "label_ancestor": null,
+        "aria_label": null,
+        "aria_labelledby_text": null,
+        "aria_describedby_text": null,
+        "title": null,
+        "placeholder": null,
+        "preceding_text": null,
+        "legend": null,
+        "section_heading": "Delivery address",
+        "form_accessible_name": null
+      },
+      "norm": {
+        "label_tokens": [
+          "postcode"
+        ],
+        "label_source": "label_for",
+        "identifier_tokens": [
+          "sh",
+          "postcode",
+          "sh",
+          "postcode"
+        ],
+        "context_tokens": [
+          "delivery",
+          "address"
+        ],
+        "all_tokens": [
+          "postcode",
+          "sh",
+          "postcode",
+          "sh",
+          "postcode",
+          "delivery",
+          "address"
+        ],
+        "text_blob": "L:postcode I:sh I:postcode I:sh I:postcode C:delivery C:address"
+      },
+      "form_index": 3,
+      "fieldset_index": null,
+      "sibling_control_count": 0,
+      "group_role": "none",
+      "group_id": null,
+      "is_visible": true,
+      "undetectable_reason": null
+    },
+    {
+      "selector": "#sh-phone",
+      "frame_path": [],
+      "shadow_path": [],
+      "document_index": 4,
+      "tag": "input",
+      "input_type": "tel",
+      "inputmode": "tel",
+      "pattern": null,
+      "maxlength": null,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "option_labels": [],
+      "option_values": [],
+      "name": "sh_phone",
+      "element_id": "sh-phone",
+      "css_classes": [],
+      "data_keys": [],
+      "framework_attrs": [],
+      "declared": {
+        "raw": "home tel",
+        "token": "tel",
+        "modifiers": [
+          "home"
+        ],
+        "section": null,
+        "is_off_spec": false,
+        "is_off": false
+      },
+      "text": {
+        "label_for": "Telephone number",
+        "label_ancestor": null,
+        "aria_label": null,
+        "aria_labelledby_text": null,
+        "aria_describedby_text": null,
+        "title": null,
+        "placeholder": null,
+        "preceding_text": null,
+        "legend": null,
+        "section_heading": "Delivery address",
+        "form_accessible_name": null
+      },
+      "norm": {
+        "label_tokens": [
+          "telephone",
+          "number"
+        ],
+        "label_source": "label_for",
+        "identifier_tokens": [
+          "sh",
+          "phone",
+          "sh",
+          "phone"
+        ],
+        "context_tokens": [
+          "delivery",
+          "address"
+        ],
+        "all_tokens": [
+          "telephone",
+          "number",
+          "sh",
+          "phone",
+          "sh",
+          "phone",
+          "delivery",
+          "address"
+        ],
+        "text_blob": "L:telephone L:number I:sh I:phone I:sh I:phone C:delivery C:address"
+      },
+      "form_index": 4,
+      "fieldset_index": null,
+      "sibling_control_count": 0,
+      "group_role": "none",
+      "group_id": null,
+      "is_visible": true,
+      "undetectable_reason": null
+    },
+    {
+      "selector": "#bl-postcode",
+      "frame_path": [],
+      "shadow_path": [],
+      "document_index": 5,
+      "tag": "input",
+      "input_type": "text",
+      "inputmode": null,
+      "pattern": null,
+      "maxlength": null,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "option_labels": [],
+      "option_values": [],
+      "name": "bl_postcode",
+      "element_id": "bl-postcode",
+      "css_classes": [],
+      "data_keys": [],
+      "framework_attrs": [],
+      "declared": {
+        "raw": "billing postal-code",
+        "token": "postal-code",
+        "modifiers": [
+          "billing"
+        ],
+        "section": null,
+        "is_off_spec": false,
+        "is_off": false
+      },
+      "text": {
+        "label_for": "Postcode",
+        "label_ancestor": null,
+        "aria_label": null,
+        "aria_labelledby_text": null,
+        "aria_describedby_text": null,
+        "title": null,
+        "placeholder": null,
+        "preceding_text": null,
+        "legend": null,
+        "section_heading": "Billing address",
+        "form_accessible_name": null
+      },
+      "norm": {
+        "label_tokens": [
+          "postcode"
+        ],
+        "label_source": "label_for",
+        "identifier_tokens": [
+          "bl",
+          "postcode",
+          "bl",
+          "postcode"
+        ],
+        "context_tokens": [
+          "billing",
+          "address"
+        ],
+        "all_tokens": [
+          "postcode",
+          "bl",
+          "postcode",
+          "bl",
+          "postcode",
+          "billing",
+          "address"
+        ],
+        "text_blob": "L:postcode I:bl I:postcode I:bl I:postcode C:billing C:address"
+      },
+      "form_index": 5,
+      "fieldset_index": null,
+      "sibling_control_count": 0,
+      "group_role": "none",
+      "group_id": null,
+      "is_visible": true,
+      "undetectable_reason": null
+    },
+    {
+      "selector": "#bl-city",
+      "frame_path": [],
+      "shadow_path": [],
+      "document_index": 6,
+      "tag": "input",
+      "input_type": "text",
+      "inputmode": null,
+      "pattern": null,
+      "maxlength": null,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "option_labels": [],
+      "option_values": [],
+      "name": "bl_city",
+      "element_id": "bl-city",
+      "css_classes": [],
+      "data_keys": [],
+      "framework_attrs": [],
+      "declared": {
+        "raw": "section-billing billing address-level2",
+        "token": "address-level2",
+        "modifiers": [
+          "billing"
+        ],
+        "section": "section-billing",
+        "is_off_spec": false,
+        "is_off": false
+      },
+      "text": {
+        "label_for": "Town or city",
+        "label_ancestor": null,
+        "aria_label": null,
+        "aria_labelledby_text": null,
+        "aria_describedby_text": null,
+        "title": null,
+        "placeholder": null,
+        "preceding_text": null,
+        "legend": null,
+        "section_heading": "Billing address",
+        "form_accessible_name": null
+      },
+      "norm": {
+        "label_tokens": [
+          "town",
+          "or",
+          "city"
+        ],
+        "label_source": "label_for",
+        "identifier_tokens": [
+          "bl",
+          "city",
+          "bl",
+          "city"
+        ],
+        "context_tokens": [
+          "billing",
+          "address"
+        ],
+        "all_tokens": [
+          "town",
+          "or",
+          "city",
+          "bl",
+          "city",
+          "bl",
+          "city",
+          "billing",
+          "address"
+        ],
+        "text_blob": "L:town L:or L:city I:bl I:city I:bl I:city C:billing C:address"
+      },
+      "form_index": 6,
+      "fieldset_index": null,
+      "sibling_control_count": 0,
+      "group_role": "none",
+      "group_id": null,
+      "is_visible": true,
+      "undetectable_reason": null
+    },
+    {
+      "selector": "#bl-email",
+      "frame_path": [],
+      "shadow_path": [],
+      "document_index": 7,
+      "tag": "input",
+      "input_type": "email",
+      "inputmode": null,
+      "pattern": null,
+      "maxlength": null,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "option_labels": [],
+      "option_values": [],
+      "name": "bl_email",
+      "element_id": "bl-email",
+      "css_classes": [],
+      "data_keys": [],
+      "framework_attrs": [],
+      "declared": {
+        "raw": "billing email",
+        "token": "email",
+        "modifiers": [
+          "billing"
+        ],
+        "section": null,
+        "is_off_spec": false,
+        "is_off": false
+      },
+      "text": {
+        "label_for": "Email address",
+        "label_ancestor": null,
+        "aria_label": null,
+        "aria_labelledby_text": null,
+        "aria_describedby_text": null,
+        "title": null,
+        "placeholder": null,
+        "preceding_text": null,
+        "legend": null,
+        "section_heading": "Billing address",
+        "form_accessible_name": null
+      },
+      "norm": {
+        "label_tokens": [
+          "email",
+          "address"
+        ],
+        "label_source": "label_for",
+        "identifier_tokens": [
+          "bl",
+          "email",
+          "bl",
+          "email"
+        ],
+        "context_tokens": [
+          "billing",
+          "address"
+        ],
+        "all_tokens": [
+          "email",
+          "address",
+          "bl",
+          "email",
+          "bl",
+          "email",
+          "billing",
+          "address"
+        ],
+        "text_blob": "L:email L:address I:bl I:email I:bl I:email C:billing C:address"
+      },
+      "form_index": 7,
+      "fieldset_index": null,
+      "sibling_control_count": 0,
+      "group_role": "none",
+      "group_id": null,
+      "is_visible": true,
+      "undetectable_reason": null
+    }
+  ],
+  "honeypots": [],
+  "timing_ms": {
+    "load_ms": 0.0,
+    "extract_ms": 0.0,
+    "audit_ms": 0.0
+  }
+}

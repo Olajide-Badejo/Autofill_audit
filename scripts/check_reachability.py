@@ -32,7 +32,11 @@ from __future__ import annotations
 import argparse
 import ast
 import json
+import os
+import re
+import subprocess
 import sys
+import tempfile
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from pathlib import Path
@@ -41,6 +45,7 @@ _REPO_ROOT = Path(__file__).resolve().parent.parent
 if str(_REPO_ROOT / "src") not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT / "src"))
 
+from autofill_audit.classify.rules_table import labels_with_rules  # noqa: E402
 from autofill_audit.corpus.answer_key import build_answer_key  # noqa: E402
 from autofill_audit.corpus.families import Family  # noqa: E402
 from autofill_audit.corpus.generator import grid_from, iter_forms  # noqa: E402
@@ -72,6 +77,16 @@ _UNAMBIGUOUS_LITERALS: frozenset[str] = frozenset(
 )
 
 _TAXONOMY_MODULE = Path("src") / "autofill_audit" / "taxonomy.py"
+
+_TAXONOMY_DOC = Path("docs") / "taxonomy.md"
+_EXEMPTION_HEADING = "### Rule reachability exemptions"
+_EXEMPTION_ROW = re.compile(r"^\|\s*`([^`]+)`\s*\|\s*(.+?)\s*\|\s*$")
+_MIN_REASON_LENGTH = 40
+"""How much prose an exemption has to carry to count as one.
+
+Not a style rule. An exemption is a written argument that a label cannot be
+reached by a rule, and one word is not an argument. Forty characters is roughly
+one clause of English, which is the shortest thing that can be disagreed with."""
 
 
 @dataclass(frozen=True, slots=True)
@@ -280,22 +295,180 @@ def check_corpus_reachability(root: Path) -> CheckResult:
     return CheckResult(name, True, detail)
 
 
+def _documented_exemptions(root: Path) -> tuple[set[Label], list[str]]:
+    """Read the rule-reachability exemption table out of ``docs/taxonomy.md``.
+
+    Clause (c) allows a label to have no rule when the taxonomy document says
+    why. Reading the exemptions from the document rather than from a constant in
+    this file is what makes the written reason load bearing: an exemption with no
+    prose beside it does not exist, and deleting the prose deletes the exemption.
+
+    Returns the exempt labels and any problems with the table itself.
+    """
+    document = root / _TAXONOMY_DOC
+    problems: list[str] = []
+    if not document.is_file():
+        return set(), [f"{_TAXONOMY_DOC} is missing, so no exemption can be documented"]
+
+    lines = document.read_text(encoding="utf-8").splitlines()
+    try:
+        start = lines.index(_EXEMPTION_HEADING)
+    except ValueError:
+        return set(), [f"{_TAXONOMY_DOC} has no {_EXEMPTION_HEADING!r} section"]
+
+    exempt: set[Label] = set()
+    for line in lines[start + 1 :]:
+        if line.startswith("## ") or (line.startswith("### ") and line != _EXEMPTION_HEADING):
+            break
+        match = _EXEMPTION_ROW.match(line)
+        if match is None:
+            continue
+        name, reason = match.group(1), match.group(2).strip()
+        try:
+            label = Label(name)
+        except ValueError:
+            problems.append(f"{_TAXONOMY_DOC} exempts {name!r}, which is not a label")
+            continue
+        if len(reason) < _MIN_REASON_LENGTH:
+            problems.append(f"{_TAXONOMY_DOC}: the exemption for {name} states no real reason")
+            continue
+        exempt.add(label)
+    return exempt, problems
+
+
+def check_rule_reachability(root: Path) -> CheckResult:
+    """Law 2 clause (c): every label is produced by a rule, or is documented.
+
+    The reachable set is read from the rule tables themselves rather than from a
+    list kept beside them, so the check cannot drift from the code it checks. A
+    label that is both exempt and reachable is reported too: a stale exemption
+    quietly weakens the law for whichever label acquires a rule next.
+    """
+    name = "rule reachability"
+    reachable = labels_with_rules()
+    exempt, problems = _documented_exemptions(root)
+
+    missing = ALL_LABELS - reachable - exempt
+    if missing:
+        problems.append(
+            "no rule produces, and nothing documents, "
+            + ", ".join(sorted(label.value for label in missing))
+        )
+    stale = exempt & reachable
+    if stale:
+        problems.append(
+            "documented as unreachable but reachable by a rule: "
+            + ", ".join(sorted(label.value for label in stale))
+        )
+    if problems:
+        return CheckResult(name, False, "; ".join(problems))
+    detail = f"{len(reachable)} of {len(ALL_LABELS)} labels reachable by at least one rule"
+    if exempt:
+        detail += "; documented as unreachable: " + ", ".join(
+            sorted(label.value for label in exempt)
+        )
+    return CheckResult(name, True, detail)
+
+
+_COLLECTOR_PLUGIN = '''
+"""Collect the label markers of a pytest run into a JSON file."""
+import json
+import os
+
+
+def pytest_collection_modifyitems(session, config, items):
+    seen = set()
+    for item in items:
+        for marker in item.iter_markers("label"):
+            seen.update(str(argument) for argument in marker.args)
+    with open(os.environ["AUTOFILL_AUDIT_LABEL_OUT"], "w", encoding="utf-8") as handle:
+        json.dump(sorted(seen), handle)
+'''
+
+
+def collect_label_markers(root: Path) -> tuple[set[str], str | None]:
+    """Return every label named by a ``label`` marker in the test suite.
+
+    A real pytest collection, in a subprocess, rather than a parse of the test
+    sources. Spec section 7.3 asks for a "pytest collection of label-tagged
+    tests" and the difference is not pedantry: the table that covers all forty
+    two labels tags its cases from a loop, so the marker's argument is a
+    computed value that no static reader could resolve. Collection resolves it
+    because collection is the thing that builds the parameters.
+
+    A subprocess because this check is itself exercised by the test suite, and
+    calling ``pytest.main`` from inside a pytest run is asking for trouble.
+    """
+    with tempfile.TemporaryDirectory() as work:
+        workdir = Path(work)
+        (workdir / "_label_collector.py").write_text(_COLLECTOR_PLUGIN, encoding="utf-8")
+        out = workdir / "labels.json"
+        environment = dict(os.environ)
+        environment["AUTOFILL_AUDIT_LABEL_OUT"] = str(out)
+        environment["PYTHONPATH"] = os.pathsep.join(
+            [str(workdir), environment.get("PYTHONPATH", "")]
+        ).strip(os.pathsep)
+        completed = subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "pytest",
+                "--collect-only",
+                "-q",
+                "--no-cov",
+                "-p",
+                "no:cacheprovider",
+                "-p",
+                "_label_collector",
+                str(root / "tests"),
+            ],
+            cwd=root,
+            env=environment,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if not out.is_file():
+            tail = (completed.stderr or completed.stdout).strip().splitlines()[-5:]
+            return set(), "pytest collection produced nothing: " + " | ".join(tail)
+        return set(json.loads(out.read_text(encoding="utf-8"))), None
+
+
+def check_test_reachability(root: Path) -> CheckResult:
+    """Law 2 clause (d): every label is asserted by at least one test."""
+    name = "test reachability"
+    tagged, error = collect_label_markers(root)
+    if error is not None:
+        return CheckResult(name, False, error)
+
+    unknown = tagged - {label.value for label in ALL_LABELS}
+    if unknown:
+        return CheckResult(
+            name,
+            False,
+            "tests are tagged with labels that do not exist: " + ", ".join(sorted(unknown)),
+        )
+    missing = {label.value for label in ALL_LABELS} - tagged
+    if missing:
+        return CheckResult(name, False, "no test asserts " + ", ".join(sorted(missing)))
+    return CheckResult(name, True, f"all {len(ALL_LABELS)} labels carry a label-tagged test")
+
+
 CHECKS: list[Callable[[Path], CheckResult]] = [
     check_taxonomy_populated,
     check_no_duplicate_label_values,
     check_groups_partition,
     check_no_stray_label_literals,
     check_corpus_reachability,
+    check_rule_reachability,
+    check_test_reachability,
 ]
 
-# Clauses of the law that no artefact exists to check yet. Each names the phase
-# that activates it, so that a reader of a green run is not misled into thinking
-# law 2 is fully enforced. Clause (b) left this list at P1, in the commit that
-# made it enforceable.
-PENDING: list[str] = [
-    "rule reachability (every label produced by at least one rule): activates at P3",
-    "test reachability (every label asserted by at least one test): activates at P3",
-]
+# Clauses of the law that no artefact exists to check yet. Empty since P3, which
+# activated the last two. It stays in the file rather than being deleted: a later
+# phase that adds a clause it cannot yet enforce puts it here and says which
+# phase will, instead of quietly enforcing three quarters of a law.
+PENDING: list[str] = []
 
 
 def run_all(root: Path) -> list[CheckResult]:
@@ -314,9 +487,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     for result in results:
         print(result.render())
 
-    print("check_reachability: checks not yet active")
-    for pending in PENDING:
-        print(f"  [WAIT] {pending}")
+    if PENDING:
+        print("check_reachability: checks not yet active")
+        for pending in PENDING:
+            print(f"  [WAIT] {pending}")
+    else:
+        print("check_reachability: all four clauses of law 2 are enforced")
 
     failed = [result for result in results if not result.passed]
     if failed:

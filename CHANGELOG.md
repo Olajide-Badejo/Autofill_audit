@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+Nothing yet.
+
+## [0.1.0] - 2026-08-26
+
 ### Added
 
 - Repository foundations: packaging with a console entry point, the source tree
@@ -100,7 +104,80 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `scripts/check_reachability.py` now enforces law 2 clause (b): every taxonomy
   label must be emitted by at least one answer key. The clause left the script's
-  pending list in the same commit that made it enforceable. Clauses (c) and (d)
-  remain staged for P3.
+  pending list in the same commit that made it enforceable.
 
-[Unreleased]: https://github.com/Olajide-Badejo/autofill-audit/commits/main
+- **The tool becomes useful.** `autofill-audit audit` reads a page and reports
+  which controls a browser's autofill will not recognise and what one-line markup
+  change fixes each one.
+- The rule baseline: `classify/rules_table.py`, a structured table of pattern,
+  label, weight, and signal name, with a multilingual vocabulary covering the six
+  corpus locales and a locale tag on every entry whose wording belongs to one
+  language. `classify/rules.py` owns the six-tier precedence and no vocabulary of
+  its own, so adding a language never touches the engine.
+- `classify/base.py`: the `Classifier` protocol every engine implements, and the
+  four ordered confidence tiers, whose numeric values are stated once with the
+  warning that they are not probabilities and are not calibrated.
+- `classify/__init__.py` with `load_engine`, the ladder's one entry point and the
+  home of the documented fallback: `--engine auto` uses the strongest engine that
+  loads and prints one clear line when it falls back to rules.
+- `audit/findings.py`: the finding codes of the specification with their
+  severities, triggers, and fix templates, the fix text stored as data beside the
+  enum so all three renderers agree by construction, and the documented
+  equivalence sets consulted before a mismatch is reported.
+- `audit/engine.py`: the ordered decision procedure, at most one primary finding
+  per control and any number of independent secondary ones, with configured
+  suppressions retained under their own key and a corpus mode whose answer key
+  never changes a user-facing finding.
+- `audit/thresholds.py` and the committed `audit/thresholds.json`, which carries
+  the documented rule-tier band mapping and records that nothing in it has been
+  measured. P4 replaces the mapping with thresholds derived on the dev split.
+- The three renderers: a `rich` terminal report whose summary is counts and never
+  a composite score, a versioned JSON report that is a pure function of the page,
+  and a single self-contained HTML report with no external asset and no network
+  fetch at view time.
+- The full `audit` command surface: `--engine`, `--format`, `--out`, `--fail-on`,
+  `--timeout`, `--settle`, `--include-hidden`, `--frames`, `--min-confidence`,
+  `--json-schema`, `--config`, and verbosity, with the exit-code contract of the
+  specification, where a page that could not be reached is a different code from
+  a page that has problems.
+- The deliberately absent flags, `--crawl`, `--depth`, `--fill`, `--fix`, and
+  `--write`, each answered with the boundary it names and the reason for it
+  rather than with an unknown-option error.
+- `autofill-audit.toml`, discovered upward from the working directory, with the
+  precedence chain flag, environment variable, file, default. Every suppression
+  requires a stated reason and appears in the JSON report under `suppressed`.
+- Golden report snapshots under `tests/golden/` for a fixed fixture set in all
+  three formats, with `scripts/refresh_golden.py` to regenerate them by hand.
+  There is no update flag on the test suite, on purpose.
+- The false-positive property test: nothing above `info` across the entire
+  correct-markup slice of the corpus, generated at test time and audited through
+  a real browser. This is the check that decides whether the tool is worth
+  installing.
+- Two hand-authored fixtures: `checkout_hostile.html`, which reaches almost every
+  code in the catalogue, and `checkout_modifiers.html`, whose every declaration
+  carries a section modifier and whose correct report is empty.
+- `docs/findings.md` grows the finding catalogue: every code with its trigger,
+  its severity, its exact fix template, and a before-and-after example, plus the
+  equivalence sets, the confidence tiers, the configuration format, and the exit
+  codes.
+
+### Changed
+
+- `scripts/check_reachability.py` now enforces all four clauses of law 2. Clause
+  (c) reads the rule table itself and the exemption table in `docs/taxonomy.md`;
+  clause (d) collects `label` markers from a real pytest collection, which is the
+  only way to resolve a marker argument that a parametrised table computes. The
+  script's pending list is now empty.
+- The browser fixture moves to the root `conftest.py` and is shared by every
+  suite. Playwright's synchronous API allows one live session per thread, so two
+  session-scoped fixtures each opening one produce an error that reads like an
+  async mistake and is nothing of the kind. The end-to-end CLI tests run the tool
+  in a subprocess for the same reason, which also makes them a more faithful test
+  of the exit codes.
+- The `trailing-whitespace` pre-commit hook now skips `tests/golden/`. A golden
+  snapshot of terminal output is byte-exact by definition, and `rich` pads a
+  table row to the full width; a hook that trimmed those spaces would rewrite the
+  committed expectation on every commit.
+
+[Unreleased]: https://github.com/Olajide-Badejo/autofill-audit/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/Olajide-Badejo/autofill-audit/releases/tag/v0.1.0
