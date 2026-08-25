@@ -134,3 +134,48 @@ model comparison is a research-mode feature: it is never required to run the
 tool, never required by the test suite, and never touched by CI. The model tag,
 its quantization, and the observed memory headroom are resolved at P6 and
 recorded in an ADR of their own at that point.
+## Playwright, as resolved at P2
+
+Full Chromium, not the headless shell, per spec section 3.3. The corpus depends
+on custom-element upgrade behaviour and on layout, and the reduced build's
+divergences are not worth discovering during a benchmark.
+
+### Frames, origins, and what `file://` does
+
+Three facts about this environment, each of which changed a design decision:
+
+**Playwright can evaluate inside a cross-origin frame.** It drives each frame
+through its own session, so an evaluation succeeding says nothing about whether
+the page itself could reach that frame. The extractor therefore asks the parent
+document for the frame's `contentDocument` inside a try block, which is the
+check a script on that page would make, and which is what spec section 9.6 means
+by a frame that cannot be accessed.
+
+**A `srcdoc` frame inherits its parent's origin.** This is what makes a same
+origin frame fixture possible under `file://` at all. Two separate local files
+are opaque origins to each other in Chromium unless the browser is launched with
+file access relaxed, which is a flag this project does not want to depend on.
+
+**A `data:` URL frame gets an opaque origin.** Which makes it unreadable from
+the parent, offline, with no second server, and is how the cross-origin fixture
+is written.
+
+**`window.origin` on a `file://` page is the string `null`.** Comparing origins
+between a parent and a child is therefore useless here, which is a second reason
+the accessibility test is the `contentDocument` one.
+
+### Browser lifecycle in the test suite
+
+One launch per pytest session, a fresh context per page. Twenty fixtures at
+roughly half a second of launch each is ten seconds of nothing happening on
+every run; one launch and twenty contexts costs the launch once and still gives
+every page its own storage and cookies. `loader.browser_session` exists for
+this and for the corpus sweep, which would otherwise pay the launch cost several
+hundred times.
+
+### The traversal script is a `.js` file
+
+`src/autofill_audit/extract/traverse.js`, injected once per frame root. Keeping
+it as a file rather than as a Python string means it can be read and edited as
+JavaScript. It is listed in the wheel's package data, because an installed
+extractor with nothing to inject is an installed extractor that does not work.
