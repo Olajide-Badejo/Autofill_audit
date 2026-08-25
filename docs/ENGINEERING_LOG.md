@@ -409,6 +409,26 @@ shreds Devanagari, Thai, Hebrew with points, and anything in decomposed form. It
 would never have shown up in this project's six locales, and it would have been
 waiting for the first person to point the tool at a page outside them.
 
+**The same property found a second, subtler one on the next run.** Case folding
+does not always produce lowercase. Cherokee folds the other way, to uppercase,
+so folding an `A` beside a Cherokee capital leaves a lowercase `a` next to an
+uppercase letter: a case transition that the de-camelCase pass, which runs
+before the fold, never saw. Feed the output back in and it splits into two
+tokens, which is a different answer from the first.
+
+The fix is to bracket the fold with boundary insertion rather than to run it
+once before. Folding before the boundary pass is not an option, because that is
+the original problem this module's docstring opens with, so the only order that
+satisfies both constraints is to do it twice.
+
+What made this one worth chasing rather than narrowing the strategy around: the
+first instinct was to write the alphabet down to the six locales the corpus
+covers and call idempotence a practical property. Both counterexamples were
+outside those locales and both were real bugs, so the strategy went the other
+way instead and now covers the whole basic multilingual plane. A brute-force
+pass over every codepoint in it, alone and beside four different neighbours in
+both orders, is clean.
+
 **The duplicate-id fixture found a label attaching to the wrong control.** A
 label's `for` attribute names one element, the one `getElementById` would return.
 The first implementation mapped id to label and handed the same label to both

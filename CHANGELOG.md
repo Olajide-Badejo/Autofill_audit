@@ -85,6 +85,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   positional path, which the extractor needs inside a shadow root where the root
   itself is the anchor and has no selector. `nth_of_type_path` is rewritten in
   terms of it so there is still one implementation of the join.
+- `extract/normalize.py` inserts token boundaries on both sides of the case
+  fold rather than only before it. Case folding does not always produce
+  lowercase: Cherokee folds to uppercase, so a folded token could still carry a
+  case transition that the boundary pass never saw, and a second pass over the
+  same text returned a different answer. Also found by the idempotence property.
 - `extract/normalize.py`'s token splitter no longer treats Unicode combining
   marks as delimiters. Python's word class excludes them, so a splitter built on
   it shreds every decomposed form and every script that marks its vowels, and it

@@ -21,10 +21,14 @@ dotted capital I folds correctly whether it is folded before or after a boundary
 is inserted beside it. What is gained is that step 3 works at all.
 
 Casefolding is followed by a second NFKC pass on each token. That is the Unicode
-recommendation for canonical caseless matching, and it is what makes the
-function idempotent: a property test asserts ``normalize_text(normalize_text(x))
-== normalize_text(x)``, and without the second pass there are folded forms that
-are not themselves in NFKC.
+recommendation for canonical caseless matching, and without it there are folded
+forms that are not themselves in NFKC.
+
+Boundary insertion then runs a **second** time, after the fold. That is not
+symmetry for its own sake: case folding does not always produce lowercase, so a
+folded token can still contain a case transition the first pass never saw, and
+the function is not idempotent without it. ``normalize_tokens`` explains the
+case that proved it.
 
 The stoplist and why it is applied twice
 ----------------------------------------
@@ -228,6 +232,11 @@ def drop_framework_noise(tokens: tuple[str, ...]) -> tuple[str, ...]:
     return tuple(token for token in tokens if token not in FRAMEWORK_NOISE)
 
 
+def _boundaries(text: str) -> str:
+    """Insert every boundary of steps 3 and 4."""
+    return insert_script_boundaries(insert_camel_boundaries(text))
+
+
 def normalize_tokens(raw: str) -> tuple[str, ...]:
     """Normalise one raw string into tokens (spec section 9.7).
 
@@ -235,10 +244,29 @@ def normalize_tokens(raw: str) -> tuple[str, ...]:
     and context text go through, and spec section 9.7 restricts the stoplist to
     the identifier stream. ``normalize_identifier_tokens`` is the variant that
     applies it.
+
+    **Boundaries are inserted twice, once before folding and once after.** The
+    second pass is not belt and braces; without it the function is not
+    idempotent, and it took a property test to find out why.
+
+    Case folding does not always produce lowercase. Cherokee folds the other
+    way, to uppercase, so folding an ``A`` beside a Cherokee capital yields a
+    lowercase ``a`` beside that same capital, which still holds a
+    lower-to-upper transition that the first boundary pass never saw. Feed that
+    output back in and it splits into two tokens, which is a different answer
+    from the first. The same argument applies to the script boundary: the NFKC
+    inside the fold can turn a compatibility character into ideographs and put a
+    Latin-to-CJK boundary inside a token that did not have one.
+
+    Folding after boundary insertion is itself required, because folding first
+    destroys the case information step 3 needs; see the module docstring. So the
+    only order that satisfies both constraints is to bracket the fold.
     """
-    prepared = insert_script_boundaries(insert_camel_boundaries(nfkc(raw)))
-    tokens = (casefold_token(piece) for piece in split_on_delimiters(prepared))
-    return tuple(token for token in tokens if token)
+    tokens: list[str] = []
+    for piece in split_on_delimiters(_boundaries(nfkc(raw))):
+        folded = casefold_token(piece)
+        tokens.extend(part for part in split_on_delimiters(_boundaries(folded)) if part)
+    return tuple(tokens)
 
 
 def normalize_text(raw: str) -> str:

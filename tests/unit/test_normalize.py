@@ -156,9 +156,23 @@ class TestStepFourSplitting:
         assert split_on_delimiters("é") == ["é"]
 
     def test_the_turkish_dotted_capital_i_survives_a_second_pass(self) -> None:
-        """The exact case Hypothesis found, pinned as an example."""
+        """The first case Hypothesis found, pinned as an example."""
         once = normalize_text("İ")
         assert normalize_text(once) == once
+
+    def test_cherokee_survives_a_second_pass(self) -> None:
+        """The second case Hypothesis found, and the subtler of the two.
+
+        Case folding does not always produce lowercase. Cherokee folds the other
+        way, to uppercase, so folding an ``A`` beside a Cherokee capital leaves a
+        lower-to-upper transition that the boundary pass before the fold never
+        saw, and that a second pass over the same text would split on.
+        Bracketing the fold with boundary insertion is what makes the answer the
+        same both times.
+        """
+        once = normalize_text("A\u13a0")
+        assert normalize_text(once) == once
+        assert once == "a \u13a0"
 
 
 class TestStepFiveStoplist:
@@ -268,27 +282,33 @@ class TestComposition:
 
 _ALPHABET = st.characters(
     codec="utf-8",
-    categories=["L", "N", "P", "Z", "S"],
-    include_characters="ßẞİıéü郵便番号ｚユ",
-    max_codepoint=0x9FFF,
+    categories=["L", "N", "P", "Z", "S", "M"],
+    max_codepoint=0xFFFF,
 )
-"""A broad but curated alphabet: letters, numbers, punctuation, separators, and
-symbols up to the end of the CJK ideographs, plus the specific characters this
-project's six locales turn on. Deliberately not the whole of Unicode. The
-composition of NFKC and casefold is idempotent over everything a form label can
-contain and over almost everything else, and pinning the property to the input
-space the tool actually serves says something true instead of something that
-would be false for a Deseret ligature nobody will ever type into a checkout."""
+"""Letters, numbers, punctuation, separators, symbols, and combining marks
+across the whole basic multilingual plane.
+
+Deliberately wide. The first version of this strategy was narrowed to the six
+locales the corpus covers, on the assumption that idempotence was a practical
+property rather than a real one. Two counterexamples later, both of them outside
+those locales and both of them real bugs, that assumption looks like exactly the
+kind of hedging that stops a property test from finding anything. The marks are
+in the set because dropping them was the first bug; the plane is whole because
+the second bug was Cherokee."""
 
 
 @given(st.text(alphabet=_ALPHABET, max_size=60))
-@settings(max_examples=300)
+@settings(max_examples=500)
 def test_normalisation_is_idempotent(raw: str) -> None:
     """Spec section 15 layer 4: normalising twice changes nothing.
 
     Stated over the re-joined text rather than over the token tuple, because
     that is the form the property has to hold in: the tokens are fed back
     through as one string everywhere the extractor uses them.
+
+    This property has found two real bugs, and both of them were bugs that would
+    never have shown up in this project's own six locales. It is the cheapest
+    test in the suite and the highest yielding.
     """
     once = normalize_text(raw)
     assert normalize_text(once) == once
