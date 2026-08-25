@@ -1,0 +1,64 @@
+# Hooks run out of the project venv, so they are the same tool versions that
+# `make gates` and CI use. Activate the venv before committing:
+#
+#     . ~/.venvs/autofill-audit/bin/activate
+#     pre-commit install --install-hooks
+#     pre-commit install --hook-type commit-msg
+#
+# Every hook is `language: system` on purpose. Letting pre-commit build its own
+# isolated environments would give the hooks a second, silently drifting copy of
+# ruff and mypy, and the first time it drifted the pre-commit result and the CI
+# result would disagree with no visible cause.
+
+default_install_hook_types: [pre-commit, commit-msg]
+
+repos:
+  - repo: local
+    hooks:
+      - id: ruff-check
+        name: ruff check
+        entry: ruff check --force-exclude
+        language: system
+        types_or: [python, pyi]
+        require_serial: true
+
+      - id: ruff-format
+        name: ruff format
+        entry: ruff format --force-exclude
+        language: system
+        types_or: [python, pyi]
+        require_serial: true
+
+      - id: mypy
+        name: mypy strict
+        entry: mypy --strict src/
+        language: system
+        pass_filenames: false
+        files: ^src/.*\.py$
+        require_serial: true
+
+      - id: check-dashes
+        name: no em dashes or en dashes
+        entry: python scripts/check_dashes.py
+        language: system
+        require_serial: true
+        exclude: ^\.git/
+
+      - id: check-commit-msg
+        name: commit message is clean
+        entry: python scripts/check_commit_msg.py
+        language: system
+        stages: [commit-msg]
+        require_serial: true
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-added-large-files
+      - id: check-merge-conflict
+      - id: check-toml
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+        args: [--fix=lf]
+      - id: trailing-whitespace
