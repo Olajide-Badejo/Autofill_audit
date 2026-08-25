@@ -32,7 +32,11 @@ def test_main_exits_zero_on_the_real_tree(capsys: pytest.CaptureFixture[str]) ->
 
 
 def test_pending_clauses_name_the_phase_that_activates_them() -> None:
-    assert len(check_reachability.PENDING) == 3
+    """The count is deliberately not asserted. It shrinks by one every time a
+    phase makes a clause enforceable, and a test that pinned the number would
+    have to be edited in the same commit that did the real work, which teaches
+    the next person to edit the number rather than to check the property."""
+    assert check_reachability.PENDING
     for pending in check_reachability.PENDING:
         assert "activates at P" in pending
 
@@ -109,3 +113,44 @@ def test_the_taxonomy_module_itself_is_exempt(tmp_path: Path) -> None:
     _fake_tree(tmp_path, "VALUE = 1\n")
     result = check_reachability.check_no_stray_label_literals(tmp_path)
     assert result.passed
+
+
+def test_pending_no_longer_lists_the_corpus_clause() -> None:
+    """P1 moved clause (b) out of PENDING and into CHECKS. Leaving it in both
+    would misrepresent a green run as enforcing less than it does, and leaving
+    it only in PENDING would misrepresent it as enforcing more."""
+    joined = " ".join(check_reachability.PENDING)
+    assert "corpus reachability" not in joined
+    assert check_reachability.check_corpus_reachability in check_reachability.CHECKS
+
+
+def test_corpus_reachability_passes_on_the_real_tree() -> None:
+    result = check_reachability.check_corpus_reachability(REPO_ROOT)
+    assert result.passed, result.detail
+    assert "all 42 labels emitted" in result.detail
+
+
+def test_corpus_reachability_fails_when_a_label_is_emitted_by_nothing(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """The check has to be able to say no, or it is decoration."""
+
+    class Extra(StrEnum):
+        GHOST = "GHOST_LABEL"
+
+    monkeypatch.setattr(
+        check_reachability,
+        "ALL_LABELS",
+        frozenset(check_reachability.ALL_LABELS | {Extra.GHOST}),
+    )
+    result = check_reachability.check_corpus_reachability(REPO_ROOT)
+    assert not result.passed
+    assert "GHOST_LABEL" in result.detail
+
+
+def test_corpus_reachability_fails_without_a_sample_corpus(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    result = check_reachability.check_corpus_reachability(tmp_path)
+    assert not result.passed
+    assert "no answer keys" in result.detail

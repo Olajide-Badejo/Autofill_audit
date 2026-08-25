@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Address book</title>
+<style>
+body { font-family: system-ui, sans-serif; margin: 0; padding: 1.5rem; }
+main { max-width: 44rem; margin: 0 auto; }
+.row { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.field { display: flex; flex-direction: column; flex: 1 1 12rem; margin-bottom: 0.75rem; }
+label { font-size: 0.85rem; margin-bottom: 0.25rem; }
+input, select, textarea { font: inherit; padding: 0.4rem; }
+fieldset { border: 1px solid #ccc; margin: 0 0 0.75rem; }
+.summary { background: #f4f4f4; padding: 0.75rem; margin-bottom: 1rem; }
+.canvas-note { font-size: 0.8rem; color: #555; }
+</style>
+</head>
+<body>
+<main>
+<h1>Address book</h1>
+<aside class="summary">
+<h2>Order summary</h2>
+<p>Delivering to: Amy Johnson</p>
+<p>984 Ricky Port Suite 104, Prattview 08489, United States</p>
+<p>We will contact you on: (555) 0133</p>
+</aside>
+<form name="f1" method="post" action="#">
+<div class="block">
+<h2>I</h2>
+<div class="row">
+<div class="field">
+<input type="text" placeholder="Full name">
+
+
+</div>
+</div>
+</div>
+<div class="block">
+<h2>A</h2>
+<div class="row">
+<div class="field">
+<input name="ctl00$txt2" type="text">
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<input id="ctl00_txt3_d7df562b" name="ctl00$txt3" type="text" placeholder="Springfield">
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<select id="input4">
+<option value=""></option>
+<option value="California">California</option>
+<option value="New York">New York</option>
+<option value="Texas">Texas</option>
+<option value="Illinois">Illinois</option>
+<option value="Washington">Washington</option>
+<option value="Oregon">Oregon</option>
+</select>
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<af-field id="ce-1" data-tag="input" data-type="text" data-name="field_5" data-placeholder="01234"></af-field>
+</div>
+</div>
+<div class="row">
+<div class="field">
+<input id="ctl00_txt6_40a01533" name="ctl00$txt6" type="text">
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<input id="input7" type="text">
+
+
+</div>
+</div>
+<div class="row">
+<div class="field" id="inj-slot-8">
+</div>
+</div>
+</div>
+<div class="actions"><button type="submit">Address book</button></div>
+</form>
+</main>
+<script>
+class AfField extends HTMLElement {
+  connectedCallback() {
+    if (this.shadowRoot) { return; }
+    var root = this.attachShadow({ mode: 'open' });
+    var el = document.createElement(this.dataset.tag || 'input');
+    if (this.dataset.type) { el.setAttribute('type', this.dataset.type); }
+    if (this.dataset.name) { el.setAttribute('name', this.dataset.name); }
+    if (this.dataset.placeholder) { el.setAttribute('placeholder', this.dataset.placeholder); }
+    root.appendChild(el);
+  }
+}
+customElements.define('af-field', AfField);
+</script>
+<script>
+window.setTimeout(function () {
+  var slot1 = document.getElementById("inj-slot-8");
+  if (slot1) {
+    var el1 = document.createElement('input');
+    el1.setAttribute('type', "text");
+    el1.setAttribute('id', "input8");
+    el1.setAttribute('name', "field_8");
+    el1.setAttribute('placeholder', "Search the store");
+    slot1.appendChild(el1);
+  }
+}, 300);
+</script>
+</body>
+</html>

@@ -243,9 +243,18 @@ class GridSpec:
     tiers: tuple[Tier, ...]
     variants: int
     base_year: int
+    explicit_cells: tuple[tuple[str, str, Tier, int], ...] | None = None
+    """An explicit cell list, used by the committed sample corpus instead of the
+    cartesian product. It exists so the sample is a genuine *subset* of the full
+    corpus: every form it holds is built by the same call with the same seed and
+    is therefore byte-identical to the same form in a full run. A sample built
+    any other way would be a second corpus with its own drift."""
 
     def template_ids(self) -> tuple[str, ...]:
         """Return the templates in scope, in declaration order."""
+        if self.explicit_cells is not None:
+            chosen = {template_id for template_id, _, _, _ in self.explicit_cells}
+            return tuple(template_id for template_id in TEMPLATES if template_id in chosen)
         return tuple(
             template_id
             for template_id, template in TEMPLATES.items()
@@ -259,6 +268,9 @@ class GridSpec:
         two runs write their files in the same order and a directory diff
         compares like with like.
         """
+        if self.explicit_cells is not None:
+            yield from self.explicit_cells
+            return
         for template_id in self.template_ids():
             for locale in self.locales:
                 for tier in self.tiers:
@@ -310,9 +322,17 @@ def _section_tiers(section_count: int, tier: Tier, rng: np.random.Generator) -> 
     if Tier.HOSTILE not in drawn:
         drawn[int(rng.integers(0, section_count))] = Tier.HOSTILE
     if Tier.CLEAN not in drawn:
-        candidates = [index for index, value in enumerate(drawn) if value is not Tier.HOSTILE]
-        if candidates:
-            drawn[candidates[int(rng.integers(0, len(candidates)))]] = Tier.CLEAN
+        # A section may be promoted to clean unless it is the only hostile one,
+        # which would undo the guarantee above. When every section drew hostile
+        # there is more than one, so any of them is a legal choice, and a
+        # template always has at least two sections for exactly this reason.
+        hostile_count = sum(1 for value in drawn if value is Tier.HOSTILE)
+        candidates = [
+            index
+            for index, value in enumerate(drawn)
+            if value is not Tier.HOSTILE or hostile_count > 1
+        ]
+        drawn[candidates[int(rng.integers(0, len(candidates)))]] = Tier.CLEAN
     return drawn
 
 

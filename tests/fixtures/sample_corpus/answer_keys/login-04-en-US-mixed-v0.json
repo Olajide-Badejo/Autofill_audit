@@ -1,0 +1,129 @@
+{
+  "family": "login",
+  "fields": [
+    {
+      "expected_modifiers": [],
+      "label": "email",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "email",
+        "delivery": "static",
+        "element_id": "account-email",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "email",
+        "label_text": "Email address",
+        "name": "account_email",
+        "placeholder": "you@example.com",
+        "role": "email_address",
+        "section": "account",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "account.email_address.1",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#account-email"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "one-time-code",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": null,
+        "identifier_style": "bare",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": null,
+        "name": null,
+        "placeholder": "123456",
+        "role": "one_time_code",
+        "section": "security",
+        "selector_strategy": "nth_of_type",
+        "shadow_host": null,
+        "slot_key": "security.one_time_code.2",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "placeholder_as_label",
+          "input_type_degraded"
+        ]
+      },
+      "selector": "form[name=\"f1\"] > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > input:nth-of-type(1)"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "UNKNOWN",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": "input3",
+        "identifier_style": "numbered",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": null,
+        "name": null,
+        "placeholder": null,
+        "role": "undeterminable",
+        "section": "security",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "security.undeterminable.3",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "no_text_signal",
+          "undeterminable"
+        ]
+      },
+      "selector": "#input3"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "NOT_AUTOFILLABLE",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "injected",
+        "element_id": "input4",
+        "identifier_style": "numbered",
+        "injection_slot": "inj-slot-4",
+        "input_type": "text",
+        "label_text": null,
+        "name": "field_4",
+        "placeholder": "Search the store",
+        "role": "search",
+        "section": "security",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "security.search.4",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "injected_after_load"
+        ]
+      },
+      "selector": "#input4"
+    }
+  ],
+  "form_id": "login-04-en-US-mixed-v0",
+  "generator_version": "1.0.0",
+  "locale": "en-US",
+  "page_notes": {
+    "canvas_pseudo_fields": [],
+    "injected_selectors": [
+      "#input4"
+    ],
+    "shadow_hosts": []
+  },
+  "schema_version": 1,
+  "template_id": "login-04",
+  "tier": "mixed",
+  "variant": 0
+}

@@ -1,0 +1,281 @@
+{
+  "family": "payment",
+  "fields": [
+    {
+      "expected_modifiers": [],
+      "label": "transaction-amount",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": null,
+        "identifier_style": "bare",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": null,
+        "name": null,
+        "placeholder": "0.00",
+        "role": "amount",
+        "section": "order",
+        "selector_strategy": "nth_of_type",
+        "shadow_host": null,
+        "slot_key": "order.amount.1",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "placeholder_as_label",
+          "input_type_degraded"
+        ]
+      },
+      "selector": "form[name=\"f1\"] > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > input:nth-of-type(1)"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "email",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": null,
+        "identifier_style": "legacy_name",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": null,
+        "name": "ctl00$txt2",
+        "placeholder": null,
+        "role": "email_address",
+        "section": "order",
+        "selector_strategy": "form_name",
+        "shadow_host": null,
+        "slot_key": "order.email_address.2",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "no_text_signal",
+          "input_type_degraded"
+        ]
+      },
+      "selector": "form[name=\"f1\"] [name=\"ctl00$txt2\"]"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "cc-name",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": "ctl00_txt3_6eda41f7",
+        "identifier_style": "hex_id",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": null,
+        "name": "ctl00$txt3",
+        "placeholder": "Name on card",
+        "role": "card_holder",
+        "section": "payment",
+        "selector_strategy": "form_name",
+        "shadow_host": null,
+        "slot_key": "payment.card_holder.3",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "placeholder_as_label",
+          "input_type_degraded"
+        ]
+      },
+      "selector": "form[name=\"f1\"] [name=\"ctl00$txt3\"]"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "cc-number",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "shadow",
+        "element_id": null,
+        "identifier_style": "numbered",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": null,
+        "name": "field_7",
+        "placeholder": null,
+        "role": "card_number",
+        "section": "payment",
+        "selector_strategy": "shadow",
+        "shadow_host": "ce-1",
+        "slot_key": "payment.card_number.4",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "no_text_signal",
+          "input_type_degraded",
+          "shadow_root"
+        ]
+      },
+      "selector": "#ce-1 >>> input:nth-of-type(1)"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "cc-exp",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": "field_5",
+        "identifier_style": "underscored",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": null,
+        "name": "field_5",
+        "placeholder": "Expiration date",
+        "role": "card_expiry",
+        "section": "payment",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "payment.card_expiry.5",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "placeholder_as_label",
+          "input_type_degraded"
+        ]
+      },
+      "selector": "#field_5"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "cc-csc",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": "ctl00_txt6_5390e87c",
+        "identifier_style": "hex_id",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": null,
+        "name": "ctl00$txt6",
+        "placeholder": null,
+        "role": "card_security_code",
+        "section": "payment",
+        "selector_strategy": "form_name",
+        "shadow_host": null,
+        "slot_key": "payment.card_security_code.6",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "no_text_signal",
+          "input_type_degraded"
+        ]
+      },
+      "selector": "form[name=\"f1\"] [name=\"ctl00$txt6\"]"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "NOT_AUTOFILLABLE",
+      "provenance": {
+        "control": "textarea",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": null,
+        "identifier_style": "legacy_name",
+        "injection_slot": null,
+        "input_type": null,
+        "label_text": null,
+        "name": "ctl00$txt7",
+        "placeholder": "Leave the parcel with a neighbour",
+        "role": "comments",
+        "section": "extras",
+        "selector_strategy": "form_name",
+        "shadow_host": null,
+        "slot_key": "extras.comments.7",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "placeholder_as_label"
+        ]
+      },
+      "selector": "form[name=\"f1\"] [name=\"ctl00$txt7\"]"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "UNKNOWN",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": "input8",
+        "identifier_style": "numbered",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": null,
+        "name": null,
+        "placeholder": null,
+        "role": "undeterminable",
+        "section": "extras",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "extras.undeterminable.8",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "no_text_signal",
+          "undeterminable"
+        ]
+      },
+      "selector": "#input8"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "NOT_AUTOFILLABLE",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "injected",
+        "element_id": "input9",
+        "identifier_style": "numbered",
+        "injection_slot": "inj-slot-9",
+        "input_type": "text",
+        "label_text": null,
+        "name": "field_9",
+        "placeholder": "Search the store",
+        "role": "search",
+        "section": "extras",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "extras.search.9",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "injected_after_load"
+        ]
+      },
+      "selector": "#input9"
+    }
+  ],
+  "form_id": "payment-03-en-US-hostile-v0",
+  "generator_version": "1.0.0",
+  "locale": "en-US",
+  "page_notes": {
+    "canvas_pseudo_fields": [],
+    "injected_selectors": [
+      "#input9"
+    ],
+    "shadow_hosts": [
+      "ce-1"
+    ]
+  },
+  "schema_version": 1,
+  "template_id": "payment-03",
+  "tier": "hostile",
+  "variant": 0
+}

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>住所録</title>
+<style>
+body { font-family: system-ui, sans-serif; margin: 0; padding: 1.5rem; }
+main { max-width: 44rem; margin: 0 auto; }
+.row { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.field { display: flex; flex-direction: column; flex: 1 1 12rem; margin-bottom: 0.75rem; }
+label { font-size: 0.85rem; margin-bottom: 0.25rem; }
+input, select, textarea { font: inherit; padding: 0.4rem; }
+fieldset { border: 1px solid #ccc; margin: 0 0 0.75rem; }
+.summary { background: #f4f4f4; padding: 0.75rem; margin-bottom: 1rem; }
+.canvas-note { font-size: 0.8rem; color: #555; }
+</style>
+</head>
+<body>
+<main>
+<h1>住所録</h1>
+<aside class="summary">
+<h2>ご注文内容</h2>
+<p>お届け先: 陽一 山崎</p>
+<p>332 三浦 Street, 町田市 690-1093, 日本</p>
+<p>ご連絡先: 090-0000-1100</p>
+</aside>
+<form name="f1" method="post" action="#">
+<div class="block">
+<h2>I</h2>
+<div class="row">
+<div class="field">
+<input type="text" placeholder="会社名">
+
+
+</div>
+</div>
+</div>
+<div class="block">
+<h2>A</h2>
+<div class="row">
+<div class="field">
+<input name="ctl00$txt2" type="text">
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<select id="ctl00_txt3_ae020e53" name="ctl00$txt3">
+<option value=""></option>
+<option value="東京都">東京都</option>
+<option value="大阪府">大阪府</option>
+<option value="北海道">北海道</option>
+<option value="愛知県">愛知県</option>
+<option value="福岡県">福岡県</option>
+<option value="京都府">京都府</option>
+</select>
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<input id="input4" type="text">
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<af-field id="ce-1" data-tag="input" data-type="text" data-name="field_5" data-placeholder="例町1-2-3"></af-field>
+</div>
+</div>
+<div class="row">
+<div class="field">
+<input type="text">
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<input id="input7" type="text" placeholder="その他の住所情報">
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<select id="input8">
+<option value=""></option>
+<option value="JP">日本</option>
+<option value="US">アメリカ合衆国</option>
+<option value="GB">イギリス</option>
+<option value="DE">ドイツ</option>
+<option value="FR">フランス</option>
+<option value="NG">ナイジェリア</option>
+</select>
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<input id="input9" type="text">
+
+
+</div>
+</div>
+<div class="row">
+<div class="field" id="inj-slot-10">
+</div>
+</div>
+</div>
+<div class="actions"><button type="submit">住所録</button></div>
+</form>
+</main>
+<script>
+class AfField extends HTMLElement {
+  connectedCallback() {
+    if (this.shadowRoot) { return; }
+    var root = this.attachShadow({ mode: 'open' });
+    var el = document.createElement(this.dataset.tag || 'input');
+    if (this.dataset.type) { el.setAttribute('type', this.dataset.type); }
+    if (this.dataset.name) { el.setAttribute('name', this.dataset.name); }
+    if (this.dataset.placeholder) { el.setAttribute('placeholder', this.dataset.placeholder); }
+    root.appendChild(el);
+  }
+}
+customElements.define('af-field', AfField);
+</script>
+<script>
+window.setTimeout(function () {
+  var slot1 = document.getElementById("inj-slot-10");
+  if (slot1) {
+    var el1 = document.createElement('input');
+    el1.setAttribute('type', "text");
+    el1.setAttribute('id', "input10");
+    el1.setAttribute('name', "field_10");
+    el1.setAttribute('placeholder', "\u30b9\u30c8\u30a2\u5185\u3092\u691c\u7d22");
+    slot1.appendChild(el1);
+  }
+}, 300);
+</script>
+</body>
+</html>

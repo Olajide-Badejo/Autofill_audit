@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Address book</title>
+<style>
+body { font-family: system-ui, sans-serif; margin: 0; padding: 1.5rem; }
+main { max-width: 44rem; margin: 0 auto; }
+.row { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.field { display: flex; flex-direction: column; flex: 1 1 12rem; margin-bottom: 0.75rem; }
+label { font-size: 0.85rem; margin-bottom: 0.25rem; }
+input, select, textarea { font: inherit; padding: 0.4rem; }
+fieldset { border: 1px solid #ccc; margin: 0 0 0.75rem; }
+.summary { background: #f4f4f4; padding: 0.75rem; margin-bottom: 1rem; }
+.canvas-note { font-size: 0.8rem; color: #555; }
+</style>
+</head>
+<body>
+<main>
+<h1>Address book</h1>
+<aside class="summary">
+<h2>Order summary</h2>
+<p>Delivering to: Samuel Case</p>
+<p>415 Erik Track Suite 912, Stephaniemouth 02057, United States</p>
+<p>We will contact you on: (555) 0158</p>
+</aside>
+<form name="address" method="post" action="#">
+<section id="sec-identity" class="block">
+<h2>Your details</h2>
+<div class="row">
+<div class="field">
+<label for="identity-company">Company</label>
+<input id="identity-company" name="identity_company" type="text" autocomplete="zipcode" placeholder="Gomez, Odom and Herrera">
+
+
+</div>
+</div>
+</section>
+<section id="sec-address" class="block">
+<h2>Address</h2>
+<div class="row">
+<div class="field">
+<label for="address-address1">Address line 1</label>
+<input id="address-address1" name="address_address1" type="text" autocomplete="address-line1" placeholder="123 Example Street">
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<label for="address-address2">Apartment, suite, unit</label>
+<input id="address-address2" name="address_address2" type="text" placeholder="Apt 4B" required>
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<label for="address-address3">Address line 3</label>
+<input id="address-address3" name="address_address3" type="text" autocomplete="address-line3" placeholder="Block F">
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<label for="address-city">City</label>
+<input id="address-city" name="address_city" type="text" autocomplete="address-level2" placeholder="Springfield">
+
+
+</div>
+<div class="field">
+<label for="address-state">State</label>
+<select id="address-state" name="address_state" autocomplete="address-level1" required>
+<option value=""></option>
+<option value="California">California</option>
+<option value="New York">New York</option>
+<option value="Texas">Texas</option>
+<option value="Illinois">Illinois</option>
+<option value="Washington">Washington</option>
+<option value="Oregon">Oregon</option>
+</select>
+
+
+</div>
+<div class="field">
+<label for="address-zip">ZIP code</label>
+<input id="address-zip" name="address_zip" type="text" inputmode="numeric" maxlength="10" autocomplete="postal-code" placeholder="01234" required>
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<label for="address-country">Country</label>
+<select id="address-country" name="address_country" autocomplete="fullname">
+<option value=""></option>
+<option value="US">United States</option>
+<option value="CA">Canada</option>
+<option value="GB">United Kingdom</option>
+<option value="DE">Germany</option>
+<option value="FR">France</option>
+<option value="JP">Japan</option>
+<option value="NG">Nigeria</option>
+</select>
+
+
+</div>
+</div>
+</section>
+<div class="actions"><button type="submit">Address book</button></div>
+</form>
+</main>
+</body>
+</html>

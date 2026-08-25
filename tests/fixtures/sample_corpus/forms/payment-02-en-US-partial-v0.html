@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Payment details</title>
+<style>
+body { font-family: system-ui, sans-serif; margin: 0; padding: 1.5rem; }
+main { max-width: 44rem; margin: 0 auto; }
+.row { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.field { display: flex; flex-direction: column; flex: 1 1 12rem; margin-bottom: 0.75rem; }
+label { font-size: 0.85rem; margin-bottom: 0.25rem; }
+input, select, textarea { font: inherit; padding: 0.4rem; }
+fieldset { border: 1px solid #ccc; margin: 0 0 0.75rem; }
+.summary { background: #f4f4f4; padding: 0.75rem; margin-bottom: 1rem; }
+.canvas-note { font-size: 0.8rem; color: #555; }
+</style>
+</head>
+<body>
+<main>
+<h1>Payment details</h1>
+<form name="payment" method="post" action="#">
+<section id="sec-payment" class="block">
+<h2>Payment</h2>
+<div class="row">
+<div class="field">
+<label for="payment-cardtype">Card type</label>
+<select id="payment-cardtype" name="payment_cardtype" autocomplete="cc-type" required>
+<option value=""></option>
+<option value="visa">Visa</option>
+<option value="mastercard">Mastercard</option>
+<option value="americanexpress">American Express</option>
+<option value="discover">Discover</option>
+</select>
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<label for="payment-cardholder">Name on card</label>
+<input id="payment-cardholder" name="payment_cardholder" type="text">
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<label for="payment-cardnumber">Card number</label>
+<input id="payment-cardnumber" name="payment_cardnumber" type="text" inputmode="numeric" maxlength="19" placeholder="4242 4242 4242 4242">
+
+
+</div>
+</div>
+</section>
+<section id="sec-security" class="block">
+<h2>Security</h2>
+<div class="row">
+<div class="field">
+<label for="security-expdate">Expiration (MM/YY)</label>
+<input id="security-expdate" name="security_expdate" type="text" inputmode="numeric" maxlength="5" autocomplete="cc-exp" placeholder="MM/YY">
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<label for="security-securitycode">Security code</label>
+<input id="security-securitycode" name="security_securitycode" type="text" inputmode="numeric" maxlength="4" placeholder="123">
+
+
+</div>
+</div>
+</section>
+<div class="actions"><button type="submit">Payment details</button></div>
+</form>
+</main>
+</body>
+</html>

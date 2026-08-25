@@ -1,0 +1,239 @@
+{
+  "family": "signup",
+  "fields": [
+    {
+      "expected_modifiers": [],
+      "label": "honorific-prefix",
+      "provenance": {
+        "control": "select",
+        "declared_autocomplete": "cardnum",
+        "delivery": "static",
+        "element_id": "identity-title",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": null,
+        "label_text": "Title",
+        "name": "identity_title",
+        "placeholder": "Prof",
+        "role": "honorific_prefix",
+        "section": "identity",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "identity.honorific_prefix.1",
+        "tier": "partial",
+        "transforms": [
+          "wrong_declaration"
+        ]
+      },
+      "selector": "#identity-title"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "given-name",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "given-name",
+        "delivery": "static",
+        "element_id": "identity-firstname",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "First name",
+        "name": "identity_firstname",
+        "placeholder": null,
+        "role": "given_name",
+        "section": "identity",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "identity.given_name.2",
+        "tier": "partial",
+        "transforms": []
+      },
+      "selector": "#identity-firstname"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "family-name",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": "identity-lastname",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "Last name",
+        "name": "identity_lastname",
+        "placeholder": "Ramos",
+        "role": "family_name",
+        "section": "identity",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "identity.family_name.3",
+        "tier": "partial",
+        "transforms": [
+          "declaration_absent"
+        ]
+      },
+      "selector": "#identity-lastname"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "honorific-suffix",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "honorific-suffix",
+        "delivery": "static",
+        "element_id": "identity-suffix",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "Suffix",
+        "name": "identity_suffix",
+        "placeholder": null,
+        "role": "honorific_suffix",
+        "section": "identity",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "identity.honorific_suffix.4",
+        "tier": "partial",
+        "transforms": []
+      },
+      "selector": "#identity-suffix"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "additional-name",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "additional-name",
+        "delivery": "static",
+        "element_id": "identity-middlename",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "Middle name",
+        "name": "identity_middlename",
+        "placeholder": null,
+        "role": "additional_name",
+        "section": "identity",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "identity.additional_name.5",
+        "tier": "partial",
+        "transforms": []
+      },
+      "selector": "#identity-middlename"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "nickname",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "nickname",
+        "delivery": "static",
+        "element_id": "identity-displayname",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "Display name",
+        "name": "identity_displayname",
+        "placeholder": null,
+        "role": "nickname",
+        "section": "identity",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "identity.nickname.6",
+        "tier": "partial",
+        "transforms": []
+      },
+      "selector": "#identity-displayname"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "email",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "username",
+        "delivery": "static",
+        "element_id": "identity-email",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "email",
+        "label_text": "Email address",
+        "name": "identity_email",
+        "placeholder": "you@example.com",
+        "role": "email_address",
+        "section": "identity",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "identity.email_address.7",
+        "tier": "partial",
+        "transforms": [
+          "wrong_declaration"
+        ]
+      },
+      "selector": "#identity-email"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "new-password",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "new-password",
+        "delivery": "static",
+        "element_id": "account-newpassword",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "password",
+        "label_text": "Password",
+        "name": "account_newpassword",
+        "placeholder": null,
+        "role": "new_password",
+        "section": "account",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "account.new_password.8",
+        "tier": "partial",
+        "transforms": []
+      },
+      "selector": "#account-newpassword"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "NOT_AUTOFILLABLE",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": "extras-newsletter",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "checkbox",
+        "label_text": "Email me about offers",
+        "name": "extras_newsletter",
+        "placeholder": null,
+        "role": "marketing_opt_in",
+        "section": "extras",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "extras.marketing_opt_in.9",
+        "tier": "partial",
+        "transforms": []
+      },
+      "selector": "#extras-newsletter"
+    }
+  ],
+  "form_id": "signup-02-en-US-partial-v0",
+  "generator_version": "1.0.0",
+  "locale": "en-US",
+  "page_notes": {
+    "canvas_pseudo_fields": [],
+    "injected_selectors": [],
+    "shadow_hosts": []
+  },
+  "schema_version": 1,
+  "template_id": "signup-02",
+  "tier": "partial",
+  "variant": 0
+}

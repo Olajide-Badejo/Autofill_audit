@@ -1,0 +1,65 @@
+{
+  "family": "login",
+  "fields": [
+    {
+      "expected_modifiers": [],
+      "label": "username",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "username",
+        "delivery": "static",
+        "element_id": "account-username",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "Username",
+        "name": "account_username",
+        "placeholder": null,
+        "role": "username",
+        "section": "account",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "account.username.1",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#account-username"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "current-password",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "current-password",
+        "delivery": "static",
+        "element_id": "security-password",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "password",
+        "label_text": "Password",
+        "name": "security_password",
+        "placeholder": null,
+        "role": "current_password",
+        "section": "security",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "security.current_password.2",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#security-password"
+    }
+  ],
+  "form_id": "login-01-en-US-clean-v0",
+  "generator_version": "1.0.0",
+  "locale": "en-US",
+  "page_notes": {
+    "canvas_pseudo_fields": [],
+    "injected_selectors": [],
+    "shadow_hosts": []
+  },
+  "schema_version": 1,
+  "template_id": "login-01",
+  "tier": "clean",
+  "variant": 0
+}

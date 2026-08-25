@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ご購入手続き</title>
+<style>
+body { font-family: system-ui, sans-serif; margin: 0; padding: 1.5rem; }
+main { max-width: 44rem; margin: 0 auto; }
+.row { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.field { display: flex; flex-direction: column; flex: 1 1 12rem; margin-bottom: 0.75rem; }
+label { font-size: 0.85rem; margin-bottom: 0.25rem; }
+input, select, textarea { font: inherit; padding: 0.4rem; }
+fieldset { border: 1px solid #ccc; margin: 0 0 0.75rem; }
+.summary { background: #f4f4f4; padding: 0.75rem; margin-bottom: 1rem; }
+.canvas-note { font-size: 0.8rem; color: #555; }
+</style>
+</head>
+<body>
+<main>
+<h1>ご購入手続き</h1>
+<aside class="summary">
+<h2>ご注文内容</h2>
+<p>お届け先: 京助 坂本</p>
+<p>623 坂本 Street, 利島村 436-4731, 日本</p>
+<p>ご連絡先: 090-0000-9000</p>
+</aside>
+<form name="checkout" method="post" action="#">
+<section id="sec-contact" class="block">
+<h2>連絡先</h2>
+<div class="row">
+<div class="field">
+<label for="contact-email">メールアドレス</label>
+<input id="contact-email" name="contact_email" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com" required>
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<label for="contact-denwabango">電話番号</label>
+<input id="contact-denwabango" name="contact_denwabango" type="tel" inputmode="tel" autocomplete="tel" placeholder="090-0000-1200" required>
+
+
+</div>
+</div>
+</section>
+<section id="sec-shipping" class="block">
+<h2>お届け先住所</h2>
+<div class="row">
+<div class="field">
+<label for="shipping-kaishamei">会社名</label>
+<input id="shipping-kaishamei" name="shipping_kaishamei" type="text" autocomplete="shipping organization" required>
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<label for="shipping-yubinbango">郵便番号</label>
+<input id="shipping-yubinbango" name="shipping_yubinbango" type="text" inputmode="numeric" maxlength="10" autocomplete="shipping postal-code" placeholder="100-0001">
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<label for="shipping-todofuken">都道府県</label>
+<select id="shipping-todofuken" name="shipping_todofuken" autocomplete="shipping address-level1" required>
+<option value=""></option>
+<option value="東京都">東京都</option>
+<option value="大阪府">大阪府</option>
+<option value="北海道">北海道</option>
+<option value="愛知県">愛知県</option>
+<option value="福岡県">福岡県</option>
+<option value="京都府">京都府</option>
+</select>
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<label for="shipping-shikuchoson">市区町村</label>
+<input id="shipping-shikuchoson" name="shipping_shikuchoson" type="text" autocomplete="shipping address-level2" placeholder="例市">
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<label for="shipping-chomeibanchi">町名・番地</label>
+<input id="shipping-chomeibanchi" name="shipping_chomeibanchi" type="text" autocomplete="shipping address-line1" placeholder="例町1-2-3">
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<label for="shipping-tatemono">建物名・部屋番号</label>
+<input id="shipping-tatemono" name="shipping_tatemono" type="text" autocomplete="shipping address-line2" placeholder="例マンション101" required>
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<label for="shipping-kuni">国</label>
+<select id="shipping-kuni" name="shipping_kuni" autocomplete="shipping country" required>
+<option value=""></option>
+<option value="JP">日本</option>
+<option value="US">アメリカ合衆国</option>
+<option value="GB">イギリス</option>
+<option value="DE">ドイツ</option>
+<option value="FR">フランス</option>
+<option value="NG">ナイジェリア</option>
+</select>
+
+
+</div>
+</div>
+</section>
+<section id="sec-billing" class="block">
+<h2>請求先住所</h2>
+<div class="row">
+<div class="field">
+<label for="billing-yubinbango">郵便番号</label>
+<input id="billing-yubinbango" name="billing_yubinbango" type="text" inputmode="numeric" maxlength="10" autocomplete="billing postal-code" placeholder="100-0001" required>
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<label for="billing-todofuken">都道府県</label>
+<select id="billing-todofuken" name="billing_todofuken" autocomplete="billing address-level1">
+<option value=""></option>
+<option value="東京都">東京都</option>
+<option value="大阪府">大阪府</option>
+<option value="北海道">北海道</option>
+<option value="愛知県">愛知県</option>
+<option value="福岡県">福岡県</option>
+<option value="京都府">京都府</option>
+</select>
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<label for="billing-shikuchoson">市区町村</label>
+<input id="billing-shikuchoson" name="billing_shikuchoson" type="text" autocomplete="billing address-level2" placeholder="例市">
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<label for="billing-chomeibanchi">町名・番地</label>
+<input id="billing-chomeibanchi" name="billing_chomeibanchi" type="text" autocomplete="billing address-line1" placeholder="例町1-2-3" required>
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<label for="billing-tatemono">建物名・部屋番号</label>
+<input id="billing-tatemono" name="billing_tatemono" type="text" autocomplete="billing address-line2" placeholder="例マンション101">
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<label for="billing-kuni">国</label>
+<select id="billing-kuni" name="billing_kuni" autocomplete="billing country" required>
+<option value=""></option>
+<option value="JP">日本</option>
+<option value="US">アメリカ合衆国</option>
+<option value="GB">イギリス</option>
+<option value="DE">ドイツ</option>
+<option value="FR">フランス</option>
+<option value="NG">ナイジェリア</option>
+</select>
+
+
+</div>
+</div>
+</section>
+<section id="sec-payment" class="block">
+<h2>お支払い</h2>
+<div class="row">
+<div class="field">
+<label for="payment-cardMeigi">カード名義</label>
+<input id="payment-cardMeigi" name="payment_cardMeigi" type="text" autocomplete="cc-name" required>
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<label for="payment-cardBango">カード番号</label>
+<input id="payment-cardBango" name="payment_cardBango" type="text" inputmode="numeric" maxlength="19" autocomplete="cc-number" placeholder="4242 4242 4242 4242">
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<label for="payment-expdate">有効期限（MM/YY）</label>
+<input id="payment-expdate" name="payment_expdate" type="text" inputmode="numeric" maxlength="5" autocomplete="cc-exp" placeholder="MM/YY" required>
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<label for="payment-securityCode">セキュリティコード</label>
+<input id="payment-securityCode" name="payment_securityCode" type="text" inputmode="numeric" maxlength="4" autocomplete="cc-csc" placeholder="123">
+
+
+</div>
+</div>
+</section>
+<section id="sec-extras" class="block">
+<h2>その他の情報</h2>
+<div class="row">
+<div class="field">
+<label for="extras-biko">備考</label>
+<textarea id="extras-biko" name="extras_biko" placeholder="不在時は隣家へお願いします" required rows="3"></textarea>
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<input id="extras-termsaccepted" name="extras_termsaccepted" type="checkbox">
+
+<label for="extras-termsaccepted">利用規約に同意します</label>
+
+</div>
+</div>
+</section>
+<div class="actions"><button type="submit">ご購入手続き</button></div>
+</form>
+</main>
+</body>
+</html>

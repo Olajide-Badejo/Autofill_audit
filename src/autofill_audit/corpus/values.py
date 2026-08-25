@@ -20,7 +20,6 @@ generator path can emit a Luhn-valid live BIN.
 from __future__ import annotations
 
 import string
-from functools import cache
 from typing import Final
 
 import numpy as np
@@ -44,31 +43,28 @@ _DIGITS: Final[str] = "0123456789"
 _UPPER: Final[str] = string.ascii_uppercase
 
 
-@cache
-def _faker_for(faker_locale: str) -> Faker:
-    """Return a cached Faker for a locale.
-
-    Cached because constructing a Faker loads its whole provider set, and the
-    generator builds six hundred forms. Reseeding per form with
-    ``seed_instance`` is what keeps that safe: the sequence of draws inside one
-    form is fixed, so a cached instance reseeded at the top of each form gives
-    the same values a fresh instance would.
-    """
-    return Faker(faker_locale)
-
-
 class ValueProvider:
     """Seeded sample values for one form.
 
-    One instance per generated form. Constructing it reseeds the shared Faker,
-    so every draw made through it belongs to that form and to no other.
+    One instance per generated form, and **one Faker of its own**, not a shared
+    cached one. Sharing was the first implementation and it was wrong in a way
+    worth recording: a cached Faker reseeded per provider means two live
+    providers for the same locale draw from one generator state, so the values a
+    form gets depend on whether another form was being built at the same time.
+    Nothing in the current call path does that, which is exactly what makes the
+    hazard dangerous rather than harmless: it would break ground rule 7 silently
+    the first time a caller interleaved two forms, and the corpus is the one
+    artefact where determinism is the headline gate.
+
+    Constructing a Faker costs well under a millisecond, so the whole grid pays
+    a fraction of a second for an invariant that cannot be broken from outside.
     """
 
     __slots__ = ("_faker", "_profile", "_rng")
 
     def __init__(self, profile: LocaleProfile, seed: int) -> None:
         self._profile = profile
-        self._faker = _faker_for(profile.faker_locale)
+        self._faker = Faker(profile.faker_locale)
         self._faker.seed_instance(seed)
         self._rng = np.random.default_rng(seed)
 

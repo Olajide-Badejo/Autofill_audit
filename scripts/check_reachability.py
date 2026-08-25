@@ -6,12 +6,20 @@ autofill token or an enumerated extra, (b) emitted by at least one corpus answer
 key, (c) reachable by at least one rule or present in the model's training
 distribution, and (d) asserted by at least one test.
 
-At P0 only clause (a) and the taxonomy's own internal consistency can be
-checked, because no corpus, no rule table, and no label-tagged tests exist yet.
-This script therefore runs the checks that are possible now and prints the ones
-that activate later, rather than pretending the whole law is enforced. The check
-functions are independent and are registered in ``CHECKS``, so P1 and P3 extend
-this file by adding functions to that list rather than rewriting it.
+At P0 only clause (a) and the taxonomy's own internal consistency could be
+checked, because no corpus, no rule table, and no label-tagged tests existed.
+P1 activates clause (b): the corpus exists now, so the check generates a small
+one and reads the committed sample, and fails the build on any label that
+nothing emits. Clauses (c) and (d) stay in ``PENDING``, each naming the phase
+that activates it, rather than pretending the whole law is enforced. The check
+functions are independent and are registered in ``CHECKS``, so a phase extends
+this file by adding a function to that list rather than rewriting it.
+
+**Why clause (b) both generates and reads the sample.** Generating catches a
+template change that stops emitting a label; reading the committed sample
+catches the opposite failure, a sample that has silently gone stale against the
+generator. Neither alone would notice the other's defect, and both together
+still run in about a second, which is the budget a CI job of this kind deserves.
 
 Usage:
     check_reachability.py [--root DIR]
@@ -23,6 +31,7 @@ from __future__ import annotations
 
 import argparse
 import ast
+import json
 import sys
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
@@ -32,6 +41,10 @@ _REPO_ROOT = Path(__file__).resolve().parent.parent
 if str(_REPO_ROOT / "src") not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT / "src"))
 
+from autofill_audit.corpus.answer_key import build_answer_key  # noqa: E402
+from autofill_audit.corpus.families import Family  # noqa: E402
+from autofill_audit.corpus.generator import grid_from, iter_forms  # noqa: E402
+from autofill_audit.corpus.tiers import Tier  # noqa: E402
 from autofill_audit.taxonomy import (  # noqa: E402
     ALL_LABELS,
     EXTRA_LABELS,
@@ -39,6 +52,13 @@ from autofill_audit.taxonomy import (  # noqa: E402
     SPEC_TOKENS,
     Label,
 )
+
+_SAMPLE_CORPUS = Path("tests") / "fixtures" / "sample_corpus"
+_REACHABILITY_SEED = 20260825
+_REACHABILITY_BASE_YEAR = 2026
+"""Pinned rather than taken from the clock. This check runs in CI on every push,
+and a check whose input changed when the year turned would go red for a reason
+that has nothing to do with the commit under test."""
 
 # The taxonomy module owns every label string. Any other module carrying one as
 # a literal is the drift ground rule 6 forbids. At P0 the scan is restricted to
@@ -183,18 +203,96 @@ def check_no_stray_label_literals(root: Path) -> CheckResult:
     )
 
 
+def _generated_labels() -> set[Label]:
+    """Return the labels emitted by a small freshly generated corpus.
+
+    One locale, every family, every tier, one variant. English is enough because
+    no label is locale specific: the locale profiles change which slots exist
+    and what they are called, not what a slot means. Six locales here would
+    multiply the runtime of a CI job by six and find nothing the one locale
+    misses.
+    """
+    grid = grid_from(
+        seed=_REACHABILITY_SEED,
+        families=[family.value for family in Family],
+        locales=["en-US"],
+        tiers=[tier.value for tier in Tier],
+        variants=1,
+        base_year=_REACHABILITY_BASE_YEAR,
+    )
+    emitted: set[Label] = set()
+    for form, _ in iter_forms(grid):
+        for entry in build_answer_key(form)["fields"]:
+            emitted.add(Label(entry["label"]))
+    return emitted
+
+
+def _sample_labels(root: Path) -> tuple[set[Label], int]:
+    """Return the labels emitted by the committed sample, and its form count."""
+    keys_dir = root / _SAMPLE_CORPUS / "answer_keys"
+    emitted: set[Label] = set()
+    count = 0
+    if not keys_dir.is_dir():
+        return emitted, count
+    for path in sorted(keys_dir.glob("*.json")):
+        document = json.loads(path.read_text(encoding="utf-8"))
+        count += 1
+        for entry in document["fields"]:
+            emitted.add(Label(entry["label"]))
+    return emitted, count
+
+
+def check_corpus_reachability(root: Path) -> CheckResult:
+    """Law 2 clause (b): every label is emitted by at least one answer key.
+
+    A label that exists in the enum but is emitted by nothing is dead weight
+    that inflates the denominator of every macro-averaged metric, which is
+    precisely how a project accidentally reports a worse F1 than it earned, or a
+    better one, depending on which direction the dead label falls
+    (spec section 7.3).
+    """
+    name = "corpus reachability"
+    sample, sample_forms = _sample_labels(root)
+    if sample_forms == 0:
+        return CheckResult(
+            name,
+            False,
+            f"the committed sample corpus at {_SAMPLE_CORPUS} has no answer keys",
+        )
+    generated = _generated_labels()
+    emitted = sample | generated
+
+    missing = ALL_LABELS - emitted
+    if missing:
+        return CheckResult(
+            name,
+            False,
+            "no answer key emits " + ", ".join(sorted(label.value for label in missing)),
+        )
+
+    stale = ALL_LABELS - sample
+    detail = (
+        f"all {len(ALL_LABELS)} labels emitted, from {sample_forms} committed sample "
+        "forms and a freshly generated grid"
+    )
+    if stale:
+        detail += "; the sample alone misses " + ", ".join(sorted(label.value for label in stale))
+    return CheckResult(name, True, detail)
+
+
 CHECKS: list[Callable[[Path], CheckResult]] = [
     check_taxonomy_populated,
     check_no_duplicate_label_values,
     check_groups_partition,
     check_no_stray_label_literals,
+    check_corpus_reachability,
 ]
 
 # Clauses of the law that no artefact exists to check yet. Each names the phase
-# that activates it, so that a reader of a green P0 run is not misled into
-# thinking law 2 is fully enforced.
+# that activates it, so that a reader of a green run is not misled into thinking
+# law 2 is fully enforced. Clause (b) left this list at P1, in the commit that
+# made it enforceable.
 PENDING: list[str] = [
-    "corpus reachability (every label emitted by at least one answer key): activates at P1",
     "rule reachability (every label produced by at least one rule): activates at P3",
     "test reachability (every label asserted by at least one test): activates at P3",
 ]

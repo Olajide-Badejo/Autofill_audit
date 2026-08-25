@@ -1,0 +1,143 @@
+{
+  "family": "payment",
+  "fields": [
+    {
+      "expected_modifiers": [],
+      "label": "cc-type",
+      "provenance": {
+        "control": "select",
+        "declared_autocomplete": "cc-type",
+        "delivery": "static",
+        "element_id": "payment-cardtype",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": null,
+        "label_text": "Card type",
+        "name": "payment_cardtype",
+        "placeholder": null,
+        "role": "card_type",
+        "section": "payment",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "payment.card_type.1",
+        "tier": "partial",
+        "transforms": []
+      },
+      "selector": "#payment-cardtype"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "cc-name",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": "payment-cardholder",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "Name on card",
+        "name": "payment_cardholder",
+        "placeholder": null,
+        "role": "card_holder",
+        "section": "payment",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "payment.card_holder.2",
+        "tier": "partial",
+        "transforms": [
+          "declaration_absent"
+        ]
+      },
+      "selector": "#payment-cardholder"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "cc-number",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": "payment-cardnumber",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "Card number",
+        "name": "payment_cardnumber",
+        "placeholder": "4242 4242 4242 4242",
+        "role": "card_number",
+        "section": "payment",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "payment.card_number.3",
+        "tier": "partial",
+        "transforms": [
+          "declaration_absent"
+        ]
+      },
+      "selector": "#payment-cardnumber"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "COMPOSITE_UNSPLIT",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "cc-exp",
+        "delivery": "static",
+        "element_id": "security-expdate",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "Expiration (MM/YY)",
+        "name": "security_expdate",
+        "placeholder": "MM/YY",
+        "role": "card_expiry_composite",
+        "section": "security",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "security.card_expiry_composite.4",
+        "tier": "partial",
+        "transforms": []
+      },
+      "selector": "#security-expdate"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "cc-csc",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": "security-securitycode",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "Security code",
+        "name": "security_securitycode",
+        "placeholder": "123",
+        "role": "card_security_code",
+        "section": "security",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "security.card_security_code.5",
+        "tier": "partial",
+        "transforms": [
+          "declaration_absent"
+        ]
+      },
+      "selector": "#security-securitycode"
+    }
+  ],
+  "form_id": "payment-02-en-US-partial-v0",
+  "generator_version": "1.0.0",
+  "locale": "en-US",
+  "page_notes": {
+    "canvas_pseudo_fields": [],
+    "injected_selectors": [],
+    "shadow_hosts": []
+  },
+  "schema_version": 1,
+  "template_id": "payment-02",
+  "tier": "partial",
+  "variant": 0
+}

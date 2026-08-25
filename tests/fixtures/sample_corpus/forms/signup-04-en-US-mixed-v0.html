@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Create an account</title>
+<style>
+body { font-family: system-ui, sans-serif; margin: 0; padding: 1.5rem; }
+main { max-width: 44rem; margin: 0 auto; }
+.row { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.field { display: flex; flex-direction: column; flex: 1 1 12rem; margin-bottom: 0.75rem; }
+label { font-size: 0.85rem; margin-bottom: 0.25rem; }
+input, select, textarea { font: inherit; padding: 0.4rem; }
+fieldset { border: 1px solid #ccc; margin: 0 0 0.75rem; }
+.summary { background: #f4f4f4; padding: 0.75rem; margin-bottom: 1rem; }
+.canvas-note { font-size: 0.8rem; color: #555; }
+</style>
+</head>
+<body>
+<main>
+<h1>Create an account</h1>
+<form name="f1" method="post" action="#">
+<section id="sec-identity" class="block">
+<h2>Your details</h2>
+<div class="row">
+<div class="field">
+<label for="identity-company">Company</label>
+<input id="identity-company" name="identity_company" type="text" autocomplete="organization">
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<label for="identity-website">Website</label>
+<input id="identity-website" name="identity_website" type="url" inputmode="url" autocomplete="url" placeholder="https://example.com" required>
+
+
+</div>
+</div>
+</section>
+<div class="block">
+<h2>C</h2>
+<div class="row">
+<div class="field">
+<input type="text" placeholder="First name">
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<input name="ctl00$txt4" type="text">
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<af-field id="ce-1" data-tag="input" data-type="text" data-name="ctl00$txt5" data-placeholder="you@example.com"></af-field>
+</div>
+</div>
+<div class="row">
+<div class="field">
+<select id="input6">
+<option value=""></option>
+<option value="+1">United States (+1)</option>
+<option value="+44">United Kingdom (+44)</option>
+<option value="+49">Germany (+49)</option>
+<option value="+33">France (+33)</option>
+<option value="+81">Japan (+81)</option>
+<option value="+234">Nigeria (+234)</option>
+</select>
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<input id="field_7" name="field_7" type="text" placeholder="(555) 0123">
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<input id="input14" type="text">
+
+
+</div>
+</div>
+<div class="row">
+<div class="field" id="inj-slot-15">
+</div>
+</div>
+</div>
+<section id="sec-address" class="block">
+<h2>Address</h2>
+<div class="row">
+<div class="field">
+<label for="address-street">Street address</label>
+<input id="address-street" name="address_street" type="text" autocomplete="street-address" placeholder="97499 Hunt Center">
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<label for="address-city">City</label>
+<input id="address-city" name="address_city" type="text" placeholder="Springfield">
+
+
+</div>
+<div class="field">
+<label for="address-state">State</label>
+<select id="address-state" name="address_state" autocomplete="address-level2" required>
+<option value=""></option>
+<option value="California">California</option>
+<option value="New York">New York</option>
+<option value="Texas">Texas</option>
+<option value="Illinois">Illinois</option>
+<option value="Washington">Washington</option>
+<option value="Oregon">Oregon</option>
+</select>
+
+
+</div>
+<div class="field">
+<label for="address-zip">ZIP code</label>
+<input id="address-zip" name="address_zip" type="text" inputmode="numeric" maxlength="10" autocomplete="postal-code" placeholder="01234">
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<label for="address-country">Country</label>
+<select id="address-country" name="address_country" autocomplete="country">
+<option value=""></option>
+<option value="US">United States</option>
+<option value="CA">Canada</option>
+<option value="GB">United Kingdom</option>
+<option value="DE">Germany</option>
+<option value="FR">France</option>
+<option value="JP">Japan</option>
+<option value="NG">Nigeria</option>
+</select>
+
+
+</div>
+</div>
+</section>
+<section id="sec-account" class="block">
+<h2>Account</h2>
+<div class="row">
+<div class="field">
+<label for="account-newpassword">Password</label>
+<input id="account-newpassword" name="account_newpassword" type="password" autocomplete="new-password" required>
+
+
+</div>
+</div>
+</section>
+<div class="actions"><button type="submit">Create an account</button></div>
+</form>
+</main>
+<script>
+class AfField extends HTMLElement {
+  connectedCallback() {
+    if (this.shadowRoot) { return; }
+    var root = this.attachShadow({ mode: 'open' });
+    var el = document.createElement(this.dataset.tag || 'input');
+    if (this.dataset.type) { el.setAttribute('type', this.dataset.type); }
+    if (this.dataset.name) { el.setAttribute('name', this.dataset.name); }
+    if (this.dataset.placeholder) { el.setAttribute('placeholder', this.dataset.placeholder); }
+    root.appendChild(el);
+  }
+}
+customElements.define('af-field', AfField);
+</script>
+<script>
+window.setTimeout(function () {
+  var slot1 = document.getElementById("inj-slot-15");
+  if (slot1) {
+    var el1 = document.createElement('input');
+    el1.setAttribute('type', "text");
+    el1.setAttribute('id', "input15");
+    el1.setAttribute('name', "field_15");
+    el1.setAttribute('placeholder', "Search the store");
+    slot1.appendChild(el1);
+  }
+}, 300);
+</script>
+</body>
+</html>
