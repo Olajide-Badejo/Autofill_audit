@@ -1,0 +1,218 @@
+{
+  "fields": [
+    {
+      "selector": "#pay-name",
+      "frame_path": [],
+      "shadow_path": [],
+      "document_index": 0,
+      "tag": "input",
+      "input_type": "text",
+      "inputmode": null,
+      "pattern": null,
+      "maxlength": null,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "option_labels": [],
+      "option_values": [],
+      "name": "pay_name",
+      "element_id": "pay-name",
+      "css_classes": [],
+      "data_keys": [],
+      "framework_attrs": [],
+      "declared": {
+        "raw": "cc-name",
+        "token": "cc-name",
+        "modifiers": [],
+        "section": null,
+        "is_off_spec": false,
+        "is_off": false
+      },
+      "text": {
+        "label_for": "Name on card",
+        "label_ancestor": null,
+        "aria_label": null,
+        "aria_labelledby_text": null,
+        "aria_describedby_text": null,
+        "title": null,
+        "placeholder": null,
+        "preceding_text": null,
+        "legend": null,
+        "section_heading": "Card",
+        "form_accessible_name": null
+      },
+      "norm": {
+        "label_tokens": [
+          "name",
+          "on",
+          "card"
+        ],
+        "label_source": "label_for",
+        "identifier_tokens": [
+          "pay",
+          "name",
+          "pay",
+          "name"
+        ],
+        "context_tokens": [
+          "card"
+        ],
+        "all_tokens": [
+          "name",
+          "on",
+          "card",
+          "pay",
+          "name",
+          "pay",
+          "name",
+          "card"
+        ],
+        "text_blob": "L:name L:on L:card I:pay I:name I:pay I:name C:card"
+      },
+      "form_index": 0,
+      "fieldset_index": null,
+      "sibling_control_count": 0,
+      "group_role": "none",
+      "group_id": null,
+      "is_visible": true,
+      "undetectable_reason": null
+    },
+    {
+      "selector": "#ce-2",
+      "frame_path": [],
+      "shadow_path": [],
+      "document_index": 1,
+      "tag": "vault-field",
+      "input_type": null,
+      "inputmode": null,
+      "pattern": null,
+      "maxlength": null,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "option_labels": [],
+      "option_values": [],
+      "name": null,
+      "element_id": null,
+      "css_classes": [],
+      "data_keys": [],
+      "framework_attrs": [],
+      "declared": {
+        "raw": null,
+        "token": null,
+        "modifiers": [],
+        "section": null,
+        "is_off_spec": false,
+        "is_off": false
+      },
+      "text": {
+        "label_for": null,
+        "label_ancestor": null,
+        "aria_label": null,
+        "aria_labelledby_text": null,
+        "aria_describedby_text": null,
+        "title": null,
+        "placeholder": null,
+        "preceding_text": null,
+        "legend": null,
+        "section_heading": null,
+        "form_accessible_name": null
+      },
+      "norm": {
+        "label_tokens": [],
+        "label_source": null,
+        "identifier_tokens": [],
+        "context_tokens": [],
+        "all_tokens": [],
+        "text_blob": ""
+      },
+      "form_index": null,
+      "fieldset_index": null,
+      "sibling_control_count": 0,
+      "group_role": "none",
+      "group_id": null,
+      "is_visible": true,
+      "undetectable_reason": "closed-shadow-root"
+    },
+    {
+      "selector": "#pay-csc",
+      "frame_path": [],
+      "shadow_path": [],
+      "document_index": 2,
+      "tag": "input",
+      "input_type": "text",
+      "inputmode": null,
+      "pattern": null,
+      "maxlength": 4,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "option_labels": [],
+      "option_values": [],
+      "name": "pay_csc",
+      "element_id": "pay-csc",
+      "css_classes": [],
+      "data_keys": [],
+      "framework_attrs": [],
+      "declared": {
+        "raw": "cc-csc",
+        "token": "cc-csc",
+        "modifiers": [],
+        "section": null,
+        "is_off_spec": false,
+        "is_off": false
+      },
+      "text": {
+        "label_for": "Security code",
+        "label_ancestor": null,
+        "aria_label": null,
+        "aria_labelledby_text": null,
+        "aria_describedby_text": null,
+        "title": null,
+        "placeholder": null,
+        "preceding_text": null,
+        "legend": null,
+        "section_heading": "Card",
+        "form_accessible_name": null
+      },
+      "norm": {
+        "label_tokens": [
+          "security",
+          "code"
+        ],
+        "label_source": "label_for",
+        "identifier_tokens": [
+          "pay",
+          "csc",
+          "pay",
+          "csc"
+        ],
+        "context_tokens": [
+          "card"
+        ],
+        "all_tokens": [
+          "security",
+          "code",
+          "pay",
+          "csc",
+          "pay",
+          "csc",
+          "card"
+        ],
+        "text_blob": "L:security L:code I:pay I:csc I:pay I:csc C:card"
+      },
+      "form_index": 1,
+      "fieldset_index": null,
+      "sibling_control_count": 0,
+      "group_role": "none",
+      "group_id": null,
+      "is_visible": true,
+      "undetectable_reason": null
+    }
+  ],
+  "honeypots": [],
+  "canvas_regions": [],
+  "warnings": [],
+  "truncated": false,
+  "frame_count": 1
+}

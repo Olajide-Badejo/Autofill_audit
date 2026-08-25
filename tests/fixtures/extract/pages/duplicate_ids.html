@@ -1,0 +1,39 @@
+<!doctype html>
+<!--
+  Tests: two controls carrying the same id, which is invalid HTML and entirely
+  ordinary on real pages that render one component twice.
+
+  What it proves:
+    - a duplicated id is not usable as a selector, because #email would resolve
+      to the first of the two and the report would name the wrong control. Both
+      fall through: the first to its name inside the named form, the second,
+      which has no name, to a positional path.
+    - a label whose for attribute names the duplicated id is resolved once, to
+      the first element carrying that id, which is what the browser does
+    - the third control on the page, whose id IS unique, still uses it
+  Hand authored. Not a copy of any live site.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Newsletter</title>
+</head>
+<body>
+<main>
+<h1>Newsletter</h1>
+<form name="signup" method="post" action="#">
+<div class="field">
+<label for="email">Email address</label>
+<input id="email" name="signup_email" type="email">
+</div>
+<div class="field">
+<input id="email" type="email">
+</div>
+<div class="field">
+<label for="signup-postcode">Postcode</label>
+<input id="signup-postcode" name="signup_postcode" type="text">
+</div>
+</form>
+</main>
+</body>
+</html>

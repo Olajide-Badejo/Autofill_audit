@@ -1,0 +1,53 @@
+<!doctype html>
+<!--
+  Tests: a form with no label element anywhere, no aria-label, no placeholder,
+  and no declared autocomplete. The only signals are identifiers and position.
+
+  What it proves:
+    - all three selector preferences fire on one page: an id that is usable, a
+      name inside a named form when the id is generated looking, and a
+      positional path when there is neither
+    - an id with a long hex run is rejected by looks_generated even though it
+      is present and unique, which is the case an extractor that only checked
+      for the presence of an id would get wrong
+    - label_source is None rather than the empty string when nothing labels a
+      control
+  Hand authored. Not a copy of any live site.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Step two</title>
+</head>
+<body>
+<main>
+<h1>Step two</h1>
+<form name="f1" method="post" action="#">
+<div class="block">
+<h2>D</h2>
+<div class="row">
+<div class="field">
+<input id="input1" type="text">
+</div>
+</div>
+<div class="row">
+<div class="field">
+<input id="ctl00_txt2_9f4c21ab" name="ctl00$txt2" type="text">
+</div>
+</div>
+<div class="row">
+<div class="field">
+<input type="text">
+</div>
+</div>
+<div class="row">
+<div class="field">
+<textarea name="notes" rows="2"></textarea>
+</div>
+</div>
+</div>
+<div class="actions"><button type="submit">Next</button></div>
+</form>
+</main>
+</body>
+</html>

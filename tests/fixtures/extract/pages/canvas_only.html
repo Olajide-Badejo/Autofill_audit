@@ -1,0 +1,38 @@
+<!doctype html>
+<!--
+  Tests: a page whose only form-like thing is drawn on a canvas.
+
+  Solving this is out of scope (spec section 0.4). Naming it is not: spec
+  section 9.6 says a form-ish page that yields zero controls and holds a large
+  canvas gets exactly one page-level report of a field nobody can detect.
+
+  What it proves:
+    - zero controls plus a large canvas yields exactly one synthetic descriptor
+      carrying undetectable_reason "canvas-region"
+    - the canvas is also recorded as a region in its own right, which is the
+      form the corpus answer keys record it in
+    - the small canvas beside it, which is a sparkline, is ignored. Reporting
+      every icon-sized canvas as a possible hidden form would teach a reader to
+      skip the finding.
+  Hand authored. Not a copy of any live site.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Secure payment</title>
+</head>
+<body>
+<main>
+<h1>Secure payment</h1>
+<p>Enter your card details in the field below.</p>
+<div class="field">
+<canvas id="canvas-card" width="360" height="140"></canvas>
+<p class="canvas-note">Card number</p>
+</div>
+<div class="chart">
+<canvas id="canvas-spark" width="60" height="20"></canvas>
+</div>
+<div class="actions"><button type="button">Pay now</button></div>
+</main>
+</body>
+</html>

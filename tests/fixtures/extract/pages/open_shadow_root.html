@@ -1,0 +1,58 @@
+<!doctype html>
+<!--
+  Tests: a control inside an open shadow root.
+
+  What it proves:
+    - the shadow root is walked IN PLACE, so the shadowed control comes out
+      between the light DOM control before it and the one after it, which is
+      what spec section 9.1 requires and what the preceding-text signal depends
+      on being true
+    - the selector is the host's own selector, the documented shadow separator,
+      and a path resolved relative to the shadow root, because ids inside a
+      shadow root are scoped to it and the host is the only stable handle
+    - shadow_path carries the host selector
+    - context that does not exist inside the root (the enclosing form's name,
+      the section heading) is taken from the host's surroundings
+  Hand authored. Not a copy of any live site.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Account</title>
+</head>
+<body>
+<main>
+<h1>Account</h1>
+<form name="account" method="post" action="#">
+<section id="sec-login" class="block">
+<h2>Sign in</h2>
+<div class="field">
+<label for="login-user">Username</label>
+<input id="login-user" name="login_user" type="text" autocomplete="username">
+</div>
+<div class="field">
+<secure-field id="ce-1" data-field="password"></secure-field>
+</div>
+<div class="field">
+<label for="login-code">One time code</label>
+<input id="login-code" name="login_code" type="text" autocomplete="one-time-code" inputmode="numeric" maxlength="6">
+</div>
+</section>
+</form>
+</main>
+<script>
+class SecureField extends HTMLElement {
+  connectedCallback() {
+    if (this.shadowRoot) { return; }
+    var root = this.attachShadow({ mode: 'open' });
+    var el = document.createElement('input');
+    el.setAttribute('type', 'password');
+    el.setAttribute('name', 'login_password');
+    el.setAttribute('placeholder', 'Password');
+    root.appendChild(el);
+  }
+}
+customElements.define('secure-field', SecureField);
+</script>
+</body>
+</html>

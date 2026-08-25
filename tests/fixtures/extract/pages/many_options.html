@@ -1,0 +1,56 @@
+<!doctype html>
+<!--
+  Tests: a select with five thousand options, from the malformed input list of
+  spec section 15.
+
+  The options are built by an inline script rather than written out five
+  thousand times, because a fixture nobody can read is a fixture nobody
+  maintains. The script runs during parsing, so the options exist before the
+  load event and the walk sees them the way it would see static markup.
+
+  What it proves:
+    - the option list is truncated at the documented constant, so a page cannot
+      make the extractor allocate an unbounded amount of memory by writing a
+      long select
+    - the truncated list is not mistaken for a month list. That is the whole
+      reason the constant is larger than twelve: spec section 9.4 gives the
+      descriptor no field for the total option count, so the only way to tell a
+      complete list of twelve from the first twelve of five thousand is for the
+      cut to fall somewhere a real list never reaches.
+    - nothing raises, and the control beside it is unaffected
+  Hand authored. Not a copy of any live site.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Choose a branch</title>
+</head>
+<body>
+<main>
+<h1>Choose a branch</h1>
+<form name="branch" method="post" action="#">
+<div class="field">
+<label for="branch-pick">Branch</label>
+<select id="branch-pick" name="branch_pick"></select>
+</div>
+<div class="field">
+<label for="branch-postcode">Postcode</label>
+<input id="branch-postcode" name="branch_postcode" type="text" autocomplete="postal-code">
+</div>
+</form>
+</main>
+<script>
+(function () {
+  var select = document.getElementById('branch-pick');
+  var fragment = document.createDocumentFragment();
+  for (var i = 1; i <= 5000; i += 1) {
+    var option = document.createElement('option');
+    option.value = 'b' + i;
+    option.textContent = 'Branch ' + i;
+    fragment.appendChild(option);
+  }
+  select.appendChild(fragment);
+})();
+</script>
+</body>
+</html>

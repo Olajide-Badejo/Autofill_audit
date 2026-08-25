@@ -1,0 +1,66 @@
+<!doctype html>
+<!--
+  Tests: a well built form, which is the case every other fixture is a
+  departure from. Every control has an explicit label, a declared autocomplete
+  value, and an id that the first selector preference can use.
+
+  What it proves:
+    - the id preference wins when an id is present, unique, and not generated
+    - a section-* token and a shipping modifier are parsed out of the declared
+      value without either being mistaken for the field name token
+    - label_for is the label source and the placeholder is not
+    - section_heading comes from the nearest heading above the field
+  Hand authored. Not a copy of any live site.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Delivery details</title>
+<style>
+body { font-family: sans-serif; }
+.field { display: block; margin-bottom: 8px; }
+</style>
+</head>
+<body>
+<main>
+<h1>Delivery details</h1>
+<form name="delivery" method="post" action="#">
+<section id="sec-who" class="block">
+<h2>Who is it for</h2>
+<div class="field">
+<label for="who-given">First name</label>
+<input id="who-given" name="who_given" type="text" autocomplete="given-name" required>
+</div>
+<div class="field">
+<label for="who-family">Last name</label>
+<input id="who-family" name="who_family" type="text" autocomplete="family-name">
+</div>
+<div class="field">
+<label for="who-email">Email address</label>
+<input id="who-email" name="who_email" type="email" autocomplete="email" placeholder="you@example.com">
+</div>
+</section>
+<section id="sec-where" class="block">
+<h2>Where is it going</h2>
+<div class="field">
+<label for="where-line1">Street address</label>
+<input id="where-line1" name="where_line1" type="text" autocomplete="section-gift shipping address-line1">
+</div>
+<div class="field">
+<label for="where-postcode">Postcode</label>
+<input id="where-postcode" name="where_postcode" type="text" autocomplete="shipping postal-code" inputmode="numeric" maxlength="10">
+</div>
+<div class="field">
+<label for="where-country">Country</label>
+<select id="where-country" name="where_country" autocomplete="shipping country">
+<option value=""></option>
+<option value="GB">United Kingdom</option>
+<option value="IE">Ireland</option>
+</select>
+</div>
+</section>
+<div class="actions"><button type="submit">Continue</button></div>
+</form>
+</main>
+</body>
+</html>

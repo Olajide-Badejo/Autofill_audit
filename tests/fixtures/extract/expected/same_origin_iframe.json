@@ -1,0 +1,156 @@
+{
+  "fields": [
+    {
+      "selector": "#outer-name",
+      "frame_path": [],
+      "shadow_path": [],
+      "document_index": 0,
+      "tag": "input",
+      "input_type": "text",
+      "inputmode": null,
+      "pattern": null,
+      "maxlength": null,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "option_labels": [],
+      "option_values": [],
+      "name": "outer_name",
+      "element_id": "outer-name",
+      "css_classes": [],
+      "data_keys": [],
+      "framework_attrs": [],
+      "declared": {
+        "raw": "cc-name",
+        "token": "cc-name",
+        "modifiers": [],
+        "section": null,
+        "is_off_spec": false,
+        "is_off": false
+      },
+      "text": {
+        "label_for": "Name on card",
+        "label_ancestor": null,
+        "aria_label": null,
+        "aria_labelledby_text": null,
+        "aria_describedby_text": null,
+        "title": null,
+        "placeholder": null,
+        "preceding_text": null,
+        "legend": null,
+        "section_heading": "Pay",
+        "form_accessible_name": null
+      },
+      "norm": {
+        "label_tokens": [
+          "name",
+          "on",
+          "card"
+        ],
+        "label_source": "label_for",
+        "identifier_tokens": [
+          "outer",
+          "name",
+          "outer",
+          "name"
+        ],
+        "context_tokens": [
+          "pay"
+        ],
+        "all_tokens": [
+          "name",
+          "on",
+          "card",
+          "outer",
+          "name",
+          "outer",
+          "name",
+          "pay"
+        ],
+        "text_blob": "L:name L:on L:card I:outer I:name I:outer I:name C:pay"
+      },
+      "form_index": 0,
+      "fieldset_index": null,
+      "sibling_control_count": 0,
+      "group_role": "none",
+      "group_id": null,
+      "is_visible": true,
+      "undetectable_reason": null
+    },
+    {
+      "selector": "frame[#card-frame] >> #pan",
+      "frame_path": [
+        "frame[#card-frame]"
+      ],
+      "shadow_path": [],
+      "document_index": 1,
+      "tag": "input",
+      "input_type": "text",
+      "inputmode": null,
+      "pattern": null,
+      "maxlength": null,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "option_labels": [],
+      "option_values": [],
+      "name": "pan",
+      "element_id": "pan",
+      "css_classes": [],
+      "data_keys": [],
+      "framework_attrs": [],
+      "declared": {
+        "raw": "cc-number",
+        "token": "cc-number",
+        "modifiers": [],
+        "section": null,
+        "is_off_spec": false,
+        "is_off": false
+      },
+      "text": {
+        "label_for": "Card number",
+        "label_ancestor": null,
+        "aria_label": null,
+        "aria_labelledby_text": null,
+        "aria_describedby_text": null,
+        "title": null,
+        "placeholder": null,
+        "preceding_text": null,
+        "legend": null,
+        "section_heading": null,
+        "form_accessible_name": null
+      },
+      "norm": {
+        "label_tokens": [
+          "card",
+          "number"
+        ],
+        "label_source": "label_for",
+        "identifier_tokens": [
+          "pan",
+          "pan"
+        ],
+        "context_tokens": [],
+        "all_tokens": [
+          "card",
+          "number",
+          "pan",
+          "pan"
+        ],
+        "text_blob": "L:card L:number I:pan I:pan"
+      },
+      "form_index": 0,
+      "fieldset_index": null,
+      "sibling_control_count": 0,
+      "group_role": "none",
+      "group_id": null,
+      "is_visible": true,
+      "undetectable_reason": null
+    }
+  ],
+  "honeypots": [],
+  "canvas_regions": [],
+  "warnings": [],
+  "truncated": false,
+  "frame_count": 2
+}

@@ -1,0 +1,207 @@
+{
+  "fields": [
+    {
+      "selector": "#card-expmonth",
+      "frame_path": [],
+      "shadow_path": [],
+      "document_index": 0,
+      "tag": "select",
+      "input_type": null,
+      "inputmode": null,
+      "pattern": null,
+      "maxlength": null,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "option_labels": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12"
+      ],
+      "option_values": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12"
+      ],
+      "name": "card_expmonth",
+      "element_id": "card-expmonth",
+      "css_classes": [],
+      "data_keys": [],
+      "framework_attrs": [],
+      "declared": {
+        "raw": null,
+        "token": null,
+        "modifiers": [],
+        "section": null,
+        "is_off_spec": false,
+        "is_off": false
+      },
+      "text": {
+        "label_for": "Expiry month",
+        "label_ancestor": null,
+        "aria_label": null,
+        "aria_labelledby_text": null,
+        "aria_describedby_text": null,
+        "title": null,
+        "placeholder": null,
+        "preceding_text": null,
+        "legend": null,
+        "section_heading": "Card",
+        "form_accessible_name": null
+      },
+      "norm": {
+        "label_tokens": [
+          "expiry",
+          "month"
+        ],
+        "label_source": "label_for",
+        "identifier_tokens": [
+          "card",
+          "expmonth",
+          "card",
+          "expmonth"
+        ],
+        "context_tokens": [
+          "card"
+        ],
+        "all_tokens": [
+          "expiry",
+          "month",
+          "card",
+          "expmonth",
+          "card",
+          "expmonth",
+          "card"
+        ],
+        "text_blob": "L:expiry L:month I:card I:expmonth I:card I:expmonth C:card"
+      },
+      "form_index": 0,
+      "fieldset_index": null,
+      "sibling_control_count": 1,
+      "group_role": "cc_exp_month",
+      "group_id": "expiry-1",
+      "is_visible": true,
+      "undetectable_reason": null
+    },
+    {
+      "selector": "#card-expyear",
+      "frame_path": [],
+      "shadow_path": [],
+      "document_index": 1,
+      "tag": "input",
+      "input_type": "text",
+      "inputmode": "numeric",
+      "pattern": null,
+      "maxlength": 4,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "option_labels": [],
+      "option_values": [],
+      "name": "card_expyear",
+      "element_id": "card-expyear",
+      "css_classes": [],
+      "data_keys": [],
+      "framework_attrs": [],
+      "declared": {
+        "raw": null,
+        "token": null,
+        "modifiers": [],
+        "section": null,
+        "is_off_spec": false,
+        "is_off": false
+      },
+      "text": {
+        "label_for": null,
+        "label_ancestor": null,
+        "aria_label": null,
+        "aria_labelledby_text": null,
+        "aria_describedby_text": null,
+        "title": null,
+        "placeholder": "YYYY",
+        "preceding_text": "1 2 3 4 5 6 7 8 9 10 11 12",
+        "legend": null,
+        "section_heading": "Card",
+        "form_accessible_name": null
+      },
+      "norm": {
+        "label_tokens": [
+          "yyyy"
+        ],
+        "label_source": "placeholder",
+        "identifier_tokens": [
+          "card",
+          "expyear",
+          "card",
+          "expyear"
+        ],
+        "context_tokens": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10",
+          "11",
+          "12",
+          "card"
+        ],
+        "all_tokens": [
+          "yyyy",
+          "card",
+          "expyear",
+          "card",
+          "expyear",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10",
+          "11",
+          "12",
+          "card"
+        ],
+        "text_blob": "L:yyyy I:card I:expyear I:card I:expyear C:1 C:2 C:3 C:4 C:5 C:6 C:7 C:8 C:9 C:10 C:11 C:12 C:card"
+      },
+      "form_index": 1,
+      "fieldset_index": null,
+      "sibling_control_count": 1,
+      "group_role": "cc_exp_year",
+      "group_id": "expiry-1",
+      "is_visible": true,
+      "undetectable_reason": null
+    }
+  ],
+  "honeypots": [],
+  "canvas_regions": [],
+  "warnings": [],
+  "truncated": false,
+  "frame_count": 1
+}

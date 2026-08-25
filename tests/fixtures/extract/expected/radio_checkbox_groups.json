@@ -1,0 +1,505 @@
+{
+  "fields": [
+    {
+      "selector": "#pref-email",
+      "frame_path": [],
+      "shadow_path": [],
+      "document_index": 0,
+      "tag": "input",
+      "input_type": "radio",
+      "inputmode": null,
+      "pattern": null,
+      "maxlength": null,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "option_labels": [],
+      "option_values": [],
+      "name": "contact_method",
+      "element_id": "pref-email",
+      "css_classes": [],
+      "data_keys": [],
+      "framework_attrs": [],
+      "declared": {
+        "raw": null,
+        "token": null,
+        "modifiers": [],
+        "section": null,
+        "is_off_spec": false,
+        "is_off": false
+      },
+      "text": {
+        "label_for": "By email",
+        "label_ancestor": null,
+        "aria_label": null,
+        "aria_labelledby_text": null,
+        "aria_describedby_text": null,
+        "title": null,
+        "placeholder": null,
+        "preceding_text": null,
+        "legend": "How should we contact you",
+        "section_heading": "Preferences",
+        "form_accessible_name": null
+      },
+      "norm": {
+        "label_tokens": [
+          "by",
+          "email"
+        ],
+        "label_source": "label_for",
+        "identifier_tokens": [
+          "contact",
+          "method",
+          "pref",
+          "email"
+        ],
+        "context_tokens": [
+          "how",
+          "should",
+          "we",
+          "contact",
+          "you",
+          "preferences"
+        ],
+        "all_tokens": [
+          "by",
+          "email",
+          "contact",
+          "method",
+          "pref",
+          "email",
+          "how",
+          "should",
+          "we",
+          "contact",
+          "you",
+          "preferences"
+        ],
+        "text_blob": "L:by L:email I:contact I:method I:pref I:email C:how C:should C:we C:contact C:you C:preferences"
+      },
+      "form_index": 0,
+      "fieldset_index": 0,
+      "sibling_control_count": 0,
+      "group_role": "radio_member",
+      "group_id": "radio-1",
+      "is_visible": true,
+      "undetectable_reason": null
+    },
+    {
+      "selector": "#pref-post",
+      "frame_path": [],
+      "shadow_path": [],
+      "document_index": 1,
+      "tag": "input",
+      "input_type": "radio",
+      "inputmode": null,
+      "pattern": null,
+      "maxlength": null,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "option_labels": [],
+      "option_values": [],
+      "name": "contact_method",
+      "element_id": "pref-post",
+      "css_classes": [],
+      "data_keys": [],
+      "framework_attrs": [],
+      "declared": {
+        "raw": null,
+        "token": null,
+        "modifiers": [],
+        "section": null,
+        "is_off_spec": false,
+        "is_off": false
+      },
+      "text": {
+        "label_for": "By post",
+        "label_ancestor": null,
+        "aria_label": null,
+        "aria_labelledby_text": null,
+        "aria_describedby_text": null,
+        "title": null,
+        "placeholder": null,
+        "preceding_text": null,
+        "legend": "How should we contact you",
+        "section_heading": "Preferences",
+        "form_accessible_name": null
+      },
+      "norm": {
+        "label_tokens": [
+          "by",
+          "post"
+        ],
+        "label_source": "label_for",
+        "identifier_tokens": [
+          "contact",
+          "method",
+          "pref",
+          "post"
+        ],
+        "context_tokens": [
+          "how",
+          "should",
+          "we",
+          "contact",
+          "you",
+          "preferences"
+        ],
+        "all_tokens": [
+          "by",
+          "post",
+          "contact",
+          "method",
+          "pref",
+          "post",
+          "how",
+          "should",
+          "we",
+          "contact",
+          "you",
+          "preferences"
+        ],
+        "text_blob": "L:by L:post I:contact I:method I:pref I:post C:how C:should C:we C:contact C:you C:preferences"
+      },
+      "form_index": 1,
+      "fieldset_index": 1,
+      "sibling_control_count": 0,
+      "group_role": "radio_member",
+      "group_id": "radio-1",
+      "is_visible": true,
+      "undetectable_reason": null
+    },
+    {
+      "selector": "#pref-phone",
+      "frame_path": [],
+      "shadow_path": [],
+      "document_index": 2,
+      "tag": "input",
+      "input_type": "radio",
+      "inputmode": null,
+      "pattern": null,
+      "maxlength": null,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "option_labels": [],
+      "option_values": [],
+      "name": "contact_method",
+      "element_id": "pref-phone",
+      "css_classes": [],
+      "data_keys": [],
+      "framework_attrs": [],
+      "declared": {
+        "raw": null,
+        "token": null,
+        "modifiers": [],
+        "section": null,
+        "is_off_spec": false,
+        "is_off": false
+      },
+      "text": {
+        "label_for": "By telephone",
+        "label_ancestor": null,
+        "aria_label": null,
+        "aria_labelledby_text": null,
+        "aria_describedby_text": null,
+        "title": null,
+        "placeholder": null,
+        "preceding_text": null,
+        "legend": "How should we contact you",
+        "section_heading": "Preferences",
+        "form_accessible_name": null
+      },
+      "norm": {
+        "label_tokens": [
+          "by",
+          "telephone"
+        ],
+        "label_source": "label_for",
+        "identifier_tokens": [
+          "contact",
+          "method",
+          "pref",
+          "phone"
+        ],
+        "context_tokens": [
+          "how",
+          "should",
+          "we",
+          "contact",
+          "you",
+          "preferences"
+        ],
+        "all_tokens": [
+          "by",
+          "telephone",
+          "contact",
+          "method",
+          "pref",
+          "phone",
+          "how",
+          "should",
+          "we",
+          "contact",
+          "you",
+          "preferences"
+        ],
+        "text_blob": "L:by L:telephone I:contact I:method I:pref I:phone C:how C:should C:we C:contact C:you C:preferences"
+      },
+      "form_index": 2,
+      "fieldset_index": 2,
+      "sibling_control_count": 0,
+      "group_role": "radio_member",
+      "group_id": "radio-1",
+      "is_visible": true,
+      "undetectable_reason": null
+    },
+    {
+      "selector": "#pref-offers",
+      "frame_path": [],
+      "shadow_path": [],
+      "document_index": 3,
+      "tag": "input",
+      "input_type": "checkbox",
+      "inputmode": null,
+      "pattern": null,
+      "maxlength": null,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "option_labels": [],
+      "option_values": [],
+      "name": "topics",
+      "element_id": "pref-offers",
+      "css_classes": [],
+      "data_keys": [],
+      "framework_attrs": [],
+      "declared": {
+        "raw": null,
+        "token": null,
+        "modifiers": [],
+        "section": null,
+        "is_off_spec": false,
+        "is_off": false
+      },
+      "text": {
+        "label_for": "Offers",
+        "label_ancestor": null,
+        "aria_label": null,
+        "aria_labelledby_text": null,
+        "aria_describedby_text": null,
+        "title": null,
+        "placeholder": null,
+        "preceding_text": null,
+        "legend": "What may we send you",
+        "section_heading": "Preferences",
+        "form_accessible_name": null
+      },
+      "norm": {
+        "label_tokens": [
+          "offers"
+        ],
+        "label_source": "label_for",
+        "identifier_tokens": [
+          "topics",
+          "pref",
+          "offers"
+        ],
+        "context_tokens": [
+          "what",
+          "may",
+          "we",
+          "send",
+          "you",
+          "preferences"
+        ],
+        "all_tokens": [
+          "offers",
+          "topics",
+          "pref",
+          "offers",
+          "what",
+          "may",
+          "we",
+          "send",
+          "you",
+          "preferences"
+        ],
+        "text_blob": "L:offers I:topics I:pref I:offers C:what C:may C:we C:send C:you C:preferences"
+      },
+      "form_index": 3,
+      "fieldset_index": 0,
+      "sibling_control_count": 0,
+      "group_role": "checkbox_member",
+      "group_id": "checkbox-1",
+      "is_visible": true,
+      "undetectable_reason": null
+    },
+    {
+      "selector": "#pref-news",
+      "frame_path": [],
+      "shadow_path": [],
+      "document_index": 4,
+      "tag": "input",
+      "input_type": "checkbox",
+      "inputmode": null,
+      "pattern": null,
+      "maxlength": null,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "option_labels": [],
+      "option_values": [],
+      "name": "topics",
+      "element_id": "pref-news",
+      "css_classes": [],
+      "data_keys": [],
+      "framework_attrs": [],
+      "declared": {
+        "raw": null,
+        "token": null,
+        "modifiers": [],
+        "section": null,
+        "is_off_spec": false,
+        "is_off": false
+      },
+      "text": {
+        "label_for": "Newsletter",
+        "label_ancestor": null,
+        "aria_label": null,
+        "aria_labelledby_text": null,
+        "aria_describedby_text": null,
+        "title": null,
+        "placeholder": null,
+        "preceding_text": null,
+        "legend": "What may we send you",
+        "section_heading": "Preferences",
+        "form_accessible_name": null
+      },
+      "norm": {
+        "label_tokens": [
+          "newsletter"
+        ],
+        "label_source": "label_for",
+        "identifier_tokens": [
+          "topics",
+          "pref",
+          "news"
+        ],
+        "context_tokens": [
+          "what",
+          "may",
+          "we",
+          "send",
+          "you",
+          "preferences"
+        ],
+        "all_tokens": [
+          "newsletter",
+          "topics",
+          "pref",
+          "news",
+          "what",
+          "may",
+          "we",
+          "send",
+          "you",
+          "preferences"
+        ],
+        "text_blob": "L:newsletter I:topics I:pref I:news C:what C:may C:we C:send C:you C:preferences"
+      },
+      "form_index": 4,
+      "fieldset_index": 1,
+      "sibling_control_count": 0,
+      "group_role": "checkbox_member",
+      "group_id": "checkbox-1",
+      "is_visible": true,
+      "undetectable_reason": null
+    },
+    {
+      "selector": "#pref-terms",
+      "frame_path": [],
+      "shadow_path": [],
+      "document_index": 5,
+      "tag": "input",
+      "input_type": "checkbox",
+      "inputmode": null,
+      "pattern": null,
+      "maxlength": null,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "option_labels": [],
+      "option_values": [],
+      "name": "terms_accepted",
+      "element_id": "pref-terms",
+      "css_classes": [],
+      "data_keys": [],
+      "framework_attrs": [],
+      "declared": {
+        "raw": null,
+        "token": null,
+        "modifiers": [],
+        "section": null,
+        "is_off_spec": false,
+        "is_off": false
+      },
+      "text": {
+        "label_for": "I accept the terms",
+        "label_ancestor": null,
+        "aria_label": null,
+        "aria_labelledby_text": null,
+        "aria_describedby_text": null,
+        "title": null,
+        "placeholder": null,
+        "preceding_text": null,
+        "legend": null,
+        "section_heading": "Preferences",
+        "form_accessible_name": null
+      },
+      "norm": {
+        "label_tokens": [
+          "i",
+          "accept",
+          "the",
+          "terms"
+        ],
+        "label_source": "label_for",
+        "identifier_tokens": [
+          "terms",
+          "accepted",
+          "pref",
+          "terms"
+        ],
+        "context_tokens": [
+          "preferences"
+        ],
+        "all_tokens": [
+          "i",
+          "accept",
+          "the",
+          "terms",
+          "terms",
+          "accepted",
+          "pref",
+          "terms",
+          "preferences"
+        ],
+        "text_blob": "L:i L:accept L:the L:terms I:terms I:accepted I:pref I:terms C:preferences"
+      },
+      "form_index": 5,
+      "fieldset_index": null,
+      "sibling_control_count": 0,
+      "group_role": "none",
+      "group_id": null,
+      "is_visible": true,
+      "undetectable_reason": null
+    }
+  ],
+  "honeypots": [],
+  "canvas_regions": [],
+  "warnings": [],
+  "truncated": false,
+  "frame_count": 1
+}

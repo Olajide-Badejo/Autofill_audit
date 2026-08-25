@@ -1,0 +1,54 @@
+<!doctype html>
+<!--
+  Tests: a card expiry rendered as a month select beside a text input for the
+  year, which spec section 9.5 names explicitly as the second shape of the pair.
+
+  The year half has no option list to key on, so it is recognised from its
+  label and identifier instead. That is why the detector accepts a substring
+  match on a small multilingual word list rather than an exact token: the
+  identifier here is card_expyear, and no stemmer is going to turn expyear into
+  year.
+
+  What it proves:
+    - a select and a text input are paired
+    - the pair is still detected when the two halves share one parent and there
+      is no fieldset and no legend, which is how the hostile markup tier renders
+      it
+  Hand authored. Not a copy of any live site.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Card expiry</title>
+</head>
+<body>
+<main>
+<h1>Card expiry</h1>
+<form name="pay" method="post" action="#">
+<div class="block">
+<h2>Card</h2>
+<div class="row">
+<div class="field">
+<label for="card-expmonth">Expiry month</label>
+<select id="card-expmonth" name="card_expmonth">
+<option value="1">1</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">4</option>
+<option value="5">5</option>
+<option value="6">6</option>
+<option value="7">7</option>
+<option value="8">8</option>
+<option value="9">9</option>
+<option value="10">10</option>
+<option value="11">11</option>
+<option value="12">12</option>
+</select>
+<input id="card-expyear" name="card_expyear" type="text" inputmode="numeric" maxlength="4" placeholder="YYYY">
+</div>
+</div>
+</div>
+</form>
+</main>
+</body>
+</html>

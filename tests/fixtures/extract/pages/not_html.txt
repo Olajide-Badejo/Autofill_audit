@@ -1,0 +1,10 @@
+Tests: a target that is not HTML, from the malformed input list of spec
+section 15.
+
+This file exists so that the loader can be asked to open something it cannot
+audit and can be seen to refuse with a sentence rather than a traceback. It
+contains no markup at all, which is the point: the loader sniffs for a tag
+rather than trusting the file extension, because a saved DOM is routinely
+called .txt and a .html file is routinely a renamed image.
+
+Nothing here should ever be parsed as a page.

@@ -1,0 +1,509 @@
+{
+  "fields": [
+    {
+      "selector": "#who-given",
+      "frame_path": [],
+      "shadow_path": [],
+      "document_index": 0,
+      "tag": "input",
+      "input_type": "text",
+      "inputmode": null,
+      "pattern": null,
+      "maxlength": null,
+      "required": true,
+      "readonly": false,
+      "disabled": false,
+      "option_labels": [],
+      "option_values": [],
+      "name": "who_given",
+      "element_id": "who-given",
+      "css_classes": [],
+      "data_keys": [],
+      "framework_attrs": [],
+      "declared": {
+        "raw": "given-name",
+        "token": "given-name",
+        "modifiers": [],
+        "section": null,
+        "is_off_spec": false,
+        "is_off": false
+      },
+      "text": {
+        "label_for": "First name",
+        "label_ancestor": null,
+        "aria_label": null,
+        "aria_labelledby_text": null,
+        "aria_describedby_text": null,
+        "title": null,
+        "placeholder": null,
+        "preceding_text": null,
+        "legend": null,
+        "section_heading": "Who is it for",
+        "form_accessible_name": null
+      },
+      "norm": {
+        "label_tokens": [
+          "first",
+          "name"
+        ],
+        "label_source": "label_for",
+        "identifier_tokens": [
+          "who",
+          "given",
+          "who",
+          "given"
+        ],
+        "context_tokens": [
+          "who",
+          "is",
+          "it",
+          "for"
+        ],
+        "all_tokens": [
+          "first",
+          "name",
+          "who",
+          "given",
+          "who",
+          "given",
+          "who",
+          "is",
+          "it",
+          "for"
+        ],
+        "text_blob": "L:first L:name I:who I:given I:who I:given C:who C:is C:it C:for"
+      },
+      "form_index": 0,
+      "fieldset_index": null,
+      "sibling_control_count": 0,
+      "group_role": "none",
+      "group_id": null,
+      "is_visible": true,
+      "undetectable_reason": null
+    },
+    {
+      "selector": "#who-family",
+      "frame_path": [],
+      "shadow_path": [],
+      "document_index": 1,
+      "tag": "input",
+      "input_type": "text",
+      "inputmode": null,
+      "pattern": null,
+      "maxlength": null,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "option_labels": [],
+      "option_values": [],
+      "name": "who_family",
+      "element_id": "who-family",
+      "css_classes": [],
+      "data_keys": [],
+      "framework_attrs": [],
+      "declared": {
+        "raw": "family-name",
+        "token": "family-name",
+        "modifiers": [],
+        "section": null,
+        "is_off_spec": false,
+        "is_off": false
+      },
+      "text": {
+        "label_for": "Last name",
+        "label_ancestor": null,
+        "aria_label": null,
+        "aria_labelledby_text": null,
+        "aria_describedby_text": null,
+        "title": null,
+        "placeholder": null,
+        "preceding_text": null,
+        "legend": null,
+        "section_heading": "Who is it for",
+        "form_accessible_name": null
+      },
+      "norm": {
+        "label_tokens": [
+          "last",
+          "name"
+        ],
+        "label_source": "label_for",
+        "identifier_tokens": [
+          "who",
+          "family",
+          "who",
+          "family"
+        ],
+        "context_tokens": [
+          "who",
+          "is",
+          "it",
+          "for"
+        ],
+        "all_tokens": [
+          "last",
+          "name",
+          "who",
+          "family",
+          "who",
+          "family",
+          "who",
+          "is",
+          "it",
+          "for"
+        ],
+        "text_blob": "L:last L:name I:who I:family I:who I:family C:who C:is C:it C:for"
+      },
+      "form_index": 1,
+      "fieldset_index": null,
+      "sibling_control_count": 0,
+      "group_role": "none",
+      "group_id": null,
+      "is_visible": true,
+      "undetectable_reason": null
+    },
+    {
+      "selector": "#who-email",
+      "frame_path": [],
+      "shadow_path": [],
+      "document_index": 2,
+      "tag": "input",
+      "input_type": "email",
+      "inputmode": null,
+      "pattern": null,
+      "maxlength": null,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "option_labels": [],
+      "option_values": [],
+      "name": "who_email",
+      "element_id": "who-email",
+      "css_classes": [],
+      "data_keys": [],
+      "framework_attrs": [],
+      "declared": {
+        "raw": "email",
+        "token": "email",
+        "modifiers": [],
+        "section": null,
+        "is_off_spec": false,
+        "is_off": false
+      },
+      "text": {
+        "label_for": "Email address",
+        "label_ancestor": null,
+        "aria_label": null,
+        "aria_labelledby_text": null,
+        "aria_describedby_text": null,
+        "title": null,
+        "placeholder": "you@example.com",
+        "preceding_text": null,
+        "legend": null,
+        "section_heading": "Who is it for",
+        "form_accessible_name": null
+      },
+      "norm": {
+        "label_tokens": [
+          "email",
+          "address"
+        ],
+        "label_source": "label_for",
+        "identifier_tokens": [
+          "who",
+          "email",
+          "who",
+          "email"
+        ],
+        "context_tokens": [
+          "who",
+          "is",
+          "it",
+          "for"
+        ],
+        "all_tokens": [
+          "email",
+          "address",
+          "who",
+          "email",
+          "who",
+          "email",
+          "who",
+          "is",
+          "it",
+          "for"
+        ],
+        "text_blob": "L:email L:address I:who I:email I:who I:email C:who C:is C:it C:for"
+      },
+      "form_index": 2,
+      "fieldset_index": null,
+      "sibling_control_count": 0,
+      "group_role": "none",
+      "group_id": null,
+      "is_visible": true,
+      "undetectable_reason": null
+    },
+    {
+      "selector": "#where-line1",
+      "frame_path": [],
+      "shadow_path": [],
+      "document_index": 3,
+      "tag": "input",
+      "input_type": "text",
+      "inputmode": null,
+      "pattern": null,
+      "maxlength": null,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "option_labels": [],
+      "option_values": [],
+      "name": "where_line1",
+      "element_id": "where-line1",
+      "css_classes": [],
+      "data_keys": [],
+      "framework_attrs": [],
+      "declared": {
+        "raw": "section-gift shipping address-line1",
+        "token": "address-line1",
+        "modifiers": [
+          "shipping"
+        ],
+        "section": "section-gift",
+        "is_off_spec": false,
+        "is_off": false
+      },
+      "text": {
+        "label_for": "Street address",
+        "label_ancestor": null,
+        "aria_label": null,
+        "aria_labelledby_text": null,
+        "aria_describedby_text": null,
+        "title": null,
+        "placeholder": null,
+        "preceding_text": null,
+        "legend": null,
+        "section_heading": "Where is it going",
+        "form_accessible_name": null
+      },
+      "norm": {
+        "label_tokens": [
+          "street",
+          "address"
+        ],
+        "label_source": "label_for",
+        "identifier_tokens": [
+          "where",
+          "line",
+          "1",
+          "where",
+          "line",
+          "1"
+        ],
+        "context_tokens": [
+          "where",
+          "is",
+          "it",
+          "going"
+        ],
+        "all_tokens": [
+          "street",
+          "address",
+          "where",
+          "line",
+          "1",
+          "where",
+          "line",
+          "1",
+          "where",
+          "is",
+          "it",
+          "going"
+        ],
+        "text_blob": "L:street L:address I:where I:line I:1 I:where I:line I:1 C:where C:is C:it C:going"
+      },
+      "form_index": 3,
+      "fieldset_index": null,
+      "sibling_control_count": 0,
+      "group_role": "none",
+      "group_id": null,
+      "is_visible": true,
+      "undetectable_reason": null
+    },
+    {
+      "selector": "#where-postcode",
+      "frame_path": [],
+      "shadow_path": [],
+      "document_index": 4,
+      "tag": "input",
+      "input_type": "text",
+      "inputmode": "numeric",
+      "pattern": null,
+      "maxlength": 10,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "option_labels": [],
+      "option_values": [],
+      "name": "where_postcode",
+      "element_id": "where-postcode",
+      "css_classes": [],
+      "data_keys": [],
+      "framework_attrs": [],
+      "declared": {
+        "raw": "shipping postal-code",
+        "token": "postal-code",
+        "modifiers": [
+          "shipping"
+        ],
+        "section": null,
+        "is_off_spec": false,
+        "is_off": false
+      },
+      "text": {
+        "label_for": "Postcode",
+        "label_ancestor": null,
+        "aria_label": null,
+        "aria_labelledby_text": null,
+        "aria_describedby_text": null,
+        "title": null,
+        "placeholder": null,
+        "preceding_text": null,
+        "legend": null,
+        "section_heading": "Where is it going",
+        "form_accessible_name": null
+      },
+      "norm": {
+        "label_tokens": [
+          "postcode"
+        ],
+        "label_source": "label_for",
+        "identifier_tokens": [
+          "where",
+          "postcode",
+          "where",
+          "postcode"
+        ],
+        "context_tokens": [
+          "where",
+          "is",
+          "it",
+          "going"
+        ],
+        "all_tokens": [
+          "postcode",
+          "where",
+          "postcode",
+          "where",
+          "postcode",
+          "where",
+          "is",
+          "it",
+          "going"
+        ],
+        "text_blob": "L:postcode I:where I:postcode I:where I:postcode C:where C:is C:it C:going"
+      },
+      "form_index": 4,
+      "fieldset_index": null,
+      "sibling_control_count": 0,
+      "group_role": "none",
+      "group_id": null,
+      "is_visible": true,
+      "undetectable_reason": null
+    },
+    {
+      "selector": "#where-country",
+      "frame_path": [],
+      "shadow_path": [],
+      "document_index": 5,
+      "tag": "select",
+      "input_type": null,
+      "inputmode": null,
+      "pattern": null,
+      "maxlength": null,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "option_labels": [
+        "",
+        "United Kingdom",
+        "Ireland"
+      ],
+      "option_values": [
+        "",
+        "GB",
+        "IE"
+      ],
+      "name": "where_country",
+      "element_id": "where-country",
+      "css_classes": [],
+      "data_keys": [],
+      "framework_attrs": [],
+      "declared": {
+        "raw": "shipping country",
+        "token": "country",
+        "modifiers": [
+          "shipping"
+        ],
+        "section": null,
+        "is_off_spec": false,
+        "is_off": false
+      },
+      "text": {
+        "label_for": "Country",
+        "label_ancestor": null,
+        "aria_label": null,
+        "aria_labelledby_text": null,
+        "aria_describedby_text": null,
+        "title": null,
+        "placeholder": null,
+        "preceding_text": null,
+        "legend": null,
+        "section_heading": "Where is it going",
+        "form_accessible_name": null
+      },
+      "norm": {
+        "label_tokens": [
+          "country"
+        ],
+        "label_source": "label_for",
+        "identifier_tokens": [
+          "where",
+          "country",
+          "where",
+          "country"
+        ],
+        "context_tokens": [
+          "where",
+          "is",
+          "it",
+          "going"
+        ],
+        "all_tokens": [
+          "country",
+          "where",
+          "country",
+          "where",
+          "country",
+          "where",
+          "is",
+          "it",
+          "going"
+        ],
+        "text_blob": "L:country I:where I:country I:where I:country C:where C:is C:it C:going"
+      },
+      "form_index": 5,
+      "fieldset_index": null,
+      "sibling_control_count": 0,
+      "group_role": "none",
+      "group_id": null,
+      "is_visible": true,
+      "undetectable_reason": null
+    }
+  ],
+  "honeypots": [],
+  "canvas_regions": [],
+  "warnings": [],
+  "truncated": false,
+  "frame_count": 1
+}

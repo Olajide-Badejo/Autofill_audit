@@ -1,0 +1,50 @@
+<!doctype html>
+<!--
+  Tests: a control that does not exist at load and is appended 300 ms later.
+
+  Three hundred milliseconds is the delay the corpus generator uses, so the
+  extractor exercises one settle policy rather than two.
+
+  What it proves:
+    - the bounded wait of spec section 9.6 finds a control that a walk run at
+      the load event would have missed
+    - the settle report says a control appeared AFTER load, which is the
+      mechanism assertion spec section 15's flake policy asks for: a run that
+      merely took long enough proves nothing, and a run that saw the control
+      arrive proves the wait did its job
+    - the empty slot div is in the static markup and holds no control until the
+      timer fires, so a walk without the wait finds the container and one fewer
+      control
+  Hand authored. Not a copy of any live site.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Basket</title>
+</head>
+<body>
+<main>
+<h1>Basket</h1>
+<form name="basket" method="post" action="#">
+<div class="field">
+<label for="basket-email">Email address</label>
+<input id="basket-email" name="basket_email" type="email" autocomplete="email">
+</div>
+<div class="field" id="inj-slot-2"></div>
+</form>
+</main>
+<script>
+window.setTimeout(function () {
+  var slot = document.getElementById("inj-slot-2");
+  if (slot) {
+    var el = document.createElement('input');
+    el.setAttribute('type', "text");
+    el.setAttribute('id', "input2");
+    el.setAttribute('name', "basket_promo");
+    el.setAttribute('placeholder', "Promo code");
+    slot.appendChild(el);
+  }
+}, 300);
+</script>
+</body>
+</html>

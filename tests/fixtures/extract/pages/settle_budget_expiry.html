@@ -1,0 +1,54 @@
+<!doctype html>
+<!--
+  Tests: a page that never stops changing.
+
+  A control is appended every fifty milliseconds, forever, so the DOM-quiet
+  period of spec section 9.6 is never reached and the settle budget is the thing
+  that ends the wait.
+
+  What it proves:
+    - the wait is bounded. It ends, on a page designed so that an unbounded one
+      would not.
+    - the result carries the INCOMPLETE warning, which is the data P3 turns into
+      an INFO-severity EXTRACTION_INCOMPLETE finding, rather than returning a
+      short list that reads like the whole page
+    - what did exist is still extracted. Extract what is there, say the page was
+      still moving, never wait forever and never pretend.
+
+  This page is not one of the thirteen fixtures of spec section 15 layer 2 and
+  has no committed descriptor list, because its point is the page-level warning
+  and its control count is a function of how fast the machine ran.
+  Hand authored. Not a copy of any live site.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Live form</title>
+</head>
+<body>
+<main>
+<h1>Live form</h1>
+<form name="live" method="post" action="#">
+<div class="field">
+<label for="live-email">Email address</label>
+<input id="live-email" name="live_email" type="email" autocomplete="email">
+</div>
+<div id="live-slot"></div>
+</form>
+</main>
+<script>
+(function () {
+  var counter = 0;
+  window.setInterval(function () {
+    var slot = document.getElementById('live-slot');
+    if (!slot) { return; }
+    counter += 1;
+    var el = document.createElement('input');
+    el.setAttribute('type', 'text');
+    el.setAttribute('name', 'live_extra_' + counter);
+    slot.appendChild(el);
+  }, 50);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,282 @@
+{
+  "fields": [
+    {
+      "selector": "#card-expmonth",
+      "frame_path": [],
+      "shadow_path": [],
+      "document_index": 0,
+      "tag": "select",
+      "input_type": null,
+      "inputmode": null,
+      "pattern": null,
+      "maxlength": null,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "option_labels": [
+        "Januar",
+        "Februar",
+        "Maerz",
+        "April",
+        "Mai",
+        "Juni",
+        "Juli",
+        "August",
+        "September",
+        "Oktober",
+        "November",
+        "Dezember"
+      ],
+      "option_values": [
+        "01",
+        "02",
+        "03",
+        "04",
+        "05",
+        "06",
+        "07",
+        "08",
+        "09",
+        "10",
+        "11",
+        "12"
+      ],
+      "name": "card_expmonth",
+      "element_id": "card-expmonth",
+      "css_classes": [],
+      "data_keys": [],
+      "framework_attrs": [],
+      "declared": {
+        "raw": null,
+        "token": null,
+        "modifiers": [],
+        "section": null,
+        "is_off_spec": false,
+        "is_off": false
+      },
+      "text": {
+        "label_for": "Month",
+        "label_ancestor": null,
+        "aria_label": null,
+        "aria_labelledby_text": null,
+        "aria_describedby_text": null,
+        "title": null,
+        "placeholder": null,
+        "preceding_text": null,
+        "legend": "Expiration date",
+        "section_heading": "Card",
+        "form_accessible_name": null
+      },
+      "norm": {
+        "label_tokens": [
+          "month"
+        ],
+        "label_source": "label_for",
+        "identifier_tokens": [
+          "card",
+          "expmonth",
+          "card",
+          "expmonth"
+        ],
+        "context_tokens": [
+          "expiration",
+          "date",
+          "card"
+        ],
+        "all_tokens": [
+          "month",
+          "card",
+          "expmonth",
+          "card",
+          "expmonth",
+          "expiration",
+          "date",
+          "card"
+        ],
+        "text_blob": "L:month I:card I:expmonth I:card I:expmonth C:expiration C:date C:card"
+      },
+      "form_index": 0,
+      "fieldset_index": 0,
+      "sibling_control_count": 0,
+      "group_role": "cc_exp_month",
+      "group_id": "expiry-1",
+      "is_visible": true,
+      "undetectable_reason": null
+    },
+    {
+      "selector": "#card-expyear",
+      "frame_path": [],
+      "shadow_path": [],
+      "document_index": 1,
+      "tag": "select",
+      "input_type": null,
+      "inputmode": null,
+      "pattern": null,
+      "maxlength": null,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "option_labels": [
+        "2026",
+        "2027",
+        "2028",
+        "2029",
+        "2030"
+      ],
+      "option_values": [
+        "2026",
+        "2027",
+        "2028",
+        "2029",
+        "2030"
+      ],
+      "name": "card_expyear",
+      "element_id": "card-expyear",
+      "css_classes": [],
+      "data_keys": [],
+      "framework_attrs": [],
+      "declared": {
+        "raw": null,
+        "token": null,
+        "modifiers": [],
+        "section": null,
+        "is_off_spec": false,
+        "is_off": false
+      },
+      "text": {
+        "label_for": "Year",
+        "label_ancestor": null,
+        "aria_label": null,
+        "aria_labelledby_text": null,
+        "aria_describedby_text": null,
+        "title": null,
+        "placeholder": null,
+        "preceding_text": null,
+        "legend": "Expiration date",
+        "section_heading": "Card",
+        "form_accessible_name": null
+      },
+      "norm": {
+        "label_tokens": [
+          "year"
+        ],
+        "label_source": "label_for",
+        "identifier_tokens": [
+          "card",
+          "expyear",
+          "card",
+          "expyear"
+        ],
+        "context_tokens": [
+          "expiration",
+          "date",
+          "card"
+        ],
+        "all_tokens": [
+          "year",
+          "card",
+          "expyear",
+          "card",
+          "expyear",
+          "expiration",
+          "date",
+          "card"
+        ],
+        "text_blob": "L:year I:card I:expyear I:card I:expyear C:expiration C:date C:card"
+      },
+      "form_index": 1,
+      "fieldset_index": 1,
+      "sibling_control_count": 0,
+      "group_role": "cc_exp_year",
+      "group_id": "expiry-1",
+      "is_visible": true,
+      "undetectable_reason": null
+    },
+    {
+      "selector": "#card-country",
+      "frame_path": [],
+      "shadow_path": [],
+      "document_index": 2,
+      "tag": "select",
+      "input_type": null,
+      "inputmode": null,
+      "pattern": null,
+      "maxlength": null,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "option_labels": [
+        "",
+        "Deutschland",
+        "Oesterreich"
+      ],
+      "option_values": [
+        "",
+        "DE",
+        "AT"
+      ],
+      "name": "card_country",
+      "element_id": "card-country",
+      "css_classes": [],
+      "data_keys": [],
+      "framework_attrs": [],
+      "declared": {
+        "raw": "country",
+        "token": "country",
+        "modifiers": [],
+        "section": null,
+        "is_off_spec": false,
+        "is_off": false
+      },
+      "text": {
+        "label_for": "Country",
+        "label_ancestor": null,
+        "aria_label": null,
+        "aria_labelledby_text": null,
+        "aria_describedby_text": null,
+        "title": null,
+        "placeholder": null,
+        "preceding_text": null,
+        "legend": null,
+        "section_heading": "Card",
+        "form_accessible_name": null
+      },
+      "norm": {
+        "label_tokens": [
+          "country"
+        ],
+        "label_source": "label_for",
+        "identifier_tokens": [
+          "card",
+          "country",
+          "card",
+          "country"
+        ],
+        "context_tokens": [
+          "card"
+        ],
+        "all_tokens": [
+          "country",
+          "card",
+          "country",
+          "card",
+          "country",
+          "card"
+        ],
+        "text_blob": "L:country I:card I:country I:card I:country C:card"
+      },
+      "form_index": 2,
+      "fieldset_index": null,
+      "sibling_control_count": 0,
+      "group_role": "none",
+      "group_id": null,
+      "is_visible": true,
+      "undetectable_reason": null
+    }
+  ],
+  "honeypots": [],
+  "canvas_regions": [],
+  "warnings": [],
+  "truncated": false,
+  "frame_count": 1
+}

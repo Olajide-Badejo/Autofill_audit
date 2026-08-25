@@ -1,0 +1,42 @@
+<!doctype html>
+<!--
+  Tests: a form inside a frame this tool cannot read.
+
+  The iframe points at a data: URL, which Chromium gives an opaque origin, so
+  the parent document cannot reach contentDocument. That is exactly the
+  condition a hosted payment field creates, and it reproduces offline through
+  file:// with no network and no second server.
+
+  What it proves:
+    - one synthetic descriptor per unreadable frame, carrying
+      undetectable_reason "cross-origin-frame" (spec section 9.6), at the
+      position the frame element occupies rather than appended somewhere
+    - the walk does not stop: the control after the frame is still collected
+    - a page-level FRAME_UNREADABLE warning names the frame
+
+  This is common and correct on real checkouts, so the finding P3 raises from it
+  says so rather than implying a defect.
+  Hand authored. Not a copy of any live site.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Checkout</title>
+</head>
+<body>
+<main>
+<h1>Checkout</h1>
+<form name="outer" method="post" action="#">
+<div class="field">
+<label for="outer-name">Name on card</label>
+<input id="outer-name" name="outer_name" type="text" autocomplete="cc-name">
+</div>
+<iframe id="hosted-card" title="Card number" width="400" height="120" src="data:text/html,%3Cform%3E%3Cinput%20id%3D%22pan%22%20name%3D%22pan%22%3E%3C%2Fform%3E"></iframe>
+<div class="field">
+<label for="outer-postcode">Billing postcode</label>
+<input id="outer-postcode" name="outer_postcode" type="text" autocomplete="billing postal-code">
+</div>
+</form>
+</main>
+</body>
+</html>

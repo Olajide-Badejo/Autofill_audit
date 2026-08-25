@@ -1,0 +1,236 @@
+{
+  "fields": [
+    {
+      "selector": "#login-user",
+      "frame_path": [],
+      "shadow_path": [],
+      "document_index": 0,
+      "tag": "input",
+      "input_type": "text",
+      "inputmode": null,
+      "pattern": null,
+      "maxlength": null,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "option_labels": [],
+      "option_values": [],
+      "name": "login_user",
+      "element_id": "login-user",
+      "css_classes": [],
+      "data_keys": [],
+      "framework_attrs": [],
+      "declared": {
+        "raw": "username",
+        "token": "username",
+        "modifiers": [],
+        "section": null,
+        "is_off_spec": false,
+        "is_off": false
+      },
+      "text": {
+        "label_for": "Username",
+        "label_ancestor": null,
+        "aria_label": null,
+        "aria_labelledby_text": null,
+        "aria_describedby_text": null,
+        "title": null,
+        "placeholder": null,
+        "preceding_text": null,
+        "legend": null,
+        "section_heading": "Sign in",
+        "form_accessible_name": null
+      },
+      "norm": {
+        "label_tokens": [
+          "username"
+        ],
+        "label_source": "label_for",
+        "identifier_tokens": [
+          "login",
+          "user",
+          "login",
+          "user"
+        ],
+        "context_tokens": [
+          "sign",
+          "in"
+        ],
+        "all_tokens": [
+          "username",
+          "login",
+          "user",
+          "login",
+          "user",
+          "sign",
+          "in"
+        ],
+        "text_blob": "L:username I:login I:user I:login I:user C:sign C:in"
+      },
+      "form_index": 0,
+      "fieldset_index": null,
+      "sibling_control_count": 0,
+      "group_role": "none",
+      "group_id": null,
+      "is_visible": true,
+      "undetectable_reason": null
+    },
+    {
+      "selector": "#ce-1 >>> input:nth-of-type(1)",
+      "frame_path": [],
+      "shadow_path": [
+        "#ce-1"
+      ],
+      "document_index": 1,
+      "tag": "input",
+      "input_type": "password",
+      "inputmode": null,
+      "pattern": null,
+      "maxlength": null,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "option_labels": [],
+      "option_values": [],
+      "name": "login_password",
+      "element_id": null,
+      "css_classes": [],
+      "data_keys": [],
+      "framework_attrs": [],
+      "declared": {
+        "raw": null,
+        "token": null,
+        "modifiers": [],
+        "section": null,
+        "is_off_spec": false,
+        "is_off": false
+      },
+      "text": {
+        "label_for": null,
+        "label_ancestor": null,
+        "aria_label": null,
+        "aria_labelledby_text": null,
+        "aria_describedby_text": null,
+        "title": null,
+        "placeholder": "Password",
+        "preceding_text": null,
+        "legend": null,
+        "section_heading": "Sign in",
+        "form_accessible_name": null
+      },
+      "norm": {
+        "label_tokens": [
+          "password"
+        ],
+        "label_source": "placeholder",
+        "identifier_tokens": [
+          "login",
+          "password"
+        ],
+        "context_tokens": [
+          "sign",
+          "in"
+        ],
+        "all_tokens": [
+          "password",
+          "login",
+          "password",
+          "sign",
+          "in"
+        ],
+        "text_blob": "L:password I:login I:password C:sign C:in"
+      },
+      "form_index": 1,
+      "fieldset_index": null,
+      "sibling_control_count": 0,
+      "group_role": "none",
+      "group_id": null,
+      "is_visible": true,
+      "undetectable_reason": null
+    },
+    {
+      "selector": "#login-code",
+      "frame_path": [],
+      "shadow_path": [],
+      "document_index": 2,
+      "tag": "input",
+      "input_type": "text",
+      "inputmode": "numeric",
+      "pattern": null,
+      "maxlength": 6,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "option_labels": [],
+      "option_values": [],
+      "name": "login_code",
+      "element_id": "login-code",
+      "css_classes": [],
+      "data_keys": [],
+      "framework_attrs": [],
+      "declared": {
+        "raw": "one-time-code",
+        "token": "one-time-code",
+        "modifiers": [],
+        "section": null,
+        "is_off_spec": false,
+        "is_off": false
+      },
+      "text": {
+        "label_for": "One time code",
+        "label_ancestor": null,
+        "aria_label": null,
+        "aria_labelledby_text": null,
+        "aria_describedby_text": null,
+        "title": null,
+        "placeholder": null,
+        "preceding_text": null,
+        "legend": null,
+        "section_heading": "Sign in",
+        "form_accessible_name": null
+      },
+      "norm": {
+        "label_tokens": [
+          "one",
+          "time",
+          "code"
+        ],
+        "label_source": "label_for",
+        "identifier_tokens": [
+          "login",
+          "code",
+          "login",
+          "code"
+        ],
+        "context_tokens": [
+          "sign",
+          "in"
+        ],
+        "all_tokens": [
+          "one",
+          "time",
+          "code",
+          "login",
+          "code",
+          "login",
+          "code",
+          "sign",
+          "in"
+        ],
+        "text_blob": "L:one L:time L:code I:login I:code I:login I:code C:sign C:in"
+      },
+      "form_index": 2,
+      "fieldset_index": null,
+      "sibling_control_count": 0,
+      "group_role": "none",
+      "group_id": null,
+      "is_visible": true,
+      "undetectable_reason": null
+    }
+  ],
+  "honeypots": [],
+  "canvas_regions": [],
+  "warnings": [],
+  "truncated": false,
+  "frame_count": 1
+}
