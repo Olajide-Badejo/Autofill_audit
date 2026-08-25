@@ -312,3 +312,160 @@ localised. One control per form is deliberately undeterminable, and predicting
 `UNKNOWN` on it is the correct answer rather than a failure. If every hostile
 control were equally hopeless the tier would measure nothing except that the
 tier is hard.
+---
+
+## 2026-08-25: P2, the extractor
+
+The phase that turns a page into `list[FieldDescriptor]`, which spec section 5.1
+makes the only interface anything downstream sees. A classifier never sees the
+DOM and never sees an answer key; it sees a descriptor. Everything below is in
+service of that boundary being real rather than aspirational.
+
+### Where the work was put, and why it was put there
+
+The traversal script reads the DOM and returns plain JSON. Everything after that
+is Python over those records, and `descriptors_from_roots` is the seam: it takes
+the same records a browser would have produced and does the rest with no browser
+at all.
+
+That split was the single most useful decision of the phase. Selector
+generation, group detection, the honeypot rule, autocomplete parsing, and every
+normalisation step are covered by tests that run in milliseconds, and the
+browser-marked tests are left to prove the one thing only a browser can prove,
+which is that a page really does say what the records claim. It also means the
+coverage gate does not rest on Chromium being installed, which matters the first
+time a Playwright upgrade goes sideways.
+
+### The deviations, and the reasons
+
+**Spec section 9.7's step order is contradictory, and the worked example settles
+it.** The steps are numbered NFKC, casefold, de-camelCase, split, stoplist.
+Taken literally, casefolding the whole string before looking for lower-to-upper
+transitions destroys the information step 3 needs: `firstName` casefolds to
+`firstname`, in which no boundary exists, and the specification's own worked
+example (`firstName` becomes `first name`) becomes unreachable. The implemented
+reading is NFKC, then boundary insertion, then casefold each resulting token.
+Nothing step 2 exists for is lost, because casefold is applied to every token
+and both properties the specification names it for are per character. What is
+gained is that step 3 works at all.
+
+**The stoplist has to be applied twice.** `ctl00` is the one entry on spec
+section 9.7's list that names a real framework, and it cannot survive the
+letter-to-digit split, which turns it into `ctl` and `00`. A stoplist applied
+only after splitting would never match it anywhere. It is applied to the
+delimiter-separated fragments first and to the finished tokens second, with one
+list.
+
+**Rank 2 of the selector order requires the name to be unique within the form.**
+Not in the specification sketch, and it has to be there: every member of a radio
+group shares one name, so without it a group of four radios gets one selector
+four times. Recorded in `docs/findings.md`.
+
+**The canvas rule fires only on the zero-control page.** P1's handoff left this
+open, noting that the corpus has pages with plenty of controls *and* a canvas,
+which is not the shape spec section 9.6 describes. Emitting a synthetic
+descriptor for every large canvas would make every hostile checkout report one
+more field than its answer key holds, and the reconciliation the gate asks for
+would never balance. So a canvas is always recorded as a region, and the
+page-level descriptor is emitted only when the page yielded no controls at all.
+The information is there either way; what changes is whether it counts as a
+field.
+
+**Five signals from spec section 9.2 have no home in spec section 9.4.**
+`minlength`, `multiple`, `step`, `min`, and `max` are collected because 9.2 says
+to, and stop at the raw record because 9.4 is the fixed downstream contract that
+every golden test will inherit. One of them, `multiple`, is genuinely used: a
+multi-select with twelve options is a month picker to a careless detector and a
+multiple-choice control to a careful one.
+
+### What the browser actually does, which is not what I assumed
+
+Playwright can evaluate inside a cross-origin frame. It drives each frame
+through its own session, so the thing that makes a frame unreadable to this tool
+is not Playwright failing; it is the page's own same-origin policy. The
+accessibility test is therefore made from inside the parent document, by asking
+for `contentDocument` in a try block, which is exactly the check a real script on
+that page would make and exactly what spec section 9.6 means by "cannot be
+accessed".
+
+That also solved how to write the two frame fixtures offline. A `srcdoc` frame
+inherits its parent's origin and so is same origin even under `file://`, where
+two separate local files are opaque origins to each other and would not be. A
+`data:` URL frame gets an opaque origin and so is unreadable. Both reproduce
+with no network and no second server. Recorded in `docs/environment.md`.
+
+### Bugs found by the tests rather than by me
+
+**Hypothesis found the token splitter destroying combining marks.** The splitter
+was built on Python's word class, which excludes combining marks, so every one
+of them was treated as a separator. The failing case was the Turkish dotted
+capital I: casefolding it yields an `i` followed by a combining dot, splitting on
+that dot drops the dot, and a second pass over the same text returns something
+different from the first. Idempotence is a property spec section 15 layer 4
+requires, and it caught this in about two seconds.
+
+The interesting part is what else the bug broke. Splitting on combining marks
+shreds Devanagari, Thai, Hebrew with points, and anything in decomposed form. It
+would never have shown up in this project's six locales, and it would have been
+waiting for the first person to point the tool at a page outside them.
+
+**The duplicate-id fixture found a label attaching to the wrong control.** A
+label's `for` attribute names one element, the one `getElementById` would return.
+The first implementation mapped id to label and handed the same label to both
+elements carrying a duplicated id, which is somebody else's label on a control
+that has none.
+
+### Constants, resolved
+
+| Constant | Value | Reasoning |
+|---|---|---|
+| Load timeout | `15_000` ms | Generous, because a slow page is a real page. Bounded, because a page that never loads must not hang a CLI. |
+| Network idle wait | `5_000` ms | Giving up on idle is not a failure. Plenty of healthy pages hold a socket open forever. |
+| DOM quiet period | `250` ms | Longer than an animation frame, shorter than the gap a page leaves before injecting a field it means a user to see. |
+| Settle budget | `3_000` ms | Total bound on the quiet stage, so an animation that mutates forever cannot hold it off. |
+| Option truncation | `24` | Twice the largest option list this project reasons about. Spec section 9.4 gives the descriptor no field for the total option count, so the only way to tell a complete list of twelve months from the first twelve of five thousand branches is for the cut to fall where a meaningful list never reaches. |
+| Max controls | `500` | Well above any real form. Reaching it is reported, never silent. |
+| Canvas minimum area | `10_000` px squared | A hundred pixels square. Smaller canvases are sparklines and icons, and reporting those as possible hidden forms would teach a reader to skip the finding. |
+| Frame depth | `8` | Three deep is an ordinary advertising stack; eight is pathological. |
+| Expiry year window | `-5` to `+20` relative | Relative to a year the caller passes in, never to a literal, so nothing expires. Spec section 9.5 is explicit about this. |
+
+### Gate
+
+- Seventeen hand-authored fixtures, each with a header comment saying what it
+  tests and a committed expected descriptor list, all matching. The thirteen
+  spec section 15 layer 2 names, plus the cross-origin frame the gate requires
+  an outcome for, the radio and checkbox groups the corpus does not emit, and
+  the two malformed-markup pages.
+- The four hard cases shown individually: closed shadow root, cross-origin
+  frame, canvas, injected field.
+- Full corpus sweep: every form, zero unhandled exceptions, controls found equal
+  to answer-key entries, every injected control caught by the settle, every
+  shadow-hosted control walked, every canvas region recorded.
+- `make gates` green throughout: ruff, the dash check, mypy strict, pytest with
+  the coverage gate, reachability, traceability.
+
+### The one discrepancy, explained
+
+The reconciliation compares selectors as a set, not as a list, and reports order
+differences separately. An answer key lists its fields in the generator's slot
+order, which appends a tier's extra controls to the end. The extractor returns
+document order, which spec section 9.1 step 7 requires. Those agree everywhere
+except the mixed markup tier, where a hostile block sits in the middle of a form
+whose extra controls belong to that block: they render in the middle and the key
+lists them last. Every such form is on the mixed tier and nowhere else, which is
+asserted rather than assumed. The selectors are the contract; the order of the
+list is not.
+
+### What surprised me
+
+How much of the extractor turned out to be policy rather than mechanism. The DOM
+walk itself is a few dozen lines and was right almost immediately. What took the
+time was deciding what a honeypot is, which label source wins, when a canvas
+counts, whether two adjacent selects are an expiry pair, and what "cannot be
+accessed" means for a frame. Every one of those is a judgement that shows up in
+a report somebody reads, and none of them are discoverable from the DOM API.
+
+The corollary is that the tests worth having are the ones that pin the
+judgements, not the ones that pin the traversal. The traversal has a handful of
+tests; the honeypot rule, the group detector, and the selector order have
+dozens.

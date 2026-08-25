@@ -1,0 +1,319 @@
+{
+  "fields": [
+    {
+      "selector": "#broken-empty",
+      "frame_path": [],
+      "shadow_path": [],
+      "document_index": 0,
+      "tag": "input",
+      "input_type": "text",
+      "inputmode": null,
+      "pattern": null,
+      "maxlength": null,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "option_labels": [],
+      "option_values": [],
+      "name": "broken_empty",
+      "element_id": "broken-empty",
+      "css_classes": [],
+      "data_keys": [],
+      "framework_attrs": [],
+      "declared": {
+        "raw": "",
+        "token": null,
+        "modifiers": [],
+        "section": null,
+        "is_off_spec": true,
+        "is_off": false
+      },
+      "text": {
+        "label_for": "Empty declaration",
+        "label_ancestor": "Empty declaration",
+        "aria_label": null,
+        "aria_labelledby_text": null,
+        "aria_describedby_text": null,
+        "title": null,
+        "placeholder": null,
+        "preceding_text": "Empty declaration",
+        "legend": null,
+        "section_heading": "Malformed",
+        "form_accessible_name": null
+      },
+      "norm": {
+        "label_tokens": [
+          "empty",
+          "declaration"
+        ],
+        "label_source": "label_for",
+        "identifier_tokens": [
+          "broken",
+          "empty",
+          "broken",
+          "empty"
+        ],
+        "context_tokens": [
+          "empty",
+          "declaration",
+          "malformed"
+        ],
+        "all_tokens": [
+          "empty",
+          "declaration",
+          "broken",
+          "empty",
+          "broken",
+          "empty",
+          "empty",
+          "declaration",
+          "malformed"
+        ],
+        "text_blob": "L:empty L:declaration I:broken I:empty I:broken I:empty C:empty C:declaration C:malformed"
+      },
+      "form_index": 0,
+      "fieldset_index": null,
+      "sibling_control_count": 0,
+      "group_role": "none",
+      "group_id": null,
+      "is_visible": true,
+      "undetectable_reason": null
+    },
+    {
+      "selector": "#broken-modifier",
+      "frame_path": [],
+      "shadow_path": [],
+      "document_index": 1,
+      "tag": "input",
+      "input_type": "text",
+      "inputmode": null,
+      "pattern": null,
+      "maxlength": null,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "option_labels": [],
+      "option_values": [],
+      "name": "broken_modifier",
+      "element_id": "broken-modifier",
+      "css_classes": [],
+      "data_keys": [],
+      "framework_attrs": [],
+      "declared": {
+        "raw": "shipping",
+        "token": null,
+        "modifiers": [
+          "shipping"
+        ],
+        "section": null,
+        "is_off_spec": true,
+        "is_off": false
+      },
+      "text": {
+        "label_for": "Modifier only",
+        "label_ancestor": null,
+        "aria_label": null,
+        "aria_labelledby_text": null,
+        "aria_describedby_text": null,
+        "title": null,
+        "placeholder": null,
+        "preceding_text": null,
+        "legend": null,
+        "section_heading": "Malformed",
+        "form_accessible_name": null
+      },
+      "norm": {
+        "label_tokens": [
+          "modifier",
+          "only"
+        ],
+        "label_source": "label_for",
+        "identifier_tokens": [
+          "broken",
+          "modifier",
+          "broken",
+          "modifier"
+        ],
+        "context_tokens": [
+          "malformed"
+        ],
+        "all_tokens": [
+          "modifier",
+          "only",
+          "broken",
+          "modifier",
+          "broken",
+          "modifier",
+          "malformed"
+        ],
+        "text_blob": "L:modifier L:only I:broken I:modifier I:broken I:modifier C:malformed"
+      },
+      "form_index": 1,
+      "fieldset_index": null,
+      "sibling_control_count": 0,
+      "group_role": "none",
+      "group_id": null,
+      "is_visible": true,
+      "undetectable_reason": null
+    },
+    {
+      "selector": "#broken-token",
+      "frame_path": [],
+      "shadow_path": [],
+      "document_index": 2,
+      "tag": "input",
+      "input_type": "text",
+      "inputmode": null,
+      "pattern": null,
+      "maxlength": null,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "option_labels": [],
+      "option_values": [],
+      "name": "broken_token",
+      "element_id": "broken-token",
+      "css_classes": [],
+      "data_keys": [],
+      "framework_attrs": [],
+      "declared": {
+        "raw": "shipping zipcode",
+        "token": "zipcode",
+        "modifiers": [
+          "shipping"
+        ],
+        "section": null,
+        "is_off_spec": true,
+        "is_off": false
+      },
+      "text": {
+        "label_for": "Invented token",
+        "label_ancestor": null,
+        "aria_label": null,
+        "aria_labelledby_text": null,
+        "aria_describedby_text": null,
+        "title": null,
+        "placeholder": null,
+        "preceding_text": null,
+        "legend": null,
+        "section_heading": "Malformed",
+        "form_accessible_name": null
+      },
+      "norm": {
+        "label_tokens": [
+          "invented",
+          "token"
+        ],
+        "label_source": "label_for",
+        "identifier_tokens": [
+          "broken",
+          "token",
+          "broken",
+          "token"
+        ],
+        "context_tokens": [
+          "malformed"
+        ],
+        "all_tokens": [
+          "invented",
+          "token",
+          "broken",
+          "token",
+          "broken",
+          "token",
+          "malformed"
+        ],
+        "text_blob": "L:invented L:token I:broken I:token I:broken I:token C:malformed"
+      },
+      "form_index": 2,
+      "fieldset_index": null,
+      "sibling_control_count": 0,
+      "group_role": "none",
+      "group_id": null,
+      "is_visible": true,
+      "undetectable_reason": null
+    },
+    {
+      "selector": "#broken-control",
+      "frame_path": [],
+      "shadow_path": [],
+      "document_index": 3,
+      "tag": "input",
+      "input_type": "text",
+      "inputmode": null,
+      "pattern": null,
+      "maxlength": null,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "option_labels": [],
+      "option_values": [],
+      "name": "broken_control",
+      "element_id": "broken-control",
+      "css_classes": [],
+      "data_keys": [],
+      "framework_attrs": [],
+      "declared": {
+        "raw": null,
+        "token": null,
+        "modifiers": [],
+        "section": null,
+        "is_off_spec": false,
+        "is_off": false
+      },
+      "text": {
+        "label_for": "Post code here​",
+        "label_ancestor": null,
+        "aria_label": null,
+        "aria_labelledby_text": null,
+        "aria_describedby_text": null,
+        "title": null,
+        "placeholder": null,
+        "preceding_text": null,
+        "legend": null,
+        "section_heading": "Malformed",
+        "form_accessible_name": null
+      },
+      "norm": {
+        "label_tokens": [
+          "post",
+          "code",
+          "here"
+        ],
+        "label_source": "label_for",
+        "identifier_tokens": [
+          "broken",
+          "control",
+          "broken",
+          "control"
+        ],
+        "context_tokens": [
+          "malformed"
+        ],
+        "all_tokens": [
+          "post",
+          "code",
+          "here",
+          "broken",
+          "control",
+          "broken",
+          "control",
+          "malformed"
+        ],
+        "text_blob": "L:post L:code L:here I:broken I:control I:broken I:control C:malformed"
+      },
+      "form_index": 3,
+      "fieldset_index": null,
+      "sibling_control_count": 0,
+      "group_role": "none",
+      "group_id": null,
+      "is_visible": true,
+      "undetectable_reason": null
+    }
+  ],
+  "honeypots": [],
+  "canvas_regions": [],
+  "warnings": [],
+  "truncated": false,
+  "frame_count": 1
+}

@@ -1,0 +1,73 @@
+<!doctype html>
+<!--
+  Tests: a card expiry rendered as two adjacent selects inside one fieldset.
+
+  What it proves:
+    - the month half and the year half get CC_EXP_MONTH and CC_EXP_YEAR and a
+      shared group id
+    - the month select is recognised from its option VALUES, which are 01 to 12
+      in every locale, rather than from its display text, which is not
+    - the country select on the same page, which also has options, is not
+      dragged into the group
+    - the legend is collected as context for both halves
+
+  The years in this file are literal, and the test that reads it freezes the
+  clock (spec section 9.5). A fixture that hardcoded a window and then compared
+  it against the real clock would pass until one January morning and then fail
+  for a reason that has nothing to do with the code under test.
+  Hand authored. Not a copy of any live site.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Card expiry</title>
+</head>
+<body>
+<main>
+<h1>Card expiry</h1>
+<form name="pay" method="post" action="#">
+<section id="sec-card" class="block">
+<h2>Card</h2>
+<fieldset>
+<legend>Expiration date</legend>
+<div class="field">
+<label for="card-expmonth">Month</label>
+<select id="card-expmonth" name="card_expmonth">
+<option value="01">Januar</option>
+<option value="02">Februar</option>
+<option value="03">Maerz</option>
+<option value="04">April</option>
+<option value="05">Mai</option>
+<option value="06">Juni</option>
+<option value="07">Juli</option>
+<option value="08">August</option>
+<option value="09">September</option>
+<option value="10">Oktober</option>
+<option value="11">November</option>
+<option value="12">Dezember</option>
+</select>
+</div>
+<div class="field">
+<label for="card-expyear">Year</label>
+<select id="card-expyear" name="card_expyear">
+<option value="2026">2026</option>
+<option value="2027">2027</option>
+<option value="2028">2028</option>
+<option value="2029">2029</option>
+<option value="2030">2030</option>
+</select>
+</div>
+</fieldset>
+<div class="field">
+<label for="card-country">Country</label>
+<select id="card-country" name="card_country" autocomplete="country">
+<option value=""></option>
+<option value="DE">Deutschland</option>
+<option value="AT">Oesterreich</option>
+</select>
+</div>
+</section>
+</form>
+</main>
+</body>
+</html>

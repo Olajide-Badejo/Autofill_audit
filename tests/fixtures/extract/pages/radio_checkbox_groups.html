@@ -1,0 +1,65 @@
+<!doctype html>
+<!--
+  Tests: radio and checkbox groups, which are one control to the browser and
+  several elements to the parser.
+
+  The generated corpus emits standalone consent and marketing checkboxes rather
+  than named groups, so shared-name group detection is not exercised by it and
+  needs a hand-authored fixture. This is that fixture.
+
+  What it proves:
+    - three radios sharing one name become one group with a shared group id
+    - two checkboxes sharing one name become a group of their own, with a
+      different id and a different role
+    - a lone checkbox with a unique name is NOT a group. Calling it one would
+      put a group id on a control with nobody to be grouped with.
+    - a shared name also breaks the second selector preference, because
+      form[name] [name] would resolve to all three radios at once, so every
+      member falls through to a positional path
+    - the legend is collected as context for every member, which is where the
+      group's own label lives
+  Hand authored. Not a copy of any live site.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Preferences</title>
+</head>
+<body>
+<main>
+<h1>Preferences</h1>
+<form name="prefs" method="post" action="#">
+<fieldset>
+<legend>How should we contact you</legend>
+<div class="field">
+<input id="pref-email" name="contact_method" type="radio" value="email">
+<label for="pref-email">By email</label>
+</div>
+<div class="field">
+<input id="pref-post" name="contact_method" type="radio" value="post">
+<label for="pref-post">By post</label>
+</div>
+<div class="field">
+<input id="pref-phone" name="contact_method" type="radio" value="phone">
+<label for="pref-phone">By telephone</label>
+</div>
+</fieldset>
+<fieldset>
+<legend>What may we send you</legend>
+<div class="field">
+<input id="pref-offers" name="topics" type="checkbox" value="offers">
+<label for="pref-offers">Offers</label>
+</div>
+<div class="field">
+<input id="pref-news" name="topics" type="checkbox" value="news">
+<label for="pref-news">Newsletter</label>
+</div>
+</fieldset>
+<div class="field">
+<input id="pref-terms" name="terms_accepted" type="checkbox">
+<label for="pref-terms">I accept the terms</label>
+</div>
+</form>
+</main>
+</body>
+</html>

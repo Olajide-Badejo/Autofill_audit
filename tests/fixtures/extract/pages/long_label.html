@@ -1,0 +1,44 @@
+<!doctype html>
+<!--
+  Tests: a label of ten thousand characters, from the malformed input list of
+  spec section 15.
+
+  The text is built by an inline script rather than written out, because a
+  fixture nobody can open is a fixture nobody maintains. The script runs during
+  parsing, so the label exists before the load event.
+
+  What it proves:
+    - the label is collected whole and normalised whole, and nothing raises
+    - it is not truncated silently. Truncating a signal without saying so is how
+      an extractor produces a confident wrong answer.
+    - the control beside it is unaffected
+
+  This page has no committed descriptor list. A label of ten thousand characters
+  normalises to nearly two thousand tokens, and a golden file carrying those is
+  one nobody can review, which would defeat the point of having golden files.
+  Hand authored. Not a copy of any live site.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Long label</title>
+</head>
+<body>
+<main>
+<h1>Long label</h1>
+<form name="verbose" method="post" action="#">
+<div class="field">
+<label for="verbose-line1" id="verbose-line1-label"></label>
+<input id="verbose-line1" name="verbose_line1" type="text">
+</div>
+<div class="field">
+<label for="verbose-postcode">Postcode</label>
+<input id="verbose-postcode" name="verbose_postcode" type="text" autocomplete="postal-code">
+</div>
+</form>
+</main>
+<script>
+document.getElementById('verbose-line1-label').textContent = 'Street address line '.repeat(550);
+</script>
+</body>
+</html>

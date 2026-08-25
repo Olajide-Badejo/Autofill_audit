@@ -1,0 +1,157 @@
+{
+  "fields": [
+    {
+      "selector": "#pay-number",
+      "frame_path": [],
+      "shadow_path": [],
+      "document_index": 0,
+      "tag": "input",
+      "input_type": "text",
+      "inputmode": "numeric",
+      "pattern": null,
+      "maxlength": 19,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "option_labels": [],
+      "option_values": [],
+      "name": "pay_number",
+      "element_id": "pay-number",
+      "css_classes": [],
+      "data_keys": [],
+      "framework_attrs": [],
+      "declared": {
+        "raw": "cc-number",
+        "token": "cc-number",
+        "modifiers": [],
+        "section": null,
+        "is_off_spec": false,
+        "is_off": false
+      },
+      "text": {
+        "label_for": "Card number",
+        "label_ancestor": null,
+        "aria_label": null,
+        "aria_labelledby_text": null,
+        "aria_describedby_text": null,
+        "title": null,
+        "placeholder": null,
+        "preceding_text": null,
+        "legend": null,
+        "section_heading": "Card",
+        "form_accessible_name": null
+      },
+      "norm": {
+        "label_tokens": [
+          "card",
+          "number"
+        ],
+        "label_source": "label_for",
+        "identifier_tokens": [
+          "pay",
+          "number",
+          "pay",
+          "number"
+        ],
+        "context_tokens": [
+          "card"
+        ],
+        "all_tokens": [
+          "card",
+          "number",
+          "pay",
+          "number",
+          "pay",
+          "number",
+          "card"
+        ],
+        "text_blob": "L:card L:number I:pay I:number I:pay I:number C:card"
+      },
+      "form_index": 0,
+      "fieldset_index": null,
+      "sibling_control_count": 0,
+      "group_role": "none",
+      "group_id": null,
+      "is_visible": true,
+      "undetectable_reason": null
+    },
+    {
+      "selector": "#pay-expiry",
+      "frame_path": [],
+      "shadow_path": [],
+      "document_index": 1,
+      "tag": "input",
+      "input_type": "text",
+      "inputmode": "numeric",
+      "pattern": "[0-9]{2}/[0-9]{2}",
+      "maxlength": 5,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "option_labels": [],
+      "option_values": [],
+      "name": "pay_expiry",
+      "element_id": "pay-expiry",
+      "css_classes": [],
+      "data_keys": [],
+      "framework_attrs": [],
+      "declared": {
+        "raw": null,
+        "token": null,
+        "modifiers": [],
+        "section": null,
+        "is_off_spec": false,
+        "is_off": false
+      },
+      "text": {
+        "label_for": "Expiry",
+        "label_ancestor": null,
+        "aria_label": null,
+        "aria_labelledby_text": null,
+        "aria_describedby_text": null,
+        "title": null,
+        "placeholder": "MM/YY",
+        "preceding_text": null,
+        "legend": null,
+        "section_heading": "Card",
+        "form_accessible_name": null
+      },
+      "norm": {
+        "label_tokens": [
+          "expiry"
+        ],
+        "label_source": "label_for",
+        "identifier_tokens": [
+          "pay",
+          "expiry",
+          "pay",
+          "expiry"
+        ],
+        "context_tokens": [
+          "card"
+        ],
+        "all_tokens": [
+          "expiry",
+          "pay",
+          "expiry",
+          "pay",
+          "expiry",
+          "card"
+        ],
+        "text_blob": "L:expiry I:pay I:expiry I:pay I:expiry C:card"
+      },
+      "form_index": 1,
+      "fieldset_index": null,
+      "sibling_control_count": 0,
+      "group_role": "none",
+      "group_id": null,
+      "is_visible": true,
+      "undetectable_reason": null
+    }
+  ],
+  "honeypots": [],
+  "canvas_regions": [],
+  "warnings": [],
+  "truncated": false,
+  "frame_count": 1
+}

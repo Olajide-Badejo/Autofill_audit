@@ -1,0 +1,280 @@
+{
+  "fields": [
+    {
+      "selector": "#input1",
+      "frame_path": [],
+      "shadow_path": [],
+      "document_index": 0,
+      "tag": "input",
+      "input_type": "text",
+      "inputmode": null,
+      "pattern": null,
+      "maxlength": null,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "option_labels": [],
+      "option_values": [],
+      "name": null,
+      "element_id": "input1",
+      "css_classes": [],
+      "data_keys": [],
+      "framework_attrs": [],
+      "declared": {
+        "raw": null,
+        "token": null,
+        "modifiers": [],
+        "section": null,
+        "is_off_spec": false,
+        "is_off": false
+      },
+      "text": {
+        "label_for": null,
+        "label_ancestor": null,
+        "aria_label": null,
+        "aria_labelledby_text": null,
+        "aria_describedby_text": null,
+        "title": null,
+        "placeholder": null,
+        "preceding_text": null,
+        "legend": null,
+        "section_heading": "D",
+        "form_accessible_name": null
+      },
+      "norm": {
+        "label_tokens": [],
+        "label_source": null,
+        "identifier_tokens": [
+          "1"
+        ],
+        "context_tokens": [
+          "d"
+        ],
+        "all_tokens": [
+          "1",
+          "d"
+        ],
+        "text_blob": "I:1 C:d"
+      },
+      "form_index": 0,
+      "fieldset_index": null,
+      "sibling_control_count": 0,
+      "group_role": "none",
+      "group_id": null,
+      "is_visible": true,
+      "undetectable_reason": null
+    },
+    {
+      "selector": "form[name=\"f1\"] [name=\"ctl00$txt2\"]",
+      "frame_path": [],
+      "shadow_path": [],
+      "document_index": 1,
+      "tag": "input",
+      "input_type": "text",
+      "inputmode": null,
+      "pattern": null,
+      "maxlength": null,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "option_labels": [],
+      "option_values": [],
+      "name": "ctl00$txt2",
+      "element_id": "ctl00_txt2_9f4c21ab",
+      "css_classes": [],
+      "data_keys": [],
+      "framework_attrs": [],
+      "declared": {
+        "raw": null,
+        "token": null,
+        "modifiers": [],
+        "section": null,
+        "is_off_spec": false,
+        "is_off": false
+      },
+      "text": {
+        "label_for": null,
+        "label_ancestor": null,
+        "aria_label": null,
+        "aria_labelledby_text": null,
+        "aria_describedby_text": null,
+        "title": null,
+        "placeholder": null,
+        "preceding_text": null,
+        "legend": null,
+        "section_heading": "D",
+        "form_accessible_name": null
+      },
+      "norm": {
+        "label_tokens": [],
+        "label_source": null,
+        "identifier_tokens": [
+          "txt",
+          "2",
+          "txt",
+          "2",
+          "9",
+          "f",
+          "4",
+          "c",
+          "21",
+          "ab"
+        ],
+        "context_tokens": [
+          "d"
+        ],
+        "all_tokens": [
+          "txt",
+          "2",
+          "txt",
+          "2",
+          "9",
+          "f",
+          "4",
+          "c",
+          "21",
+          "ab",
+          "d"
+        ],
+        "text_blob": "I:txt I:2 I:txt I:2 I:9 I:f I:4 I:c I:21 I:ab C:d"
+      },
+      "form_index": 1,
+      "fieldset_index": null,
+      "sibling_control_count": 0,
+      "group_role": "none",
+      "group_id": null,
+      "is_visible": true,
+      "undetectable_reason": null
+    },
+    {
+      "selector": "form[name=\"f1\"] > div:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(1) > input:nth-of-type(1)",
+      "frame_path": [],
+      "shadow_path": [],
+      "document_index": 2,
+      "tag": "input",
+      "input_type": "text",
+      "inputmode": null,
+      "pattern": null,
+      "maxlength": null,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "option_labels": [],
+      "option_values": [],
+      "name": null,
+      "element_id": null,
+      "css_classes": [],
+      "data_keys": [],
+      "framework_attrs": [],
+      "declared": {
+        "raw": null,
+        "token": null,
+        "modifiers": [],
+        "section": null,
+        "is_off_spec": false,
+        "is_off": false
+      },
+      "text": {
+        "label_for": null,
+        "label_ancestor": null,
+        "aria_label": null,
+        "aria_labelledby_text": null,
+        "aria_describedby_text": null,
+        "title": null,
+        "placeholder": null,
+        "preceding_text": null,
+        "legend": null,
+        "section_heading": "D",
+        "form_accessible_name": null
+      },
+      "norm": {
+        "label_tokens": [],
+        "label_source": null,
+        "identifier_tokens": [],
+        "context_tokens": [
+          "d"
+        ],
+        "all_tokens": [
+          "d"
+        ],
+        "text_blob": "C:d"
+      },
+      "form_index": 2,
+      "fieldset_index": null,
+      "sibling_control_count": 0,
+      "group_role": "none",
+      "group_id": null,
+      "is_visible": true,
+      "undetectable_reason": null
+    },
+    {
+      "selector": "form[name=\"f1\"] [name=\"notes\"]",
+      "frame_path": [],
+      "shadow_path": [],
+      "document_index": 3,
+      "tag": "textarea",
+      "input_type": null,
+      "inputmode": null,
+      "pattern": null,
+      "maxlength": null,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "option_labels": [],
+      "option_values": [],
+      "name": "notes",
+      "element_id": null,
+      "css_classes": [],
+      "data_keys": [],
+      "framework_attrs": [],
+      "declared": {
+        "raw": null,
+        "token": null,
+        "modifiers": [],
+        "section": null,
+        "is_off_spec": false,
+        "is_off": false
+      },
+      "text": {
+        "label_for": null,
+        "label_ancestor": null,
+        "aria_label": null,
+        "aria_labelledby_text": null,
+        "aria_describedby_text": null,
+        "title": null,
+        "placeholder": null,
+        "preceding_text": null,
+        "legend": null,
+        "section_heading": "D",
+        "form_accessible_name": null
+      },
+      "norm": {
+        "label_tokens": [],
+        "label_source": null,
+        "identifier_tokens": [
+          "notes"
+        ],
+        "context_tokens": [
+          "d"
+        ],
+        "all_tokens": [
+          "notes",
+          "d"
+        ],
+        "text_blob": "I:notes C:d"
+      },
+      "form_index": 3,
+      "fieldset_index": null,
+      "sibling_control_count": 0,
+      "group_role": "none",
+      "group_id": null,
+      "is_visible": true,
+      "undetectable_reason": null
+    }
+  ],
+  "honeypots": [],
+  "canvas_regions": [],
+  "warnings": [],
+  "truncated": false,
+  "frame_count": 1
+}

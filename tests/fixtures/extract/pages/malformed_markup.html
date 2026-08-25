@@ -1,0 +1,52 @@
+<!doctype html>
+<!--
+  Tests: the malformed input list of spec section 15, in one page, for the
+  cases that are the extractor's rather than the CLI's.
+
+  What it proves, case by case:
+    - unclosed tags: the div and the label below are never closed. The parser
+      repairs them, the walk sees the repaired tree, and nothing raises.
+    - autocomplete="": present and declaring nothing, which is off specification
+      rather than absent. raw is the empty string, not None, and the two are
+      distinguishable.
+    - autocomplete="shipping": modifiers with no field name. The modifier is
+      parsed, the token stays None, and it is flagged off specification.
+    - autocomplete="zipcode": a token nobody defines. Off specification, and the
+      raw value is kept verbatim so a report can quote what was written.
+    - a label with control characters in it: the tab, the vertical tab, and the
+      zero-width space are collapsed away, and what is left is the words.
+
+  The ten-thousand-character label of the same list lives in long_label.html
+  rather than here, because a committed expectation carrying two thousand tokens
+  is a golden file nobody can review.
+  Hand authored. Not a copy of any live site.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Malformed</title>
+</head>
+<body>
+<main>
+<h1>Malformed</h1>
+<form name="broken" method="post" action="#">
+<div class="field">
+<label for="broken-empty">Empty declaration
+<input id="broken-empty" name="broken_empty" type="text" autocomplete="">
+</div>
+<div class="field">
+<label for="broken-modifier">Modifier only</label>
+<input id="broken-modifier" name="broken_modifier" type="text" autocomplete="shipping">
+</div>
+<div class="field">
+<label for="broken-token">Invented token</label>
+<input id="broken-token" name="broken_token" type="text" autocomplete="shipping zipcode">
+</div>
+<div class="field">
+<label for="broken-control">Post&#9;code&#11;here&#8203;</label>
+<input id="broken-control" name="broken_control" type="text">
+</div>
+</form>
+</main>
+</body>
+</html>

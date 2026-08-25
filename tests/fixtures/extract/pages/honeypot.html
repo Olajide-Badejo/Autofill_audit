@@ -1,0 +1,55 @@
+<!doctype html>
+<!--
+  Tests: fields a user cannot see, in the three shapes spec section 9.6 names.
+
+  What it proves:
+    - a control positioned off the left of the document, a control with a zero
+      size bounding box, and a control hidden by computed style are all excluded
+      from the audited fields
+    - all three are RETAINED on the extraction result rather than dropped,
+      because a report whose field count disagrees with the count a developer
+      sees in their own markup is a report they stop trusting
+    - the control below every other one is NOT excluded. Being below the fold is
+      not being hidden, and a rule that compared against the viewport instead of
+      the document would say it was, turning every long form into a page full of
+      honeypots.
+  Hand authored. Not a copy of any live site.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Contact us</title>
+<style>
+.offscreen { position: absolute; left: -9999px; top: 0; }
+.collapsed { width: 0; height: 0; padding: 0; border: 0; }
+.gone { display: none; }
+.tall { height: 2400px; }
+</style>
+</head>
+<body>
+<main>
+<h1>Contact us</h1>
+<form name="contact" method="post" action="#">
+<div class="field">
+<label for="contact-email">Email address</label>
+<input id="contact-email" name="contact_email" type="email" autocomplete="email">
+</div>
+<div class="field offscreen">
+<label for="contact-website">Leave this field empty</label>
+<input id="contact-website" name="contact_website" type="text">
+</div>
+<div class="field">
+<input id="contact-fax" name="contact_fax" type="text" class="collapsed">
+</div>
+<div class="field gone">
+<input id="contact-alias" name="contact_alias" type="text">
+</div>
+<div class="tall"></div>
+<div class="field">
+<label for="contact-message">Message</label>
+<textarea id="contact-message" name="contact_message" rows="4"></textarea>
+</div>
+</form>
+</main>
+</body>
+</html>

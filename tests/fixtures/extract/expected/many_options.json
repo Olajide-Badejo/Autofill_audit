@@ -1,0 +1,213 @@
+{
+  "fields": [
+    {
+      "selector": "#branch-pick",
+      "frame_path": [],
+      "shadow_path": [],
+      "document_index": 0,
+      "tag": "select",
+      "input_type": null,
+      "inputmode": null,
+      "pattern": null,
+      "maxlength": null,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "option_labels": [
+        "Branch 1",
+        "Branch 2",
+        "Branch 3",
+        "Branch 4",
+        "Branch 5",
+        "Branch 6",
+        "Branch 7",
+        "Branch 8",
+        "Branch 9",
+        "Branch 10",
+        "Branch 11",
+        "Branch 12",
+        "Branch 13",
+        "Branch 14",
+        "Branch 15",
+        "Branch 16",
+        "Branch 17",
+        "Branch 18",
+        "Branch 19",
+        "Branch 20",
+        "Branch 21",
+        "Branch 22",
+        "Branch 23",
+        "Branch 24"
+      ],
+      "option_values": [
+        "b1",
+        "b2",
+        "b3",
+        "b4",
+        "b5",
+        "b6",
+        "b7",
+        "b8",
+        "b9",
+        "b10",
+        "b11",
+        "b12",
+        "b13",
+        "b14",
+        "b15",
+        "b16",
+        "b17",
+        "b18",
+        "b19",
+        "b20",
+        "b21",
+        "b22",
+        "b23",
+        "b24"
+      ],
+      "name": "branch_pick",
+      "element_id": "branch-pick",
+      "css_classes": [],
+      "data_keys": [],
+      "framework_attrs": [],
+      "declared": {
+        "raw": null,
+        "token": null,
+        "modifiers": [],
+        "section": null,
+        "is_off_spec": false,
+        "is_off": false
+      },
+      "text": {
+        "label_for": "Branch",
+        "label_ancestor": null,
+        "aria_label": null,
+        "aria_labelledby_text": null,
+        "aria_describedby_text": null,
+        "title": null,
+        "placeholder": null,
+        "preceding_text": null,
+        "legend": null,
+        "section_heading": "Choose a branch",
+        "form_accessible_name": null
+      },
+      "norm": {
+        "label_tokens": [
+          "branch"
+        ],
+        "label_source": "label_for",
+        "identifier_tokens": [
+          "branch",
+          "pick",
+          "branch",
+          "pick"
+        ],
+        "context_tokens": [
+          "choose",
+          "a",
+          "branch"
+        ],
+        "all_tokens": [
+          "branch",
+          "branch",
+          "pick",
+          "branch",
+          "pick",
+          "choose",
+          "a",
+          "branch"
+        ],
+        "text_blob": "L:branch I:branch I:pick I:branch I:pick C:choose C:a C:branch"
+      },
+      "form_index": 0,
+      "fieldset_index": null,
+      "sibling_control_count": 0,
+      "group_role": "none",
+      "group_id": null,
+      "is_visible": true,
+      "undetectable_reason": null
+    },
+    {
+      "selector": "#branch-postcode",
+      "frame_path": [],
+      "shadow_path": [],
+      "document_index": 1,
+      "tag": "input",
+      "input_type": "text",
+      "inputmode": null,
+      "pattern": null,
+      "maxlength": null,
+      "required": false,
+      "readonly": false,
+      "disabled": false,
+      "option_labels": [],
+      "option_values": [],
+      "name": "branch_postcode",
+      "element_id": "branch-postcode",
+      "css_classes": [],
+      "data_keys": [],
+      "framework_attrs": [],
+      "declared": {
+        "raw": "postal-code",
+        "token": "postal-code",
+        "modifiers": [],
+        "section": null,
+        "is_off_spec": false,
+        "is_off": false
+      },
+      "text": {
+        "label_for": "Postcode",
+        "label_ancestor": null,
+        "aria_label": null,
+        "aria_labelledby_text": null,
+        "aria_describedby_text": null,
+        "title": null,
+        "placeholder": null,
+        "preceding_text": null,
+        "legend": null,
+        "section_heading": "Choose a branch",
+        "form_accessible_name": null
+      },
+      "norm": {
+        "label_tokens": [
+          "postcode"
+        ],
+        "label_source": "label_for",
+        "identifier_tokens": [
+          "branch",
+          "postcode",
+          "branch",
+          "postcode"
+        ],
+        "context_tokens": [
+          "choose",
+          "a",
+          "branch"
+        ],
+        "all_tokens": [
+          "postcode",
+          "branch",
+          "postcode",
+          "branch",
+          "postcode",
+          "choose",
+          "a",
+          "branch"
+        ],
+        "text_blob": "L:postcode I:branch I:postcode I:branch I:postcode C:choose C:a C:branch"
+      },
+      "form_index": 1,
+      "fieldset_index": null,
+      "sibling_control_count": 0,
+      "group_role": "none",
+      "group_id": null,
+      "is_visible": true,
+      "undetectable_reason": null
+    }
+  ],
+  "honeypots": [],
+  "canvas_regions": [],
+  "warnings": [],
+  "truncated": false,
+  "frame_count": 1
+}

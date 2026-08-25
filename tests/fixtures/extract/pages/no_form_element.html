@@ -1,0 +1,51 @@
+<!doctype html>
+<!--
+  Tests: controls with no form element around them at all, which is what a
+  single page application usually ships.
+
+  What it proves:
+    - the walk does not depend on a form. form_index is None, the second
+      selector preference cannot apply because there is no named form, and the
+      positional path falls back to the anchor of last resort
+    - that anchor is html, which every document has, so a control with no id, no
+      name, and no addressable ancestor still gets a selector a human can paste
+      into DevTools
+    - a control with a usable id still uses it, form or no form
+    - a contenteditable div and an element with an ARIA textbox role are both
+      collected, because both are form controls to a user even though neither is
+      one to the parser
+  Hand authored. Not a copy of any live site.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Profile</title>
+<style>
+/* Both custom controls are given a height so that neither is mistaken for a
+   zero-size honeypot. An empty div is zero pixels tall, and a component that
+   renders one is a real control on a real page, not a trap for a bot. */
+[contenteditable], [role="textbox"] { display: block; min-height: 24px; border: 1px solid #999; }
+</style>
+</head>
+<body>
+<main>
+<h1>Profile</h1>
+<div class="panel">
+<div class="field">
+<label for="profile-nick">Nickname</label>
+<input id="profile-nick" type="text" autocomplete="nickname">
+</div>
+<div class="field">
+<input type="text" placeholder="Home page">
+</div>
+<div class="field">
+<span id="bio-label">About you</span>
+<div contenteditable="true" aria-labelledby="bio-label"></div>
+</div>
+<div class="field">
+<div role="textbox" aria-label="Status message" tabindex="0"></div>
+</div>
+</div>
+</main>
+</body>
+</html>

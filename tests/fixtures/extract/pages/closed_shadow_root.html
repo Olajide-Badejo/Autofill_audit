@@ -1,0 +1,61 @@
+<!doctype html>
+<!--
+  Tests: a custom element whose shadow root is closed.
+
+  A closed shadow root is not reachable from inside the page and no cleverness
+  changes that (spec section 9.1). The correct behaviour is to say so.
+
+  The element is recognised as a control host rather than as decoration by four
+  conditions together: its tag has a hyphen and the registry has upgraded it, it
+  has no reachable shadow root, it holds no light DOM controls, and it presents
+  as a control by carrying a name. A custom element that is genuinely an icon
+  fails the last of those and is passed over in silence, which is why
+  vault-icon is on this page.
+
+  What it proves:
+    - one synthetic descriptor with undetectable_reason "closed-shadow-root"
+    - the decorative custom element beside it produces nothing
+    - the walk continues past it
+  Hand authored. Not a copy of any live site.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Card</title>
+</head>
+<body>
+<main>
+<h1>Card</h1>
+<form name="pay" method="post" action="#">
+<div class="field">
+<label for="pay-name">Name on card</label>
+<input id="pay-name" name="pay_name" type="text" autocomplete="cc-name">
+</div>
+<div class="field">
+<vault-icon id="deco-1"></vault-icon>
+<vault-field id="ce-2" name="pay_number"></vault-field>
+</div>
+<div class="field">
+<label for="pay-csc">Security code</label>
+<input id="pay-csc" name="pay_csc" type="text" autocomplete="cc-csc" maxlength="4">
+</div>
+</form>
+</main>
+<script>
+class VaultField extends HTMLElement {
+  connectedCallback() {
+    if (this.ready) { return; }
+    this.ready = true;
+    var root = this.attachShadow({ mode: 'closed' });
+    var el = document.createElement('input');
+    el.setAttribute('type', 'text');
+    el.setAttribute('name', 'pay_number_inner');
+    root.appendChild(el);
+  }
+}
+customElements.define('vault-field', VaultField);
+class VaultIcon extends HTMLElement {}
+customElements.define('vault-icon', VaultIcon);
+</script>
+</body>
+</html>

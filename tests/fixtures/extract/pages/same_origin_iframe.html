@@ -1,0 +1,36 @@
+<!doctype html>
+<!--
+  Tests: a form inside a same-origin iframe.
+
+  The iframe uses srcdoc rather than src. A srcdoc document inherits its
+  parent's origin, so it is same origin even when the parent was opened through
+  file://, where two separate local files are opaque origins to each other and
+  would not be. That is what lets this fixture run offline through file:// like
+  every other one, with no server and no network.
+
+  What it proves:
+    - the main frame is walked first and each readable frame is walked as a root
+      of its own afterwards (spec section 9.1 step 2), so the frame's control
+      comes after the parent's rather than interleaved
+    - frame_path is set on the frame's descriptor and empty on the parent's
+    - the selector carries the frame token and the documented frame separator
+  Hand authored. Not a copy of any live site.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Pay</title>
+</head>
+<body>
+<main>
+<h1>Pay</h1>
+<form name="outer" method="post" action="#">
+<div class="field">
+<label for="outer-name">Name on card</label>
+<input id="outer-name" name="outer_name" type="text" autocomplete="cc-name">
+</div>
+</form>
+<iframe id="card-frame" title="Card details" width="400" height="120" srcdoc="&lt;!doctype html&gt;&lt;html&gt;&lt;body&gt;&lt;form name=&quot;inner&quot;&gt;&lt;div class=&quot;field&quot;&gt;&lt;label for=&quot;pan&quot;&gt;Card number&lt;/label&gt;&lt;input id=&quot;pan&quot; name=&quot;pan&quot; type=&quot;text&quot; autocomplete=&quot;cc-number&quot;&gt;&lt;/div&gt;&lt;/form&gt;&lt;/body&gt;&lt;/html&gt;"></iframe>
+</main>
+</body>
+</html>
