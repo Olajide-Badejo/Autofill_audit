@@ -86,6 +86,22 @@ gate should see: the phases that fill them bring their own tests.
   and maintain an exclusion list, was rejected because the exclusion list grows
   until the check means nothing.
 
+### Deviations from the build specification, recorded rather than absorbed
+
+- **`report_for_me/` is local only and is gitignored.** The specification lists
+  the personal archival report as a committed deliverable, source and PDF both.
+  The author's instruction overrides that: it is written for the author, with
+  the context gone, and it stays on the machine. The other two reports, the
+  public main report and the debug report, are unaffected and are still
+  committed at P7. Noted here because a reader of the definition-of-done
+  checklist would otherwise find one box that can never be ticked.
+- **A first remote was created and then abandoned.** The repository was
+  initially pushed to a remote whose name differed in case and separator from
+  the one the author wanted. The remote was repointed before any run URL was
+  recorded, so nothing in `ci-proof.md` refers to the abandoned repository. The
+  abandoned one is left in place rather than deleted, because the credentials in
+  use do not carry delete scope.
+
 ### Gates
 
 Recorded here as they were run, with the CI run links in

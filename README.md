@@ -46,6 +46,27 @@ autofill-audit 0.0.1
 
 The audit command, its `--engine`, `--format`, `--out`, and `--fail-on` flags, the finding catalogue, and the exit-code contract land at P3, and a worked before-and-after example goes here when there is real output to paste.
 
+## Roadmap
+
+The build order is deliberate and the reason is worth stating: **the tool becomes
+useful before any machine learning exists.**
+
+| Phase | What lands |
+|---|---|
+| P0 | Repository, packaging, taxonomy, the six CI gates, the toolchain record |
+| P1 | The seeded corpus generator, locale profiles, answer keys, the split policy |
+| P2 | The Playwright extractor: DOM walk, frames, shadow roots, signal collection |
+| P3 | The rule baseline, the audit engine, three renderers, the CLI. First usable release |
+| P4 | The n-gram classifier, calibration, ONNX export, the model card |
+| P5 | Metrics, run logs, statistical significance through the external harness |
+| P6 | The optional local language model comparison and the headline benchmark |
+| P7 | The full documentation set and the compiled reports. First stable release |
+
+P3 is the milestone that matters to somebody who just wants their checkout page
+fixed. Everything after it buys accuracy and evidence rather than usefulness,
+and a project that shipped the model first and the product last would have no
+way to tell whether the model was solving a problem anybody has.
+
 ## Boundaries
 
 These are deliberate boundaries, not missing features, and each one is a decision rather than an omission.

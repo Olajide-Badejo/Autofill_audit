@@ -26,6 +26,15 @@ coverage.xml
 # Scratch space for shell scripts that are not part of the project
 .scratch/
 
+# The personal archival report is written for the author rather than for a
+# reader, and it stays local. Its source and its PDF are never pushed.
+report_for_me/
+
+# Editor and tooling state that belongs to a working copy, not to the project.
+.idea/
+.vscode/
+*.swp
+
 # The generated corpus is regenerable from its seed and is not committed. The
 # small sample corpus P1 commits for the test suite is exempted here.
 #
