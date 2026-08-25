@@ -184,7 +184,7 @@
       "variant": 0
     },
     "address-02-de-DE-hostile-v0": {
-      "answer_key_sha256": "bd394eb0c9dd6d027277c003ead9e1ddd94435f859fd03a2f73b3faf26e875b1",
+      "answer_key_sha256": "0d9f15b281c904b5bd73faac72dff3f5cbc93f9ee46d3387a78ffb9410622ce2",
       "family": "address",
       "field_count": 9,
       "html_sha256": "63e99154fd157a4f2c1f5e1e116cb5e8c7c33dda21da87aafc28b982f2ed5f98",
@@ -204,7 +204,7 @@
       "variant": 0
     },
     "address-02-ja-JP-hostile-v0": {
-      "answer_key_sha256": "4929b5a12e8a8bc5232398f487ffe7f694ae8983c0a7890ab95295d6b46583f2",
+      "answer_key_sha256": "a3dd6c45e8f5792a2cec9f555ef97bd8a2d255341bd48e9243e02f88f454003b",
       "family": "address",
       "field_count": 10,
       "html_sha256": "77dfdcd1a0636d6eb5192d92cbfcf2af888dee483e0278ce6990a20bfc7d7169",
@@ -214,7 +214,7 @@
       "variant": 0
     },
     "address-03-en-US-hostile-v0": {
-      "answer_key_sha256": "d80bc2c4378b749bf186e08b60a485a53b720e24d7a1bbfad9f47c7577354b61",
+      "answer_key_sha256": "6b86aadd370737dabd56b4099d81715f7b7908cacb5a98aa1aea06a45e3db836",
       "family": "address",
       "field_count": 8,
       "html_sha256": "750b491c1ca5f508cb9b12e2d2fc4658ef65494859a9ba456cfc19718a7f36df",
@@ -274,7 +274,7 @@
       "variant": 0
     },
     "checkout-03-en-US-hostile-v0": {
-      "answer_key_sha256": "29f734644ebb4c383c198e9b6da7a0becba9cb31600d7406b93afb4a0d536e41",
+      "answer_key_sha256": "b126efc8fe301f374eb2fcc3bacbe4766aa04960e72fcc57277174451aae9f0d",
       "family": "checkout",
       "field_count": 20,
       "html_sha256": "54e50a1f9bfceb7049b380c87ac62d3a0361df3cfa756c9a27c967af295cd293",
@@ -284,7 +284,7 @@
       "variant": 0
     },
     "checkout-04-en-US-mixed-v0": {
-      "answer_key_sha256": "26586868f96aeeb8953195a7136015d12985eadb59369f3adea4a008582b3f97",
+      "answer_key_sha256": "5583fe2f6ab3bc223e66448a5003c4ecc2bc1a1aa97575f3c7601da75ec8888c",
       "family": "checkout",
       "field_count": 18,
       "html_sha256": "83295dd8109b4334df63614bd3deaf51b3369d91fb3a9898a9d102e4732b3875",
@@ -314,7 +314,7 @@
       "variant": 0
     },
     "login-03-en-US-hostile-v0": {
-      "answer_key_sha256": "d0f2b6477b792d27f29ddb7e02496196f745085f227e7ec6498f5a293db6007b",
+      "answer_key_sha256": "4ada5c216e9bf145888cc419f9f03b53161aa00dbac76ebf009e10daea84dab2",
       "family": "login",
       "field_count": 5,
       "html_sha256": "f46e404c3c976c361732b3808eacbe19d20fd3ab1a4ac8b2391433cbc0d75c11",
@@ -354,7 +354,7 @@
       "variant": 0
     },
     "payment-03-en-US-hostile-v0": {
-      "answer_key_sha256": "1370a63601dd9af570d9ff54f56f83cac9d37eed07f39f84a99dc4da1510e099",
+      "answer_key_sha256": "d5b9e6ecb0830c9ccd9b94e08d8323a1113868d79ded62503d9c6c1a727f63f0",
       "family": "payment",
       "field_count": 9,
       "html_sha256": "ce2a6b99fddd567084bb153a1e6373ae011546339bc96d752ea3ef6ef54620ff",
@@ -364,7 +364,7 @@
       "variant": 0
     },
     "payment-04-en-US-mixed-v0": {
-      "answer_key_sha256": "0e19cb0501a987bd28357c70abe66a85bd5a67f7e3c49594131b0989464ff26b",
+      "answer_key_sha256": "680d4fec93599d38dd569b74cf27bbadf224abd1c6de15b0b2b5c4268e24d6bd",
       "family": "payment",
       "field_count": 8,
       "html_sha256": "7e69ab9e4e0db0e2f8632508f3e73fa3e8d29452499ee1c9d635d80dd1a30480",
@@ -394,7 +394,7 @@
       "variant": 0
     },
     "signup-03-en-US-hostile-v0": {
-      "answer_key_sha256": "85465c6e84fad76f4cbc64134b0e44158b0d430a40937b092f515c49cafb18b7",
+      "answer_key_sha256": "997e81f453500924cd2098c681ae23f607e1cb566f177d86b7fa4cb4b219ec46",
       "family": "signup",
       "field_count": 10,
       "html_sha256": "ddae62bd9903d110ed3ef7ffad0461ef367335d81d037a2ef87a3b8aa991be37",
@@ -404,7 +404,7 @@
       "variant": 0
     },
     "signup-04-en-US-mixed-v0": {
-      "answer_key_sha256": "ea08022f50239bc0cac9f07e1ff6ed754952ab8f21cd15a1b44cf7e5a39dc33d",
+      "answer_key_sha256": "c42cff632fff2f35301b7421e10d39d4f9871e5e542d2d947e3cb0c4dafefe29",
       "family": "signup",
       "field_count": 15,
       "html_sha256": "5992223ccbbf40d9254162cea5f1188e69d41a6cfe159f462b831e0020bfa68c",

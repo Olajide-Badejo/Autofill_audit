@@ -229,7 +229,7 @@
       "#input8"
     ],
     "shadow_hosts": [
-      "ce-1"
+      "#ce-1"
     ]
   },
   "schema_version": 1,

@@ -34,6 +34,7 @@ from autofill_audit.corpus.families import TEMPLATES, Family
 from autofill_audit.corpus.generator import GENERATOR_VERSION, GeneratedForm
 from autofill_audit.corpus.profiles import LOCALE_IDS
 from autofill_audit.corpus.roles import SlotRole
+from autofill_audit.corpus.selectors import id_selector
 from autofill_audit.corpus.tiers import Delivery, IdentifierStyle, Tier
 from autofill_audit.taxonomy import ALL_LABELS
 
@@ -254,10 +255,15 @@ def build_answer_key(form: GeneratedForm) -> dict[str, Any]:
         "tier": form.tier.value,
         "variant": form.variant,
         "fields": fields,
+        # All three lists hold selectors, not bare ids. The first version of
+        # this had shadow hosts as ids while its two siblings were selectors,
+        # which is the kind of inconsistency a consumer discovers by writing a
+        # bug. ``provenance.shadow_host`` keeps the bare id, because there it is
+        # named as an id and is what the shadow selector is built from.
         "page_notes": {
             "canvas_pseudo_fields": list(form.canvas_selectors),
             "shadow_hosts": [
-                control.shadow_host_id
+                id_selector(control.shadow_host_id)
                 for control in form.shadow_fields
                 if control.shadow_host_id is not None
             ],
@@ -381,9 +387,10 @@ def validate_answer_key(document: Any) -> list[str]:
 
     declared_hosts = set(notes["shadow_hosts"])
     actual_hosts = {
-        entry["provenance"]["shadow_host"]
+        id_selector(entry["provenance"]["shadow_host"])
         for entry in fields
         if entry["provenance"]["delivery"] == Delivery.SHADOW.value
+        and entry["provenance"]["shadow_host"] is not None
     }
     if declared_hosts != actual_hosts:
         problems.append(

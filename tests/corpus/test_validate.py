@@ -223,7 +223,10 @@ def test_a_broken_shadow_host_is_caught(corpus: Path) -> None:
         for entry in document["fields"]:
             if entry["provenance"]["delivery"] == "shadow":
                 entry["provenance"]["shadow_host"] = "ce-999"
-        document["page_notes"]["shadow_hosts"] = ["ce-999"]
+        # The selector form, so the key stays internally consistent and the
+        # failure under test is the host not existing in the markup rather than
+        # the two lists disagreeing with each other.
+        document["page_notes"]["shadow_hosts"] = ["#ce-999"]
 
     _rewrite(corpus / "answer_keys" / f"{target}.json", mutate)
     report = validate_corpus(corpus)
