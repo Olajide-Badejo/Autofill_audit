@@ -107,12 +107,27 @@ gate should see: the phases that fill them bring their own tests.
 Recorded here as they were run, with the CI run links in
 [`ci-proof.md`](ci-proof.md).
 
-- Local gates: ruff check and format, mypy strict, pytest with the coverage
-  gate, dash check, reachability, traceability. All green.
-- Wheel built, installed into a clean pipx environment, and run.
+- Local gates: `make gates`, which is ruff check, ruff format, the dash check,
+  mypy strict, pytest with the coverage gate, reachability, and traceability, in
+  the order CI runs them. All green. Measured library coverage came out at the
+  ceiling, which is unsurprising when the library is a taxonomy, a small CLI,
+  and a set of statement-free placeholders.
+- Wheel and sdist built, the wheel installed into a pipx environment of its own,
+  and the installed command run.
 - All six CI jobs green on `main`.
 - All six CI jobs observed red, one per scratch branch, each from a single
-  deliberate breakage, with the run links recorded.
+  deliberate change, with the run links and the failure text recorded. Branches
+  deleted afterwards.
+
+Two things came out of the proof-of-failure exercise that were worth having.
+The build job's first attempt was itself broken: it assumed pipx would place
+the console script at a fixed path, which is a guess and was wrong on the
+runner. The job now sets its own pipx home and bin directory, which both fixes
+the assumption and gives the wheel a genuinely clean environment to install
+into. Separately, the deliberate taxonomy breakage failed both the reachability
+job and the test job, which is the correct outcome: the property is asserted in
+two independent places on purpose, and a defect that only one of them noticed
+would mean the other was not doing its job.
 
 ### What P1 needs to know
 
