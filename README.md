@@ -18,9 +18,10 @@ Because the label space *is* the specification's token set, the fix is a formatt
 
 ## Status
 
-This repository is at phase P0: foundations. The packaging, the taxonomy, the CI gates, and the toolchain record are in place. The extractor arrives at P2 and the audit engine, the rule baseline, and the three report renderers arrive at P3, which is the first release a web developer can usefully install.
-
-Until then `autofill-audit audit` refuses with a message saying so, rather than printing an empty report that would read like a clean bill of health.
+`v0.1.0`. The tool works and is useful, and there is no machine learning in it
+yet. The extractor, the rule baseline, the audit engine, the three report
+renderers, and the exit-code contract are all here; the classifier ladder climbs
+from P4 onward and buys accuracy and evidence rather than usefulness.
 
 ## Install
 
@@ -39,12 +40,94 @@ playwright install chromium --with-deps
 
 ## Usage
 
-```console
-$ autofill-audit version
-autofill-audit 0.0.1
+Point it at a page. It exits 1 when something at or above the failure threshold
+is found, so it drops straight into a pipeline.
+
+```bash
+autofill-audit audit https://example.com/checkout
+autofill-audit audit ./checkout.html --format json --out report.json
+autofill-audit audit ./checkout.html --format html --out report.html --fail-on warning
 ```
 
-The audit command, its `--engine`, `--format`, `--out`, and `--fail-on` flags, the finding catalogue, and the exit-code contract land at P3, and a worked before-and-after example goes here when there is real output to paste.
+### A worked example
+
+This is real output, from
+[`tests/fixtures/checkout_hostile.html`](tests/fixtures/checkout_hostile.html),
+a checkout authored in this repository to get things wrong in the ways real
+checkouts get things wrong. Nothing here is edited except for trimming the
+middle of the table.
+
+```console
+$ autofill-audit audit tests/fixtures/checkout_hostile.html
+autofill-audit  file:///.../tests/fixtures/checkout_hostile.html
+
+critical (6)
+
+ control          finding
+ ─────────────────────────────────────────────────────────────────────────────
+ #ck-email        MISSING_AUTOCOMPLETE
+                  add autocomplete="email" to #ck-email
+                  evidence: declaration:absent, label:email-words [rule tier HIGH]
+ #ck-postcode     OFF_SPEC_TOKEN
+                  autocomplete="zipcode" is not a valid autofill token;
+                  use "postal-code"
+                  evidence: declaration:off-spec, label:postcode-words [rule tier HIGH]
+ #ck-holder       WRONG_AUTOCOMPLETE
+                  #ck-holder declares autocomplete="name" but looks like cc-name;
+                  change to autocomplete="cc-name"
+                  evidence: declaration:token-mismatch, label:cardholder-words [rule tier HIGH]
+
+warning (8)
+
+ control          finding
+ ─────────────────────────────────────────────────────────────────────────────
+ #input7          PLACEHOLDER_AS_LABEL
+                  #input7 uses a placeholder as its label; add a real <label>
+                  evidence: structure:placeholder-is-the-only-label [structural]
+ #ck-mm           SPLIT_FIELD
+                  #ck-mm is one half of a split expiry; set
+                  autocomplete="cc-exp-month" and "cc-exp-year" on the pair
+                  evidence: structure:split-expiry-group [structural]
+ frame[#hosted-pan] UNDETECTABLE_FIELD
+                  the control is inside a cross-origin frame, which is how hosted
+                  payment fields are built on purpose; this is not necessarily a
+                  defect. Autofill still works inside the frame, and the frame's
+                  own document is where its autocomplete attributes belong. Audit
+                  that document separately
+                  evidence: structure:undetectable [structural]
+
+$ echo $?
+1
+```
+
+Three things in that output are the whole design.
+
+**Every finding names its evidence.** `label:email-words` says which vocabulary
+matched and which stream it matched in. A finding you cannot argue with is a
+finding you cannot check, so there are none.
+
+**The confidence is a tier, not a percentage.** The rule baseline is a table of
+regular expressions. It has no probabilities, so it does not print any. Turning a
+regex table's output into a percentage would assert a frequency nobody has
+measured, which this project's third law forbids.
+
+**A correct field is met with silence.** The card-number input on that page is
+correctly declared and does not appear in the report at all. On a page where
+every field is correct the whole report is one line saying so, and that property
+is a test over the entire correct-markup slice of the corpus.
+
+### The findings, in brief
+
+| Severity | Codes |
+|---|---|
+| `critical` | `MISSING_AUTOCOMPLETE`, `WRONG_AUTOCOMPLETE`, `OFF_SPEC_TOKEN` |
+| `warning` | `AUTOCOMPLETE_OFF`, `UNLABELED_FIELD`, `PLACEHOLDER_AS_LABEL`, `SPLIT_FIELD`, `COMPOSITE_FIELD`, `UNDETECTABLE_FIELD` |
+| `info` | `GENERIC_IDENTIFIER`, `WRONG_INPUT_TYPE`, `MISSING_NAME_ATTR`, `EXTRACTION_INCOMPLETE` |
+| `note` | `LOW_CONFIDENCE` |
+
+Each one, with its trigger, its exact fix text, and a before-and-after example,
+is in [`docs/findings.md`](docs/findings.md), along with the exit-code contract
+and the `autofill-audit.toml` format.
 
 ## Roadmap
 
@@ -63,9 +146,10 @@ useful before any machine learning exists.**
 | P7 | The full documentation set and the compiled reports. First stable release |
 
 P3 is the milestone that matters to somebody who just wants their checkout page
-fixed. Everything after it buys accuracy and evidence rather than usefulness,
-and a project that shipped the model first and the product last would have no
-way to tell whether the model was solving a problem anybody has.
+fixed, and it has shipped as `v0.1.0`. Everything after it buys accuracy and
+evidence rather than usefulness, and a project that shipped the model first and
+the product last would have no way to tell whether the model was solving a
+problem anybody has.
 
 ## Boundaries
 
@@ -74,6 +158,7 @@ These are deliberate boundaries, not missing features, and each one is a decisio
 - **No crawling.** One page per invocation, plus the frames that page loads. There is no sitemap walker, no depth flag, and no queue.
 - **No filling.** This is an auditor. It reads the DOM and reports. It never types into a field, never submits, and holds no profile of values to fill with.
 - **No markup rewriting.** Findings carry a fix as text. There is no mode that edits your HTML, because rewriting a production template from a classifier's output is exactly the failure this project's first law exists to prevent.
+- **The absent flags say so.** `--crawl`, `--depth`, `--fill`, `--fix`, and `--write` are each answered with the boundary they name and the reason for it, rather than with "no such option". Somebody will try each of them, and an unknown-option error reads like an oversight instead of a decision.
 - **No scraped training data.** Nothing in this repository fetches HTML from a live site and keeps it. The corpus is generated.
 - **No personal data.** Test fixtures use self-evidently invented names and addresses and the officially published test card numbers. No real name, address, phone number, email, or card number is present, including the author's own.
 - **HTML forms only.** Native mobile forms, PDF forms, and canvas-rendered widgets are out of scope. A canvas is reported as undetectable rather than guessed at.
