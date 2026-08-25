@@ -91,6 +91,7 @@ from autofill_audit.classify.base import (
     tier_for_confidence,
 )
 from autofill_audit.descriptors import (
+    CanvasRegion,
     ExtractionResult,
     ExtractionWarningCode,
     FieldDescriptor,
@@ -228,7 +229,17 @@ class AuditReport:
     frame, a canvas beside real controls. The finding catalogue is closed at
     fifteen codes (spec section 11.1), so a fact with no code is reported as a
     fact rather than given an invented one."""
+    canvas_regions: tuple[CanvasRegion, ...] = ()
+    frame_count: int = 1
+    controls_seen: int = 0
+    truncated: bool = False
     timing_ms: Mapping[str, float] = field(default_factory=dict)
+    """The one part of a report that is not a pure function of the page.
+
+    Everything else here is deterministic, so two runs over one page produce
+    byte-identical JSON and a diff in CI means something changed. The golden
+    snapshots of spec section 15 pin fixed values into this key for exactly that
+    reason."""
 
     def counts(self) -> dict[Severity, int]:
         """Findings per severity, every severity present, most severe first.
@@ -247,6 +258,26 @@ class AuditReport:
         if not self.findings:
             return None
         return min((finding.severity for finding in self.findings), key=severity_rank)
+
+    def readiness(self) -> tuple[int, int]:
+        """Controls carrying a usable declaration, and controls audited.
+
+        **A count, never a score** (spec section 11.4). No letter grade, no index
+        out of a hundred, no weighting of one finding against another. A composite
+        score would be a number with no reproducible definition, which is a law 3
+        problem wearing a friendly hat, and the first thing anybody would do with
+        one is quote it without the report it came from.
+
+        Blind spots are excluded from both halves. A cross-origin frame is not a
+        control that failed to declare anything; it is a control this tool cannot
+        see, and counting it as a failure would make a correctly built hosted
+        payment form look worse than a broken one.
+        """
+        real = [item for item in self.fields if item.undetectable_reason is None]
+        declared = sum(
+            1 for item in real if item.declared.token is not None and not item.declared.is_off_spec
+        )
+        return declared, len(real)
 
     def exit_code(self, fail_on: Severity | None) -> int:
         """Spec section 11.5's codes 0 and 1.
@@ -903,6 +934,10 @@ def audit(
         engine=engine,
         thresholds=options.thresholds,
         page_notes=tuple(notes),
+        canvas_regions=result.canvas_regions,
+        frame_count=result.frame_count,
+        controls_seen=result.controls_seen,
+        truncated=result.truncated,
     )
     _assert_law_one(report)
     return report

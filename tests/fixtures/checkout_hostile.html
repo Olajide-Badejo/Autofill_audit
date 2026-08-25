@@ -1,0 +1,179 @@
+<!doctype html>
+<!--
+  Tests: the audit engine end to end, on a checkout that gets almost everything
+  wrong in a way real checkouts get things wrong.
+
+  This is the fixture the README's example and the phase gate run against, so it
+  is built to exercise the finding catalogue rather than to be realistic in the
+  round. Every control below is here because it is the cheapest honest way to
+  reach one code of spec section 11.1:
+
+    contact
+      email        no autocomplete, and type="text" on an email field
+                   -> MISSING_AUTOCOMPLETE, WRONG_INPUT_TYPE
+      phone        autocomplete="off" on a personal-data field
+                   -> AUTOCOMPLETE_OFF
+    delivery
+      full name    a placeholder pressed into service as a label, a generated id,
+                   and no name attribute
+                   -> MISSING_AUTOCOMPLETE, PLACEHOLDER_AS_LABEL,
+                      GENERIC_IDENTIFIER, MISSING_NAME_ATTR
+      postcode     autocomplete="zipcode", which the HTML specification does not
+                   define -> OFF_SPEC_TOKEN
+      street       nothing labels it at all, and the only hint is the section
+                   heading above it -> UNLABELED_FIELD, LOW_CONFIDENCE
+      company      the same, with a fieldset legend as the hint
+                   -> UNLABELED_FIELD, LOW_CONFIDENCE
+    payment
+      cardholder   declares autocomplete="name" on a card holder field
+                   -> WRONG_AUTOCOMPLETE
+      card number  correct, and the report says nothing about it, which is the
+                   half of the fixture that matters most
+      month/year   a split expiry pair with neither half declared
+                   -> MISSING_AUTOCOMPLETE twice, SPLIT_FIELD once for the pair
+      hosted pan   an iframe with an opaque origin, which is how a hosted payment
+                   field is built on purpose -> UNDETECTABLE_FIELD, with the text
+                   spec section 9.6 requires rather than an accusation
+    saved card
+      expiry       one MM/YY input collecting what the specification splits
+                   -> COMPOSITE_FIELD
+      vault field  a custom element with a closed shadow root
+                   -> UNDETECTABLE_FIELD
+
+  Two codes are deliberately absent. EXTRACTION_INCOMPLETE needs a page that is
+  still mutating when the settle budget expires, and building that into the
+  fixture the gate runs against would put three seconds of waiting into every
+  invocation; it is covered by its own fixture and its own test. KEY_MISMATCH is
+  corpus mode only and never reaches a user-facing report.
+
+  THE YEAR LIST HAS A SHELF LIFE. Group detection reads a run of consecutive
+  years relative to the current year (spec section 9.5), so the list below stops
+  being recognised as an expiry list once the clock leaves that window.
+  tests/audit/test_fixture_freshness.py fails loudly with instructions when that
+  day arrives. Refreshing it is one edit and a golden snapshot regeneration.
+
+  Hand authored. Not a copy of any live site. Every value is invented and the
+  card number is the published test number that is not a real card.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Checkout</title>
+</head>
+<body>
+<main>
+<h1>Checkout</h1>
+
+<form name="checkout" method="post" action="#">
+
+<section id="contact">
+<h2>Contact details</h2>
+<div class="field">
+<label for="ck-email">Email address</label>
+<input id="ck-email" name="ck_email" type="text">
+</div>
+<div class="field">
+<label for="ck-phone">Phone number</label>
+<input id="ck-phone" name="ck_phone" type="tel" autocomplete="off">
+</div>
+</section>
+
+<section id="delivery">
+<h2>Delivery address</h2>
+<div class="field">
+<input id="input7" type="text" placeholder="Full name">
+</div>
+<div class="field">
+<label for="ck-postcode">Postcode</label>
+<input id="ck-postcode" name="ck_postcode" type="text" autocomplete="zipcode">
+</div>
+<div class="field">
+<input name="ck_addr" type="text">
+</div>
+<fieldset>
+<legend>Company</legend>
+<div class="field">
+<input name="ck_q1" type="text">
+</div>
+</fieldset>
+</section>
+
+<section id="payment">
+<h2>Payment</h2>
+<div class="field">
+<label for="ck-holder">Name on card</label>
+<input id="ck-holder" name="ck_holder" type="text" autocomplete="name">
+</div>
+<div class="field">
+<label for="ck-card">Card number</label>
+<input id="ck-card" name="ck_card" type="text" inputmode="numeric" autocomplete="cc-number" maxlength="19">
+</div>
+<fieldset>
+<legend>Expiry date</legend>
+<div class="field">
+<label for="ck-mm">Month</label>
+<select id="ck-mm" name="ck_mm">
+<option value="01">01</option>
+<option value="02">02</option>
+<option value="03">03</option>
+<option value="04">04</option>
+<option value="05">05</option>
+<option value="06">06</option>
+<option value="07">07</option>
+<option value="08">08</option>
+<option value="09">09</option>
+<option value="10">10</option>
+<option value="11">11</option>
+<option value="12">12</option>
+</select>
+</div>
+<div class="field">
+<label for="ck-yy">Year</label>
+<select id="ck-yy" name="ck_yy">
+<option value="2026">2026</option>
+<option value="2027">2027</option>
+<option value="2028">2028</option>
+<option value="2029">2029</option>
+<option value="2030">2030</option>
+<option value="2031">2031</option>
+<option value="2032">2032</option>
+<option value="2033">2033</option>
+<option value="2034">2034</option>
+<option value="2035">2035</option>
+<option value="2036">2036</option>
+</select>
+</div>
+</fieldset>
+<iframe id="hosted-pan" title="Card number" width="400" height="120" src="data:text/html,%3Cform%3E%3Cinput%20id%3D%22pan%22%20name%3D%22pan%22%3E%3C%2Fform%3E"></iframe>
+</section>
+
+<section id="saved">
+<h2>Use a saved card instead</h2>
+<div class="field">
+<label for="ck-exp2">Expiry (MM/YY)</label>
+<input id="ck-exp2" name="ck_exp2" type="text" maxlength="5">
+</div>
+<div class="field">
+<vault-field id="ce-1" name="ck_vault"></vault-field>
+</div>
+</section>
+
+<button type="submit">Pay</button>
+</form>
+</main>
+<script>
+class VaultField extends HTMLElement {
+  connectedCallback() {
+    if (this.ready) { return; }
+    this.ready = true;
+    var root = this.attachShadow({ mode: 'closed' });
+    var el = document.createElement('input');
+    el.setAttribute('type', 'text');
+    el.setAttribute('name', 'ck_vault_inner');
+    root.appendChild(el);
+  }
+}
+customElements.define('vault-field', VaultField);
+</script>
+</body>
+</html>

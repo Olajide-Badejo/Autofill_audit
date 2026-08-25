@@ -1,39 +1,245 @@
 """The command surface (spec section 14).
 
-``version`` and the ``corpus`` group do real work. ``audit`` exists so that the
-console entry point installed by the wheel is exercised end to end by the build
-gate, and it refuses with a clear message rather than pretending to audit
-anything. The rest of the command surface (``train``, ``eval``, ``bench``)
-arrives with the phases that implement it.
+``audit`` is the only command a typical user runs. ``corpus`` generates and
+checks the synthetic corpus. ``train``, ``eval``, and ``bench`` arrive with the
+phases that implement them.
 
-Exit codes here reserve the contract of spec section 11.5: 2 means the tool
-could not do the work it was asked to do. A command that is not implemented
-yet reports that, and so does a refused overwrite and a corpus that fails
-validation.
+The exit-code contract (spec section 11.5)
+------------------------------------------
+
+| 0 | completed, nothing at or above the failure threshold |
+| 1 | completed, at least one finding at or above it |
+| 2 | usage error: bad arguments, unreadable file, unparseable config |
+| 3 | the page could not be loaded, or extraction failed entirely |
+| 4 | internal error, which is a bug; prints a traceback and asks for an issue |
+
+**Code 3 is deliberately distinct from code 1.** A pipeline has to be able to
+tell "your form has problems" from "the auditor could not reach the page", and
+collapsing them produces exactly the flaky red build that gets the check deleted.
+
+Configuration precedence
+------------------------
+
+CLI flag, then environment variable, then config file, then default. Click
+reports where each parameter's value came from, so the config file is consulted
+only for parameters whose value is still the built-in default. Environment
+variables are read by click itself under the ``AUTOFILL_AUDIT_`` prefix, which
+puts them above the file and below the flag with no code of its own.
+
+The flags that are deliberately absent
+--------------------------------------
+
+``--crawl``, ``--depth``, ``--fill``, ``--fix``, and ``--write`` are the
+boundaries of spec section 0.4, and somebody will try each of them. Click's
+default answer to an unknown option is "no such option", which reads like an
+oversight. So they are intercepted before parsing and answered with the boundary
+they name and the reason it is a boundary. Interception happens in ``main`` on
+the raw argument list rather than as hidden options on one command, because the
+boundary holds for every command and a hidden option would have to be repeated
+on each of them.
 """
 
 from __future__ import annotations
 
+import json
+import sys
+import time
+import tomllib
+import traceback
+from collections.abc import Mapping, Sequence
+from dataclasses import dataclass, field, replace
 from pathlib import Path
+from typing import Any, Final, NoReturn
+from urllib.parse import urlparse
 
 import click
 
 from autofill_audit import __version__
+from autofill_audit.audit.engine import AuditOptions, AuditReport, Suppression
+from autofill_audit.audit.engine import audit as run_audit
+from autofill_audit.audit.findings import FindingCode, Severity
+from autofill_audit.audit.thresholds import Thresholds, ThresholdsError, load_thresholds
+from autofill_audit.classify import EngineChoice, UnavailableEngineError, load_engine
 from autofill_audit.corpus.families import Family
 from autofill_audit.corpus.generator import grid_from
 from autofill_audit.corpus.manifest import write_corpus
 from autofill_audit.corpus.profiles import LOCALE_IDS
 from autofill_audit.corpus.tiers import Tier
 from autofill_audit.corpus.validate import validate_corpus
+from autofill_audit.extract.walker import MAX_FRAME_DEPTH, ExtractOptions, extract_result
+from autofill_audit.loader import (
+    LoadBudget,
+    LoaderError,
+    NavigationFailedError,
+    NavigationTimeoutError,
+    NotHtmlError,
+    TargetNotFoundError,
+    UnsupportedSchemeError,
+    load_page,
+)
+from autofill_audit.report import html_report, json_report, terminal
 from autofill_audit.taxonomy import GROUP_ORDER, GROUPS
 
-__all__ = ["cli", "main"]
+__all__ = ["BOUNDARY_FLAGS", "cli", "main"]
 
-_NOT_IMPLEMENTED_EXIT_CODE = 2
-_FAILED_EXIT_CODE = 2
+EXIT_OK: Final[int] = 0
+EXIT_FINDINGS: Final[int] = 1
+EXIT_USAGE: Final[int] = 2
+EXIT_UNREACHABLE: Final[int] = 3
+EXIT_INTERNAL: Final[int] = 4
+
+_CONFIG_NAME: Final[str] = "autofill-audit.toml"
+_ENV_PREFIX: Final[str] = "AUTOFILL_AUDIT"
+
+_NEVER: Final[str] = "never"
+"""The ``--fail-on`` value that means no finding makes the run fail."""
+
+BOUNDARY_FLAGS: Final[dict[str, str]] = {
+    "--crawl": (
+        "there is no crawl mode. This tool audits one page per invocation, plus the "
+        "frames that page loads. That is a safety boundary rather than a missing "
+        "feature: a tool that walks a site from one command is a tool that can be "
+        "pointed at somebody else's site by accident."
+    ),
+    "--depth": (
+        "there is no crawl depth, because there is no crawl. One page per invocation, "
+        "plus the frames that page loads."
+    ),
+    "--fill": (
+        "this is an auditor, not a form filler. It reads the DOM and reports; it never "
+        "types into a field, never submits, and holds no profile of values to fill "
+        "with. A form-filling agent is a genuinely interesting successor project and it "
+        "is deliberately a separate one."
+    ),
+    "--fix": (
+        "findings carry a fix as text and nothing writes it for you. Rewriting a "
+        "production template from a classifier's output is exactly the failure this "
+        "project's first law exists to prevent."
+    ),
+    "--write": (
+        "there is no mode that edits your HTML. Findings carry a fix as text; applying "
+        "it is a decision a person makes."
+    ),
+}
+"""The five flags of spec section 0.4, and why each one is not here.
+
+Written as prose rather than as "unsupported" because the reader has just typed
+something reasonable. Telling them the boundary and the reason for it is the
+difference between a tool that looks unfinished and a tool that has an opinion."""
 
 
-@click.group(context_settings={"help_option_names": ["-h", "--help"]})
+# ---------------------------------------------------------------------------
+# Configuration.
+# ---------------------------------------------------------------------------
+
+
+class ConfigError(ValueError):
+    """The config file is missing, unreadable, or says something impossible."""
+
+
+@dataclass(frozen=True, slots=True)
+class Config:
+    """What a config file can set (spec section 14)."""
+
+    source: Path | None = None
+    values: Mapping[str, Any] = field(default_factory=dict)
+    suppressions: tuple[Suppression, ...] = ()
+
+    def get(self, key: str) -> Any:
+        """Return a top-level setting, or None."""
+        return self.values.get(key)
+
+
+_EMPTY_CONFIG: Final[Config] = Config()
+
+
+def find_config(start: Path) -> Path | None:
+    """Search ``start`` and its ancestors for the config file.
+
+    Upward from the working directory, which is what makes a repository-level
+    config apply to every subdirectory a developer runs the tool from. It stops
+    at the filesystem root and never reads a home directory: a config that
+    applied to every project on the machine would make one project's suppressions
+    silently apply to another's audit.
+    """
+    for directory in (start, *start.parents):
+        candidate = directory / _CONFIG_NAME
+        if candidate.is_file():
+            return candidate
+    return None
+
+
+def load_config(path: Path | None) -> Config:
+    """Read and validate a config file. A missing file is not an error."""
+    if path is None:
+        return _EMPTY_CONFIG
+    try:
+        payload = tomllib.loads(path.read_text(encoding="utf-8"))
+    except (OSError, tomllib.TOMLDecodeError) as error:
+        raise ConfigError(f"{path}: {error}") from error
+
+    suppressions: list[Suppression] = []
+    for name in payload.get("ignore", []):
+        if not isinstance(name, str):
+            raise ConfigError(f"{path}: ignore must be a list of finding codes")
+        suppressions.append(Suppression(code=_finding_code(path, name), reason=f"ignore = {name}"))
+
+    entries = payload.get("suppress", [])
+    if not isinstance(entries, list):
+        raise ConfigError(f"{path}: suppress must be a list of tables")
+    for entry in entries:
+        if not isinstance(entry, dict) or "code" not in entry:
+            raise ConfigError(f"{path}: every [[suppress]] entry needs a code")
+        reason = entry.get("reason")
+        if not isinstance(reason, str) or not reason:
+            raise ConfigError(
+                f"{path}: every [[suppress]] entry needs a reason. A suppression with no "
+                "stated reason is a suppression nobody can review."
+            )
+        selector = entry.get("selector")
+        if selector is not None and not isinstance(selector, str):
+            raise ConfigError(f"{path}: a [[suppress]] selector must be a string")
+        suppressions.append(
+            Suppression(
+                code=_finding_code(path, str(entry["code"])),
+                selector=selector,
+                reason=reason,
+            )
+        )
+    return Config(source=path, values=payload, suppressions=tuple(suppressions))
+
+
+def _finding_code(path: Path, name: str) -> FindingCode:
+    """Turn a configured code name into a code, or explain why it is not one."""
+    try:
+        return FindingCode(name)
+    except ValueError as error:
+        known = ", ".join(code.value for code in FindingCode)
+        raise ConfigError(
+            f"{path}: {name!r} is not a finding code. Known codes: {known}"
+        ) from error
+
+
+def _from_config(ctx: click.Context, name: str, config: Config, current: Any) -> Any:
+    """Apply the config file only where the flag and the environment were silent."""
+    source = ctx.get_parameter_source(name)
+    if source is not None and source is not click.core.ParameterSource.DEFAULT:
+        return current
+    configured = config.get(name)
+    return current if configured is None else configured
+
+
+# ---------------------------------------------------------------------------
+# The command group.
+# ---------------------------------------------------------------------------
+
+
+@click.group(
+    context_settings={
+        "help_option_names": ["-h", "--help"],
+        "auto_envvar_prefix": _ENV_PREFIX,
+    }
+)
 @click.version_option(__version__, "-V", "--version", package_name="autofill-audit")
 def cli() -> None:
     """Audit HTML forms for browser autofill readiness."""
@@ -41,32 +247,290 @@ def cli() -> None:
 
 @cli.command()
 def version() -> None:
-    """Print the version and the resolved engine identities.
-
-    At P0 the only identity that exists is the package version itself. The
-    classifier, browser, and report engine identities are appended by the
-    phases that introduce them, so that a bug report can name exactly what ran.
-    """
+    """Print the version and the resolved engine identities."""
     click.echo(f"autofill-audit {__version__}")
+    for key, value in load_engine(EngineChoice.RULES).classifier.describe().items():
+        click.echo(f"  {key}: {value}")
+    try:
+        thresholds = load_thresholds()
+    except ThresholdsError as error:  # pragma: no cover - a corrupt install
+        click.echo(f"  thresholds: unreadable ({error})", err=True)
+        return
+    for key, value in thresholds.describe().items():
+        click.echo(f"  threshold {key}: {value}")
+
+
+def _print_schema(ctx: click.Context, _param: click.Parameter, value: bool) -> None:
+    """Print the JSON report schema and exit, before anything else happens."""
+    if not value or ctx.resilient_parsing:
+        return
+    click.echo(json.dumps(json_report.report_schema(), indent=2))
+    ctx.exit(EXIT_OK)
 
 
 @cli.command()
-@click.argument("target", metavar="URL_OR_PATH")
-def audit(target: str) -> None:
-    """Audit a page or local HTML file for autofill readiness.
+@click.argument("target", metavar="URL_OR_PATH", required=False)
+@click.option(
+    "--engine",
+    type=click.Choice([choice.value for choice in EngineChoice]),
+    default=EngineChoice.AUTO.value,
+    show_default=True,
+    help="auto uses the strongest engine that loads, and says so when it falls back",
+)
+@click.option(
+    "--format",
+    "formats",
+    type=click.Choice(["terminal", "json", "html"]),
+    multiple=True,
+    help="repeatable; default terminal. html and json need --out unless one of them "
+    "is the only format",
+)
+@click.option(
+    "--out",
+    type=click.Path(dir_okay=False, path_type=Path),
+    default=None,
+    help="write the report here; required when more than one format is asked for",
+)
+@click.option(
+    "--fail-on",
+    type=click.Choice(
+        [Severity.CRITICAL.value, Severity.WARNING.value, Severity.INFO.value, _NEVER]
+    ),
+    default=Severity.CRITICAL.value,
+    show_default=True,
+    help="the severity at which the exit code becomes 1",
+)
+@click.option("--timeout", type=int, default=None, help="navigation budget in milliseconds")
+@click.option("--settle", type=int, default=None, help="post-load DOM-quiet budget in milliseconds")
+@click.option(
+    "--include-hidden",
+    is_flag=True,
+    default=False,
+    help="audit the controls a user cannot see instead of setting them aside",
+)
+@click.option(
+    "--frames/--no-frames",
+    default=True,
+    show_default=True,
+    help="traverse same-origin frames",
+)
+@click.option(
+    "--min-confidence",
+    type=float,
+    default=None,
+    help="override the low threshold for this run; the report says a non-default "
+    "threshold was in force",
+)
+@click.option(
+    "--config",
+    "config_path",
+    type=click.Path(exists=True, dir_okay=False, path_type=Path),
+    default=None,
+    help=f"a {_CONFIG_NAME} to use instead of the one discovered upward from here",
+)
+@click.option(
+    "--json-schema",
+    is_flag=True,
+    callback=_print_schema,
+    expose_value=False,
+    is_eager=True,
+    help="print the JSON report schema and exit",
+)
+@click.option("-v", "--verbose", count=True, help="say more about what is happening")
+@click.option("-q", "--quiet", is_flag=True, default=False, help="print findings and nothing else")
+@click.pass_context
+def audit(
+    ctx: click.Context,
+    target: str | None,
+    engine: str,
+    formats: tuple[str, ...],
+    out: Path | None,
+    fail_on: str,
+    timeout: int | None,
+    settle: int | None,
+    include_hidden: bool,
+    frames: bool,
+    min_confidence: float | None,
+    config_path: Path | None,
+    verbose: int,
+    quiet: bool,
+) -> None:
+    """Audit a page or a local HTML file for autofill readiness.
 
-    Not implemented until P3, which ships the rule baseline, the audit engine,
-    and the three renderers together. Until then this command reports that it
-    cannot do the work rather than emitting an empty report, because an empty
-    report reads like a clean bill of health.
+    TARGET is a URL, or a path to a local file which is opened through file://.
+    One page per invocation, plus the frames that page loads.
     """
-    click.echo(f"autofill-audit cannot audit {target} yet.", err=True)
-    click.echo(
-        "The audit command is implemented at phase P3, together with the rule "
-        "baseline and the audit engine. This build is P0 foundations only.",
-        err=True,
+    if target is None:
+        raise click.UsageError("give me a URL or a path to audit, or pass --json-schema")
+
+    try:
+        config = load_config(config_path if config_path is not None else find_config(Path.cwd()))
+    except ConfigError as error:
+        _fail(str(error), EXIT_USAGE)
+
+    engine = str(_from_config(ctx, "engine", config, engine))
+    fail_on = str(_from_config(ctx, "fail_on", config, fail_on))
+    chosen = tuple(formats) or _configured_formats(config)
+    timeout = _from_config(ctx, "timeout", config, timeout)
+    settle = _from_config(ctx, "settle", config, settle)
+    min_confidence = _from_config(ctx, "min_confidence", config, min_confidence)
+
+    if len(chosen) > 1 and out is None:
+        _fail("--out is required when more than one --format is asked for", EXIT_USAGE)
+    if "html" in chosen and out is None:
+        _fail("--out is required for the html format", EXIT_USAGE)
+
+    try:
+        thresholds = _thresholds(min_confidence)
+    except ThresholdsError as error:
+        _fail(str(error), EXIT_USAGE)
+
+    try:
+        loaded = load_engine(EngineChoice(engine))
+    except UnavailableEngineError as error:
+        _fail(str(error), EXIT_USAGE)
+
+    if loaded.notice is not None and not quiet:
+        click.echo(f"autofill-audit: {loaded.notice}", err=True)
+    if min_confidence is not None and not quiet:
+        click.echo(
+            f"autofill-audit: a non-default low threshold of {min_confidence} is in force "
+            "for this run",
+            err=True,
+        )
+    if config.source is not None and verbose:
+        click.echo(f"autofill-audit: configuration from {config.source}", err=True)
+
+    report = _run(
+        target,
+        classifier=loaded.classifier,
+        thresholds=thresholds,
+        suppressions=config.suppressions,
+        include_hidden=include_hidden,
+        frames=frames,
+        timeout=timeout,
+        settle=settle,
     )
-    raise SystemExit(_NOT_IMPLEMENTED_EXIT_CODE)
+
+    _emit(report, chosen, out, quiet=quiet)
+    threshold = None if fail_on == _NEVER else Severity(fail_on)
+    ctx.exit(report.exit_code(threshold))
+
+
+def _configured_formats(config: Config) -> tuple[str, ...]:
+    """The formats a config file asked for, or the default."""
+    configured = config.get("format")
+    if configured is None:
+        return ("terminal",)
+    if isinstance(configured, str):
+        return (configured,)
+    return tuple(str(item) for item in configured)
+
+
+def _thresholds(min_confidence: float | None) -> Thresholds:
+    """Load the committed thresholds, with any command-line override applied."""
+    thresholds = load_thresholds()
+    if min_confidence is None:
+        return thresholds
+    return thresholds.with_low(float(min_confidence))
+
+
+def _fail(message: str, code: int) -> NoReturn:
+    """Print a diagnostic and exit with a documented code. Never a traceback."""
+    click.echo(f"autofill-audit: {message}", err=True)
+    raise SystemExit(code)
+
+
+def _run(
+    target: str,
+    *,
+    classifier: Any,
+    thresholds: Thresholds,
+    suppressions: tuple[Suppression, ...],
+    include_hidden: bool,
+    frames: bool,
+    timeout: int | None,
+    settle: int | None,
+) -> AuditReport:
+    """Load, extract, and audit one page, mapping every failure to its code."""
+    as_file = urlparse(target).scheme == ""
+    budget = LoadBudget()
+    if timeout is not None:
+        budget = LoadBudget(
+            load_timeout_ms=timeout,
+            network_idle_ms=budget.network_idle_ms,
+            quiet_ms=budget.quiet_ms,
+            settle_budget_ms=budget.settle_budget_ms,
+        )
+    if settle is not None:
+        budget = LoadBudget(
+            load_timeout_ms=budget.load_timeout_ms,
+            network_idle_ms=budget.network_idle_ms,
+            quiet_ms=budget.quiet_ms,
+            settle_budget_ms=settle,
+        )
+    options = ExtractOptions(max_frame_depth=MAX_FRAME_DEPTH if frames else 0)
+
+    started = time.perf_counter()
+    try:
+        with load_page(target, as_file=as_file, budget=budget) as page:
+            loaded_at = time.perf_counter()
+            result = extract_result(page.page, options=options, settle=page.settle)
+    except (UnsupportedSchemeError, TargetNotFoundError, NotHtmlError) as error:
+        _fail(str(error), EXIT_USAGE)
+    except (NavigationTimeoutError, NavigationFailedError) as error:
+        _fail(str(error), EXIT_UNREACHABLE)
+    except LoaderError as error:  # pragma: no cover - every subclass is handled above
+        _fail(str(error), EXIT_UNREACHABLE)
+    extracted_at = time.perf_counter()
+
+    report = run_audit(
+        result,
+        classifier,
+        AuditOptions(
+            thresholds=thresholds,
+            suppressions=suppressions,
+            include_hidden=include_hidden,
+        ),
+    )
+    finished = time.perf_counter()
+    return _with_timing(
+        report,
+        {
+            "load_ms": (loaded_at - started) * 1000,
+            "extract_ms": (extracted_at - loaded_at) * 1000,
+            "audit_ms": (finished - extracted_at) * 1000,
+        },
+    )
+
+
+def _with_timing(report: AuditReport, timing: dict[str, float]) -> AuditReport:
+    """Return the report carrying the run's timings."""
+    return replace(report, timing_ms=timing)
+
+
+def _emit(report: AuditReport, formats: Sequence[str], out: Path | None, *, quiet: bool) -> None:
+    """Render every requested format, to the file or to standard output."""
+    for name in formats:
+        if name == "terminal":
+            if out is not None and len(formats) == 1:
+                out.write_text(terminal.render(report), encoding="utf-8")
+            else:
+                terminal.print_report(report, quiet=quiet)
+            continue
+        text = json_report.render(report) if name == "json" else html_report.render(report)
+        if out is None:
+            click.echo(text, nl=False)
+            continue
+        path = out if len(formats) == 1 else out.with_suffix(f".{name}")
+        path.write_text(text, encoding="utf-8")
+        if not quiet:
+            click.echo(f"autofill-audit: wrote {name} to {path}", err=True)
+
+
+# ---------------------------------------------------------------------------
+# The corpus commands (P1).
+# ---------------------------------------------------------------------------
 
 
 @cli.group()
@@ -134,7 +598,7 @@ def corpus_generate(
             f"{out} is not empty. Pass --force to overwrite it.",
             err=True,
         )
-        raise SystemExit(_FAILED_EXIT_CODE)
+        raise SystemExit(EXIT_USAGE)
 
     try:
         grid = grid_from(
@@ -147,11 +611,11 @@ def corpus_generate(
         )
     except ValueError as error:
         click.echo(str(error), err=True)
-        raise SystemExit(_FAILED_EXIT_CODE) from error
+        raise SystemExit(EXIT_USAGE) from error
 
     result = write_corpus(grid, out)
-    version = result.manifest["generator_version"]
-    click.echo(f"seed {seed}, base year {grid.base_year}, generator {version}")
+    generator = result.manifest["generator_version"]
+    click.echo(f"seed {seed}, base year {grid.base_year}, generator {generator}")
     click.echo(
         f"wrote {result.form_count} forms and {result.manifest['field_count']} fields to {out}"
     )
@@ -196,10 +660,66 @@ def corpus_validate(corpus_dir: Path, quiet: bool) -> None:
         click.echo(problem, err=True)
     if not report.ok:
         click.echo(f"corpus validate: {len(report.problems)} problem(s)", err=True)
-        raise SystemExit(_FAILED_EXIT_CODE)
+        raise SystemExit(EXIT_USAGE)
     click.echo("corpus validate: green")
 
 
+# ---------------------------------------------------------------------------
+# Entry point.
+# ---------------------------------------------------------------------------
+
+
+def check_boundaries(argv: Sequence[str]) -> str | None:
+    """Return the boundary message for the first out-of-scope flag in ``argv``.
+
+    Matches ``--flag`` and ``--flag=value`` and nothing else, so a path or a
+    value that happens to contain the word is not mistaken for the flag.
+    """
+    for argument in argv:
+        name = argument.split("=", 1)[0]
+        message = BOUNDARY_FLAGS.get(name)
+        if message is not None:
+            return f"{name} does not exist, on purpose: {message}"
+    return None
+
+
 def main() -> None:
-    """Console script entry point."""
-    cli()
+    """Console script entry point.
+
+    Owns exit codes 2 and 4. Everything a user can get wrong is answered with a
+    sentence and code 2; anything that reaches the last clause is a bug in this
+    program, and it says so, prints the traceback a bug report needs, and exits 4
+    rather than pretending the audit produced a clean result.
+    """
+    argv = sys.argv[1:]
+    boundary = check_boundaries(argv)
+    if boundary is not None:
+        click.echo(f"autofill-audit: {boundary}", err=True)
+        raise SystemExit(EXIT_USAGE)
+
+    try:
+        code = cli.main(args=argv, standalone_mode=False)
+    except SystemExit:
+        raise
+    except click.ClickException as error:
+        error.show()
+        raise SystemExit(EXIT_USAGE) from error
+    except click.exceptions.Abort as error:
+        click.echo("autofill-audit: interrupted", err=True)
+        raise SystemExit(EXIT_USAGE) from error
+    except Exception as error:
+        traceback.print_exc()
+        click.echo(
+            "autofill-audit: that is a bug in autofill-audit, not in your page. "
+            "Please open an issue at "
+            "https://github.com/Olajide-Badejo/autofill-audit/issues with the "
+            "traceback above and the page you were auditing.",
+            err=True,
+        )
+        raise SystemExit(EXIT_INTERNAL) from error
+    raise SystemExit(code if isinstance(code, int) else EXIT_OK)
+
+
+assert set(BOUNDARY_FLAGS) == {"--crawl", "--depth", "--fill", "--fix", "--write"}, (
+    "the boundary flags are the five of spec section 0.4, no more and no fewer"
+)

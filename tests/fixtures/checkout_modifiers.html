@@ -1,0 +1,78 @@
+<!doctype html>
+<!--
+  Tests: the modifier rule of spec section 7.1, which is the single most
+  expensive thing this tool could get wrong.
+
+  Every control here declares a correct token behind a section modifier:
+  "shipping postal-code", "billing postal-code", "shipping address-level2",
+  "home tel", and a section-* prefix on top of one of them. The inferred labels
+  are the bare tokens, because the classifier never predicts a modifier.
+
+  A tool that compared the raw attribute value against the inferred label would
+  see "shipping postal-code" against "postal-code", call them different, and
+  raise a CRITICAL on every one of these. That is a flood of false criticals on
+  exactly the well-built checkout pages that need them least, which is why spec
+  section 7.1 says P3 must have a specific test for it and why this fixture
+  exists rather than being folded into the clean fixture.
+
+  The correct answer for this page is: no WRONG_AUTOCOMPLETE, and in fact no
+  finding above INFO at all.
+
+  Hand authored. Not a copy of any live site.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Checkout</title>
+</head>
+<body>
+<main>
+<h1>Checkout</h1>
+
+<form name="checkout" method="post" action="#">
+
+<section id="shipping">
+<h2>Delivery address</h2>
+<div class="field">
+<label for="sh-name">Full name</label>
+<input id="sh-name" name="sh_name" type="text" autocomplete="shipping name">
+</div>
+<div class="field">
+<label for="sh-street">Street address</label>
+<input id="sh-street" name="sh_street" type="text" autocomplete="shipping street-address">
+</div>
+<div class="field">
+<label for="sh-city">Town or city</label>
+<input id="sh-city" name="sh_city" type="text" autocomplete="shipping address-level2">
+</div>
+<div class="field">
+<label for="sh-postcode">Postcode</label>
+<input id="sh-postcode" name="sh_postcode" type="text" autocomplete="shipping postal-code">
+</div>
+<div class="field">
+<label for="sh-phone">Telephone number</label>
+<input id="sh-phone" name="sh_phone" type="tel" inputmode="tel" autocomplete="home tel">
+</div>
+</section>
+
+<section id="billing">
+<h2>Billing address</h2>
+<div class="field">
+<label for="bl-postcode">Postcode</label>
+<input id="bl-postcode" name="bl_postcode" type="text" autocomplete="billing postal-code">
+</div>
+<div class="field">
+<label for="bl-city">Town or city</label>
+<input id="bl-city" name="bl_city" type="text" autocomplete="section-billing billing address-level2">
+</div>
+<div class="field">
+<label for="bl-email">Email address</label>
+<input id="bl-email" name="bl_email" type="email" autocomplete="billing email">
+</div>
+</section>
+
+<button type="submit">Continue</button>
+</form>
+</main>
+</body>
+</html>

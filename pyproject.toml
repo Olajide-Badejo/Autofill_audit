@@ -85,6 +85,10 @@ where = ["src"]
 # them would install a command that cannot run.
 autofill_audit = [
     "py.typed",
+    # The decision thresholds of spec section 11.3, loaded at runtime rather than
+    # hardcoded (law 1's "never a folklore constant"). A wheel without them
+    # installs a tool that cannot decide whether to report anything.
+    "audit/*.json",
     "corpus/locales/*.json",
     "corpus/templates/*.j2",
     "corpus/*.json",
@@ -119,6 +123,10 @@ addopts = "-q --cov=src/autofill_audit --cov-report=term-missing --cov-fail-unde
 markers = [
     "e2e: end to end tests that drive a real browser against local fixtures",
     "llm: tests that need a reachable local LLM; skipped unless AUTOFILL_AUDIT_LLM_TESTS=1",
+    # Law 2 clause (d): every taxonomy label must be asserted by at least one
+    # test. The marker carries the label, scripts/check_reachability.py collects
+    # the markers, and a label nothing asserts fails the build.
+    "label(name): this test asserts an outcome that depends on one taxonomy label",
 ]
 
 [tool.coverage.run]
