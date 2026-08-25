@@ -40,6 +40,7 @@ __all__ = [
     "join_shadow",
     "looks_generated",
     "nth_of_type_path",
+    "nth_of_type_tail",
 ]
 
 SHADOW_SEPARATOR: Final[str] = " >>> "
@@ -73,6 +74,19 @@ def form_name_selector(form_name: str, control_name: str) -> str:
     return f'form[name="{form_name}"] [name="{control_name}"]'
 
 
+def nth_of_type_tail(steps: tuple[tuple[str, int], ...]) -> str:
+    """Return the anchorless part of a positional path.
+
+    Split out from ``nth_of_type_path`` at P2, which needs the same tail with no
+    anchor in front of it: inside a shadow root the root itself is the anchor
+    and has no selector of its own, so the path begins at the first step.
+    Keeping one implementation of the join is the point.
+    """
+    if not steps:
+        raise ValueError("a positional path needs at least one step")
+    return " > ".join(f"{tag}:nth-of-type({index})" for tag, index in steps)
+
+
 def nth_of_type_path(anchor: str, steps: tuple[tuple[str, int], ...]) -> str:
     """Return the third-preference selector.
 
@@ -82,8 +96,7 @@ def nth_of_type_path(anchor: str, steps: tuple[tuple[str, int], ...]) -> str:
     """
     if not steps:
         raise ValueError("a positional path needs at least one step below its anchor")
-    tail = " > ".join(f"{tag}:nth-of-type({index})" for tag, index in steps)
-    return f"{anchor} > {tail}"
+    return f"{anchor} > {nth_of_type_tail(steps)}"
 
 
 def join_shadow(host_selector: str, inner_selector: str) -> str:
