@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>autofill-audit report: fixture://honeypot.html</title>
+<style>
+:root {
+  color-scheme: light dark;
+  --ink: #1b1b1b;
+  --paper: #ffffff;
+  --rule: #d9d9d9;
+  --muted: #5c5c5c;
+  --critical: #a4143c;
+  --warning: #8a5a00;
+  --info: #12566b;
+  --note: #5c5c5c;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #ececec;
+    --paper: #16181c;
+    --rule: #35383e;
+    --muted: #a6a6a6;
+    --critical: #ff8095;
+    --warning: #e5b25d;
+    --info: #7cc7dd;
+    --note: #a6a6a6;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+  max-width: 60rem;
+  background: var(--paper);
+  color: var(--ink);
+  font: 15px/1.55 ui-sans-serif, system-ui, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+h1 { font-size: 1.4rem; margin: 0 0 .25rem; }
+h2 { font-size: 1.05rem; margin: 2rem 0 .5rem; }
+p.target { margin: 0 0 1.5rem; color: var(--muted); word-break: break-all; }
+table { border-collapse: collapse; width: 100%; margin: 0 0 1rem; }
+th, td {
+  text-align: left;
+  vertical-align: top;
+  padding: .5rem .6rem;
+  border-bottom: 1px solid var(--rule);
+}
+th { font-weight: 600; }
+td.control { width: 38%; word-break: break-all; }
+code, .sel {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .92em;
+}
+.code { font-weight: 600; }
+.evidence { color: var(--muted); font-size: .88em; margin-top: .35rem; word-break: break-word; }
+.critical .code { color: var(--critical); }
+.warning .code { color: var(--warning); }
+.info .code { color: var(--info); }
+.note .code { color: var(--note); }
+dl.summary {
+  display: grid;
+  grid-template-columns: max-content auto;
+  gap: .3rem 1.25rem;
+  margin: 0;
+}
+dl.summary dt { color: var(--muted); }
+dl.summary dd { margin: 0; }
+ul.notes { color: var(--muted); padding-left: 1.1rem; }
+footer {
+  margin-top: 2.5rem;
+  color: var(--muted);
+  font-size: .85em;
+  border-top: 1px solid var(--rule);
+  padding-top: .75rem;
+}
+.empty { color: var(--muted); }
+</style>
+</head>
+<body>
+<h1>autofill-audit report</h1>
+<p class="target"><span class="sel">fixture://honeypot.html</span></p>
+<h2>summary</h2><dl class="summary"><dt>critical</dt><dd>0</dd><dt>warning</dt><dd>0</dd><dt>info</dt><dd>0</dd><dt>note</dt><dd>0</dd><dt>autofill readiness</dt><dd>1 of 2 controls declare autocomplete</dd><dt>controls audited</dt><dd>2</dd><dt>set aside as not visible</dt><dd>3</dd></dl>
+<p class="empty">No findings. Every control this tool could read is declared.</p>
+<footer>autofill-audit 0.1.0<br>confidence_kind=tier, engine=rules, intrinsic_rules=10, option_rules=36, rule_table_version=1.0.0, tool_version=0.1.0, vocabulary_rules=346<br>Confidences are rule tiers, not probabilities, and the thresholds behind them are a documented mapping rather than a measurement (rule-tier-band-mapping).</footer>
+</body>
+</html>

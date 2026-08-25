@@ -141,12 +141,31 @@ any template is emitted in six locales and four tiers by construction.
 |---|---|---|
 | (a) token or enumerated extra | yes | `check_taxonomy_populated`, `check_groups_partition`, `check_no_duplicate_label_values` |
 | (b) emitted by at least one answer key | yes, from P1 | `check_corpus_reachability`, which reads the committed sample corpus and generates a fresh grid |
-| (c) reachable by a rule or present in training | not yet, P3 | listed in the script's `PENDING` |
-| (d) asserted by at least one test | not yet, P3 | listed in the script's `PENDING` |
+| (c) reachable by a rule or documented as unreachable | yes, from P3 | `check_rule_reachability`, which reads the rule table itself and the exemption table below |
+| (d) asserted by at least one test | yes, from P3 | `check_test_reachability`, which collects the `label` markers out of the test suite |
 
-A clause moves out of `PENDING` and into `CHECKS` in the same commit that makes
-it enforceable. A green run that silently claimed more than it checked would be
-worse than an honest partial one.
+All four clauses are enforced. `PENDING` is empty, and stays empty unless a later
+phase adds a clause that cannot yet be checked. A clause moves out of `PENDING`
+and into `CHECKS` in the same commit that makes it enforceable, because a green
+run that silently claimed more than it checked would be worse than an honest
+partial one.
+
+Clause (d)'s mechanism is a pytest marker. A test that asserts an outcome
+depending on one label carries `@pytest.mark.label("postal-code")`, the check
+collects the markers from a real collection run rather than by reading the
+sources, and a label no test carries fails the build. Collection rather than
+static parsing is what lets a parametrised table tag forty two cases from one
+line of code.
+
+### Rule reachability exemptions
+
+Clause (c) allows a label to have no rule when this document says why. Each row
+below is a written exemption, and the check fails on a label that is exempt here
+*and* reachable by a rule, so a stale exemption is as loud as a missing one.
+
+| Label | Why no rule produces it |
+|---|---|
+| `UNKNOWN` | It is the documented default branch of the rule engine, not the output of any rule. Law 1 forbids a rule table's default branch becoming a confident answer, so `UNKNOWN` is emitted at the `NONE` tier when every tier has tied or matched nothing. Giving it a rule would mean writing a pattern for "none of the other patterns", which is either unreachable or a way to make the escape hatch confident. It is model-only in the sense the growth rule means: the n-gram classifier at P4 does predict it, and the corpus emits one deliberately undeterminable control per hostile form to train and score it on. |
 
 ## Locale provider status
 

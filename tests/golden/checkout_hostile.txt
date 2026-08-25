@@ -1,0 +1,123 @@
+autofill-audit  fixture://checkout_hostile.html
+
+critical (6)                                                                                        
+                                                                                                    
+ control                                  finding                                                   
+ ────────────────────────────────────────────────────────────────────────────────────────────────── 
+ #ck-email                                MISSING_AUTOCOMPLETE                                      
+                                          add autocomplete="email" to #ck-email                     
+                                          evidence: declaration:absent, label:email-words,          
+                                          label:address-word [rule tier HIGH]                       
+ #input7                                  MISSING_AUTOCOMPLETE                                      
+                                          add autocomplete="name" to #input7                        
+                                          evidence: declaration:absent,                             
+                                          placeholder:full-name-words, placeholder:name-word [rule  
+                                          tier MEDIUM]                                              
+ #ck-postcode                             OFF_SPEC_TOKEN                                            
+                                          autocomplete="zipcode" is not a valid autofill token; use 
+                                          "postal-code"                                             
+                                          evidence: declaration:off-spec, label:postcode-words      
+                                          [rule tier HIGH]                                          
+ #ck-holder                               WRONG_AUTOCOMPLETE                                        
+                                          #ck-holder declares autocomplete="name" but looks like    
+                                          cc-name; change to autocomplete="cc-name"                 
+                                          evidence: declaration:token-mismatch, label:name-word,    
+                                          label:cardholder-words [rule tier HIGH]                   
+ #ck-mm                                   MISSING_AUTOCOMPLETE                                      
+                                          add autocomplete="cc-exp-month" to #ck-mm                 
+                                          evidence: declaration:absent, intrinsic:expiry-pair-month 
+                                          [rule tier HIGH]                                          
+ #ck-yy                                   MISSING_AUTOCOMPLETE                                      
+                                          add autocomplete="cc-exp-year" to #ck-yy                  
+                                          evidence: declaration:absent, intrinsic:expiry-pair-year  
+                                          [rule tier HIGH]                                          
+                                                                                                    
+warning (8)                                                                                         
+                                                                                                    
+ control                                  finding                                                   
+ ────────────────────────────────────────────────────────────────────────────────────────────────── 
+ #ck-phone                                AUTOCOMPLETE_OFF                                          
+                                          remove autocomplete="off" from #ck-phone; browsers may    
+                                          ignore it and users lose autofill                         
+                                          evidence: declaration:off, intrinsic:type-tel [rule tier  
+                                          HIGH]                                                     
+ #input7                                  PLACEHOLDER_AS_LABEL                                      
+                                          #input7 uses a placeholder as its label; add a real       
+                                          <label>                                                   
+                                          evidence: structure:placeholder-is-the-only-label         
+                                          [structural]                                              
+ form[name="checkout"] [name="ck_addr"]   UNLABELED_FIELD                                           
+                                          add a <label for="ck_addr">...</label> to                 
+                                          form[name="checkout"] [name="ck_addr"]                    
+                                          evidence: structure:no-accessible-label [structural]      
+ form[name="checkout"] [name="ck_q1"]     UNLABELED_FIELD                                           
+                                          add a <label for="ck_q1">...</label> to                   
+                                          form[name="checkout"] [name="ck_q1"]                      
+                                          evidence: structure:no-accessible-label [structural]      
+ #ck-mm                                   SPLIT_FIELD                                               
+                                          #ck-mm is one half of a split expiry; set                 
+                                          autocomplete="cc-exp-month" and "cc-exp-year" on the pair 
+                                          evidence: structure:split-expiry-group [structural]       
+ frame[#hosted-pan]                       UNDETECTABLE_FIELD                                        
+                                          the control is inside a cross-origin frame, which is how  
+                                          hosted payment fields are built on purpose; this is not   
+                                          necessarily a defect. Autofill still works inside the     
+                                          frame, and the frame's own document is where its          
+                                          autocomplete attributes belong. Audit that document       
+                                          separately                                                
+                                          evidence: structure:undetectable [structural]             
+ #ck-exp2                                 COMPOSITE_FIELD                                           
+                                          #ck-exp2 collects several values in one control; declare  
+                                          autocomplete="cc-exp" or split it                         
+                                          evidence: declaration:absent, label:expiry-words,         
+                                          label:mmyy-shape [rule tier HIGH]                         
+ #ce-1                                    UNDETECTABLE_FIELD                                        
+                                          the control is inside a closed shadow root: autofill      
+                                          cannot see this field; expose it in light DOM or declare  
+                                          autocomplete on the host                                  
+                                          evidence: structure:undetectable [structural]             
+                                                                                                    
+info (3)                                                                                            
+                                                                                                    
+ control                                  finding                                                   
+ ────────────────────────────────────────────────────────────────────────────────────────────────── 
+ #ck-email                                WRONG_INPUT_TYPE                                          
+                                          set type="email" on #ck-email                             
+                                          evidence: structure:input-attribute-mismatch,             
+                                          label:email-words, label:address-word [rule tier HIGH]    
+ #input7                                  GENERIC_IDENTIFIER                                        
+                                          give #input7 a meaningful name/id, or declare             
+                                          autocomplete                                              
+                                          evidence: structure:generic-identifier [structural]       
+ #input7                                  MISSING_NAME_ATTR                                         
+                                          add a name attribute to #input7                           
+                                          evidence: structure:no-name-attribute [structural]        
+                                                                                                    
+note (2)                                                                                            
+                                                                                                    
+ control                                  finding                                                   
+ ────────────────────────────────────────────────────────────────────────────────────────────────── 
+ form[name="checkout"] [name="ck_addr"]   LOW_CONFIDENCE                                            
+                                          form[name="checkout"] [name="ck_addr"] may be             
+                                          street-address (rule tier LOW); declare autocomplete      
+                                          explicitly                                                
+                                          evidence: declaration:absent, context:address-word [rule  
+                                          tier LOW]                                                 
+ form[name="checkout"] [name="ck_q1"]     LOW_CONFIDENCE                                            
+                                          form[name="checkout"] [name="ck_q1"] may be organization  
+                                          (rule tier LOW); declare autocomplete explicitly          
+                                          evidence: declaration:absent, context:address-word,       
+                                          context:organization-words [rule tier LOW]                
+                                                                                                    
+note: could not read 1 frame(s): frame[#hosted-pan]
+
+                                                            
+ critical                                                 6 
+ warning                                                  8 
+ info                                                     3 
+ note                                                     2 
+                                                            
+ autofill readiness   2 of 11 controls declare autocomplete 
+                                                            
+Confidences are rule tiers, not probabilities, and the thresholds behind them are a documented 
+mapping rather than a measurement (rule-tier-band-mapping).

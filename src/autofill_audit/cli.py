@@ -723,3 +723,11 @@ def main() -> None:
 assert set(BOUNDARY_FLAGS) == {"--crawl", "--depth", "--fill", "--fix", "--write"}, (
     "the boundary flags are the five of spec section 0.4, no more and no fewer"
 )
+
+
+if __name__ == "__main__":
+    # ``python -m autofill_audit.cli`` runs the same entry point the console
+    # script does. The end-to-end tests use it because they have to run the tool
+    # in a subprocess, and a second way in that behaved differently from the
+    # first would make those tests prove the wrong thing.
+    main()
