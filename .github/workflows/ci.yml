@@ -135,13 +135,20 @@ jobs:
         run: python -m build
       # A separate step with a pipx environment of its own, so the wheel is
       # exercised the way a user installs it rather than through the checkout
-      # that built it.
+      # that built it. PIPX_HOME and PIPX_BIN_DIR are set explicitly rather than
+      # left to default, both so the environment is genuinely clean and so the
+      # installed console script is at a known path instead of one this job has
+      # to guess.
       - name: Install the wheel with pipx and run it
+        env:
+          PIPX_HOME: ${{ runner.temp }}/pipx-home
+          PIPX_BIN_DIR: ${{ runner.temp }}/pipx-bin
         run: |
           python -m pip install --user pipx
           python -m pipx install --python "${{ env.pythonLocation }}/bin/python" dist/*.whl
-          "$HOME/.local/bin/autofill-audit" version
-          "$HOME/.local/bin/autofill-audit" audit --help
+          "$PIPX_BIN_DIR/autofill-audit" version
+          "$PIPX_BIN_DIR/autofill-audit" --version
+          "$PIPX_BIN_DIR/autofill-audit" audit --help
       - name: Upload distributions
         uses: actions/upload-artifact@v4
         with:
