@@ -1,0 +1,292 @@
+{
+  "locale": "de-DE",
+  "html_lang": "de",
+  "faker_locale": "de_DE",
+  "country_code": "DE",
+  "country_name": "Deutschland",
+  "phone_country_code": "+49",
+  "phone_pattern": "0151 000####",
+  "postal_pattern": "#####",
+  "blocks": {
+    "name": {
+      "full": [
+        "full_name"
+      ],
+      "split": [
+        "given_name",
+        "family_name"
+      ],
+      "split_middle": [
+        "given_name",
+        "additional_name",
+        "family_name"
+      ],
+      "honorific": [
+        "honorific_prefix",
+        "given_name",
+        "family_name",
+        "honorific_suffix"
+      ]
+    },
+    "address": {
+      "lines": [
+        "address_line_1",
+        "address_line_2",
+        "postal_code",
+        "city"
+      ],
+      "lines3": [
+        "address_line_1",
+        "address_line_2",
+        "address_line_3",
+        "postal_code",
+        "city"
+      ],
+      "street": [
+        "street_address",
+        "postal_code",
+        "city"
+      ],
+      "composite": [
+        "full_address_composite"
+      ]
+    },
+    "rows": [
+      [
+        "postal_code",
+        "city"
+      ]
+    ],
+    "optional": {}
+  },
+  "text": {
+    "labels": {
+      "honorific_prefix": "Anrede",
+      "honorific_suffix": "Namenszusatz",
+      "given_name": "Vorname",
+      "additional_name": "Zweiter Vorname",
+      "family_name": "Nachname",
+      "given_name_kana": "Vorname (phonetisch)",
+      "family_name_kana": "Nachname (phonetisch)",
+      "full_name": "Vollständiger Name",
+      "nickname": "Anzeigename",
+      "email_address": "E-Mail-Adresse",
+      "phone": "Telefonnummer",
+      "phone_country_code": "Ländervorwahl",
+      "phone_national": "Rufnummer",
+      "phone_extension": "Durchwahl",
+      "website": "Webseite",
+      "street_address": "Straße und Hausnummer",
+      "address_line_1": "Straße und Hausnummer",
+      "address_line_2": "Adresszusatz",
+      "address_line_3": "Weiterer Adresszusatz",
+      "city": "Ort",
+      "admin_area": "Bundesland",
+      "postal_code": "PLZ",
+      "country_select": "Land",
+      "country_text": "Land",
+      "organization": "Firma",
+      "full_address_composite": "Vollständige Anschrift",
+      "card_holder": "Karteninhaber",
+      "card_number": "Kartennummer",
+      "card_expiry": "Gültig bis",
+      "card_expiry_month": "Gültig bis (Monat)",
+      "card_expiry_year": "Gültig bis (Jahr)",
+      "card_expiry_split_month": "Monat",
+      "card_expiry_split_year": "Jahr",
+      "card_expiry_composite": "Gültig bis (MM/JJ)",
+      "card_security_code": "Prüfziffer",
+      "card_type": "Kartentyp",
+      "amount": "Betrag",
+      "username": "Benutzername",
+      "new_password": "Passwort",
+      "new_password_confirm": "Passwort bestätigen",
+      "current_password": "Passwort",
+      "one_time_code": "Bestätigungscode",
+      "birth_date": "Geburtsdatum",
+      "sex": "Geschlecht",
+      "search": "Suche",
+      "quantity": "Menge",
+      "coupon": "Gutscheincode",
+      "comments": "Anmerkungen zur Bestellung",
+      "consent": "Ich akzeptiere die Verkaufsbedingungen",
+      "marketing_opt_in": "Newsletter abonnieren",
+      "undeterminable": "Wert"
+    },
+    "placeholders": {
+      "email_address": "name@example.com",
+      "address_line_1": "Beispielstraße 1",
+      "address_line_2": "Hinterhaus",
+      "city": "Beispielstadt",
+      "postal_code": "12345",
+      "phone": "0151 0000123",
+      "phone_national": "0151 0000123",
+      "phone_extension": "1234",
+      "website": "https://example.com",
+      "card_number": "4242 4242 4242 4242",
+      "card_expiry_composite": "MM/JJ",
+      "card_security_code": "123",
+      "one_time_code": "123456",
+      "amount": "0,00",
+      "coupon": "BEISPIEL10",
+      "search": "Shop durchsuchen",
+      "full_address_composite": "Straße, PLZ, Ort, Land",
+      "comments": "Paket beim Nachbarn abgeben"
+    },
+    "identifiers": {
+      "given_name": "vorname",
+      "family_name": "nachname",
+      "full_name": "name",
+      "street_address": "strasse",
+      "address_line_1": "strasse",
+      "address_line_2": "adresszusatz",
+      "address_line_3": "adresszusatz2",
+      "city": "ort",
+      "admin_area": "bundesland",
+      "postal_code": "plz",
+      "country_select": "land",
+      "country_text": "land",
+      "organization": "firma",
+      "phone": "telefon",
+      "phone_national": "rufnummer",
+      "phone_extension": "durchwahl",
+      "new_password": "passwort",
+      "new_password_confirm": "passwortWiederholen",
+      "current_password": "passwort",
+      "username": "benutzername",
+      "birth_date": "geburtsdatum",
+      "sex": "geschlecht",
+      "card_holder": "karteninhaber",
+      "card_number": "kartennummer",
+      "card_security_code": "pruefziffer",
+      "amount": "betrag",
+      "coupon": "gutschein",
+      "comments": "anmerkungen",
+      "search": "suche",
+      "quantity": "menge"
+    },
+    "sections": {
+      "contact": "Kontaktdaten",
+      "identity": "Ihre Angaben",
+      "shipping": "Lieferadresse",
+      "billing": "Rechnungsadresse",
+      "address": "Adresse",
+      "payment": "Zahlung",
+      "account": "Konto",
+      "security": "Sicherheit",
+      "order": "Bestellung",
+      "extras": "Weitere Angaben"
+    },
+    "page_titles": {
+      "checkout": "Kasse",
+      "signup": "Konto erstellen",
+      "address": "Adressbuch",
+      "payment": "Zahlungsdaten",
+      "login": "Anmelden"
+    },
+    "summary": {
+      "heading": "Bestellübersicht",
+      "ship_to": "Lieferung an",
+      "contact_at": "Wir erreichen Sie unter"
+    }
+  },
+  "options": {
+    "titles": [
+      "Herr",
+      "Frau",
+      "Divers",
+      "Dr.",
+      "Prof."
+    ],
+    "sex_options": [
+      "Weiblich",
+      "Männlich",
+      "Keine Angabe"
+    ],
+    "card_types": [
+      "Visa",
+      "Mastercard",
+      "American Express"
+    ],
+    "admin_areas": [
+      "Bayern",
+      "Berlin",
+      "Hamburg",
+      "Hessen",
+      "Sachsen",
+      "Niedersachsen"
+    ],
+    "months": [
+      "Januar",
+      "Februar",
+      "März",
+      "April",
+      "Mai",
+      "Juni",
+      "Juli",
+      "August",
+      "September",
+      "Oktober",
+      "November",
+      "Dezember"
+    ]
+  },
+  "option_pairs": {
+    "countries": [
+      [
+        "DE",
+        "Deutschland"
+      ],
+      [
+        "AT",
+        "Österreich"
+      ],
+      [
+        "CH",
+        "Schweiz"
+      ],
+      [
+        "FR",
+        "Frankreich"
+      ],
+      [
+        "GB",
+        "Vereinigtes Königreich"
+      ],
+      [
+        "US",
+        "Vereinigte Staaten"
+      ],
+      [
+        "JP",
+        "Japan"
+      ]
+    ],
+    "phone_country_codes": [
+      [
+        "+49",
+        "Deutschland (+49)"
+      ],
+      [
+        "+43",
+        "Österreich (+43)"
+      ],
+      [
+        "+41",
+        "Schweiz (+41)"
+      ],
+      [
+        "+33",
+        "Frankreich (+33)"
+      ],
+      [
+        "+44",
+        "Vereinigtes Königreich (+44)"
+      ],
+      [
+        "+1",
+        "Vereinigte Staaten (+1)"
+      ]
+    ]
+  }
+}

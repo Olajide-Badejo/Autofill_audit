@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Payment details</title>
+<style>
+body { font-family: system-ui, sans-serif; margin: 0; padding: 1.5rem; }
+main { max-width: 44rem; margin: 0 auto; }
+.row { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.field { display: flex; flex-direction: column; flex: 1 1 12rem; margin-bottom: 0.75rem; }
+label { font-size: 0.85rem; margin-bottom: 0.25rem; }
+input, select, textarea { font: inherit; padding: 0.4rem; }
+fieldset { border: 1px solid #ccc; margin: 0 0 0.75rem; }
+.summary { background: #f4f4f4; padding: 0.75rem; margin-bottom: 1rem; }
+.canvas-note { font-size: 0.8rem; color: #555; }
+</style>
+</head>
+<body>
+<main>
+<h1>Payment details</h1>
+<form name="f1" method="post" action="#">
+<div class="block">
+<h2>P</h2>
+<div class="row">
+<div class="field">
+<select>
+<option value=""></option>
+<option value="visa">Visa</option>
+<option value="mastercard">Mastercard</option>
+<option value="americanexpress">American Express</option>
+<option value="discover">Discover</option>
+</select>
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<input name="ctl00$txt2" type="text">
+
+
+</div>
+</div>
+</div>
+<section id="sec-security" class="block">
+<h2>Security</h2>
+<div class="row">
+<div class="field">
+<label for="security-cardexpmonth">Expiration month</label>
+<input id="security-cardexpmonth" name="security_cardexpmonth" type="text" inputmode="numeric" maxlength="2" autocomplete="cc-exp-month" required>
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<label for="security-cardexpyear">Expiration year</label>
+<input id="security-cardexpyear" name="security_cardexpyear" type="text" inputmode="numeric" maxlength="4" autocomplete="cc-exp-year" required>
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<label for="security-securitycode">Security code</label>
+<input id="security-securitycode" name="security_securitycode" type="text" inputmode="numeric" maxlength="4" autocomplete="cc-csc" placeholder="123" required>
+
+
+</div>
+</div>
+</section>
+<div class="block">
+<h2>B</h2>
+<div class="row">
+<div class="field">
+<af-field id="ce-1" data-tag="input" data-type="text" data-name="ctl00$txt6" data-placeholder="01234"></af-field>
+</div>
+</div>
+<div class="row">
+<div class="field">
+<input id="input7" type="text">
+
+
+</div>
+</div>
+<div class="row">
+<div class="field" id="inj-slot-8">
+</div>
+</div>
+</div>
+<div class="actions"><button type="submit">Payment details</button></div>
+</form>
+</main>
+<script>
+class AfField extends HTMLElement {
+  connectedCallback() {
+    if (this.shadowRoot) { return; }
+    var root = this.attachShadow({ mode: 'open' });
+    var el = document.createElement(this.dataset.tag || 'input');
+    if (this.dataset.type) { el.setAttribute('type', this.dataset.type); }
+    if (this.dataset.name) { el.setAttribute('name', this.dataset.name); }
+    if (this.dataset.placeholder) { el.setAttribute('placeholder', this.dataset.placeholder); }
+    root.appendChild(el);
+  }
+}
+customElements.define('af-field', AfField);
+</script>
+<script>
+window.setTimeout(function () {
+  var slot1 = document.getElementById("inj-slot-8");
+  if (slot1) {
+    var el1 = document.createElement('input');
+    el1.setAttribute('type', "text");
+    el1.setAttribute('id', "input8");
+    el1.setAttribute('name', "field_8");
+    el1.setAttribute('placeholder', "Search the store");
+    slot1.appendChild(el1);
+  }
+}, 300);
+</script>
+</body>
+</html>

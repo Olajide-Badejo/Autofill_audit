@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in</title>
+<style>
+body { font-family: system-ui, sans-serif; margin: 0; padding: 1.5rem; }
+main { max-width: 44rem; margin: 0 auto; }
+.row { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.field { display: flex; flex-direction: column; flex: 1 1 12rem; margin-bottom: 0.75rem; }
+label { font-size: 0.85rem; margin-bottom: 0.25rem; }
+input, select, textarea { font: inherit; padding: 0.4rem; }
+fieldset { border: 1px solid #ccc; margin: 0 0 0.75rem; }
+.summary { background: #f4f4f4; padding: 0.75rem; margin-bottom: 1rem; }
+.canvas-note { font-size: 0.8rem; color: #555; }
+</style>
+</head>
+<body>
+<main>
+<h1>Sign in</h1>
+<form name="login" method="post" action="#">
+<section id="sec-account" class="block">
+<h2>Account</h2>
+<div class="row">
+<div class="field">
+<label for="account-username">Username</label>
+<input id="account-username" name="account_username" type="text" autocomplete="username" required>
+
+
+</div>
+</div>
+</section>
+<section id="sec-security" class="block">
+<h2>Security</h2>
+<div class="row">
+<div class="field">
+<label for="security-password">Password</label>
+<input id="security-password" name="security_password" type="password" autocomplete="current-password" required>
+
+
+</div>
+</div>
+</section>
+<div class="actions"><button type="submit">Sign in</button></div>
+</form>
+</main>
+</body>
+</html>

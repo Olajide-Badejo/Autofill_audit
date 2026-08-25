@@ -1,0 +1,180 @@
+{
+  "family": "address",
+  "fields": [
+    {
+      "expected_modifiers": [],
+      "label": "name",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "name",
+        "delivery": "static",
+        "element_id": "identity-fullname",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "Full name",
+        "name": "identity_fullname",
+        "placeholder": null,
+        "role": "full_name",
+        "section": "identity",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "identity.full_name.1",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#identity-fullname"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "COMPOSITE_UNSPLIT",
+      "provenance": {
+        "control": "textarea",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": null,
+        "identifier_style": "bare",
+        "injection_slot": null,
+        "input_type": null,
+        "label_text": null,
+        "name": null,
+        "placeholder": "Street, city, state, ZIP code",
+        "role": "full_address_composite",
+        "section": "address",
+        "selector_strategy": "nth_of_type",
+        "shadow_host": null,
+        "slot_key": "address.full_address_composite.2",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "placeholder_as_label"
+        ]
+      },
+      "selector": "form[name=\"f1\"] > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > textarea:nth-of-type(1)"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "country",
+      "provenance": {
+        "control": "select",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": null,
+        "identifier_style": "legacy_name",
+        "injection_slot": null,
+        "input_type": null,
+        "label_text": null,
+        "name": "ctl00$txt3",
+        "placeholder": null,
+        "role": "country_select",
+        "section": "address",
+        "selector_strategy": "form_name",
+        "shadow_host": null,
+        "slot_key": "address.country_select.3",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "no_text_signal"
+        ]
+      },
+      "selector": "form[name=\"f1\"] [name=\"ctl00$txt3\"]"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "tel",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "tel",
+        "delivery": "static",
+        "element_id": "contact-phone",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "tel",
+        "label_text": "Phone number",
+        "name": "contact_phone",
+        "placeholder": "(555) 0123",
+        "role": "phone",
+        "section": "contact",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "contact.phone.4",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#contact-phone"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "UNKNOWN",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": "input5",
+        "identifier_style": "numbered",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": null,
+        "name": null,
+        "placeholder": null,
+        "role": "undeterminable",
+        "section": "address",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "address.undeterminable.5",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "no_text_signal",
+          "undeterminable"
+        ]
+      },
+      "selector": "#input5"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "NOT_AUTOFILLABLE",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "injected",
+        "element_id": "input6",
+        "identifier_style": "numbered",
+        "injection_slot": "inj-slot-6",
+        "input_type": "text",
+        "label_text": null,
+        "name": "field_6",
+        "placeholder": "Search the store",
+        "role": "search",
+        "section": "address",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "address.search.6",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "injected_after_load"
+        ]
+      },
+      "selector": "#input6"
+    }
+  ],
+  "form_id": "address-04-en-US-mixed-v0",
+  "generator_version": "1.0.0",
+  "locale": "en-US",
+  "page_notes": {
+    "canvas_pseudo_fields": [],
+    "injected_selectors": [
+      "#input6"
+    ],
+    "shadow_hosts": []
+  },
+  "schema_version": 1,
+  "template_id": "address-04",
+  "tier": "mixed",
+  "variant": 0
+}

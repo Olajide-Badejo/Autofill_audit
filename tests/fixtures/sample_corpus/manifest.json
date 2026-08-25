@@ -1,0 +1,508 @@
+{
+  "base_year": 2026,
+  "cells": [
+    {
+      "family": "address",
+      "fields": 9,
+      "forms": 1,
+      "locale": "de-DE",
+      "tier": "hostile"
+    },
+    {
+      "family": "address",
+      "fields": 9,
+      "forms": 1,
+      "locale": "en-US",
+      "tier": "clean"
+    },
+    {
+      "family": "address",
+      "fields": 8,
+      "forms": 1,
+      "locale": "en-US",
+      "tier": "hostile"
+    },
+    {
+      "family": "address",
+      "fields": 6,
+      "forms": 1,
+      "locale": "en-US",
+      "tier": "mixed"
+    },
+    {
+      "family": "address",
+      "fields": 8,
+      "forms": 1,
+      "locale": "en-US",
+      "tier": "partial"
+    },
+    {
+      "family": "address",
+      "fields": 10,
+      "forms": 1,
+      "locale": "ja-JP",
+      "tier": "hostile"
+    },
+    {
+      "family": "checkout",
+      "fields": 19,
+      "forms": 1,
+      "locale": "de-DE",
+      "tier": "clean"
+    },
+    {
+      "family": "checkout",
+      "fields": 21,
+      "forms": 1,
+      "locale": "en-US",
+      "tier": "clean"
+    },
+    {
+      "family": "checkout",
+      "fields": 20,
+      "forms": 1,
+      "locale": "en-US",
+      "tier": "hostile"
+    },
+    {
+      "family": "checkout",
+      "fields": 18,
+      "forms": 1,
+      "locale": "en-US",
+      "tier": "mixed"
+    },
+    {
+      "family": "checkout",
+      "fields": 14,
+      "forms": 1,
+      "locale": "en-US",
+      "tier": "partial"
+    },
+    {
+      "family": "checkout",
+      "fields": 21,
+      "forms": 1,
+      "locale": "ja-JP",
+      "tier": "clean"
+    },
+    {
+      "family": "login",
+      "fields": 2,
+      "forms": 1,
+      "locale": "en-US",
+      "tier": "clean"
+    },
+    {
+      "family": "login",
+      "fields": 5,
+      "forms": 1,
+      "locale": "en-US",
+      "tier": "hostile"
+    },
+    {
+      "family": "login",
+      "fields": 4,
+      "forms": 1,
+      "locale": "en-US",
+      "tier": "mixed"
+    },
+    {
+      "family": "login",
+      "fields": 3,
+      "forms": 1,
+      "locale": "en-US",
+      "tier": "partial"
+    },
+    {
+      "family": "payment",
+      "fields": 5,
+      "forms": 1,
+      "locale": "en-US",
+      "tier": "clean"
+    },
+    {
+      "family": "payment",
+      "fields": 9,
+      "forms": 1,
+      "locale": "en-US",
+      "tier": "hostile"
+    },
+    {
+      "family": "payment",
+      "fields": 8,
+      "forms": 1,
+      "locale": "en-US",
+      "tier": "mixed"
+    },
+    {
+      "family": "payment",
+      "fields": 5,
+      "forms": 1,
+      "locale": "en-US",
+      "tier": "partial"
+    },
+    {
+      "family": "signup",
+      "fields": 7,
+      "forms": 1,
+      "locale": "en-US",
+      "tier": "clean"
+    },
+    {
+      "family": "signup",
+      "fields": 10,
+      "forms": 1,
+      "locale": "en-US",
+      "tier": "hostile"
+    },
+    {
+      "family": "signup",
+      "fields": 15,
+      "forms": 1,
+      "locale": "en-US",
+      "tier": "mixed"
+    },
+    {
+      "family": "signup",
+      "fields": 9,
+      "forms": 1,
+      "locale": "en-US",
+      "tier": "partial"
+    }
+  ],
+  "field_count": 245,
+  "form_count": 24,
+  "forms": {
+    "address-01-en-US-clean-v0": {
+      "answer_key_sha256": "63ebe6be4c5e707799c3ed85fdeef307afce954b0f58965291987a78db8ac4f1",
+      "family": "address",
+      "field_count": 9,
+      "html_sha256": "a0b3b7d392231500599efea55a5f29a72deefa4202ff1374ffee9cc950f16b1b",
+      "locale": "en-US",
+      "template_id": "address-01",
+      "tier": "clean",
+      "variant": 0
+    },
+    "address-02-de-DE-hostile-v0": {
+      "answer_key_sha256": "0d9f15b281c904b5bd73faac72dff3f5cbc93f9ee46d3387a78ffb9410622ce2",
+      "family": "address",
+      "field_count": 9,
+      "html_sha256": "63e99154fd157a4f2c1f5e1e116cb5e8c7c33dda21da87aafc28b982f2ed5f98",
+      "locale": "de-DE",
+      "template_id": "address-02",
+      "tier": "hostile",
+      "variant": 0
+    },
+    "address-02-en-US-partial-v0": {
+      "answer_key_sha256": "0b69a237276520156a37d8b82057d1d7a665d38eb877692b371b52e0f4f0b315",
+      "family": "address",
+      "field_count": 8,
+      "html_sha256": "3f73a532b896867639e9bc05e09e5839a9f42bef02e7987337a5e7a3392faf0a",
+      "locale": "en-US",
+      "template_id": "address-02",
+      "tier": "partial",
+      "variant": 0
+    },
+    "address-02-ja-JP-hostile-v0": {
+      "answer_key_sha256": "a3dd6c45e8f5792a2cec9f555ef97bd8a2d255341bd48e9243e02f88f454003b",
+      "family": "address",
+      "field_count": 10,
+      "html_sha256": "77dfdcd1a0636d6eb5192d92cbfcf2af888dee483e0278ce6990a20bfc7d7169",
+      "locale": "ja-JP",
+      "template_id": "address-02",
+      "tier": "hostile",
+      "variant": 0
+    },
+    "address-03-en-US-hostile-v0": {
+      "answer_key_sha256": "6b86aadd370737dabd56b4099d81715f7b7908cacb5a98aa1aea06a45e3db836",
+      "family": "address",
+      "field_count": 8,
+      "html_sha256": "750b491c1ca5f508cb9b12e2d2fc4658ef65494859a9ba456cfc19718a7f36df",
+      "locale": "en-US",
+      "template_id": "address-03",
+      "tier": "hostile",
+      "variant": 0
+    },
+    "address-04-en-US-mixed-v0": {
+      "answer_key_sha256": "668e4a104c7f853fd4ba536069bcacad932494854d58efa33e983482d9ad6428",
+      "family": "address",
+      "field_count": 6,
+      "html_sha256": "38f2f8a26a6e087a2706821507cfbb972a16034b5e9315e900b0aebdf052e3da",
+      "locale": "en-US",
+      "template_id": "address-04",
+      "tier": "mixed",
+      "variant": 0
+    },
+    "checkout-01-de-DE-clean-v0": {
+      "answer_key_sha256": "861efba01dc7b68fb03b466eb8a2f1091626b99960b8d64cbb9919607f1a0537",
+      "family": "checkout",
+      "field_count": 19,
+      "html_sha256": "243fde55fa51625dc99e9f81be036b13f6d6a2616bc96220f0acaded13a68c63",
+      "locale": "de-DE",
+      "template_id": "checkout-01",
+      "tier": "clean",
+      "variant": 0
+    },
+    "checkout-01-en-US-clean-v0": {
+      "answer_key_sha256": "5dd356a1bc5b36b97ed9f1b31dbb45711448bba9227e7fee4136bcee1ffea64b",
+      "family": "checkout",
+      "field_count": 21,
+      "html_sha256": "ce9a99b62b8e03630405fdbbe0d14d941744478344a3df52200e8a3e3a08bdf0",
+      "locale": "en-US",
+      "template_id": "checkout-01",
+      "tier": "clean",
+      "variant": 0
+    },
+    "checkout-01-ja-JP-clean-v0": {
+      "answer_key_sha256": "f5a12b571882d5556cc60f89c2437b682b36e25b4d9b68d57b923e6bc5c0b1f9",
+      "family": "checkout",
+      "field_count": 21,
+      "html_sha256": "397bd08003d4bac269680fbd5508c9439d22cea8b1a8dda3e3e35cede1927658",
+      "locale": "ja-JP",
+      "template_id": "checkout-01",
+      "tier": "clean",
+      "variant": 0
+    },
+    "checkout-02-en-US-partial-v0": {
+      "answer_key_sha256": "8a582847028cc7ffdb1b010ecc800bb8216d805a672b2ec6e1b2f117ea40f654",
+      "family": "checkout",
+      "field_count": 14,
+      "html_sha256": "6bec96974bf9646537efa7e68683e826be9918397740fb1a3424bffd3b17aeac",
+      "locale": "en-US",
+      "template_id": "checkout-02",
+      "tier": "partial",
+      "variant": 0
+    },
+    "checkout-03-en-US-hostile-v0": {
+      "answer_key_sha256": "b126efc8fe301f374eb2fcc3bacbe4766aa04960e72fcc57277174451aae9f0d",
+      "family": "checkout",
+      "field_count": 20,
+      "html_sha256": "54e50a1f9bfceb7049b380c87ac62d3a0361df3cfa756c9a27c967af295cd293",
+      "locale": "en-US",
+      "template_id": "checkout-03",
+      "tier": "hostile",
+      "variant": 0
+    },
+    "checkout-04-en-US-mixed-v0": {
+      "answer_key_sha256": "5583fe2f6ab3bc223e66448a5003c4ecc2bc1a1aa97575f3c7601da75ec8888c",
+      "family": "checkout",
+      "field_count": 18,
+      "html_sha256": "83295dd8109b4334df63614bd3deaf51b3369d91fb3a9898a9d102e4732b3875",
+      "locale": "en-US",
+      "template_id": "checkout-04",
+      "tier": "mixed",
+      "variant": 0
+    },
+    "login-01-en-US-clean-v0": {
+      "answer_key_sha256": "0f2b15b62c9a9dbdb5529e5efbd8c4988c79dd02f0e13119befbd00a10ca09aa",
+      "family": "login",
+      "field_count": 2,
+      "html_sha256": "414e49ca72bd05b841042e57b5716ef73dd7e75208305b2858f03935066b945d",
+      "locale": "en-US",
+      "template_id": "login-01",
+      "tier": "clean",
+      "variant": 0
+    },
+    "login-02-en-US-partial-v0": {
+      "answer_key_sha256": "ae9a8c102542aec5afebf2e1e136cb966ffe2fa6e9192d85a44b105aad72c211",
+      "family": "login",
+      "field_count": 3,
+      "html_sha256": "7a77dcab3d6d5fb1450979a9b5d10913ff156891067204a93d1b4954c1160895",
+      "locale": "en-US",
+      "template_id": "login-02",
+      "tier": "partial",
+      "variant": 0
+    },
+    "login-03-en-US-hostile-v0": {
+      "answer_key_sha256": "4ada5c216e9bf145888cc419f9f03b53161aa00dbac76ebf009e10daea84dab2",
+      "family": "login",
+      "field_count": 5,
+      "html_sha256": "f46e404c3c976c361732b3808eacbe19d20fd3ab1a4ac8b2391433cbc0d75c11",
+      "locale": "en-US",
+      "template_id": "login-03",
+      "tier": "hostile",
+      "variant": 0
+    },
+    "login-04-en-US-mixed-v0": {
+      "answer_key_sha256": "f851a7cebf92ada54908bf8071c6d57e5bce977dd5c64824314af8a8ac33994e",
+      "family": "login",
+      "field_count": 4,
+      "html_sha256": "554def974d4d5b8c5678c0773ce6deea4e5d103df1d55a435158103f2b3f0b50",
+      "locale": "en-US",
+      "template_id": "login-04",
+      "tier": "mixed",
+      "variant": 0
+    },
+    "payment-01-en-US-clean-v0": {
+      "answer_key_sha256": "ef66bde889a94a941239473c0c395ed2f6a5258aafa9ca0c30004df9396b6c91",
+      "family": "payment",
+      "field_count": 5,
+      "html_sha256": "4217412087d79c63867ae086b314b32d37093774a61de7fdb107a6556d58f657",
+      "locale": "en-US",
+      "template_id": "payment-01",
+      "tier": "clean",
+      "variant": 0
+    },
+    "payment-02-en-US-partial-v0": {
+      "answer_key_sha256": "0f7df919c382be8aeca4e3d7e807d07c4c5edadb30d0b99ec856e47da1ab4bee",
+      "family": "payment",
+      "field_count": 5,
+      "html_sha256": "779de63c76da8b61ae81dba7c85df688ebef03fc40a47b61455545625680cb36",
+      "locale": "en-US",
+      "template_id": "payment-02",
+      "tier": "partial",
+      "variant": 0
+    },
+    "payment-03-en-US-hostile-v0": {
+      "answer_key_sha256": "d5b9e6ecb0830c9ccd9b94e08d8323a1113868d79ded62503d9c6c1a727f63f0",
+      "family": "payment",
+      "field_count": 9,
+      "html_sha256": "ce2a6b99fddd567084bb153a1e6373ae011546339bc96d752ea3ef6ef54620ff",
+      "locale": "en-US",
+      "template_id": "payment-03",
+      "tier": "hostile",
+      "variant": 0
+    },
+    "payment-04-en-US-mixed-v0": {
+      "answer_key_sha256": "680d4fec93599d38dd569b74cf27bbadf224abd1c6de15b0b2b5c4268e24d6bd",
+      "family": "payment",
+      "field_count": 8,
+      "html_sha256": "7e69ab9e4e0db0e2f8632508f3e73fa3e8d29452499ee1c9d635d80dd1a30480",
+      "locale": "en-US",
+      "template_id": "payment-04",
+      "tier": "mixed",
+      "variant": 0
+    },
+    "signup-01-en-US-clean-v0": {
+      "answer_key_sha256": "56ecd10dc1e16ad6a97984f465fb0145d88990771e33638f842aea96df9f1ee9",
+      "family": "signup",
+      "field_count": 7,
+      "html_sha256": "d606faf973fb2da4eb60540592efeacb0656050d6edff63aca8a3fc595177484",
+      "locale": "en-US",
+      "template_id": "signup-01",
+      "tier": "clean",
+      "variant": 0
+    },
+    "signup-02-en-US-partial-v0": {
+      "answer_key_sha256": "775696c0b9886b20d3491295ced761a3844afdc72deb47e0f0465f6e63cb92a0",
+      "family": "signup",
+      "field_count": 9,
+      "html_sha256": "61d52c37315ebc00d43dff82b1ece461de7dd8043c8ba2286ace99a172a2158e",
+      "locale": "en-US",
+      "template_id": "signup-02",
+      "tier": "partial",
+      "variant": 0
+    },
+    "signup-03-en-US-hostile-v0": {
+      "answer_key_sha256": "997e81f453500924cd2098c681ae23f607e1cb566f177d86b7fa4cb4b219ec46",
+      "family": "signup",
+      "field_count": 10,
+      "html_sha256": "ddae62bd9903d110ed3ef7ffad0461ef367335d81d037a2ef87a3b8aa991be37",
+      "locale": "en-US",
+      "template_id": "signup-03",
+      "tier": "hostile",
+      "variant": 0
+    },
+    "signup-04-en-US-mixed-v0": {
+      "answer_key_sha256": "c42cff632fff2f35301b7421e10d39d4f9871e5e542d2d947e3cb0c4dafefe29",
+      "family": "signup",
+      "field_count": 15,
+      "html_sha256": "5992223ccbbf40d9254162cea5f1188e69d41a6cfe159f462b831e0020bfa68c",
+      "locale": "en-US",
+      "template_id": "signup-04",
+      "tier": "mixed",
+      "variant": 0
+    }
+  },
+  "generator_version": "1.0.0",
+  "grid": {
+    "families": [
+      "checkout",
+      "signup",
+      "address",
+      "payment",
+      "login"
+    ],
+    "locales": [
+      "de-DE",
+      "en-US",
+      "ja-JP"
+    ],
+    "templates": [
+      "checkout-01",
+      "checkout-02",
+      "checkout-03",
+      "checkout-04",
+      "signup-01",
+      "signup-02",
+      "signup-03",
+      "signup-04",
+      "address-01",
+      "address-02",
+      "address-03",
+      "address-04",
+      "payment-01",
+      "payment-02",
+      "payment-03",
+      "payment-04",
+      "login-01",
+      "login-02",
+      "login-03",
+      "login-04"
+    ],
+    "tiers": [
+      "clean",
+      "partial",
+      "hostile",
+      "mixed"
+    ],
+    "variants": 1
+  },
+  "label_coverage": {
+    "CC_EXP_SPLIT_MONTH": 2,
+    "CC_EXP_SPLIT_YEAR": 2,
+    "COMPOSITE_UNSPLIT": 5,
+    "NOT_AUTOFILLABLE": 26,
+    "UNKNOWN": 12,
+    "additional-name": 2,
+    "address-level1": 12,
+    "address-level2": 15,
+    "address-line1": 12,
+    "address-line2": 12,
+    "address-line3": 4,
+    "bday": 1,
+    "cc-csc": 10,
+    "cc-exp": 2,
+    "cc-exp-month": 2,
+    "cc-exp-year": 2,
+    "cc-name": 8,
+    "cc-number": 10,
+    "cc-type": 3,
+    "country": 15,
+    "country-name": 1,
+    "current-password": 3,
+    "email": 13,
+    "family-name": 5,
+    "given-name": 5,
+    "honorific-prefix": 1,
+    "honorific-suffix": 1,
+    "name": 4,
+    "new-password": 5,
+    "nickname": 2,
+    "one-time-code": 2,
+    "organization": 8,
+    "postal-code": 16,
+    "sex": 1,
+    "street-address": 3,
+    "tel": 6,
+    "tel-country-code": 2,
+    "tel-extension": 1,
+    "tel-national": 2,
+    "transaction-amount": 1,
+    "url": 3,
+    "username": 3
+  },
+  "schema_version": 1,
+  "seed": 20260825,
+  "split_sha256": "63335dda00c40bb32cdae7cb84bb512b8bdaeb73450b9b8cabe92c9be00667ff"
+}

@@ -1,0 +1,309 @@
+{
+  "family": "signup",
+  "fields": [
+    {
+      "expected_modifiers": [],
+      "label": "name",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": null,
+        "identifier_style": "bare",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": null,
+        "name": null,
+        "placeholder": "Full name",
+        "role": "full_name",
+        "section": "identity",
+        "selector_strategy": "nth_of_type",
+        "shadow_host": null,
+        "slot_key": "identity.full_name.1",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "placeholder_as_label",
+          "input_type_degraded"
+        ]
+      },
+      "selector": "form[name=\"f1\"] > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > input:nth-of-type(1)"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "nickname",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": null,
+        "identifier_style": "legacy_name",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": null,
+        "name": "ctl00$txt2",
+        "placeholder": null,
+        "role": "nickname",
+        "section": "identity",
+        "selector_strategy": "form_name",
+        "shadow_host": null,
+        "slot_key": "identity.nickname.2",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "no_text_signal",
+          "input_type_degraded"
+        ]
+      },
+      "selector": "form[name=\"f1\"] [name=\"ctl00$txt2\"]"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "email",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": "ctl00_txt3_7d6b4057",
+        "identifier_style": "hex_id",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": null,
+        "name": "ctl00$txt3",
+        "placeholder": "you@example.com",
+        "role": "email_address",
+        "section": "identity",
+        "selector_strategy": "form_name",
+        "shadow_host": null,
+        "slot_key": "identity.email_address.3",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "placeholder_as_label",
+          "input_type_degraded"
+        ]
+      },
+      "selector": "form[name=\"f1\"] [name=\"ctl00$txt3\"]"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "bday",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": "input4",
+        "identifier_style": "numbered",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": null,
+        "name": null,
+        "placeholder": null,
+        "role": "birth_date",
+        "section": "identity",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "identity.birth_date.4",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "no_text_signal",
+          "input_type_degraded"
+        ]
+      },
+      "selector": "#input4"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "sex",
+      "provenance": {
+        "control": "select",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": "field_5",
+        "identifier_style": "underscored",
+        "injection_slot": null,
+        "input_type": null,
+        "label_text": null,
+        "name": "field_5",
+        "placeholder": "Gender",
+        "role": "sex",
+        "section": "identity",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "identity.sex.5",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "placeholder_as_label"
+        ]
+      },
+      "selector": "#field_5"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "tel",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "shadow",
+        "element_id": null,
+        "identifier_style": "underscored",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": null,
+        "name": "field_6",
+        "placeholder": null,
+        "role": "phone",
+        "section": "identity",
+        "selector_strategy": "shadow",
+        "shadow_host": "ce-1",
+        "slot_key": "identity.phone.6",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "no_text_signal",
+          "input_type_degraded",
+          "shadow_root"
+        ]
+      },
+      "selector": "#ce-1 >>> input:nth-of-type(1)"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "url",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": "input7",
+        "identifier_style": "numbered",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": null,
+        "name": null,
+        "placeholder": "https://example.com",
+        "role": "website",
+        "section": "identity",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "identity.website.7",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "placeholder_as_label",
+          "input_type_degraded"
+        ]
+      },
+      "selector": "#input7"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "new-password",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": null,
+        "identifier_style": "legacy_name",
+        "injection_slot": null,
+        "input_type": "password",
+        "label_text": null,
+        "name": "ctl00$txt8",
+        "placeholder": null,
+        "role": "new_password",
+        "section": "account",
+        "selector_strategy": "form_name",
+        "shadow_host": null,
+        "slot_key": "account.new_password.8",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "no_text_signal"
+        ]
+      },
+      "selector": "form[name=\"f1\"] [name=\"ctl00$txt8\"]"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "UNKNOWN",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": "input9",
+        "identifier_style": "numbered",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": null,
+        "name": null,
+        "placeholder": null,
+        "role": "undeterminable",
+        "section": "account",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "account.undeterminable.9",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "no_text_signal",
+          "undeterminable"
+        ]
+      },
+      "selector": "#input9"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "NOT_AUTOFILLABLE",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "injected",
+        "element_id": "input10",
+        "identifier_style": "numbered",
+        "injection_slot": "inj-slot-10",
+        "input_type": "text",
+        "label_text": null,
+        "name": "field_10",
+        "placeholder": "Search the store",
+        "role": "search",
+        "section": "account",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "account.search.10",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "injected_after_load"
+        ]
+      },
+      "selector": "#input10"
+    }
+  ],
+  "form_id": "signup-03-en-US-hostile-v0",
+  "generator_version": "1.0.0",
+  "locale": "en-US",
+  "page_notes": {
+    "canvas_pseudo_fields": [],
+    "injected_selectors": [
+      "#input10"
+    ],
+    "shadow_hosts": [
+      "#ce-1"
+    ]
+  },
+  "schema_version": 1,
+  "template_id": "signup-03",
+  "tier": "hostile",
+  "variant": 0
+}

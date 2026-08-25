@@ -1,0 +1,165 @@
+{
+  "family": "login",
+  "fields": [
+    {
+      "expected_modifiers": [],
+      "label": "username",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": null,
+        "identifier_style": "bare",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": null,
+        "name": null,
+        "placeholder": "Username",
+        "role": "username",
+        "section": "account",
+        "selector_strategy": "nth_of_type",
+        "shadow_host": null,
+        "slot_key": "account.username.1",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "placeholder_as_label",
+          "input_type_degraded"
+        ]
+      },
+      "selector": "form[name=\"f1\"] > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > input:nth-of-type(1)"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "current-password",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": null,
+        "identifier_style": "legacy_name",
+        "injection_slot": null,
+        "input_type": "password",
+        "label_text": null,
+        "name": "ctl00$txt2",
+        "placeholder": null,
+        "role": "current_password",
+        "section": "account",
+        "selector_strategy": "form_name",
+        "shadow_host": null,
+        "slot_key": "account.current_password.2",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "no_text_signal"
+        ]
+      },
+      "selector": "form[name=\"f1\"] [name=\"ctl00$txt2\"]"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "one-time-code",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "shadow",
+        "element_id": null,
+        "identifier_style": "hex_id",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": null,
+        "name": "ctl00$txt3",
+        "placeholder": "123456",
+        "role": "one_time_code",
+        "section": "security",
+        "selector_strategy": "shadow",
+        "shadow_host": "ce-1",
+        "slot_key": "security.one_time_code.3",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "placeholder_as_label",
+          "input_type_degraded",
+          "shadow_root"
+        ]
+      },
+      "selector": "#ce-1 >>> input:nth-of-type(1)"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "UNKNOWN",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": "input4",
+        "identifier_style": "numbered",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": null,
+        "name": null,
+        "placeholder": null,
+        "role": "undeterminable",
+        "section": "security",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "security.undeterminable.4",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "no_text_signal",
+          "undeterminable"
+        ]
+      },
+      "selector": "#input4"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "NOT_AUTOFILLABLE",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "injected",
+        "element_id": "input5",
+        "identifier_style": "numbered",
+        "injection_slot": "inj-slot-5",
+        "input_type": "text",
+        "label_text": null,
+        "name": "field_5",
+        "placeholder": "Search the store",
+        "role": "search",
+        "section": "security",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "security.search.5",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "injected_after_load"
+        ]
+      },
+      "selector": "#input5"
+    }
+  ],
+  "form_id": "login-03-en-US-hostile-v0",
+  "generator_version": "1.0.0",
+  "locale": "en-US",
+  "page_notes": {
+    "canvas_pseudo_fields": [],
+    "injected_selectors": [
+      "#input5"
+    ],
+    "shadow_hosts": [
+      "#ce-1"
+    ]
+  },
+  "schema_version": 1,
+  "template_id": "login-03",
+  "tier": "hostile",
+  "variant": 0
+}

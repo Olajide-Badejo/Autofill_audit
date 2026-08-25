@@ -1,0 +1,298 @@
+{
+  "locale": "ja-JP",
+  "html_lang": "ja",
+  "faker_locale": "ja_JP",
+  "country_code": "JP",
+  "country_name": "日本",
+  "phone_country_code": "+81",
+  "phone_pattern": "090-0000-##00",
+  "postal_pattern": "###-####",
+  "blocks": {
+    "name": {
+      "full": [
+        "full_name"
+      ],
+      "split": [
+        "family_name",
+        "given_name",
+        "family_name_kana",
+        "given_name_kana"
+      ],
+      "split_middle": [
+        "family_name",
+        "given_name",
+        "additional_name",
+        "family_name_kana",
+        "given_name_kana"
+      ],
+      "honorific": [
+        "honorific_prefix",
+        "family_name",
+        "given_name",
+        "family_name_kana",
+        "given_name_kana",
+        "honorific_suffix"
+      ]
+    },
+    "address": {
+      "lines": [
+        "postal_code",
+        "admin_area",
+        "city",
+        "address_line_1",
+        "address_line_2"
+      ],
+      "lines3": [
+        "postal_code",
+        "admin_area",
+        "city",
+        "address_line_1",
+        "address_line_2",
+        "address_line_3"
+      ],
+      "street": [
+        "postal_code",
+        "admin_area",
+        "street_address"
+      ],
+      "composite": [
+        "full_address_composite"
+      ]
+    },
+    "rows": [
+      [
+        "family_name",
+        "given_name"
+      ],
+      [
+        "family_name_kana",
+        "given_name_kana"
+      ]
+    ],
+    "optional": {}
+  },
+  "text": {
+    "labels": {
+      "honorific_prefix": "敬称",
+      "honorific_suffix": "称号",
+      "given_name": "名",
+      "additional_name": "ミドルネーム",
+      "family_name": "姓",
+      "given_name_kana": "メイ（カナ）",
+      "family_name_kana": "セイ（カナ）",
+      "full_name": "お名前",
+      "nickname": "表示名",
+      "email_address": "メールアドレス",
+      "phone": "電話番号",
+      "phone_country_code": "国番号",
+      "phone_national": "電話番号",
+      "phone_extension": "内線番号",
+      "website": "ウェブサイト",
+      "street_address": "住所",
+      "address_line_1": "町名・番地",
+      "address_line_2": "建物名・部屋番号",
+      "address_line_3": "その他の住所情報",
+      "city": "市区町村",
+      "admin_area": "都道府県",
+      "postal_code": "郵便番号",
+      "country_select": "国",
+      "country_text": "国名",
+      "organization": "会社名",
+      "full_address_composite": "住所（すべて）",
+      "card_holder": "カード名義",
+      "card_number": "カード番号",
+      "card_expiry": "有効期限",
+      "card_expiry_month": "有効期限（月）",
+      "card_expiry_year": "有効期限（年）",
+      "card_expiry_split_month": "月",
+      "card_expiry_split_year": "年",
+      "card_expiry_composite": "有効期限（MM/YY）",
+      "card_security_code": "セキュリティコード",
+      "card_type": "カードの種類",
+      "amount": "金額",
+      "username": "ユーザー名",
+      "new_password": "パスワード",
+      "new_password_confirm": "パスワード（確認）",
+      "current_password": "パスワード",
+      "one_time_code": "認証コード",
+      "birth_date": "生年月日",
+      "sex": "性別",
+      "search": "検索",
+      "quantity": "数量",
+      "coupon": "クーポンコード",
+      "comments": "備考",
+      "consent": "利用規約に同意します",
+      "marketing_opt_in": "お知らせを受け取る",
+      "undeterminable": "値"
+    },
+    "placeholders": {
+      "email_address": "you@example.com",
+      "address_line_1": "例町1-2-3",
+      "address_line_2": "例マンション101",
+      "city": "例市",
+      "postal_code": "100-0001",
+      "phone": "090-0000-1200",
+      "phone_national": "090-0000-1200",
+      "phone_extension": "1234",
+      "website": "https://example.com",
+      "card_number": "4242 4242 4242 4242",
+      "card_expiry_composite": "MM/YY",
+      "card_security_code": "123",
+      "one_time_code": "123456",
+      "amount": "0",
+      "coupon": "REI10",
+      "search": "ストア内を検索",
+      "full_address_composite": "郵便番号、都道府県、市区町村、番地",
+      "comments": "不在時は隣家へお願いします"
+    },
+    "identifiers": {
+      "given_name": "mei",
+      "family_name": "sei",
+      "given_name_kana": "meiKana",
+      "family_name_kana": "seiKana",
+      "full_name": "onamae",
+      "street_address": "jusho",
+      "address_line_1": "chomeibanchi",
+      "address_line_2": "tatemono",
+      "address_line_3": "sonota",
+      "city": "shikuchoson",
+      "admin_area": "todofuken",
+      "postal_code": "yubinbango",
+      "country_select": "kuni",
+      "country_text": "kunimei",
+      "organization": "kaishamei",
+      "phone": "denwabango",
+      "phone_national": "denwabango",
+      "phone_extension": "naisen",
+      "username": "userId",
+      "birth_date": "seinengappi",
+      "sex": "seibetsu",
+      "card_holder": "cardMeigi",
+      "card_number": "cardBango",
+      "card_security_code": "securityCode",
+      "amount": "kingaku",
+      "coupon": "couponCode",
+      "comments": "biko",
+      "search": "kensaku",
+      "quantity": "suryo"
+    },
+    "sections": {
+      "contact": "連絡先",
+      "identity": "お客様情報",
+      "shipping": "お届け先住所",
+      "billing": "請求先住所",
+      "address": "住所",
+      "payment": "お支払い",
+      "account": "アカウント",
+      "security": "セキュリティ",
+      "order": "ご注文",
+      "extras": "その他の情報"
+    },
+    "page_titles": {
+      "checkout": "ご購入手続き",
+      "signup": "アカウント作成",
+      "address": "住所録",
+      "payment": "お支払い情報",
+      "login": "ログイン"
+    },
+    "summary": {
+      "heading": "ご注文内容",
+      "ship_to": "お届け先",
+      "contact_at": "ご連絡先"
+    }
+  },
+  "options": {
+    "titles": [
+      "さん",
+      "様",
+      "先生"
+    ],
+    "sex_options": [
+      "女性",
+      "男性",
+      "回答しない"
+    ],
+    "card_types": [
+      "Visa",
+      "Mastercard",
+      "JCB",
+      "American Express"
+    ],
+    "admin_areas": [
+      "東京都",
+      "大阪府",
+      "北海道",
+      "愛知県",
+      "福岡県",
+      "京都府"
+    ],
+    "months": [
+      "1月",
+      "2月",
+      "3月",
+      "4月",
+      "5月",
+      "6月",
+      "7月",
+      "8月",
+      "9月",
+      "10月",
+      "11月",
+      "12月"
+    ]
+  },
+  "option_pairs": {
+    "countries": [
+      [
+        "JP",
+        "日本"
+      ],
+      [
+        "US",
+        "アメリカ合衆国"
+      ],
+      [
+        "GB",
+        "イギリス"
+      ],
+      [
+        "DE",
+        "ドイツ"
+      ],
+      [
+        "FR",
+        "フランス"
+      ],
+      [
+        "NG",
+        "ナイジェリア"
+      ]
+    ],
+    "phone_country_codes": [
+      [
+        "+81",
+        "日本 (+81)"
+      ],
+      [
+        "+1",
+        "アメリカ合衆国 (+1)"
+      ],
+      [
+        "+44",
+        "イギリス (+44)"
+      ],
+      [
+        "+49",
+        "ドイツ (+49)"
+      ],
+      [
+        "+33",
+        "フランス (+33)"
+      ],
+      [
+        "+234",
+        "ナイジェリア (+234)"
+      ]
+    ]
+  }
+}

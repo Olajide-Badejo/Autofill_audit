@@ -1,0 +1,269 @@
+{
+  "locale": "en-GB",
+  "html_lang": "en-GB",
+  "faker_locale": "en_GB",
+  "country_code": "GB",
+  "country_name": "United Kingdom",
+  "phone_country_code": "+44",
+  "phone_pattern": "07700 900###",
+  "postal_pattern": "@@# #@@",
+  "blocks": {
+    "name": {
+      "full": [
+        "full_name"
+      ],
+      "split": [
+        "given_name",
+        "family_name"
+      ],
+      "split_middle": [
+        "given_name",
+        "additional_name",
+        "family_name"
+      ],
+      "honorific": [
+        "honorific_prefix",
+        "given_name",
+        "family_name",
+        "honorific_suffix"
+      ]
+    },
+    "address": {
+      "lines": [
+        "address_line_1",
+        "address_line_2",
+        "city",
+        "admin_area",
+        "postal_code"
+      ],
+      "lines3": [
+        "address_line_1",
+        "address_line_2",
+        "address_line_3",
+        "city",
+        "admin_area",
+        "postal_code"
+      ],
+      "street": [
+        "street_address",
+        "city",
+        "admin_area",
+        "postal_code"
+      ],
+      "composite": [
+        "full_address_composite"
+      ]
+    },
+    "rows": [
+      [
+        "city",
+        "admin_area"
+      ]
+    ],
+    "optional": {}
+  },
+  "text": {
+    "labels": {
+      "honorific_prefix": "Title",
+      "honorific_suffix": "Suffix",
+      "given_name": "First name",
+      "additional_name": "Middle name",
+      "family_name": "Surname",
+      "given_name_kana": "First name (phonetic)",
+      "family_name_kana": "Surname (phonetic)",
+      "full_name": "Full name",
+      "nickname": "Display name",
+      "email_address": "Email address",
+      "phone": "Telephone number",
+      "phone_country_code": "Dialling code",
+      "phone_national": "Telephone number",
+      "phone_extension": "Extension",
+      "website": "Website",
+      "street_address": "Street address",
+      "address_line_1": "Address line 1",
+      "address_line_2": "Flat, suite, unit",
+      "address_line_3": "Address line 3",
+      "city": "Town or city",
+      "admin_area": "County",
+      "postal_code": "Postcode",
+      "country_select": "Country",
+      "country_text": "Country",
+      "organization": "Company",
+      "full_address_composite": "Full address",
+      "card_holder": "Name on card",
+      "card_number": "Card number",
+      "card_expiry": "Expiry date",
+      "card_expiry_month": "Expiry month",
+      "card_expiry_year": "Expiry year",
+      "card_expiry_split_month": "Month",
+      "card_expiry_split_year": "Year",
+      "card_expiry_composite": "Expiry (MM/YY)",
+      "card_security_code": "Security code (CVC)",
+      "card_type": "Card type",
+      "amount": "Amount",
+      "username": "Username",
+      "new_password": "Password",
+      "new_password_confirm": "Confirm password",
+      "current_password": "Password",
+      "one_time_code": "Verification code",
+      "birth_date": "Date of birth",
+      "sex": "Gender",
+      "search": "Search",
+      "quantity": "Quantity",
+      "coupon": "Promotion code",
+      "comments": "Delivery notes",
+      "consent": "I accept the terms of sale",
+      "marketing_opt_in": "Email me about offers",
+      "undeterminable": "Value"
+    },
+    "placeholders": {
+      "email_address": "you@example.com",
+      "address_line_1": "12 Example Road",
+      "address_line_2": "Flat 3",
+      "city": "Exampleton",
+      "postal_code": "EX1 2AB",
+      "phone": "07700 900123",
+      "phone_national": "07700 900123",
+      "phone_extension": "1234",
+      "website": "https://example.com",
+      "card_number": "4242 4242 4242 4242",
+      "card_expiry_composite": "MM/YY",
+      "card_security_code": "123",
+      "one_time_code": "123456",
+      "amount": "0.00",
+      "coupon": "EXAMPLE10",
+      "search": "Search the shop",
+      "full_address_composite": "Street, town, county, postcode",
+      "comments": "Leave the parcel with a neighbour"
+    },
+    "identifiers": {
+      "postal_code": "postcode",
+      "admin_area": "county",
+      "family_name": "surname",
+      "phone": "telephone"
+    },
+    "sections": {
+      "contact": "Contact details",
+      "identity": "Your details",
+      "shipping": "Delivery address",
+      "billing": "Billing address",
+      "address": "Address",
+      "payment": "Payment",
+      "account": "Account",
+      "security": "Security",
+      "order": "Order",
+      "extras": "Additional information"
+    },
+    "page_titles": {
+      "checkout": "Checkout",
+      "signup": "Create an account",
+      "address": "Address book",
+      "payment": "Payment details",
+      "login": "Sign in"
+    },
+    "summary": {
+      "heading": "Order summary",
+      "ship_to": "Delivering to",
+      "contact_at": "We will contact you on"
+    }
+  },
+  "options": {
+    "titles": [
+      "Mr",
+      "Mrs",
+      "Miss",
+      "Ms",
+      "Dr"
+    ],
+    "sex_options": [
+      "Female",
+      "Male",
+      "Prefer not to say"
+    ],
+    "card_types": [
+      "Visa",
+      "Mastercard",
+      "American Express"
+    ],
+    "admin_areas": [
+      "Greater London",
+      "West Midlands",
+      "Merseyside",
+      "Kent",
+      "Devon",
+      "Fife"
+    ],
+    "months": [
+      "01",
+      "02",
+      "03",
+      "04",
+      "05",
+      "06",
+      "07",
+      "08",
+      "09",
+      "10",
+      "11",
+      "12"
+    ]
+  },
+  "option_pairs": {
+    "countries": [
+      [
+        "GB",
+        "United Kingdom"
+      ],
+      [
+        "IE",
+        "Ireland"
+      ],
+      [
+        "US",
+        "United States"
+      ],
+      [
+        "DE",
+        "Germany"
+      ],
+      [
+        "FR",
+        "France"
+      ],
+      [
+        "JP",
+        "Japan"
+      ],
+      [
+        "NG",
+        "Nigeria"
+      ]
+    ],
+    "phone_country_codes": [
+      [
+        "+44",
+        "United Kingdom (+44)"
+      ],
+      [
+        "+353",
+        "Ireland (+353)"
+      ],
+      [
+        "+1",
+        "United States (+1)"
+      ],
+      [
+        "+49",
+        "Germany (+49)"
+      ],
+      [
+        "+33",
+        "France (+33)"
+      ],
+      [
+        "+234",
+        "Nigeria (+234)"
+      ]
+    ]
+  }
+}

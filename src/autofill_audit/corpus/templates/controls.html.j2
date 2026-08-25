@@ -1,0 +1,60 @@
+{#
+  Control macros. One macro per rendering shape, so that the page template
+  reads as structure and the attribute detail lives in one place.
+
+  Every attribute here is decided in Python before rendering. A macro that
+  branched on the tier would put half the tier transform in a template and half
+  in the generator, and the two halves would drift.
+#}
+{% macro control(field) -%}
+{% if field.tag == 'select' %}
+<select{% if field.element_id %} id="{{ field.element_id }}"{% endif %}{% if field.name %} name="{{ field.name }}"{% endif %}{% if field.declared %} autocomplete="{{ field.declared }}"{% endif %}{% if field.required %} required{% endif %}>
+{% for value, text in field.options %}
+<option value="{{ value }}">{{ text }}</option>
+{% endfor %}
+</select>
+{% elif field.tag == 'textarea' %}
+<textarea{% if field.element_id %} id="{{ field.element_id }}"{% endif %}{% if field.name %} name="{{ field.name }}"{% endif %}{% if field.declared %} autocomplete="{{ field.declared }}"{% endif %}{% if field.placeholder %} placeholder="{{ field.placeholder }}"{% endif %}{% if field.required %} required{% endif %} rows="3"></textarea>
+{% else %}
+<input{% if field.element_id %} id="{{ field.element_id }}"{% endif %}{% if field.name %} name="{{ field.name }}"{% endif %}{% if field.input_type %} type="{{ field.input_type }}"{% endif %}{% if field.inputmode %} inputmode="{{ field.inputmode }}"{% endif %}{% if field.maxlength %} maxlength="{{ field.maxlength }}"{% endif %}{% if field.declared %} autocomplete="{{ field.declared }}"{% endif %}{% if field.placeholder %} placeholder="{{ field.placeholder }}"{% endif %}{% if field.required %} required{% endif %}>
+{% endif %}
+{%- endmacro %}
+
+{% macro labelled(field) -%}
+{% if field.label_text and field.label_after %}
+{{ control(field) }}
+<label for="{{ field.element_id }}">{{ field.label_text }}</label>
+{% elif field.label_text %}
+<label for="{{ field.element_id }}">{{ field.label_text }}</label>
+{{ control(field) }}
+{% else %}
+{{ control(field) }}
+{% endif %}
+{%- endmacro %}
+
+{#
+  The hostile tier's custom element. The host carries the control's attributes
+  as data attributes and an inline script upgrades it into an open shadow root
+  holding one input. Data attribute *values* are never a leak here: the answer
+  key lives in a separate file (spec section 5.6), and what the host carries is
+  the same placeholder and name the light-DOM version would have carried.
+#}
+{% macro shadow_host(field) -%}
+<af-field id="{{ field.shadow_host_id }}" data-tag="{{ field.tag }}"{% if field.input_type %} data-type="{{ field.input_type }}"{% endif %}{% if field.name %} data-name="{{ field.name }}"{% endif %}{% if field.placeholder %} data-placeholder="{{ field.placeholder }}"{% endif %}></af-field>
+{%- endmacro %}
+
+{% macro cell(entry) -%}
+<div class="field"{% if entry.cell_id %} id="{{ entry.cell_id }}"{% endif %}>
+{% if entry.canvas_id %}
+<canvas id="{{ entry.canvas_id }}" width="320" height="120"></canvas>
+<p class="canvas-note">{{ entry.canvas_note }}</p>
+{% endif %}
+{% for field in entry.fields %}
+{% if field.delivery == 'shadow' %}
+{{ shadow_host(field) }}
+{% else %}
+{{ labelled(field) }}
+{% endif %}
+{% endfor %}
+</div>
+{%- endmacro %}

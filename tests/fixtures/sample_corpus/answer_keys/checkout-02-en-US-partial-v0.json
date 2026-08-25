@@ -1,0 +1,369 @@
+{
+  "family": "checkout",
+  "fields": [
+    {
+      "expected_modifiers": [],
+      "label": "email",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "email",
+        "delivery": "static",
+        "element_id": "contact-email",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "email",
+        "label_text": "Email address",
+        "name": "contact_email",
+        "placeholder": "you@example.com",
+        "role": "email_address",
+        "section": "contact",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "contact.email_address.1",
+        "tier": "partial",
+        "transforms": []
+      },
+      "selector": "#contact-email"
+    },
+    {
+      "expected_modifiers": [
+        "shipping"
+      ],
+      "label": "street-address",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": "shipping-street",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "Street address",
+        "name": "shipping_street",
+        "placeholder": null,
+        "role": "street_address",
+        "section": "shipping",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "shipping.street_address.2",
+        "tier": "partial",
+        "transforms": [
+          "declaration_absent"
+        ]
+      },
+      "selector": "#shipping-street"
+    },
+    {
+      "expected_modifiers": [
+        "shipping"
+      ],
+      "label": "address-level2",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "shipping address-level2",
+        "delivery": "static",
+        "element_id": "shipping-city",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "City",
+        "name": "shipping_city",
+        "placeholder": "Springfield",
+        "role": "city",
+        "section": "shipping",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "shipping.city.3",
+        "tier": "partial",
+        "transforms": []
+      },
+      "selector": "#shipping-city"
+    },
+    {
+      "expected_modifiers": [
+        "shipping"
+      ],
+      "label": "address-level1",
+      "provenance": {
+        "control": "select",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": "shipping-state",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": null,
+        "label_text": "State",
+        "name": "shipping_state",
+        "placeholder": null,
+        "role": "admin_area",
+        "section": "shipping",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "shipping.admin_area.4",
+        "tier": "partial",
+        "transforms": [
+          "declaration_absent"
+        ]
+      },
+      "selector": "#shipping-state"
+    },
+    {
+      "expected_modifiers": [
+        "shipping"
+      ],
+      "label": "postal-code",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "shipping postal-code",
+        "delivery": "static",
+        "element_id": "shipping-zip",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "ZIP code",
+        "name": "shipping_zip",
+        "placeholder": "01234",
+        "role": "postal_code",
+        "section": "shipping",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "shipping.postal_code.5",
+        "tier": "partial",
+        "transforms": []
+      },
+      "selector": "#shipping-zip"
+    },
+    {
+      "expected_modifiers": [
+        "shipping"
+      ],
+      "label": "country",
+      "provenance": {
+        "control": "select",
+        "declared_autocomplete": "shipping country",
+        "delivery": "static",
+        "element_id": "shipping-country",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": null,
+        "label_text": "Country",
+        "name": "shipping_country",
+        "placeholder": null,
+        "role": "country_select",
+        "section": "shipping",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "shipping.country_select.6",
+        "tier": "partial",
+        "transforms": []
+      },
+      "selector": "#shipping-country"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "cc-type",
+      "provenance": {
+        "control": "select",
+        "declared_autocomplete": "cc-type",
+        "delivery": "static",
+        "element_id": "payment-cardtype",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": null,
+        "label_text": "Card type",
+        "name": "payment_cardtype",
+        "placeholder": null,
+        "role": "card_type",
+        "section": "payment",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "payment.card_type.7",
+        "tier": "partial",
+        "transforms": []
+      },
+      "selector": "#payment-cardtype"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "cc-name",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "cc-name",
+        "delivery": "static",
+        "element_id": "payment-cardholder",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "Name on card",
+        "name": "payment_cardholder",
+        "placeholder": null,
+        "role": "card_holder",
+        "section": "payment",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "payment.card_holder.8",
+        "tier": "partial",
+        "transforms": []
+      },
+      "selector": "#payment-cardholder"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "cc-number",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "cc-number",
+        "delivery": "static",
+        "element_id": "payment-cardnumber",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "Card number",
+        "name": "payment_cardnumber",
+        "placeholder": "4242 4242 4242 4242",
+        "role": "card_number",
+        "section": "payment",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "payment.card_number.9",
+        "tier": "partial",
+        "transforms": []
+      },
+      "selector": "#payment-cardnumber"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "CC_EXP_SPLIT_MONTH",
+      "provenance": {
+        "control": "select",
+        "declared_autocomplete": "cc-exp-month",
+        "delivery": "static",
+        "element_id": "payment-expmonth",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": null,
+        "label_text": "Month",
+        "name": "payment_expmonth",
+        "placeholder": null,
+        "role": "card_expiry_split_month",
+        "section": "payment",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "payment.card_expiry_split_month.10",
+        "tier": "partial",
+        "transforms": []
+      },
+      "selector": "#payment-expmonth"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "CC_EXP_SPLIT_YEAR",
+      "provenance": {
+        "control": "select",
+        "declared_autocomplete": "cc-exp-year",
+        "delivery": "static",
+        "element_id": "payment-expyear",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": null,
+        "label_text": "Year",
+        "name": "payment_expyear",
+        "placeholder": null,
+        "role": "card_expiry_split_year",
+        "section": "payment",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "payment.card_expiry_split_year.11",
+        "tier": "partial",
+        "transforms": []
+      },
+      "selector": "#payment-expyear"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "cc-csc",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": "payment-securitycode",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "Security code",
+        "name": "payment_securitycode",
+        "placeholder": "123",
+        "role": "card_security_code",
+        "section": "payment",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "payment.card_security_code.12",
+        "tier": "partial",
+        "transforms": [
+          "declaration_absent"
+        ]
+      },
+      "selector": "#payment-securitycode"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "NOT_AUTOFILLABLE",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": "order-quantity",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "number",
+        "label_text": "Quantity",
+        "name": "order_quantity",
+        "placeholder": null,
+        "role": "quantity",
+        "section": "order",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "order.quantity.13",
+        "tier": "partial",
+        "transforms": []
+      },
+      "selector": "#order-quantity"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "NOT_AUTOFILLABLE",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": "order-promocode",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "Promo code",
+        "name": "order_promocode",
+        "placeholder": "EXAMPLE10",
+        "role": "coupon",
+        "section": "order",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "order.coupon.14",
+        "tier": "partial",
+        "transforms": []
+      },
+      "selector": "#order-promocode"
+    }
+  ],
+  "form_id": "checkout-02-en-US-partial-v0",
+  "generator_version": "1.0.0",
+  "locale": "en-US",
+  "page_notes": {
+    "canvas_pseudo_fields": [],
+    "injected_selectors": [],
+    "shadow_hosts": []
+  },
+  "schema_version": 1,
+  "template_id": "checkout-02",
+  "tier": "partial",
+  "variant": 0
+}

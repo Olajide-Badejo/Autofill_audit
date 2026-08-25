@@ -1,0 +1,239 @@
+{
+  "family": "payment",
+  "fields": [
+    {
+      "expected_modifiers": [],
+      "label": "cc-type",
+      "provenance": {
+        "control": "select",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": null,
+        "identifier_style": "bare",
+        "injection_slot": null,
+        "input_type": null,
+        "label_text": null,
+        "name": null,
+        "placeholder": "Card type",
+        "role": "card_type",
+        "section": "payment",
+        "selector_strategy": "nth_of_type",
+        "shadow_host": null,
+        "slot_key": "payment.card_type.1",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "placeholder_as_label"
+        ]
+      },
+      "selector": "form[name=\"f1\"] > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > select:nth-of-type(1)"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "cc-number",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": null,
+        "identifier_style": "legacy_name",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": null,
+        "name": "ctl00$txt2",
+        "placeholder": null,
+        "role": "card_number",
+        "section": "payment",
+        "selector_strategy": "form_name",
+        "shadow_host": null,
+        "slot_key": "payment.card_number.2",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "no_text_signal",
+          "input_type_degraded"
+        ]
+      },
+      "selector": "form[name=\"f1\"] [name=\"ctl00$txt2\"]"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "cc-exp-month",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "cc-exp-month",
+        "delivery": "static",
+        "element_id": "security-cardexpmonth",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "Expiration month",
+        "name": "security_cardexpmonth",
+        "placeholder": null,
+        "role": "card_expiry_month",
+        "section": "security",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "security.card_expiry_month.3",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#security-cardexpmonth"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "cc-exp-year",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "cc-exp-year",
+        "delivery": "static",
+        "element_id": "security-cardexpyear",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "Expiration year",
+        "name": "security_cardexpyear",
+        "placeholder": null,
+        "role": "card_expiry_year",
+        "section": "security",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "security.card_expiry_year.4",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#security-cardexpyear"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "cc-csc",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "cc-csc",
+        "delivery": "static",
+        "element_id": "security-securitycode",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "Security code",
+        "name": "security_securitycode",
+        "placeholder": "123",
+        "role": "card_security_code",
+        "section": "security",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "security.card_security_code.5",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#security-securitycode"
+    },
+    {
+      "expected_modifiers": [
+        "billing"
+      ],
+      "label": "postal-code",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "shadow",
+        "element_id": null,
+        "identifier_style": "hex_id",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": null,
+        "name": "ctl00$txt6",
+        "placeholder": "01234",
+        "role": "postal_code",
+        "section": "billing",
+        "selector_strategy": "shadow",
+        "shadow_host": "ce-1",
+        "slot_key": "billing.postal_code.6",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "placeholder_as_label",
+          "input_type_degraded",
+          "shadow_root"
+        ]
+      },
+      "selector": "#ce-1 >>> input:nth-of-type(1)"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "UNKNOWN",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": "input7",
+        "identifier_style": "numbered",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": null,
+        "name": null,
+        "placeholder": null,
+        "role": "undeterminable",
+        "section": "billing",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "billing.undeterminable.7",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "no_text_signal",
+          "undeterminable"
+        ]
+      },
+      "selector": "#input7"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "NOT_AUTOFILLABLE",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "injected",
+        "element_id": "input8",
+        "identifier_style": "numbered",
+        "injection_slot": "inj-slot-8",
+        "input_type": "text",
+        "label_text": null,
+        "name": "field_8",
+        "placeholder": "Search the store",
+        "role": "search",
+        "section": "billing",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "billing.search.8",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "injected_after_load"
+        ]
+      },
+      "selector": "#input8"
+    }
+  ],
+  "form_id": "payment-04-en-US-mixed-v0",
+  "generator_version": "1.0.0",
+  "locale": "en-US",
+  "page_notes": {
+    "canvas_pseudo_fields": [],
+    "injected_selectors": [
+      "#input8"
+    ],
+    "shadow_hosts": [
+      "#ce-1"
+    ]
+  },
+  "schema_version": 1,
+  "template_id": "payment-04",
+  "tier": "mixed",
+  "variant": 0
+}

@@ -1,0 +1,292 @@
+{
+  "locale": "fr-FR",
+  "html_lang": "fr",
+  "faker_locale": "fr_FR",
+  "country_code": "FR",
+  "country_name": "France",
+  "phone_country_code": "+33",
+  "phone_pattern": "01 99 00 00 ##",
+  "postal_pattern": "9####",
+  "blocks": {
+    "name": {
+      "full": [
+        "full_name"
+      ],
+      "split": [
+        "given_name",
+        "family_name"
+      ],
+      "split_middle": [
+        "given_name",
+        "additional_name",
+        "family_name"
+      ],
+      "honorific": [
+        "honorific_prefix",
+        "given_name",
+        "family_name",
+        "honorific_suffix"
+      ]
+    },
+    "address": {
+      "lines": [
+        "address_line_1",
+        "address_line_2",
+        "postal_code",
+        "city"
+      ],
+      "lines3": [
+        "address_line_1",
+        "address_line_2",
+        "address_line_3",
+        "postal_code",
+        "city"
+      ],
+      "street": [
+        "street_address",
+        "postal_code",
+        "city"
+      ],
+      "composite": [
+        "full_address_composite"
+      ]
+    },
+    "rows": [
+      [
+        "postal_code",
+        "city"
+      ]
+    ],
+    "optional": {}
+  },
+  "text": {
+    "labels": {
+      "honorific_prefix": "Civilité",
+      "honorific_suffix": "Suffixe",
+      "given_name": "Prénom",
+      "additional_name": "Deuxième prénom",
+      "family_name": "Nom",
+      "given_name_kana": "Prénom (phonétique)",
+      "family_name_kana": "Nom (phonétique)",
+      "full_name": "Nom complet",
+      "nickname": "Nom affiché",
+      "email_address": "Adresse e-mail",
+      "phone": "Numéro de téléphone",
+      "phone_country_code": "Indicatif pays",
+      "phone_national": "Numéro de téléphone",
+      "phone_extension": "Poste",
+      "website": "Site web",
+      "street_address": "Adresse",
+      "address_line_1": "Adresse",
+      "address_line_2": "Complément d'adresse",
+      "address_line_3": "Complément d'adresse (suite)",
+      "city": "Ville",
+      "admin_area": "Région",
+      "postal_code": "Code postal",
+      "country_select": "Pays",
+      "country_text": "Pays",
+      "organization": "Société",
+      "full_address_composite": "Adresse complète",
+      "card_holder": "Titulaire de la carte",
+      "card_number": "Numéro de carte",
+      "card_expiry": "Date d'expiration",
+      "card_expiry_month": "Mois d'expiration",
+      "card_expiry_year": "Année d'expiration",
+      "card_expiry_split_month": "Mois",
+      "card_expiry_split_year": "Année",
+      "card_expiry_composite": "Expiration (MM/AA)",
+      "card_security_code": "Cryptogramme visuel",
+      "card_type": "Type de carte",
+      "amount": "Montant",
+      "username": "Identifiant",
+      "new_password": "Mot de passe",
+      "new_password_confirm": "Confirmer le mot de passe",
+      "current_password": "Mot de passe",
+      "one_time_code": "Code de vérification",
+      "birth_date": "Date de naissance",
+      "sex": "Sexe",
+      "search": "Rechercher",
+      "quantity": "Quantité",
+      "coupon": "Code promo",
+      "comments": "Instructions de livraison",
+      "consent": "J'accepte les conditions de vente",
+      "marketing_opt_in": "Recevoir les offres par e-mail",
+      "undeterminable": "Valeur"
+    },
+    "placeholders": {
+      "email_address": "vous@example.com",
+      "address_line_1": "1 rue de l'Exemple",
+      "address_line_2": "Bâtiment B",
+      "city": "Villexemple",
+      "postal_code": "99123",
+      "phone": "01 99 00 00 12",
+      "phone_national": "01 99 00 00 12",
+      "phone_extension": "1234",
+      "website": "https://example.com",
+      "card_number": "4242 4242 4242 4242",
+      "card_expiry_composite": "MM/AA",
+      "card_security_code": "123",
+      "one_time_code": "123456",
+      "amount": "0,00",
+      "coupon": "EXEMPLE10",
+      "search": "Rechercher dans la boutique",
+      "full_address_composite": "Rue, code postal, ville, pays",
+      "comments": "Laisser le colis chez le voisin"
+    },
+    "identifiers": {
+      "given_name": "prenom",
+      "family_name": "nom",
+      "full_name": "nomComplet",
+      "street_address": "adresse",
+      "address_line_1": "adresse",
+      "address_line_2": "complement",
+      "address_line_3": "complement2",
+      "city": "ville",
+      "admin_area": "region",
+      "postal_code": "codepostal",
+      "country_select": "pays",
+      "country_text": "pays",
+      "organization": "societe",
+      "phone": "telephone",
+      "phone_national": "telephone",
+      "phone_extension": "poste",
+      "new_password": "motdepasse",
+      "new_password_confirm": "motdepasse2",
+      "current_password": "motdepasse",
+      "username": "identifiant",
+      "birth_date": "datenaissance",
+      "sex": "sexe",
+      "card_holder": "titulaire",
+      "card_number": "numerocarte",
+      "card_security_code": "cryptogramme",
+      "amount": "montant",
+      "coupon": "codepromo",
+      "comments": "instructions",
+      "search": "recherche",
+      "quantity": "quantite"
+    },
+    "sections": {
+      "contact": "Coordonnées",
+      "identity": "Vos informations",
+      "shipping": "Adresse de livraison",
+      "billing": "Adresse de facturation",
+      "address": "Adresse",
+      "payment": "Paiement",
+      "account": "Compte",
+      "security": "Sécurité",
+      "order": "Commande",
+      "extras": "Informations complémentaires"
+    },
+    "page_titles": {
+      "checkout": "Commande",
+      "signup": "Créer un compte",
+      "address": "Carnet d'adresses",
+      "payment": "Informations de paiement",
+      "login": "Connexion"
+    },
+    "summary": {
+      "heading": "Récapitulatif",
+      "ship_to": "Livraison à",
+      "contact_at": "Nous vous contacterons au"
+    }
+  },
+  "options": {
+    "titles": [
+      "M.",
+      "Mme",
+      "Dr",
+      "Pr"
+    ],
+    "sex_options": [
+      "Femme",
+      "Homme",
+      "Ne se prononce pas"
+    ],
+    "card_types": [
+      "Visa",
+      "Mastercard",
+      "Carte Bancaire",
+      "American Express"
+    ],
+    "admin_areas": [
+      "Auvergne-Rhône-Alpes",
+      "Bretagne",
+      "Normandie",
+      "Occitanie",
+      "Nouvelle-Aquitaine",
+      "Hauts-de-France"
+    ],
+    "months": [
+      "01",
+      "02",
+      "03",
+      "04",
+      "05",
+      "06",
+      "07",
+      "08",
+      "09",
+      "10",
+      "11",
+      "12"
+    ]
+  },
+  "option_pairs": {
+    "countries": [
+      [
+        "FR",
+        "France"
+      ],
+      [
+        "BE",
+        "Belgique"
+      ],
+      [
+        "CH",
+        "Suisse"
+      ],
+      [
+        "DE",
+        "Allemagne"
+      ],
+      [
+        "GB",
+        "Royaume-Uni"
+      ],
+      [
+        "US",
+        "États-Unis"
+      ],
+      [
+        "JP",
+        "Japon"
+      ]
+    ],
+    "phone_country_codes": [
+      [
+        "+33",
+        "France (+33)"
+      ],
+      [
+        "+32",
+        "Belgique (+32)"
+      ],
+      [
+        "+41",
+        "Suisse (+41)"
+      ],
+      [
+        "+49",
+        "Allemagne (+49)"
+      ],
+      [
+        "+44",
+        "Royaume-Uni (+44)"
+      ],
+      [
+        "+1",
+        "États-Unis (+1)"
+      ]
+    ]
+  }
+}

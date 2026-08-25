@@ -1,0 +1,547 @@
+{
+  "family": "checkout",
+  "fields": [
+    {
+      "expected_modifiers": [],
+      "label": "email",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "email",
+        "delivery": "static",
+        "element_id": "contact-email",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "email",
+        "label_text": "Email address",
+        "name": "contact_email",
+        "placeholder": "you@example.com",
+        "role": "email_address",
+        "section": "contact",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "contact.email_address.1",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#contact-email"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "tel",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "tel",
+        "delivery": "static",
+        "element_id": "contact-phone",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "tel",
+        "label_text": "Phone number",
+        "name": "contact_phone",
+        "placeholder": "(555) 0123",
+        "role": "phone",
+        "section": "contact",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "contact.phone.2",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#contact-phone"
+    },
+    {
+      "expected_modifiers": [
+        "shipping"
+      ],
+      "label": "organization",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "shipping organization",
+        "delivery": "static",
+        "element_id": "shipping-company",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "Company",
+        "name": "shipping_company",
+        "placeholder": null,
+        "role": "organization",
+        "section": "shipping",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "shipping.organization.3",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#shipping-company"
+    },
+    {
+      "expected_modifiers": [
+        "shipping"
+      ],
+      "label": "address-line1",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "shipping address-line1",
+        "delivery": "static",
+        "element_id": "shipping-address1",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "Address line 1",
+        "name": "shipping_address1",
+        "placeholder": "123 Example Street",
+        "role": "address_line_1",
+        "section": "shipping",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "shipping.address_line_1.4",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#shipping-address1"
+    },
+    {
+      "expected_modifiers": [
+        "shipping"
+      ],
+      "label": "address-line2",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "shipping address-line2",
+        "delivery": "static",
+        "element_id": "shipping-address2",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "Apartment, suite, unit",
+        "name": "shipping_address2",
+        "placeholder": "Apt 4B",
+        "role": "address_line_2",
+        "section": "shipping",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "shipping.address_line_2.5",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#shipping-address2"
+    },
+    {
+      "expected_modifiers": [
+        "shipping"
+      ],
+      "label": "address-level2",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "shipping address-level2",
+        "delivery": "static",
+        "element_id": "shipping-city",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "City",
+        "name": "shipping_city",
+        "placeholder": "Springfield",
+        "role": "city",
+        "section": "shipping",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "shipping.city.6",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#shipping-city"
+    },
+    {
+      "expected_modifiers": [
+        "shipping"
+      ],
+      "label": "address-level1",
+      "provenance": {
+        "control": "select",
+        "declared_autocomplete": "shipping address-level1",
+        "delivery": "static",
+        "element_id": "shipping-state",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": null,
+        "label_text": "State",
+        "name": "shipping_state",
+        "placeholder": null,
+        "role": "admin_area",
+        "section": "shipping",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "shipping.admin_area.7",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#shipping-state"
+    },
+    {
+      "expected_modifiers": [
+        "shipping"
+      ],
+      "label": "postal-code",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "shipping postal-code",
+        "delivery": "static",
+        "element_id": "shipping-zip",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "ZIP code",
+        "name": "shipping_zip",
+        "placeholder": "01234",
+        "role": "postal_code",
+        "section": "shipping",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "shipping.postal_code.8",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#shipping-zip"
+    },
+    {
+      "expected_modifiers": [
+        "shipping"
+      ],
+      "label": "country",
+      "provenance": {
+        "control": "select",
+        "declared_autocomplete": "shipping country",
+        "delivery": "static",
+        "element_id": "shipping-country",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": null,
+        "label_text": "Country",
+        "name": "shipping_country",
+        "placeholder": null,
+        "role": "country_select",
+        "section": "shipping",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "shipping.country_select.9",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#shipping-country"
+    },
+    {
+      "expected_modifiers": [
+        "billing"
+      ],
+      "label": "address-line1",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "billing address-line1",
+        "delivery": "static",
+        "element_id": "billing-address1",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "Address line 1",
+        "name": "billing_address1",
+        "placeholder": "123 Example Street",
+        "role": "address_line_1",
+        "section": "billing",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "billing.address_line_1.10",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#billing-address1"
+    },
+    {
+      "expected_modifiers": [
+        "billing"
+      ],
+      "label": "address-line2",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "billing address-line2",
+        "delivery": "static",
+        "element_id": "billing-address2",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "Apartment, suite, unit",
+        "name": "billing_address2",
+        "placeholder": "Apt 4B",
+        "role": "address_line_2",
+        "section": "billing",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "billing.address_line_2.11",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#billing-address2"
+    },
+    {
+      "expected_modifiers": [
+        "billing"
+      ],
+      "label": "address-level2",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "billing address-level2",
+        "delivery": "static",
+        "element_id": "billing-city",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "City",
+        "name": "billing_city",
+        "placeholder": "Springfield",
+        "role": "city",
+        "section": "billing",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "billing.city.12",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#billing-city"
+    },
+    {
+      "expected_modifiers": [
+        "billing"
+      ],
+      "label": "address-level1",
+      "provenance": {
+        "control": "select",
+        "declared_autocomplete": "billing address-level1",
+        "delivery": "static",
+        "element_id": "billing-state",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": null,
+        "label_text": "State",
+        "name": "billing_state",
+        "placeholder": null,
+        "role": "admin_area",
+        "section": "billing",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "billing.admin_area.13",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#billing-state"
+    },
+    {
+      "expected_modifiers": [
+        "billing"
+      ],
+      "label": "postal-code",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "billing postal-code",
+        "delivery": "static",
+        "element_id": "billing-zip",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "ZIP code",
+        "name": "billing_zip",
+        "placeholder": "01234",
+        "role": "postal_code",
+        "section": "billing",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "billing.postal_code.14",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#billing-zip"
+    },
+    {
+      "expected_modifiers": [
+        "billing"
+      ],
+      "label": "country",
+      "provenance": {
+        "control": "select",
+        "declared_autocomplete": "billing country",
+        "delivery": "static",
+        "element_id": "billing-country",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": null,
+        "label_text": "Country",
+        "name": "billing_country",
+        "placeholder": null,
+        "role": "country_select",
+        "section": "billing",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "billing.country_select.15",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#billing-country"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "cc-name",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "cc-name",
+        "delivery": "static",
+        "element_id": "payment-cardholder",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "Name on card",
+        "name": "payment_cardholder",
+        "placeholder": null,
+        "role": "card_holder",
+        "section": "payment",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "payment.card_holder.16",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#payment-cardholder"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "cc-number",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "cc-number",
+        "delivery": "static",
+        "element_id": "payment-cardnumber",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "Card number",
+        "name": "payment_cardnumber",
+        "placeholder": "4242 4242 4242 4242",
+        "role": "card_number",
+        "section": "payment",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "payment.card_number.17",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#payment-cardnumber"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "COMPOSITE_UNSPLIT",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "cc-exp",
+        "delivery": "static",
+        "element_id": "payment-expdate",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "Expiration (MM/YY)",
+        "name": "payment_expdate",
+        "placeholder": "MM/YY",
+        "role": "card_expiry_composite",
+        "section": "payment",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "payment.card_expiry_composite.18",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#payment-expdate"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "cc-csc",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "cc-csc",
+        "delivery": "static",
+        "element_id": "payment-securitycode",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "Security code",
+        "name": "payment_securitycode",
+        "placeholder": "123",
+        "role": "card_security_code",
+        "section": "payment",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "payment.card_security_code.19",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#payment-securitycode"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "NOT_AUTOFILLABLE",
+      "provenance": {
+        "control": "textarea",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": "extras-ordernotes",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": null,
+        "label_text": "Order notes",
+        "name": "extras_ordernotes",
+        "placeholder": "Leave the parcel with a neighbour",
+        "role": "comments",
+        "section": "extras",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "extras.comments.20",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#extras-ordernotes"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "NOT_AUTOFILLABLE",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": "extras-termsaccepted",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "checkbox",
+        "label_text": "I accept the terms of sale",
+        "name": "extras_termsaccepted",
+        "placeholder": null,
+        "role": "consent",
+        "section": "extras",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "extras.consent.21",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#extras-termsaccepted"
+    }
+  ],
+  "form_id": "checkout-01-en-US-clean-v0",
+  "generator_version": "1.0.0",
+  "locale": "en-US",
+  "page_notes": {
+    "canvas_pseudo_fields": [],
+    "injected_selectors": [],
+    "shadow_hosts": []
+  },
+  "schema_version": 1,
+  "template_id": "checkout-01",
+  "tier": "clean",
+  "variant": 0
+}

@@ -1,0 +1,419 @@
+{
+  "family": "signup",
+  "fields": [
+    {
+      "expected_modifiers": [],
+      "label": "organization",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "organization",
+        "delivery": "static",
+        "element_id": "identity-company",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "Company",
+        "name": "identity_company",
+        "placeholder": null,
+        "role": "organization",
+        "section": "identity",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "identity.organization.1",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#identity-company"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "url",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "url",
+        "delivery": "static",
+        "element_id": "identity-website",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "url",
+        "label_text": "Website",
+        "name": "identity_website",
+        "placeholder": "https://example.com",
+        "role": "website",
+        "section": "identity",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "identity.website.2",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#identity-website"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "given-name",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": null,
+        "identifier_style": "bare",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": null,
+        "name": null,
+        "placeholder": "First name",
+        "role": "given_name",
+        "section": "contact",
+        "selector_strategy": "nth_of_type",
+        "shadow_host": null,
+        "slot_key": "contact.given_name.3",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "placeholder_as_label",
+          "input_type_degraded"
+        ]
+      },
+      "selector": "form[name=\"f1\"] > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > input:nth-of-type(1)"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "family-name",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": null,
+        "identifier_style": "legacy_name",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": null,
+        "name": "ctl00$txt4",
+        "placeholder": null,
+        "role": "family_name",
+        "section": "contact",
+        "selector_strategy": "form_name",
+        "shadow_host": null,
+        "slot_key": "contact.family_name.4",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "no_text_signal",
+          "input_type_degraded"
+        ]
+      },
+      "selector": "form[name=\"f1\"] [name=\"ctl00$txt4\"]"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "email",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "shadow",
+        "element_id": null,
+        "identifier_style": "hex_id",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": null,
+        "name": "ctl00$txt5",
+        "placeholder": "you@example.com",
+        "role": "email_address",
+        "section": "contact",
+        "selector_strategy": "shadow",
+        "shadow_host": "ce-1",
+        "slot_key": "contact.email_address.5",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "placeholder_as_label",
+          "input_type_degraded",
+          "shadow_root"
+        ]
+      },
+      "selector": "#ce-1 >>> input:nth-of-type(1)"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "tel-country-code",
+      "provenance": {
+        "control": "select",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": "input6",
+        "identifier_style": "numbered",
+        "injection_slot": null,
+        "input_type": null,
+        "label_text": null,
+        "name": null,
+        "placeholder": null,
+        "role": "phone_country_code",
+        "section": "contact",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "contact.phone_country_code.6",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "no_text_signal"
+        ]
+      },
+      "selector": "#input6"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "tel-national",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": "field_7",
+        "identifier_style": "underscored",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": null,
+        "name": "field_7",
+        "placeholder": "(555) 0123",
+        "role": "phone_national",
+        "section": "contact",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "contact.phone_national.7",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "placeholder_as_label",
+          "input_type_degraded"
+        ]
+      },
+      "selector": "#field_7"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "street-address",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "street-address",
+        "delivery": "static",
+        "element_id": "address-street",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "Street address",
+        "name": "address_street",
+        "placeholder": "97499 Hunt Center",
+        "role": "street_address",
+        "section": "address",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "address.street_address.8",
+        "tier": "partial",
+        "transforms": []
+      },
+      "selector": "#address-street"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "address-level2",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": "address-city",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "City",
+        "name": "address_city",
+        "placeholder": "Springfield",
+        "role": "city",
+        "section": "address",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "address.city.9",
+        "tier": "partial",
+        "transforms": [
+          "declaration_absent"
+        ]
+      },
+      "selector": "#address-city"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "address-level1",
+      "provenance": {
+        "control": "select",
+        "declared_autocomplete": "address-level2",
+        "delivery": "static",
+        "element_id": "address-state",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": null,
+        "label_text": "State",
+        "name": "address_state",
+        "placeholder": "New York",
+        "role": "admin_area",
+        "section": "address",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "address.admin_area.10",
+        "tier": "partial",
+        "transforms": [
+          "wrong_declaration"
+        ]
+      },
+      "selector": "#address-state"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "postal-code",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "postal-code",
+        "delivery": "static",
+        "element_id": "address-zip",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "ZIP code",
+        "name": "address_zip",
+        "placeholder": "01234",
+        "role": "postal_code",
+        "section": "address",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "address.postal_code.11",
+        "tier": "partial",
+        "transforms": []
+      },
+      "selector": "#address-zip"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "country",
+      "provenance": {
+        "control": "select",
+        "declared_autocomplete": "country",
+        "delivery": "static",
+        "element_id": "address-country",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": null,
+        "label_text": "Country",
+        "name": "address_country",
+        "placeholder": "United States",
+        "role": "country_select",
+        "section": "address",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "address.country_select.12",
+        "tier": "partial",
+        "transforms": []
+      },
+      "selector": "#address-country"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "new-password",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "new-password",
+        "delivery": "static",
+        "element_id": "account-newpassword",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "password",
+        "label_text": "Password",
+        "name": "account_newpassword",
+        "placeholder": null,
+        "role": "new_password",
+        "section": "account",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "account.new_password.13",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#account-newpassword"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "UNKNOWN",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": "input14",
+        "identifier_style": "numbered",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": null,
+        "name": null,
+        "placeholder": null,
+        "role": "undeterminable",
+        "section": "contact",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "contact.undeterminable.14",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "no_text_signal",
+          "undeterminable"
+        ]
+      },
+      "selector": "#input14"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "NOT_AUTOFILLABLE",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "injected",
+        "element_id": "input15",
+        "identifier_style": "numbered",
+        "injection_slot": "inj-slot-15",
+        "input_type": "text",
+        "label_text": null,
+        "name": "field_15",
+        "placeholder": "Search the store",
+        "role": "search",
+        "section": "contact",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "contact.search.15",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "injected_after_load"
+        ]
+      },
+      "selector": "#input15"
+    }
+  ],
+  "form_id": "signup-04-en-US-mixed-v0",
+  "generator_version": "1.0.0",
+  "locale": "en-US",
+  "page_notes": {
+    "canvas_pseudo_fields": [],
+    "injected_selectors": [
+      "#input15"
+    ],
+    "shadow_hosts": [
+      "#ce-1"
+    ]
+  },
+  "schema_version": 1,
+  "template_id": "signup-04",
+  "tier": "mixed",
+  "variant": 0
+}

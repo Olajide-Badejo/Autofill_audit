@@ -1,0 +1,495 @@
+{
+  "family": "checkout",
+  "fields": [
+    {
+      "expected_modifiers": [],
+      "label": "email",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "email",
+        "delivery": "static",
+        "element_id": "contact-email",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "email",
+        "label_text": "E-Mail-Adresse",
+        "name": "contact_email",
+        "placeholder": "name@example.com",
+        "role": "email_address",
+        "section": "contact",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "contact.email_address.1",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#contact-email"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "tel",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "tel",
+        "delivery": "static",
+        "element_id": "contact-telefon",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "tel",
+        "label_text": "Telefonnummer",
+        "name": "contact_telefon",
+        "placeholder": "0151 0000123",
+        "role": "phone",
+        "section": "contact",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "contact.phone.2",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#contact-telefon"
+    },
+    {
+      "expected_modifiers": [
+        "shipping"
+      ],
+      "label": "organization",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "shipping organization",
+        "delivery": "static",
+        "element_id": "shipping-firma",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "Firma",
+        "name": "shipping_firma",
+        "placeholder": null,
+        "role": "organization",
+        "section": "shipping",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "shipping.organization.3",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#shipping-firma"
+    },
+    {
+      "expected_modifiers": [
+        "shipping"
+      ],
+      "label": "address-line1",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "shipping address-line1",
+        "delivery": "static",
+        "element_id": "shipping-strasse",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "Straße und Hausnummer",
+        "name": "shipping_strasse",
+        "placeholder": "Beispielstraße 1",
+        "role": "address_line_1",
+        "section": "shipping",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "shipping.address_line_1.4",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#shipping-strasse"
+    },
+    {
+      "expected_modifiers": [
+        "shipping"
+      ],
+      "label": "address-line2",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "shipping address-line2",
+        "delivery": "static",
+        "element_id": "shipping-adresszusatz",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "Adresszusatz",
+        "name": "shipping_adresszusatz",
+        "placeholder": "Hinterhaus",
+        "role": "address_line_2",
+        "section": "shipping",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "shipping.address_line_2.5",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#shipping-adresszusatz"
+    },
+    {
+      "expected_modifiers": [
+        "shipping"
+      ],
+      "label": "postal-code",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "shipping postal-code",
+        "delivery": "static",
+        "element_id": "shipping-plz",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "PLZ",
+        "name": "shipping_plz",
+        "placeholder": "12345",
+        "role": "postal_code",
+        "section": "shipping",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "shipping.postal_code.6",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#shipping-plz"
+    },
+    {
+      "expected_modifiers": [
+        "shipping"
+      ],
+      "label": "address-level2",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "shipping address-level2",
+        "delivery": "static",
+        "element_id": "shipping-ort",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "Ort",
+        "name": "shipping_ort",
+        "placeholder": "Beispielstadt",
+        "role": "city",
+        "section": "shipping",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "shipping.city.7",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#shipping-ort"
+    },
+    {
+      "expected_modifiers": [
+        "shipping"
+      ],
+      "label": "country",
+      "provenance": {
+        "control": "select",
+        "declared_autocomplete": "shipping country",
+        "delivery": "static",
+        "element_id": "shipping-land",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": null,
+        "label_text": "Land",
+        "name": "shipping_land",
+        "placeholder": null,
+        "role": "country_select",
+        "section": "shipping",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "shipping.country_select.8",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#shipping-land"
+    },
+    {
+      "expected_modifiers": [
+        "billing"
+      ],
+      "label": "address-line1",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "billing address-line1",
+        "delivery": "static",
+        "element_id": "billing-strasse",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "Straße und Hausnummer",
+        "name": "billing_strasse",
+        "placeholder": "Beispielstraße 1",
+        "role": "address_line_1",
+        "section": "billing",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "billing.address_line_1.9",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#billing-strasse"
+    },
+    {
+      "expected_modifiers": [
+        "billing"
+      ],
+      "label": "address-line2",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "billing address-line2",
+        "delivery": "static",
+        "element_id": "billing-adresszusatz",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "Adresszusatz",
+        "name": "billing_adresszusatz",
+        "placeholder": "Hinterhaus",
+        "role": "address_line_2",
+        "section": "billing",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "billing.address_line_2.10",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#billing-adresszusatz"
+    },
+    {
+      "expected_modifiers": [
+        "billing"
+      ],
+      "label": "postal-code",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "billing postal-code",
+        "delivery": "static",
+        "element_id": "billing-plz",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "PLZ",
+        "name": "billing_plz",
+        "placeholder": "12345",
+        "role": "postal_code",
+        "section": "billing",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "billing.postal_code.11",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#billing-plz"
+    },
+    {
+      "expected_modifiers": [
+        "billing"
+      ],
+      "label": "address-level2",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "billing address-level2",
+        "delivery": "static",
+        "element_id": "billing-ort",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "Ort",
+        "name": "billing_ort",
+        "placeholder": "Beispielstadt",
+        "role": "city",
+        "section": "billing",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "billing.city.12",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#billing-ort"
+    },
+    {
+      "expected_modifiers": [
+        "billing"
+      ],
+      "label": "country",
+      "provenance": {
+        "control": "select",
+        "declared_autocomplete": "billing country",
+        "delivery": "static",
+        "element_id": "billing-land",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": null,
+        "label_text": "Land",
+        "name": "billing_land",
+        "placeholder": null,
+        "role": "country_select",
+        "section": "billing",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "billing.country_select.13",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#billing-land"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "cc-name",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "cc-name",
+        "delivery": "static",
+        "element_id": "payment-karteninhaber",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "Karteninhaber",
+        "name": "payment_karteninhaber",
+        "placeholder": null,
+        "role": "card_holder",
+        "section": "payment",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "payment.card_holder.14",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#payment-karteninhaber"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "cc-number",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "cc-number",
+        "delivery": "static",
+        "element_id": "payment-kartennummer",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "Kartennummer",
+        "name": "payment_kartennummer",
+        "placeholder": "4242 4242 4242 4242",
+        "role": "card_number",
+        "section": "payment",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "payment.card_number.15",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#payment-kartennummer"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "COMPOSITE_UNSPLIT",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "cc-exp",
+        "delivery": "static",
+        "element_id": "payment-expdate",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "Gültig bis (MM/JJ)",
+        "name": "payment_expdate",
+        "placeholder": "MM/JJ",
+        "role": "card_expiry_composite",
+        "section": "payment",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "payment.card_expiry_composite.16",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#payment-expdate"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "cc-csc",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": "cc-csc",
+        "delivery": "static",
+        "element_id": "payment-pruefziffer",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": "Prüfziffer",
+        "name": "payment_pruefziffer",
+        "placeholder": "123",
+        "role": "card_security_code",
+        "section": "payment",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "payment.card_security_code.17",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#payment-pruefziffer"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "NOT_AUTOFILLABLE",
+      "provenance": {
+        "control": "textarea",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": "extras-anmerkungen",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": null,
+        "label_text": "Anmerkungen zur Bestellung",
+        "name": "extras_anmerkungen",
+        "placeholder": "Paket beim Nachbarn abgeben",
+        "role": "comments",
+        "section": "extras",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "extras.comments.18",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#extras-anmerkungen"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "NOT_AUTOFILLABLE",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": "extras-termsaccepted",
+        "identifier_style": "semantic",
+        "injection_slot": null,
+        "input_type": "checkbox",
+        "label_text": "Ich akzeptiere die Verkaufsbedingungen",
+        "name": "extras_termsaccepted",
+        "placeholder": null,
+        "role": "consent",
+        "section": "extras",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "extras.consent.19",
+        "tier": "clean",
+        "transforms": []
+      },
+      "selector": "#extras-termsaccepted"
+    }
+  ],
+  "form_id": "checkout-01-de-DE-clean-v0",
+  "generator_version": "1.0.0",
+  "locale": "de-DE",
+  "page_notes": {
+    "canvas_pseudo_fields": [],
+    "injected_selectors": [],
+    "shadow_hosts": []
+  },
+  "schema_version": 1,
+  "template_id": "checkout-01",
+  "tier": "clean",
+  "variant": 0
+}

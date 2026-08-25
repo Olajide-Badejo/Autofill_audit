@@ -147,3 +147,168 @@ would mean the other was not doing its job.
   changelog note.
 - Faker is a `dev` dependency, not a runtime one. The generator runs from a
   checkout, never from an installed wheel, which is why it does not need to be.
+
+## 2026-08-25: P1, taxonomy and corpus
+
+### Faker becomes a runtime dependency, reversing a P0 note
+
+P0 closed with the note that Faker is a `dev` dependency because "the generator
+runs from a checkout, never from an installed wheel". That was wrong, and the
+error only becomes visible once the command surface of spec section 14 is
+actually wired up: `autofill-audit corpus generate` is a documented subcommand
+of the shipped console entry point. A documented command that raises an import
+error on a `pipx`-installed wheel is worse for a user than one extra dependency
+is for the wheel, and the alternative (a lazy import with a graceful refusal)
+buys a smaller wheel at the cost of a code path that only ever runs on a
+misconfigured install.
+
+Faker moves to the runtime dependency set. `make lock` was run afterwards, per
+spec section 18, and produced a byte-identical lock file: the lock is compiled
+with the `dev` extra already, so it carried Faker at this exact pin, and
+pip-compile annotates both cases as `via autofill-audit (pyproject.toml)`. There
+is therefore no lock commit, which is the right outcome rather than a skipped
+step, since regenerating a lock that does not change should not create one.
+
+### The corpus design as built
+
+The template is the atom of the split, so the template had to become the atom of
+the generator too. Five families, five structurally distinct templates each,
+instantiated across six locales and four tiers. A template asks for a name block
+or an address block *by style*; the locale profile decides which slots that
+style expands to and in what order. A template that listed address line one and
+address line two directly would silently assert that every locale composes an
+address the same way, which is the failure spec section 8.1 names.
+
+The locale profiles are the substance of the phase. Each carries label,
+placeholder, and identifier strings; which slots exist; what order they appear
+in; and how names decompose. German and French address blocks carry no
+administrative-area field at all. Japanese leads with the postal code and adds a
+kana name pair. Nigerian postal codes are frequently absent, expressed as a
+presence probability rather than a flat absence, because "frequently" is the
+honest shape of that fact.
+
+### Surprises
+
+**Faker covered every locale, including the one the plan expected to be thin.**
+The orchestrator's plan anticipated hand-authored fallback tables for `en-NG`.
+The probe at the top of the phase found working providers for names, streets,
+cities, administrative areas, and companies in all six locales, and the kana
+name providers Japanese needs. The hand-authored tables still exist and still
+matter, but for a different reason than expected: Faker generates values, not
+interface text, and no provider knows that a German form says *PLZ* and names
+the field `plz`. That table is the locale profile, and it was always going to be
+hand written. The status table in `taxonomy.md` records what came from where.
+
+**A module named `locales.py` shadowed the `locales/` data directory.** Spec
+section 6 names the data directory `locales/`, and the obvious name for the
+module that loads it was `locales.py` beside it. Importing
+`autofill_audit.corpus.locales` then resolves to the module, and
+`resources.files` on it walked one level too high and looked for the tables in
+the package root. The module is `profiles.py` now, the directory keeps the name
+the specification gives it, and the reason is recorded in the module docstring
+so nobody renames it back.
+
+**A dataclass with a parent pointer cannot have a generated `__eq__`.** The
+small HTML tree used to check selectors gave every element a `parent`, and
+`list.index` during `:nth-of-type` resolution compared two elements, which
+recursed up and down the tree until the stack ran out. Elements are identity
+objects; `eq=False` is the fix and the docstring says why.
+
+**The mixed tier could produce a form with no clean section.** The draw forces
+at least one hostile section and at least one clean one. The clean pass looked
+for a section that was not hostile, and when every section had drawn hostile
+there was no such candidate, so it silently did nothing and the form came out
+uniformly hostile under a mixed label. It surfaced on two templates out of
+twenty-five, which is exactly the frequency at which a defect gets shipped. A
+section may now be promoted to clean unless it is the only hostile one, and
+because a template is required to carry at least two sections there is always a
+legal choice. The parametrised test covers all twenty-five templates rather than
+a sample, which is how it was caught.
+
+**A shared Faker instance was a latent determinism defect.** The first
+implementation cached one Faker per locale and reseeded it per form, which is
+safe only while exactly one value provider is alive at a time. Nothing in the
+current call path breaks that, which is what made it dangerous: it would have
+broken the same-seed-same-bytes rule silently, the first time a caller built two
+forms at once.
+Constructing a Faker costs well under a millisecond, so each provider now owns
+one and the whole grid pays a fraction of a second for an invariant that cannot
+be broken from outside. Found by a test asserting that two providers built with
+the same seed produce the same value, which they did not.
+
+### Decisions worth recording
+
+**The per-form seed includes the template id.** Spec section 8.1 writes the axis
+tuple as family, locale, tier, variant. With five templates per family, two
+templates of one family at the same locale, tier, and variant would draw the
+same seed and therefore the same sample values. The template id joins the digest
+input and the family stays in it, so the input is a superset of the
+specification's rather than a replacement.
+
+**The expiry year window is an explicit input, not the clock.** A card expiry
+select has to offer years near the present, and spec section 9.5 has the
+extractor detect the pair against the current year, so a hardcoded window would
+expire. The base year is a generator argument defaulting to the current year and
+recorded in the manifest. The corpus is a deterministic function of the seed and
+the base year together, and passing the manifest's base year back reproduces the
+bytes exactly, indefinitely. The reachability check and the committed sample
+both pin it, so neither goes red when the year turns.
+
+**Held-out-locale forms of training templates go to a fourth partition.** The
+specification leaves this open. A French form whose template is in train cannot
+go to train, because the locale is held out, and must not go to dev or test,
+because its template is a training template and that would leak the convention
+the split exists to separate. It goes to `excluded`: generated, recorded, and
+used by nothing. The reported unseen-locale slice is the French forms in dev and
+test, which are clean on both axes.
+
+**The second selector preference uses a descendant combinator.** Spec section
+9.3 sketches it as `form[name] > [name="..."]`. A literal child combinator only
+matches a control that is an immediate child of the form element, and every form
+this generator emits wraps controls in layout containers, so it would produce
+selectors that resolve to nothing. The deviation is recorded in
+`selectors.py` and in the notes for P2, because the extractor has to reproduce
+this exactly rather than approximately.
+
+**Selector resolution is checked without a browser.** An answer key whose
+selectors do not resolve is worse than no answer key: every downstream
+measurement silently loses the fields it could not find, and the loss looks like
+a classifier failure. P2 has a browser; requiring one here would couple P1's
+gate to P2's dependency and stop the reachability job from being able to check
+anything. The subset of CSS this generator emits is small and fully known, so
+`domcheck.py` resolves exactly that subset and raises on anything else, rather
+than quietly returning no match for syntax it does not understand.
+
+**Faker moved to the runtime dependency set**, reversing a P0 note, because
+`corpus generate` is part of the shipped command surface. Recorded at the top of
+this entry.
+
+### Gate
+
+- `corpus generate --seed 20260825 --out corpus/` run twice, `diff -r` of the
+  two outputs empty. Shown in the phase output.
+- Realised grid: five families of five templates, six locales, four tiers, one
+  variant. Well above the floor spec section 8.5 sets. Counts are in
+  `corpus/manifest.json`, not repeated here, per spec section 8.5 and law 3.
+- `corpus validate` green over the full generated corpus, over the committed
+  sample, and over a narrow corpus in the test suite. Every key validates
+  against the committed schema.
+- Every label in the taxonomy is emitted by at least one answer key. The
+  coverage table prints with nothing missing.
+- `check_reachability.py` green with clause (b) active. It left `PENDING` in the
+  commit that made it enforceable, per the P0 handoff.
+- `make gates` green: ruff, the dash check, mypy strict, pytest with the
+  coverage gate, reachability, traceability. Library coverage is comfortably
+  above the gate.
+
+### What surprised me about the hostile tier
+
+It is graded rather than uniformly impossible, and that turned out to matter
+more than expected. Half its controls carry the label text as a placeholder,
+which is the placeholder-as-label antipattern and is genuinely classifiable. The
+other half carry no text signal at all and leave only the identifier, which is
+where the cross-locale claim is actually tested, since the identifiers are
+localised. One control per form is deliberately undeterminable, and predicting
+`UNKNOWN` on it is the correct answer rather than a failure. If every hostile
+control were equally hopeless the tier would measure nothing except that the
+tier is hard.

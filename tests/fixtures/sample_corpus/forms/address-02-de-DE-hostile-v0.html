@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Adressbuch</title>
+<style>
+body { font-family: system-ui, sans-serif; margin: 0; padding: 1.5rem; }
+main { max-width: 44rem; margin: 0 auto; }
+.row { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.field { display: flex; flex-direction: column; flex: 1 1 12rem; margin-bottom: 0.75rem; }
+label { font-size: 0.85rem; margin-bottom: 0.25rem; }
+input, select, textarea { font: inherit; padding: 0.4rem; }
+fieldset { border: 1px solid #ccc; margin: 0 0 0.75rem; }
+.summary { background: #f4f4f4; padding: 0.75rem; margin-bottom: 1rem; }
+.canvas-note { font-size: 0.8rem; color: #555; }
+</style>
+</head>
+<body>
+<main>
+<h1>Adressbuch</h1>
+<aside class="summary">
+<h2>Bestellübersicht</h2>
+<p>Lieferung an: Claus-Dieter Siering</p>
+<p>Gehringerplatz 93, Osterode am Harz 45694, Deutschland</p>
+<p>Wir erreichen Sie unter: 0151 0004840</p>
+</aside>
+<form name="f1" method="post" action="#">
+<div class="block">
+<h2>I</h2>
+<div class="row">
+<div class="field">
+<input type="text" placeholder="Firma">
+
+
+</div>
+</div>
+</div>
+<div class="block">
+<h2>A</h2>
+<div class="row">
+<div class="field">
+<input name="ctl00$txt2" type="text">
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<input id="ctl00_txt3_79ae77c6" name="ctl00$txt3" type="text" placeholder="Hinterhaus">
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<af-field id="ce-1" data-tag="input" data-type="text" data-name="field_7"></af-field>
+</div>
+</div>
+<div class="row">
+<div class="field">
+<input id="field_5" name="field_5" type="text" placeholder="12345">
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<input type="text">
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<select id="ctl00_txt7_8118e183" name="ctl00$txt7">
+<option value=""></option>
+<option value="DE">Deutschland</option>
+<option value="AT">Österreich</option>
+<option value="CH">Schweiz</option>
+<option value="FR">Frankreich</option>
+<option value="GB">Vereinigtes Königreich</option>
+<option value="US">Vereinigte Staaten</option>
+<option value="JP">Japan</option>
+</select>
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<input id="input8" type="text">
+
+
+</div>
+</div>
+<div class="row">
+<div class="field" id="inj-slot-9">
+</div>
+</div>
+</div>
+<div class="actions"><button type="submit">Adressbuch</button></div>
+</form>
+</main>
+<script>
+class AfField extends HTMLElement {
+  connectedCallback() {
+    if (this.shadowRoot) { return; }
+    var root = this.attachShadow({ mode: 'open' });
+    var el = document.createElement(this.dataset.tag || 'input');
+    if (this.dataset.type) { el.setAttribute('type', this.dataset.type); }
+    if (this.dataset.name) { el.setAttribute('name', this.dataset.name); }
+    if (this.dataset.placeholder) { el.setAttribute('placeholder', this.dataset.placeholder); }
+    root.appendChild(el);
+  }
+}
+customElements.define('af-field', AfField);
+</script>
+<script>
+window.setTimeout(function () {
+  var slot1 = document.getElementById("inj-slot-9");
+  if (slot1) {
+    var el1 = document.createElement('input');
+    el1.setAttribute('type', "text");
+    el1.setAttribute('id', "input9");
+    el1.setAttribute('name', "field_9");
+    el1.setAttribute('placeholder', "Shop durchsuchen");
+    slot1.appendChild(el1);
+  }
+}, 300);
+</script>
+</body>
+</html>

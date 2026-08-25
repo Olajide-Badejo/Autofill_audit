@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Checkout</title>
+<style>
+body { font-family: system-ui, sans-serif; margin: 0; padding: 1.5rem; }
+main { max-width: 44rem; margin: 0 auto; }
+.row { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.field { display: flex; flex-direction: column; flex: 1 1 12rem; margin-bottom: 0.75rem; }
+label { font-size: 0.85rem; margin-bottom: 0.25rem; }
+input, select, textarea { font: inherit; padding: 0.4rem; }
+fieldset { border: 1px solid #ccc; margin: 0 0 0.75rem; }
+.summary { background: #f4f4f4; padding: 0.75rem; margin-bottom: 1rem; }
+.canvas-note { font-size: 0.8rem; color: #555; }
+</style>
+</head>
+<body>
+<main>
+<h1>Checkout</h1>
+<aside class="summary">
+<h2>Order summary</h2>
+<p>Delivering to: Antonio Dixon</p>
+<p>0806 Erika Views, West Brandon 09029, United States</p>
+<p>We will contact you on: (555) 0114</p>
+</aside>
+<form name="checkout" method="post" action="#">
+<section id="sec-contact" class="block">
+<h2>Contact details</h2>
+<div class="row">
+<div class="field">
+<label for="contact-email">Email address</label>
+<input id="contact-email" name="contact_email" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com" required>
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<label for="contact-phone">Phone number</label>
+<input id="contact-phone" name="contact_phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="(555) 0123">
+
+
+</div>
+</div>
+</section>
+<section id="sec-shipping" class="block">
+<h2>Shipping address</h2>
+<div class="row">
+<div class="field">
+<label for="shipping-company">Company</label>
+<input id="shipping-company" name="shipping_company" type="text" autocomplete="shipping organization" required>
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<label for="shipping-address1">Address line 1</label>
+<input id="shipping-address1" name="shipping_address1" type="text" autocomplete="shipping address-line1" placeholder="123 Example Street">
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<label for="shipping-address2">Apartment, suite, unit</label>
+<input id="shipping-address2" name="shipping_address2" type="text" autocomplete="shipping address-line2" placeholder="Apt 4B">
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<label for="shipping-city">City</label>
+<input id="shipping-city" name="shipping_city" type="text" autocomplete="shipping address-level2" placeholder="Springfield">
+
+
+</div>
+<div class="field">
+<label for="shipping-state">State</label>
+<select id="shipping-state" name="shipping_state" autocomplete="shipping address-level1" required>
+<option value=""></option>
+<option value="California">California</option>
+<option value="New York">New York</option>
+<option value="Texas">Texas</option>
+<option value="Illinois">Illinois</option>
+<option value="Washington">Washington</option>
+<option value="Oregon">Oregon</option>
+</select>
+
+
+</div>
+<div class="field">
+<label for="shipping-zip">ZIP code</label>
+<input id="shipping-zip" name="shipping_zip" type="text" inputmode="numeric" maxlength="10" autocomplete="shipping postal-code" placeholder="01234" required>
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<label for="shipping-country">Country</label>
+<select id="shipping-country" name="shipping_country" autocomplete="shipping country" required>
+<option value=""></option>
+<option value="US">United States</option>
+<option value="CA">Canada</option>
+<option value="GB">United Kingdom</option>
+<option value="DE">Germany</option>
+<option value="FR">France</option>
+<option value="JP">Japan</option>
+<option value="NG">Nigeria</option>
+</select>
+
+
+</div>
+</div>
+</section>
+<section id="sec-billing" class="block">
+<h2>Billing address</h2>
+<div class="row">
+<div class="field">
+<label for="billing-address1">Address line 1</label>
+<input id="billing-address1" name="billing_address1" type="text" autocomplete="billing address-line1" placeholder="123 Example Street">
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<label for="billing-address2">Apartment, suite, unit</label>
+<input id="billing-address2" name="billing_address2" type="text" autocomplete="billing address-line2" placeholder="Apt 4B" required>
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<label for="billing-city">City</label>
+<input id="billing-city" name="billing_city" type="text" autocomplete="billing address-level2" placeholder="Springfield" required>
+
+
+</div>
+<div class="field">
+<label for="billing-state">State</label>
+<select id="billing-state" name="billing_state" autocomplete="billing address-level1" required>
+<option value=""></option>
+<option value="California">California</option>
+<option value="New York">New York</option>
+<option value="Texas">Texas</option>
+<option value="Illinois">Illinois</option>
+<option value="Washington">Washington</option>
+<option value="Oregon">Oregon</option>
+</select>
+
+
+</div>
+<div class="field">
+<label for="billing-zip">ZIP code</label>
+<input id="billing-zip" name="billing_zip" type="text" inputmode="numeric" maxlength="10" autocomplete="billing postal-code" placeholder="01234" required>
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<label for="billing-country">Country</label>
+<select id="billing-country" name="billing_country" autocomplete="billing country">
+<option value=""></option>
+<option value="US">United States</option>
+<option value="CA">Canada</option>
+<option value="GB">United Kingdom</option>
+<option value="DE">Germany</option>
+<option value="FR">France</option>
+<option value="JP">Japan</option>
+<option value="NG">Nigeria</option>
+</select>
+
+
+</div>
+</div>
+</section>
+<section id="sec-payment" class="block">
+<h2>Payment</h2>
+<div class="row">
+<div class="field">
+<label for="payment-cardholder">Name on card</label>
+<input id="payment-cardholder" name="payment_cardholder" type="text" autocomplete="cc-name">
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<label for="payment-cardnumber">Card number</label>
+<input id="payment-cardnumber" name="payment_cardnumber" type="text" inputmode="numeric" maxlength="19" autocomplete="cc-number" placeholder="4242 4242 4242 4242">
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<label for="payment-expdate">Expiration (MM/YY)</label>
+<input id="payment-expdate" name="payment_expdate" type="text" inputmode="numeric" maxlength="5" autocomplete="cc-exp" placeholder="MM/YY" required>
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<label for="payment-securitycode">Security code</label>
+<input id="payment-securitycode" name="payment_securitycode" type="text" inputmode="numeric" maxlength="4" autocomplete="cc-csc" placeholder="123" required>
+
+
+</div>
+</div>
+</section>
+<section id="sec-extras" class="block">
+<h2>Additional information</h2>
+<div class="row">
+<div class="field">
+<label for="extras-ordernotes">Order notes</label>
+<textarea id="extras-ordernotes" name="extras_ordernotes" placeholder="Leave the parcel with a neighbour" rows="3"></textarea>
+
+
+</div>
+</div>
+<div class="row">
+<div class="field">
+<input id="extras-termsaccepted" name="extras_termsaccepted" type="checkbox" required>
+
+<label for="extras-termsaccepted">I accept the terms of sale</label>
+
+</div>
+</div>
+</section>
+<div class="actions"><button type="submit">Checkout</button></div>
+</form>
+</main>
+</body>
+</html>

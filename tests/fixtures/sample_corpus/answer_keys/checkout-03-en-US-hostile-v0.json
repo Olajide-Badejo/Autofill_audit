@@ -1,0 +1,617 @@
+{
+  "family": "checkout",
+  "fields": [
+    {
+      "expected_modifiers": [],
+      "label": "NOT_AUTOFILLABLE",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": null,
+        "identifier_style": "bare",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": null,
+        "name": null,
+        "placeholder": "Search the store",
+        "role": "search",
+        "section": "extras",
+        "selector_strategy": "nth_of_type",
+        "shadow_host": null,
+        "slot_key": "extras.search.1",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "placeholder_as_label",
+          "input_type_degraded"
+        ]
+      },
+      "selector": "form[name=\"f1\"] > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > input:nth-of-type(1)"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "given-name",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": null,
+        "identifier_style": "legacy_name",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": null,
+        "name": "ctl00$txt2",
+        "placeholder": null,
+        "role": "given_name",
+        "section": "identity",
+        "selector_strategy": "form_name",
+        "shadow_host": null,
+        "slot_key": "identity.given_name.2",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "no_text_signal",
+          "input_type_degraded"
+        ]
+      },
+      "selector": "form[name=\"f1\"] [name=\"ctl00$txt2\"]"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "additional-name",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": "ctl00_txt3_5f9cf429",
+        "identifier_style": "hex_id",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": null,
+        "name": "ctl00$txt3",
+        "placeholder": "Middle name",
+        "role": "additional_name",
+        "section": "identity",
+        "selector_strategy": "form_name",
+        "shadow_host": null,
+        "slot_key": "identity.additional_name.3",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "placeholder_as_label",
+          "input_type_degraded"
+        ]
+      },
+      "selector": "form[name=\"f1\"] [name=\"ctl00$txt3\"]"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "family-name",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": "input4",
+        "identifier_style": "numbered",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": null,
+        "name": null,
+        "placeholder": null,
+        "role": "family_name",
+        "section": "identity",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "identity.family_name.4",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "no_text_signal",
+          "input_type_degraded"
+        ]
+      },
+      "selector": "#input4"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "email",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": "field_5",
+        "identifier_style": "underscored",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": null,
+        "name": "field_5",
+        "placeholder": "you@example.com",
+        "role": "email_address",
+        "section": "identity",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "identity.email_address.5",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "placeholder_as_label",
+          "input_type_degraded"
+        ]
+      },
+      "selector": "#field_5"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "url",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": "input6",
+        "identifier_style": "numbered",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": null,
+        "name": null,
+        "placeholder": null,
+        "role": "website",
+        "section": "identity",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "identity.website.6",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "no_text_signal",
+          "input_type_degraded"
+        ]
+      },
+      "selector": "#input6"
+    },
+    {
+      "expected_modifiers": [
+        "shipping"
+      ],
+      "label": "organization",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": "field_7",
+        "identifier_style": "underscored",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": null,
+        "name": "field_7",
+        "placeholder": "Company",
+        "role": "organization",
+        "section": "shipping",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "shipping.organization.7",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "placeholder_as_label",
+          "input_type_degraded"
+        ]
+      },
+      "selector": "#field_7"
+    },
+    {
+      "expected_modifiers": [
+        "shipping"
+      ],
+      "label": "address-line1",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": null,
+        "identifier_style": "legacy_name",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": null,
+        "name": "ctl00$txt8",
+        "placeholder": null,
+        "role": "address_line_1",
+        "section": "shipping",
+        "selector_strategy": "form_name",
+        "shadow_host": null,
+        "slot_key": "shipping.address_line_1.8",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "no_text_signal",
+          "input_type_degraded"
+        ]
+      },
+      "selector": "form[name=\"f1\"] [name=\"ctl00$txt8\"]"
+    },
+    {
+      "expected_modifiers": [
+        "shipping"
+      ],
+      "label": "address-line2",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "shadow",
+        "element_id": null,
+        "identifier_style": "hex_id",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": null,
+        "name": "ctl00$txt9",
+        "placeholder": "Apt 4B",
+        "role": "address_line_2",
+        "section": "shipping",
+        "selector_strategy": "shadow",
+        "shadow_host": "ce-1",
+        "slot_key": "shipping.address_line_2.9",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "placeholder_as_label",
+          "input_type_degraded",
+          "shadow_root"
+        ]
+      },
+      "selector": "#ce-1 >>> input:nth-of-type(1)"
+    },
+    {
+      "expected_modifiers": [
+        "shipping"
+      ],
+      "label": "address-line3",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": "field_10",
+        "identifier_style": "underscored",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": null,
+        "name": "field_10",
+        "placeholder": null,
+        "role": "address_line_3",
+        "section": "shipping",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "shipping.address_line_3.10",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "no_text_signal",
+          "input_type_degraded"
+        ]
+      },
+      "selector": "#field_10"
+    },
+    {
+      "expected_modifiers": [
+        "shipping"
+      ],
+      "label": "address-level2",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": null,
+        "identifier_style": "bare",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": null,
+        "name": null,
+        "placeholder": "Springfield",
+        "role": "city",
+        "section": "shipping",
+        "selector_strategy": "nth_of_type",
+        "shadow_host": null,
+        "slot_key": "shipping.city.11",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "placeholder_as_label",
+          "input_type_degraded"
+        ]
+      },
+      "selector": "form[name=\"f1\"] > div:nth-of-type(3) > div:nth-of-type(5) > div:nth-of-type(1) > input:nth-of-type(1)"
+    },
+    {
+      "expected_modifiers": [
+        "shipping"
+      ],
+      "label": "address-level1",
+      "provenance": {
+        "control": "select",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": "field_12",
+        "identifier_style": "underscored",
+        "injection_slot": null,
+        "input_type": null,
+        "label_text": null,
+        "name": "field_12",
+        "placeholder": null,
+        "role": "admin_area",
+        "section": "shipping",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "shipping.admin_area.12",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "no_text_signal"
+        ]
+      },
+      "selector": "#field_12"
+    },
+    {
+      "expected_modifiers": [
+        "shipping"
+      ],
+      "label": "postal-code",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": "ctl00_txt13_1ee2a35c",
+        "identifier_style": "hex_id",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": null,
+        "name": "ctl00$txt13",
+        "placeholder": "01234",
+        "role": "postal_code",
+        "section": "shipping",
+        "selector_strategy": "form_name",
+        "shadow_host": null,
+        "slot_key": "shipping.postal_code.13",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "placeholder_as_label",
+          "input_type_degraded"
+        ]
+      },
+      "selector": "form[name=\"f1\"] [name=\"ctl00$txt13\"]"
+    },
+    {
+      "expected_modifiers": [
+        "shipping"
+      ],
+      "label": "country",
+      "provenance": {
+        "control": "select",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": null,
+        "identifier_style": "legacy_name",
+        "injection_slot": null,
+        "input_type": null,
+        "label_text": null,
+        "name": "ctl00$txt14",
+        "placeholder": null,
+        "role": "country_select",
+        "section": "shipping",
+        "selector_strategy": "form_name",
+        "shadow_host": null,
+        "slot_key": "shipping.country_select.14",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "no_text_signal"
+        ]
+      },
+      "selector": "form[name=\"f1\"] [name=\"ctl00$txt14\"]"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "cc-number",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": null,
+        "identifier_style": "legacy_name",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": null,
+        "name": "ctl00$txt15",
+        "placeholder": "4242 4242 4242 4242",
+        "role": "card_number",
+        "section": "payment",
+        "selector_strategy": "form_name",
+        "shadow_host": null,
+        "slot_key": "payment.card_number.15",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "placeholder_as_label",
+          "input_type_degraded"
+        ]
+      },
+      "selector": "form[name=\"f1\"] [name=\"ctl00$txt15\"]"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "cc-exp-month",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": null,
+        "identifier_style": "legacy_name",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": null,
+        "name": "ctl00$txt16",
+        "placeholder": null,
+        "role": "card_expiry_month",
+        "section": "payment",
+        "selector_strategy": "form_name",
+        "shadow_host": null,
+        "slot_key": "payment.card_expiry_month.16",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "no_text_signal",
+          "input_type_degraded"
+        ]
+      },
+      "selector": "form[name=\"f1\"] [name=\"ctl00$txt16\"]"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "cc-exp-year",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": "field_17",
+        "identifier_style": "underscored",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": null,
+        "name": "field_17",
+        "placeholder": "Expiration year",
+        "role": "card_expiry_year",
+        "section": "payment",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "payment.card_expiry_year.17",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "placeholder_as_label",
+          "input_type_degraded"
+        ]
+      },
+      "selector": "#field_17"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "cc-csc",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": "input18",
+        "identifier_style": "numbered",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": null,
+        "name": null,
+        "placeholder": null,
+        "role": "card_security_code",
+        "section": "payment",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "payment.card_security_code.18",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "no_text_signal",
+          "input_type_degraded"
+        ]
+      },
+      "selector": "#input18"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "UNKNOWN",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "static",
+        "element_id": "input19",
+        "identifier_style": "numbered",
+        "injection_slot": null,
+        "input_type": "text",
+        "label_text": null,
+        "name": null,
+        "placeholder": null,
+        "role": "undeterminable",
+        "section": "payment",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "payment.undeterminable.19",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "no_text_signal",
+          "undeterminable"
+        ]
+      },
+      "selector": "#input19"
+    },
+    {
+      "expected_modifiers": [],
+      "label": "NOT_AUTOFILLABLE",
+      "provenance": {
+        "control": "input",
+        "declared_autocomplete": null,
+        "delivery": "injected",
+        "element_id": "input20",
+        "identifier_style": "numbered",
+        "injection_slot": "inj-slot-20",
+        "input_type": "text",
+        "label_text": null,
+        "name": "field_20",
+        "placeholder": "EXAMPLE10",
+        "role": "coupon",
+        "section": "payment",
+        "selector_strategy": "id",
+        "shadow_host": null,
+        "slot_key": "payment.coupon.20",
+        "tier": "hostile",
+        "transforms": [
+          "label_removed",
+          "generic_identifier",
+          "injected_after_load"
+        ]
+      },
+      "selector": "#input20"
+    }
+  ],
+  "form_id": "checkout-03-en-US-hostile-v0",
+  "generator_version": "1.0.0",
+  "locale": "en-US",
+  "page_notes": {
+    "canvas_pseudo_fields": [
+      "#canvas-payment"
+    ],
+    "injected_selectors": [
+      "#input20"
+    ],
+    "shadow_hosts": [
+      "#ce-1"
+    ]
+  },
+  "schema_version": 1,
+  "template_id": "checkout-03",
+  "tier": "hostile",
+  "variant": 0
+}
