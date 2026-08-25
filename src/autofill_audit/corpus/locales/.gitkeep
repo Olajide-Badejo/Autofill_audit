@@ -1,0 +1,2 @@
+Per-locale token and value tables, including hand-authored fallbacks where the
+Faker provider is thin. Authored at P1.

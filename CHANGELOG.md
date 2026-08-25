@@ -1,0 +1,29 @@
+# Changelog
+
+All notable changes to this project are documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+### Added
+
+- Repository foundations: packaging with a console entry point, the source tree
+  of the build specification's layout section, and the MIT license.
+- `taxonomy.py`, the one definition of the label space: the WHATWG autofill
+  field-name tokens adopted as labels, plus the enumerated extra labels for the
+  cases the specification does not cover, with their group mapping.
+- `autofill-audit version`. `autofill-audit audit` is present but refuses until
+  the audit engine lands at P3.
+- The six CI jobs: lint, types, test, reachability, traceability, and build,
+  each proven capable of failing before being trusted.
+- `scripts/check_dashes.py`, `scripts/check_reachability.py`,
+  `scripts/check_traceability.py`, and `scripts/check_commit_msg.py`, wired into
+  both CI and pre-commit.
+- `requirements.lock`, the fully resolved pin set that CI installs from.
+- `docs/adr/0001-toolchain-resolution.md` recording the resolved version matrix,
+  plus the environment, engineering log, cross-repo task, reference, and CI
+  proof documents.
+
+[Unreleased]: https://github.com/Olajide-Badejo/autofill-audit/commits/main

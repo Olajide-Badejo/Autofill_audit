@@ -1,0 +1,115 @@
+[build-system]
+requires = ["setuptools>=80", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "autofill-audit"
+dynamic = ["version"]
+description = "Audit HTML forms for browser autofill readiness."
+readme = "README.md"
+requires-python = ">=3.14"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Olajide Badejo" }]
+keywords = [
+    "autofill",
+    "web-forms",
+    "accessibility",
+    "playwright",
+    "onnx",
+    "machine-learning",
+    "developer-tools",
+    "html",
+]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Software Development :: Quality Assurance",
+    "Topic :: Text Processing :: Markup :: HTML",
+    "Typing :: Typed",
+]
+
+# Lower bounds are the versions resolved on the build machine at P0 and recorded
+# in docs/adr/0001-toolchain-resolution.md. The exact pin set lives in
+# requirements.lock, which CI installs from.
+dependencies = [
+    "click>=8.4.2",
+    "jinja2>=3.1.6",
+    "numpy>=2.5.2",
+    "onnxruntime>=1.29.0",
+    "playwright>=1.62.0",
+    "rich>=15.0.0",
+]
+
+[project.optional-dependencies]
+llm = [
+    "httpx>=0.28.1",
+]
+dev = [
+    "build>=1.5.0",
+    "faker>=40.37.0",
+    "hypothesis>=6.165.10",
+    "mypy>=2.3.1",
+    "pip-tools>=7.6.1",
+    "pre-commit>=4.6.2",
+    "pytest>=9.1.1",
+    "pytest-cov>=7.1.0",
+    "ruff>=0.16.4",
+    "scikit-learn>=1.9.0",
+    "scipy>=1.18.1",
+    "skl2onnx>=1.20.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/Olajide-Badejo/autofill-audit"
+Repository = "https://github.com/Olajide-Badejo/autofill-audit"
+Changelog = "https://github.com/Olajide-Badejo/autofill-audit/blob/main/CHANGELOG.md"
+
+[project.scripts]
+autofill-audit = "autofill_audit.cli:main"
+
+[tool.setuptools.dynamic]
+version = { attr = "autofill_audit.__version__" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+autofill_audit = ["py.typed"]
+
+[tool.ruff]
+line-length = 100
+src = ["src", "tests", "scripts"]
+target-version = "py314"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM", "RUF"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["B011"]
+
+[tool.mypy]
+strict = true
+files = ["src"]
+python_version = "3.14"
+warn_unreachable = true
+enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q --cov=src/autofill_audit --cov-report=term-missing --cov-fail-under=90"
+markers = [
+    "e2e: end to end tests that drive a real browser against local fixtures",
+    "llm: tests that need a reachable local LLM; skipped unless AUTOFILL_AUDIT_LLM_TESTS=1",
+]
+
+[tool.coverage.run]
+source = ["src/autofill_audit"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
