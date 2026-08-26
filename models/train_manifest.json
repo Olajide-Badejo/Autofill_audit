@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "tool_version": "0.1.0",
+  "git_sha": "4b5d7900ed3aa6825a4eb28348ee45ed0a930d76",
+  "git_dirty": false,
+  "seed": 20260825,
+  "corpus_manifest_sha256": "3450c48b009b3365f87f21e4f6703540e12c80885620a8612739e0e4eafcdb6b",
+  "split_file_sha256": "67f524a0fd4c8590b3b758d6a000083210a1195d8304706185b4e24649bfbe60",
+  "split_counts": {
+    "dev": 120,
+    "excluded": 60,
+    "test": 120,
+    "train": 300
+  },
+  "held_out_locale": "fr-FR",
+  "excluded_partition_used_for": "nothing at P4",
+  "feature_config": {
+    "char_min_n": 3,
+    "char_max_n": 5,
+    "char_min_df": 2,
+    "char_max_features": 100000,
+    "word_min_n": 1,
+    "word_max_n": 2,
+    "word_min_df": 2,
+    "word_max_features": 50000
+  },
+  "feature_width": 6656,
+  "feature_blocks": {
+    "c": 4905,
+    "w": 1701,
+    "t": 32,
+    "o": 5,
+    "s": 13
+  },
+  "sweep_grid": [
+    0.25,
+    0.5,
+    1.0,
+    2.0,
+    4.0,
+    8.0
+  ],
+  "chosen_hyperparameters": {
+    "C": 8.0,
+    "penalty": "l2",
+    "class_weight": "balanced",
+    "solver": "lbfgs"
+  },
+  "calibration_switchover": 100,
+  "onnx_opset": 26,
+  "dependencies": {
+    "python": "3.14.4",
+    "numpy": "2.5.2",
+    "onnx": "1.22.0",
+    "onnxruntime": "1.29.0",
+    "playwright": "1.62.0",
+    "scikit-learn": "1.9.0",
+    "scipy": "1.18.1",
+    "skl2onnx": "1.20.0"
+  },
+  "machine": {
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "processor": "unrecorded",
+    "cpu_count": 28,
+    "gpu_used": false
+  },
+  "command_line": "train.py --corpus corpus --split-file corpus/split.json --seed 20260825 --out models --cache .scratch/descriptor-cache",
+  "started_at": "2026-08-26T00:54:59.220778+00:00",
+  "finished_at": "2026-08-26T00:55:17.808159+00:00"
+}

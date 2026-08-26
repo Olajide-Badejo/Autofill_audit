@@ -1,0 +1,256 @@
+{
+  "schema_version": 1,
+  "fitted_on": "dev",
+  "switchover_count": 100,
+  "classes": [
+    {
+      "label": "CC_EXP_SPLIT_MONTH",
+      "method": "identity",
+      "dev_positives": 0
+    },
+    {
+      "label": "CC_EXP_SPLIT_YEAR",
+      "method": "identity",
+      "dev_positives": 0
+    },
+    {
+      "label": "COMPOSITE_UNSPLIT",
+      "method": "sigmoid",
+      "dev_positives": 72,
+      "slope": 0.2478091451919605,
+      "intercept": -1.0245244580032937
+    },
+    {
+      "label": "NOT_AUTOFILLABLE",
+      "method": "sigmoid",
+      "dev_positives": 84,
+      "slope": 0.7259988833450999,
+      "intercept": -0.8614903399164323
+    },
+    {
+      "label": "UNKNOWN",
+      "method": "sigmoid",
+      "dev_positives": 60,
+      "slope": 0.8908259661391432,
+      "intercept": 0.6482373967387434
+    },
+    {
+      "label": "additional-name",
+      "method": "identity",
+      "dev_positives": 0
+    },
+    {
+      "label": "address-level1",
+      "method": "sigmoid",
+      "dev_positives": 32,
+      "slope": 0.9302409071310809,
+      "intercept": -0.7092737748948006
+    },
+    {
+      "label": "address-level2",
+      "method": "sigmoid",
+      "dev_positives": 44,
+      "slope": 0.9931839957612089,
+      "intercept": -0.7125045544500841
+    },
+    {
+      "label": "address-line1",
+      "method": "sigmoid",
+      "dev_positives": 24,
+      "slope": 0.9448283915186606,
+      "intercept": -1.563945162433973
+    },
+    {
+      "label": "address-line2",
+      "method": "sigmoid",
+      "dev_positives": 24,
+      "slope": 1.8013479194531257,
+      "intercept": 0.163595721729335
+    },
+    {
+      "label": "address-line3",
+      "method": "identity",
+      "dev_positives": 0
+    },
+    {
+      "label": "bday",
+      "method": "identity",
+      "dev_positives": 0
+    },
+    {
+      "label": "cc-csc",
+      "method": "sigmoid",
+      "dev_positives": 48,
+      "slope": 1.1698138170712138,
+      "intercept": -0.7916586460956253
+    },
+    {
+      "label": "cc-exp",
+      "method": "identity",
+      "dev_positives": 0
+    },
+    {
+      "label": "cc-exp-month",
+      "method": "sigmoid",
+      "dev_positives": 24,
+      "slope": 0.6762138685631662,
+      "intercept": -0.08224934329172275
+    },
+    {
+      "label": "cc-exp-year",
+      "method": "sigmoid",
+      "dev_positives": 24,
+      "slope": 0.6677496717547171,
+      "intercept": 0.1819511007325752
+    },
+    {
+      "label": "cc-name",
+      "method": "identity",
+      "dev_positives": 0
+    },
+    {
+      "label": "cc-number",
+      "method": "sigmoid",
+      "dev_positives": 48,
+      "slope": 1.973507796987175,
+      "intercept": 2.1266842387532523
+    },
+    {
+      "label": "cc-type",
+      "method": "sigmoid",
+      "dev_positives": 24,
+      "slope": 1.181393996830519,
+      "intercept": -0.12183866951924813
+    },
+    {
+      "label": "country",
+      "method": "sigmoid",
+      "dev_positives": 48,
+      "slope": 0.771248119122982,
+      "intercept": 0.2620215707314578
+    },
+    {
+      "label": "current-password",
+      "method": "identity",
+      "dev_positives": 0
+    },
+    {
+      "label": "email",
+      "method": "sigmoid",
+      "dev_positives": 72,
+      "slope": 1.8468028613028353,
+      "intercept": 0.5384881815166819
+    },
+    {
+      "label": "family-name",
+      "method": "sigmoid",
+      "dev_positives": 56,
+      "slope": 0.831448800537133,
+      "intercept": 0.44908953340895663
+    },
+    {
+      "label": "given-name",
+      "method": "sigmoid",
+      "dev_positives": 56,
+      "slope": 0.9590571849375737,
+      "intercept": 0.9938940281366414
+    },
+    {
+      "label": "honorific-prefix",
+      "method": "sigmoid",
+      "dev_positives": 24,
+      "slope": 1.2197932004282739,
+      "intercept": -0.10926131642922624
+    },
+    {
+      "label": "honorific-suffix",
+      "method": "sigmoid",
+      "dev_positives": 24,
+      "slope": 1.2743747628267676,
+      "intercept": 1.0563440499815693
+    },
+    {
+      "label": "name",
+      "method": "sigmoid",
+      "dev_positives": 24,
+      "slope": 1.4413248940525218,
+      "intercept": 1.2977334534771228
+    },
+    {
+      "label": "new-password",
+      "method": "sigmoid",
+      "dev_positives": 24,
+      "slope": 1.5569626768116993,
+      "intercept": 2.4926142610137108
+    },
+    {
+      "label": "nickname",
+      "method": "identity",
+      "dev_positives": 0
+    },
+    {
+      "label": "organization",
+      "method": "sigmoid",
+      "dev_positives": 24,
+      "slope": 1.2985217804574085,
+      "intercept": -0.5445297312054524
+    },
+    {
+      "label": "postal-code",
+      "method": "sigmoid",
+      "dev_positives": 66,
+      "slope": 0.9671052606574603,
+      "intercept": -0.5134568662324154
+    },
+    {
+      "label": "sex",
+      "method": "identity",
+      "dev_positives": 0
+    },
+    {
+      "label": "tel",
+      "method": "sigmoid",
+      "dev_positives": 24,
+      "slope": 0.6355117876223865,
+      "intercept": -0.6675787604525962
+    },
+    {
+      "label": "tel-country-code",
+      "method": "sigmoid",
+      "dev_positives": 24,
+      "slope": 1.8421556106987618,
+      "intercept": -1.3425846573209648
+    },
+    {
+      "label": "tel-extension",
+      "method": "identity",
+      "dev_positives": 0
+    },
+    {
+      "label": "tel-national",
+      "method": "sigmoid",
+      "dev_positives": 24,
+      "slope": 0.5390559705979784,
+      "intercept": -1.880117528496325
+    },
+    {
+      "label": "transaction-amount",
+      "method": "sigmoid",
+      "dev_positives": 24,
+      "slope": 0.9819806064684313,
+      "intercept": 1.9820328252632626
+    },
+    {
+      "label": "url",
+      "method": "sigmoid",
+      "dev_positives": 24,
+      "slope": 0.8666673302745629,
+      "intercept": 0.8215654456100376
+    },
+    {
+      "label": "username",
+      "method": "identity",
+      "dev_positives": 0
+    }
+  ]
+}
