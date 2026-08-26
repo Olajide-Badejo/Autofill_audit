@@ -1375,3 +1375,165 @@ Again, and for the same reason as at P5: the runs were taken before the version
 bump, `engine_describe.tool_version` records what was actually running, and the
 manifest's commit resolves to a tree where that is true. Re-running to make it
 prettier is the regeneration spec section 18 forbids.
+
+## 2026-08-26: P6, the predictions and the threshold decision, before any of it runs
+
+The prediction file went in first, as the first commit on the branch, before the
+client existed. Two things in it were decided in advance because both would have
+been contaminated by seeing the numbers.
+
+**The comparison family.** P5R corrected across eleven comparisons for one engine
+pair. A three-engine benchmark has three pairs, and the family could reasonably
+have been thirty-three, or twenty-two, or eleven with the language model
+substituted in. The temptation is specific and foreseeable: the comparison this
+phase exists to make is the one against the language model, and a family
+containing only that pair would be a third the size and would produce smaller
+adjusted p values for exactly the comparisons the project most wants to be able
+to report. So the size was fixed at thirty-three while fixing it was still
+costless, along with the consequence that every rules-against-ngram adjusted p
+would grow. It did, and nobody can report that as a change in the underlying
+result, because the file said it would happen.
+
+**The language model's threshold block.** `load_thresholds("llm")` raised, by
+design since P4. The decision procedure in `audit/engine.py` is engine-agnostic
+by confidence value, so the engine needed two floats; spec section 12.1 says a
+self-reported confidence never feeds the threshold policy, so it must not be
+gated by them. The only pair satisfying both is zero and zero.
+
+That has two unflattering consequences and both were written down before the run:
+the language model gets no threshold protection and accuses on every committed
+prediction, and `LOW_CONFIDENCE` becomes unreachable for it. The alternative,
+deriving a boundary on the self-reported scale against a precision target the way
+P4 did, would probably have raised its finding-level precision. That it would
+have flattered the engine is exactly why it had to be refused before the
+measurement rather than after.
+
+### The one drop that decides whether the benchmark measures anything
+
+Spec section 12.2 requires the declared `autocomplete` value to be dropped from
+the pruned descriptor, because leaving it in lets the model read the answer off
+the page on every clean-tier form.
+
+The obvious check is a substring search for the declared token in the serialised
+payload, and it is wrong in both directions. A field named `email` that also
+declares `autocomplete="email"` would trip it, and that combination is common
+enough in a clean-tier corpus that it would have fired on the first real run and
+been switched off. Meanwhile a declaration reaching the payload through some
+derived value would not trip it at all.
+
+So the property checked is **independence**: pruning the descriptor and pruning
+the same descriptor with its declaration stripped must produce identical
+payloads. That has neither failure mode, and it is asserted on every request
+rather than reviewed once.
+
+### The keep list is a floor, not a ceiling
+
+Spec section 12.2 lists what pruning keeps and does not mention `pattern`,
+`maxlength`, `required`, `readonly`, or the frame and shadow flags.
+`classify/features.py` feeds every one of them to the n-gram model.
+
+Withholding a signal one engine has from the other would tilt the comparison
+exactly as far as handing over the whole document would, in the opposite
+direction and with a better conscience. So the rule applied is that the language
+model sees what the featuriser sees and nothing more, and the three named drops
+stand because none of them reaches the featuriser either. Recorded here because
+it is a deviation from a literal reading of the specification's list, taken for
+the reason the specification gives for having the list at all.
+
+## 2026-08-26: P6, what the benchmark measured
+
+### The serving route worked on the first rung
+
+Ollama was installed on the Windows host with the model already pulled, and
+Windows Ollama binds loopback only, so from WSL2 the 7.5 GB blob was visible on
+disk and unreachable over the network. Installing Ollama inside WSL2 and pointing
+`OLLAMA_MODELS` at the Windows store reused the blob with no re-pull. It loads
+<!-- traceability: a hardware reading from ollama ps and nvidia-smi, recorded in ADR 0007, not a result-file measurement -->
+entirely on the GPU with about 3 GB of headroom at the benchmark's context length.
+No step of the spec section 3.4 fallback ladder was taken and no row is labelled
+`cpu-offload`. The details are in `adr/0007-llm-model-and-quantization.md`.
+
+The one thing worth repeating here is the keep-alive policy. A long keep-alive
+holds three quarters of a 12 GB card for as long as it lasts, and what it buys is
+a model load costing under a minute. Ten minutes, and an explicit unload when a
+run finishes. Every latency figure is taken against a warmed session, so the
+reload costs nothing methodologically as long as the warm-up precedes the timing.
+
+### The engine order in the benchmark is a methodological choice
+
+`--engines llm,rules,ngram`, not the order the table is presented in. The two
+classical engines take about two and a quarter minutes each of browser time with
+no inference call in them, so running the language model last would have meant
+roughly seven idle minutes before its first call, against a ten-minute
+keep-alive. A keep-alive expiry inside a measured run would have put a cold model
+load into the per-field latency distribution. Warming immediately before and
+running it first avoids measuring the disk.
+
+### The result
+
+The language model came third. It lost to both classical engines on macro-F1, on
+micro-F1, on every tier, and on the seen locales, and most of those margins are
+certified after correction across the family of thirty-three. It led the n-gram
+model on the held-out locale and that difference did not survive correction.
+
+Spec section 13.4 asks whether a fifty-kilobyte linear model gets close enough to
+a twelve-billion-parameter model to be the right default. The premise did not
+survive: the linear model did not have to get close, because it won. The answer
+is in `report.md` with the numbers and with the limits that go with it, and the
+limits matter, because the classical engines were fitted on this corpus's
+training split and the language model met it for the first time at inference.
+
+### Four of the eight predictions were wrong, and the wrong ones were informative
+
+The hostile tier and the unseen locale were where broad pretrained knowledge was
+supposed to help. The hostile tier is where all three engines are worst and where
+none of the differences is significant. The unseen locale is the one slice the
+language model led on, and it could not be certified.
+
+**Schema compliance was perfect**, which was not predicted. The registered
+prediction was above zero and below five percent of requests needing a retry. Not
+one did, across every request of the run. Passing the JSON schema with the request
+and letting the server constrain decoding appears to remove the failure mode
+outright. The retry ladder is still there and still tested against twelve
+recorded transcripts including deliberately malformed ones; on this run it never
+fired. A benchmark whose most interesting failure mode did not occur is a result,
+and the honest report of it is the zero rather than a note about robustness.
+
+**Abstention went the other way from the prediction.** The system prompt tells the
+model to answer `UNKNOWN` when the evidence is insufficient and not to guess. It
+abstained less than either classical engine and was right less often when it
+committed. Instructing a model to decline is not equivalent to giving it a
+threshold, and this is the measurement of that gap.
+
+The confusion prediction was wrong in direction. The failure was expected to be
+over-claiming, fields that are not personal data read as though they were. The
+largest single confusion is the reverse: fields whose answer key is `UNKNOWN`
+read as `NOT_AUTOFILLABLE`.
+
+### The two classical engines reproduced their previous run exactly
+
+Every prediction and every finding, field for field across all 2317 fields, and
+every metric bit-identical. Only the latency columns differ, because those are
+re-measured rather than recomputed. That was not the point of re-running them,
+but it is the strongest reproducibility evidence this project has produced and it
+is worth the sentence.
+
+### One thing the harness does that the benchmark had to pay for twice
+
+`scripts/eval.py` classifies every form twice: once directly, which is where the
+run log's `pred_label` and the per-field latency come from, and once through
+`audit.engine.audit`, which is where the finding codes come from. For the two
+deterministic engines the passes agree by construction and cost microseconds. For
+the language model it doubles the inference: the run made twice as many requests
+as there are forms, and about half its wall clock is the audit pass.
+
+It also means the label on a row and the finding codes beside it come from two
+different draws of a model that spec section 12.3 point 7 says is not guaranteed
+to be deterministic. Measured on the run, using the deterministic rule engine as a
+control for the check's own edge cases, the language model's excess disagreement
+between the two passes is on the order of two fields in seven hundred. Small,
+real, and worth knowing before anyone builds on the finding-level numbers.
+
+This is not fixed here. Fixing it means changing what `eval` does to every engine,
+and doing that after seeing the results is the regeneration spec section 18
+forbids. It is written down for P7 instead.
