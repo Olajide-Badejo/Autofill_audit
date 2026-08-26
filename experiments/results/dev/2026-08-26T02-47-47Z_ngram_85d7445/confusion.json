@@ -1,0 +1,209 @@
+{
+  "labels": [
+    "COMPOSITE_UNSPLIT",
+    "NOT_AUTOFILLABLE",
+    "UNKNOWN",
+    "address-level1",
+    "address-level2",
+    "address-line1",
+    "address-line2",
+    "address-line3",
+    "cc-csc",
+    "cc-exp",
+    "cc-exp-month",
+    "cc-exp-year",
+    "cc-name",
+    "cc-number",
+    "cc-type",
+    "country",
+    "country-name",
+    "email",
+    "family-name",
+    "given-name",
+    "honorific-prefix",
+    "honorific-suffix",
+    "name",
+    "new-password",
+    "one-time-code",
+    "organization",
+    "postal-code",
+    "street-address",
+    "tel",
+    "tel-country-code",
+    "tel-extension",
+    "tel-national",
+    "transaction-amount",
+    "url",
+    "username"
+  ],
+  "rows": 1118,
+  "cells": {
+    "COMPOSITE_UNSPLIT": {
+      "COMPOSITE_UNSPLIT": 19,
+      "NOT_AUTOFILLABLE": 41,
+      "cc-exp": 4,
+      "cc-exp-year": 1,
+      "username": 7
+    },
+    "NOT_AUTOFILLABLE": {
+      "COMPOSITE_UNSPLIT": 1,
+      "NOT_AUTOFILLABLE": 73,
+      "UNKNOWN": 1,
+      "address-line2": 2,
+      "cc-exp-year": 2,
+      "postal-code": 1,
+      "tel-national": 3,
+      "url": 1
+    },
+    "UNKNOWN": {
+      "UNKNOWN": 34,
+      "address-line2": 3,
+      "cc-exp-month": 1,
+      "cc-number": 1,
+      "given-name": 1,
+      "postal-code": 11,
+      "tel-extension": 7,
+      "tel-national": 2
+    },
+    "address-level1": {
+      "address-level1": 21,
+      "country": 11
+    },
+    "address-level2": {
+      "UNKNOWN": 2,
+      "address-level2": 34,
+      "address-line1": 1,
+      "address-line2": 1,
+      "address-line3": 5,
+      "postal-code": 1
+    },
+    "address-line1": {
+      "UNKNOWN": 2,
+      "address-level2": 1,
+      "address-line1": 15,
+      "address-line2": 2,
+      "url": 4
+    },
+    "address-line2": {
+      "address-level2": 1,
+      "address-line2": 22,
+      "address-line3": 1
+    },
+    "cc-csc": {
+      "cc-csc": 43,
+      "cc-exp": 3,
+      "cc-exp-month": 2
+    },
+    "cc-exp-month": {
+      "UNKNOWN": 4,
+      "cc-exp-month": 15,
+      "family-name": 5
+    },
+    "cc-exp-year": {
+      "UNKNOWN": 5,
+      "address-line1": 3,
+      "address-line3": 1,
+      "cc-csc": 4,
+      "cc-exp-year": 11
+    },
+    "cc-number": {
+      "COMPOSITE_UNSPLIT": 1,
+      "cc-name": 1,
+      "cc-number": 46
+    },
+    "cc-type": {
+      "cc-type": 24
+    },
+    "country": {
+      "address-level1": 12,
+      "country": 34,
+      "tel-country-code": 2
+    },
+    "country-name": {
+      "UNKNOWN": 1,
+      "address-level2": 12,
+      "address-line3": 5,
+      "cc-exp-year": 2,
+      "postal-code": 4
+    },
+    "email": {
+      "email": 72
+    },
+    "family-name": {
+      "UNKNOWN": 1,
+      "family-name": 42,
+      "given-name": 1,
+      "honorific-suffix": 1,
+      "tel-extension": 4,
+      "tel-national": 7
+    },
+    "given-name": {
+      "UNKNOWN": 5,
+      "family-name": 1,
+      "given-name": 46,
+      "tel-national": 4
+    },
+    "honorific-prefix": {
+      "honorific-prefix": 24
+    },
+    "honorific-suffix": {
+      "honorific-suffix": 23,
+      "url": 1
+    },
+    "name": {
+      "given-name": 1,
+      "name": 21,
+      "organization": 2
+    },
+    "new-password": {
+      "new-password": 24
+    },
+    "one-time-code": {
+      "COMPOSITE_UNSPLIT": 13,
+      "address-line1": 6,
+      "postal-code": 5
+    },
+    "organization": {
+      "given-name": 1,
+      "name": 3,
+      "organization": 20
+    },
+    "postal-code": {
+      "UNKNOWN": 3,
+      "address-level2": 1,
+      "address-line1": 4,
+      "address-line3": 5,
+      "postal-code": 50,
+      "url": 3
+    },
+    "street-address": {
+      "UNKNOWN": 3,
+      "address-level2": 14,
+      "address-line1": 4,
+      "address-line3": 2,
+      "postal-code": 1
+    },
+    "tel": {
+      "tel": 10,
+      "tel-national": 13,
+      "transaction-amount": 1
+    },
+    "tel-country-code": {
+      "tel-country-code": 24
+    },
+    "tel-national": {
+      "tel": 11,
+      "tel-national": 13
+    },
+    "transaction-amount": {
+      "COMPOSITE_UNSPLIT": 2,
+      "cc-exp-month": 5,
+      "cc-exp-year": 2,
+      "transaction-amount": 15
+    },
+    "url": {
+      "given-name": 6,
+      "url": 18
+    }
+  }
+}
