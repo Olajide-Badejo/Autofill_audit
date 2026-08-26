@@ -53,6 +53,22 @@ llm = [
 dev = [
     "build>=1.5.0",
     "hypothesis>=6.165.10",
+    # The external evaluation harness (spec section 0.5). Pinned to a git tag
+    # because it exists only as a GitHub release. Spec section 0.5 permits a git
+    # ref at P5 and forbids one at the 1.0.0 tag, and the publication task is in
+    # docs/cross-repo-tasks.md.
+    #
+    # It sits in the dev extra rather than in the runtime dependencies, and the
+    # reason is a measurement rather than a preference. Installing it pulls
+    # thirteen transitive packages, tensorboard, grpcio, pandas, plotly, pillow
+    # and werkzeug among them, because its ingestion layer reads TensorBoard
+    # event files and its reports draw plots. This project uses two statistics
+    # functions and one parser probe. A `pipx install autofill-audit` that
+    # dragged a training-metrics logging stack onto a developer's machine so that
+    # a command they will never run could compute a permutation p value would be
+    # the wrong trade, and the audit path never imports it. The narrower extra
+    # this wants is proposed in docs/cross-repo-tasks.md.
+    "ml-experiment-triage @ git+https://github.com/Olajide-Badejo/ML-Experiment-Triage@v1.0.0",
     "mypy>=2.3.1",
     "pip-tools>=7.6.1",
     "pre-commit>=4.6.2",
@@ -116,6 +132,18 @@ files = ["src"]
 python_version = "3.14"
 warn_unreachable = true
 enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool"]
+
+# The external evaluation harness ships no `py.typed` marker, so `mypy --strict`
+# refuses to look inside it and every value that crosses the boundary arrives as
+# `Any`. That is a real cost of the boundary and it is recorded as such: the
+# consequence is that `evaluate/triage_bridge.py` is the one module in `src/`
+# whose external calls are unchecked, which is another reason for it to be the
+# only module that makes them. The fix belongs in that repository, is a one line
+# packaging change, and is in docs/cross-repo-tasks.md. This override is a
+# configuration of this project's checker, not a change to the dependency.
+[[tool.mypy.overrides]]
+module = ["triage.*"]
+ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

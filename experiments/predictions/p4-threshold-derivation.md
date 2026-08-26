@@ -1,3 +1,9 @@
+---
+predicts:
+  - src/autofill_audit/audit/thresholds.json
+amended: 2026-08-26 at P5, front matter added so the ancestry check can read the mapping. No prediction text changed. The amending commit is later than the threshold commit, which is exactly why this line is required rather than optional.
+---
+
 # Pre-registered: how P4 derives the two decision thresholds
 
 Date: 2026-08-26. Phase P4, branch `phase/p4-ngram-onnx`.

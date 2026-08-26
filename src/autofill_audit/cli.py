@@ -690,21 +690,26 @@ _TRAIN_ABSENT: Final[str] = (
 )
 
 
-def find_train_script(start: Path) -> Path | None:
-    """Locate ``scripts/train.py``, upward from ``start`` and from this package.
+def find_script(start: Path, name: str) -> Path | None:
+    """Locate a script under ``scripts/``, upward from ``start`` and this package.
 
-    Spec section 14 makes ``train`` a wrapper around the script rather than a
-    second implementation of it, and the script is a development artefact rather
-    than package data. Searching both roots means a source checkout and an
-    editable install both find it without either of them configuring anything.
+    Spec section 14 makes ``train`` and ``eval`` wrappers around their scripts
+    rather than second implementations of them, and a script is a development
+    artefact rather than package data. Searching both roots means a source
+    checkout and an editable install both find it without configuring anything.
     """
     roots = [start, Path(__file__).resolve()]
     for root in roots:
         for directory in (root, *root.parents):
-            candidate = directory / "scripts" / _TRAIN_SCRIPT
+            candidate = directory / "scripts" / name
             if candidate.is_file():
                 return candidate
     return None
+
+
+def find_train_script(start: Path) -> Path | None:
+    """Locate ``scripts/train.py``. Kept as a name the P4 tests already use."""
+    return find_script(start, _TRAIN_SCRIPT)
 
 
 @cli.command(
@@ -759,6 +764,112 @@ def train(
         arguments.extend(["--split-file", str(split_file)])
     if cache is not None:
         arguments.extend(["--cache", str(cache)])
+    raise SystemExit(subprocess.call(arguments))
+
+
+# ---------------------------------------------------------------------------
+# Evaluation (P5).
+# ---------------------------------------------------------------------------
+
+_EVAL_SCRIPT: Final[str] = "eval.py"
+
+_EVAL_ABSENT: Final[str] = (
+    "evaluation needs a source checkout: scripts/eval.py is not in this "
+    "installation, and neither is the corpus it measures against. Clone the "
+    "repository and install the dev extra. An installed wheel audits pages; "
+    "measuring a classifier against an answer key is a different job with a "
+    "different input."
+)
+
+_MEASURING_FLAG: Final[str] = "--i-am-measuring"
+
+
+@cli.command(
+    "eval",
+    context_settings={"ignore_unknown_options": True},
+    help="Evaluate an engine on a split. Wraps scripts/eval.py; needs a source checkout.",
+)
+@click.option("--corpus", "corpus_dir", type=click.Path(path_type=Path), default=Path("corpus"))
+@click.option("--split-file", type=click.Path(path_type=Path), default=None)
+@click.option(
+    "--split",
+    type=click.Choice(["dev", "test"]),
+    required=True,
+    help="which partition to measure on",
+)
+@click.option(
+    "--engine",
+    type=click.Choice(["rules", "ngram"]),
+    required=True,
+    help="the engine to measure; never auto, because a benchmark must say what ran",
+)
+@click.option(
+    "--out",
+    type=click.Path(file_okay=False, path_type=Path),
+    default=Path("experiments/results"),
+    show_default=True,
+)
+@click.option("--run-id", type=str, default=None, help="default is timestamp, engine, commit")
+@click.option("--model", type=click.Path(file_okay=False, path_type=Path), default=None)
+@click.option("--cache", type=click.Path(file_okay=False, path_type=Path), default=None)
+@click.option("--seed", type=int, default=None, help="the one seed, recorded in the manifest")
+@click.option(
+    _MEASURING_FLAG,
+    "measuring",
+    is_flag=True,
+    default=False,
+    help="required for --split test; the test split is spent the first time it is read",
+)
+@click.option("--note", multiple=True, help="a note recorded in the run manifest")
+def evaluate(
+    corpus_dir: Path,
+    split_file: Path | None,
+    split: str,
+    engine: str,
+    out: Path,
+    run_id: str | None,
+    model: Path | None,
+    cache: Path | None,
+    seed: int | None,
+    measuring: bool,
+    note: tuple[str, ...],
+) -> None:
+    """Write a run log at the spec section 13.1 schema, plus its manifest.
+
+    ``--engine auto`` is deliberately not offered. ``auto`` is the right default
+    for a person auditing a page and the wrong one for a measurement, because a
+    result file whose engine column said ``auto`` would not say which engine
+    produced the number in it.
+    """
+    script = find_script(Path.cwd(), _EVAL_SCRIPT)
+    if script is None:
+        _fail(_EVAL_ABSENT, EXIT_USAGE)
+    arguments = [
+        sys.executable,
+        str(script),
+        "--corpus",
+        str(corpus_dir),
+        "--split",
+        split,
+        "--engine",
+        engine,
+        "--out",
+        str(out),
+    ]
+    if split_file is not None:
+        arguments.extend(["--split-file", str(split_file)])
+    if run_id is not None:
+        arguments.extend(["--run-id", run_id])
+    if model is not None:
+        arguments.extend(["--model", str(model)])
+    if cache is not None:
+        arguments.extend(["--cache", str(cache)])
+    if seed is not None:
+        arguments.extend(["--seed", str(seed)])
+    if measuring:
+        arguments.append(_MEASURING_FLAG)
+    for item in note:
+        arguments.extend(["--note", item])
     raise SystemExit(subprocess.call(arguments))
 
 

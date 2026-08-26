@@ -34,8 +34,28 @@ Two things clear a line that would otherwise be a violation:
   the line above, for numbers that are configuration rather than measurement.
   The reason is required, so waving the check through leaves a written trace.
 
+Resolving the chain, which is the part that makes this a check
+--------------------------------------------------------------
+
+Until P5 the check ended there, and it had to, because there were no result
+files for a reference to resolve to. A check that only looks for the *shape* of
+a citation passes on a citation of a file that does not exist, which is the same
+thing as no citation at all with more characters. So ``--resolve`` walks law 3's
+chain the whole way, for every reference in the prose it scanned:
+
+    README or docs -> the result file -> its sibling manifest -> a real commit
+
+A reference is resolved when the path exists, when a ``manifest.json`` sits
+beside it or above it, when that manifest names a commit that this repository
+can actually produce an object for, and when the manifest does not mark the run
+dirty. Spec section 18 is explicit that a result produced from a dirty tree is
+not citable, so a dirty manifest fails the same way a missing one does.
+
+``--resolve`` is separate from the scan so that the scanner's own unit tests can
+run over strings with no repository behind them. CI and ``make trace`` pass it.
+
 Usage:
-    check_traceability.py [--root DIR] [PATH ...]
+    check_traceability.py [--root DIR] [--resolve] [PATH ...]
 
 Exit status is 0 when clean and 1 when any violation is found.
 """
@@ -43,7 +63,9 @@ Exit status is 0 when clean and 1 when any violation is found.
 from __future__ import annotations
 
 import argparse
+import json
 import re
+import subprocess
 import sys
 from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
@@ -207,6 +229,103 @@ def scan_paths(paths: Iterable[Path], *, root: Path) -> list[Violation]:
     return violations
 
 
+_RESULT_PATH_RE = re.compile(r"experiments/results/[A-Za-z0-9._/-]*[A-Za-z0-9_]")
+MANIFEST_NAME = "manifest.json"
+
+
+def references_in(text: str) -> list[str]:
+    """Every result-file path cited in one prose file, deduplicated, in order.
+
+    Code fences are not skipped here, and that is deliberate: a fenced command
+    line that names a result directory is a citation a reader will follow, and a
+    citation that does not resolve is as wrong inside a fence as outside one.
+    """
+    seen: dict[str, None] = {}
+    for match in _RESULT_PATH_RE.finditer(text):
+        seen.setdefault(match.group(0).rstrip("/"), None)
+    return list(seen)
+
+
+def _git_has_commit(root: Path, commit: str) -> bool:
+    """Whether this repository can produce the object a manifest names."""
+    if not commit:
+        return False
+    completed = subprocess.run(
+        ["git", "cat-file", "-e", f"{commit}^{{commit}}"],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    return completed.returncode == 0
+
+
+def resolve_reference(root: Path, reference: str, *, source: str) -> Violation | None:
+    """Walk one citation to a real commit, or say where the chain broke."""
+    target = root / reference
+    if not target.exists():
+        return Violation(
+            path=source, line=0, excerpt=reference, reason="cited result file does not exist"
+        )
+    directory = target if target.is_dir() else target.parent
+    manifest_path: Path | None = None
+    for candidate in (directory, *directory.parents):
+        if candidate == root.parent:
+            break
+        probe = candidate / MANIFEST_NAME
+        if probe.is_file():
+            manifest_path = probe
+            break
+        if candidate == root:
+            break
+    if manifest_path is None:
+        return Violation(
+            path=source,
+            line=0,
+            excerpt=reference,
+            reason="cited result has no manifest beside it (spec section 18)",
+        )
+    try:
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        return Violation(
+            path=source, line=0, excerpt=reference, reason=f"manifest unreadable: {error}"
+        )
+    git_block = manifest.get("git")
+    commit = str(git_block.get("commit", "")) if isinstance(git_block, dict) else ""
+    if isinstance(git_block, dict) and git_block.get("dirty"):
+        return Violation(
+            path=source,
+            line=0,
+            excerpt=reference,
+            reason="the manifest marks the run dirty, which spec section 18 makes not citable",
+        )
+    if not _git_has_commit(root, commit):
+        return Violation(
+            path=source,
+            line=0,
+            excerpt=reference,
+            reason=f"manifest commit {commit or 'absent'!r} does not resolve in this repository",
+        )
+    return None
+
+
+def resolve_paths(paths: Iterable[Path], *, root: Path) -> tuple[list[Violation], int]:
+    """Resolve every citation in every scanned file. Returns failures and count."""
+    violations: list[Violation] = []
+    resolved = 0
+    for relative in paths:
+        absolute = relative if relative.is_absolute() else root / relative
+        text = absolute.read_text(encoding="utf-8")
+        for reference in references_in(text):
+            failure = resolve_reference(root, reference, source=str(relative))
+            if failure is None:
+                resolved += 1
+            else:
+                violations.append(failure)
+    return violations, resolved
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     """Run the check and return the process exit status."""
     parser = argparse.ArgumentParser(description="Enforce number traceability (law 3).")
@@ -214,11 +333,21 @@ def main(argv: Sequence[str] | None = None) -> int:
         "paths", nargs="*", type=Path, help="files to scan; default is the docs set"
     )
     parser.add_argument("--root", type=Path, default=Path.cwd(), help="repository root")
+    parser.add_argument(
+        "--resolve",
+        action="store_true",
+        help="follow every citation to a manifest and a real commit (law 3's chain)",
+    )
     args = parser.parse_args(argv)
 
     root: Path = args.root
     targets: list[Path] = list(args.paths) if args.paths else default_targets(root)
     violations = scan_paths(targets, root=root)
+
+    resolved = 0
+    if args.resolve:
+        failures, resolved = resolve_paths(targets, root=root)
+        violations.extend(failures)
 
     for violation in violations:
         print(violation.render())
@@ -229,6 +358,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(f"check_traceability: {count} untraceable {noun} found", file=sys.stderr)
         return 1
 
+    if args.resolve:
+        print(
+            f"check_traceability: clean, {len(targets)} files scanned, "
+            f"{resolved} citations resolved to a manifest and a commit"
+        )
+        return 0
     print(f"check_traceability: clean, {len(targets)} files scanned")
     return 0
 
