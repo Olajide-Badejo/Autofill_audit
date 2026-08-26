@@ -55,6 +55,13 @@ repos:
     rev: v6.0.0
     hooks:
       - id: check-added-large-files
+        # The committed ONNX model is a weight matrix over the whole feature
+        # vocabulary and is larger than the hook's default ceiling by design.
+        # Ground rule 8 requires it to be committed with its card, spec section
+        # 18 requires its sha to identify every run that used it, and neither is
+        # possible if the file is not in the repository. The exemption is for
+        # this one directory and nothing else.
+        exclude: ^models/
       - id: check-merge-conflict
       - id: check-toml
       - id: check-yaml

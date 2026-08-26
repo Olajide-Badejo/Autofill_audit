@@ -717,6 +717,35 @@ def _git(*arguments: str) -> str:
     return completed.stdout.strip()
 
 
+def _dirty(out: Path) -> bool:
+    """Whether the tree differs from HEAD, ignoring the output directory.
+
+    Spec section 18: a result produced from a dirty tree is marked dirty and is
+    not citable, so this flag decides whether the artefact beside it can be cited
+    at all and it is worth getting exactly right.
+
+    The output directory is excluded, and only it. On a first run models/ does
+    not exist in HEAD, so counting it would mark every first training run dirty by
+    construction and make the flag mean nothing. Everything else counts, untracked
+    files included: a source file nobody committed is a source file nobody can
+    reproduce the run from.
+    """
+    status = _git("status", "--porcelain")
+    if not status:
+        return False
+    try:
+        relative = out.resolve().relative_to(_REPO_ROOT)
+    except ValueError:
+        relative = out
+    prefix = f"{relative}/"
+    for line in status.splitlines():
+        path = line[3:].strip().strip('"')
+        if path == str(relative) or path.startswith(prefix):
+            continue
+        return True
+    return False
+
+
 def _dependency_versions() -> dict[str, str]:
     """The resolved versions of everything this run depended on."""
     from importlib.metadata import PackageNotFoundError, version
@@ -928,7 +957,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "schema_version": 1,
         "tool_version": __version__,
         "git_sha": _git("rev-parse", "HEAD"),
-        "git_dirty": bool(_git("status", "--porcelain")),
+        "git_dirty": _dirty(out),
         "seed": args.seed,
         "corpus_manifest_sha256": _corpus_manifest_sha(corpus_dir),
         "split_file_sha256": _sha256_of(split_path),
