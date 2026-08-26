@@ -59,7 +59,7 @@ import platform
 import subprocess
 import sys
 import time
-from collections.abc import Iterator, Mapping, Sequence
+from collections.abc import Iterator, Mapping, MutableMapping, Sequence
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
@@ -251,22 +251,91 @@ def _forms_in(split: Mapping[str, Any], partition: str) -> list[str]:
     return sorted(form_id for form_id, name in assignments.items() if name == partition)
 
 
-def _extract_forms(
+CACHE_KEY_FILE = "corpus.json"
+"""Where a descriptor cache records which corpus it was built from."""
+
+
+class StaleCacheError(RuntimeError):
+    """The descriptor cache was built from a different corpus.
+
+    Raised rather than handled, because both quiet alternatives are wrong.
+    Reusing the cache would run against last week's pages while reporting this
+    week's corpus sha in the manifest, and silently emptying it would delete an
+    expensive artefact on the strength of a guess about what the user meant.
+    """
+
+
+def bind_cache(cache: Path | None, corpus_manifest_sha: str) -> None:
+    """Tie a descriptor cache to one corpus, or refuse to reuse it.
+
+    P4 left this as a documented sharp edge: the cache was keyed on the form id
+    and nothing else, so a corpus regenerated with a different seed or base year
+    left a stale cache that nothing would notice. That is survivable for a
+    training run, which is iterated on and re-run. It is not survivable from P5
+    onward, where a stale cache is a wrong headline number on the test split
+    rather than a wrong training run, so the binding is written here.
+    """
+    if cache is None:
+        return
+    cache.mkdir(parents=True, exist_ok=True)
+    marker = cache / CACHE_KEY_FILE
+    if marker.is_file():
+        recorded = json.loads(marker.read_text(encoding="utf-8")).get("corpus_manifest_sha")
+        if recorded != corpus_manifest_sha:
+            raise StaleCacheError(
+                f"{cache} was built from corpus {recorded}, and this run is against "
+                f"{corpus_manifest_sha}. The cached descriptors are of different pages. "
+                "Delete the directory or point --cache somewhere else."
+            )
+        return
+    stale = [path for path in cache.iterdir() if path.suffix == ".json"]
+    if stale:
+        raise StaleCacheError(
+            f"{cache} holds {len(stale)} cached descriptors but records no corpus. It "
+            "predates the corpus binding and cannot be shown to match this corpus. "
+            "Delete it or point --cache somewhere else."
+        )
+    marker.write_text(
+        json.dumps({"corpus_manifest_sha": corpus_manifest_sha}, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
+
+def extract_forms(
     corpus_dir: Path,
     form_ids: Sequence[str],
     guard: TestPartitionGuard,
     cache: Path | None,
     base_year: int,
+    timings: MutableMapping[str, float] | None = None,
 ) -> Iterator[tuple[str, ExtractionResult, Mapping[str, Any]]]:
     """Yield each form's extraction result and answer key.
 
     The cache exists because extraction drives a real browser over hundreds of
-    pages and a training run is something a person iterates on. It is keyed on
-    the corpus manifest sha, so a regenerated corpus invalidates it rather than
-    quietly training on the previous one.
+    pages and a training run is something a person iterates on. It is bound to
+    one corpus by ``bind_cache``, which the callers run before this, so a
+    regenerated corpus is refused rather than quietly reused.
+
+    Public because the evaluation runner needs the same extraction and the same
+    cache: an evaluation that re-extracted through a different path could
+    disagree with the training run if anything about the extractor moved in
+    between, and the disagreement would look like a model result.
+
+    Args:
+        timings: accumulates ``load_s``, ``extract_s`` and ``cache_read_s``. An
+            explicit out-parameter rather than a return value because this is a
+            generator and the totals are only known once it is exhausted. Spec
+            section 13.2 wants whole-page wall time split into load, extract,
+            classify and render, and the split only means anything if the load
+            and the extract are timed where they happen rather than lumped
+            together by a caller who can only see the two of them as one call.
     """
     from autofill_audit.extract.walker import ExtractOptions, extract_result
     from autofill_audit.loader import browser_session, load_page
+
+    clock: MutableMapping[str, float] = {} if timings is None else timings
+    for name in ("load_s", "extract_s", "cache_read_s"):
+        clock.setdefault(name, 0.0)
 
     options = ExtractOptions(now_year=base_year)
     pending: list[str] = []
@@ -274,7 +343,9 @@ def _extract_forms(
         guard.check(form_id)
         cached = None if cache is None else cache / f"{form_id}.json"
         if cached is not None and cached.is_file():
+            started = time.perf_counter()
             result = ExtractionResult.from_json(json.loads(cached.read_text(encoding="utf-8")))
+            clock["cache_read_s"] += time.perf_counter() - started
             yield form_id, result, _answer_key(corpus_dir, form_id, guard)
             continue
         pending.append(form_id)
@@ -285,14 +356,23 @@ def _extract_forms(
         for form_id in pending:
             page_path = corpus_dir / "forms" / f"{form_id}.html"
             guard.check(page_path)
+            started = time.perf_counter()
             with load_page(str(page_path), as_file=True, browser=browser) as loaded:
+                loaded_at = time.perf_counter()
                 result = extract_result(loaded.page, options=options, settle=loaded.settle)
+                extracted_at = time.perf_counter()
+            clock["load_s"] += loaded_at - started
+            clock["extract_s"] += extracted_at - loaded_at
             if cache is not None:
                 cache.mkdir(parents=True, exist_ok=True)
                 (cache / f"{form_id}.json").write_text(
                     json.dumps(result.to_json(), ensure_ascii=False), encoding="utf-8"
                 )
             yield form_id, result, _answer_key(corpus_dir, form_id, guard)
+
+
+_extract_forms = extract_forms
+"""The former private name, kept so that nothing that used it has to move."""
 
 
 def _answer_key(corpus_dir: Path, form_id: str, guard: TestPartitionGuard) -> Mapping[str, Any]:
@@ -305,6 +385,55 @@ def _answer_key(corpus_dir: Path, form_id: str, guard: TestPartitionGuard) -> Ma
     return document
 
 
+def examples_for_form(
+    form_id: str, result: ExtractionResult, key: Mapping[str, Any]
+) -> tuple[list[Example], int, int]:
+    """Pair one form's controls with their ground truth.
+
+    Returns the examples, the count of descriptors dropped for naming a blind
+    spot, and the count dropped for having no answer-key entry.
+
+    A descriptor that names a blind spot rather than a control is dropped: it has
+    no text, no identifiers, and no tokens, so it would contribute a row of
+    structural features and a label the model could only learn from position. The
+    engines short-circuit those at inference for the same reason, so training on
+    them would teach the model something inference never asks it.
+
+    This is one function rather than a loop inside ``build_dataset`` because the
+    evaluation runner needs the identical rule and needs the ``ExtractionResult``
+    alongside, to run the audit engine's decision procedure over the same page.
+    Two implementations of "which controls count" would give two answers to the
+    same question, and the answer sets the denominator of every metric.
+    """
+    truth = {
+        str(entry["selector"]): str(entry["label"])
+        for entry in key["fields"]
+        if isinstance(entry, Mapping)
+    }
+    examples: list[Example] = []
+    undetectable = 0
+    unkeyed = 0
+    for descriptor in result.fields:
+        if descriptor.undetectable_reason is not None:
+            undetectable += 1
+            continue
+        label = truth.get(descriptor.selector)
+        if label is None:
+            unkeyed += 1
+            continue
+        examples.append(
+            Example(
+                descriptor=descriptor,
+                label=label,
+                form_id=form_id,
+                template_id=str(key["template_id"]),
+                locale=str(key["locale"]),
+                tier=str(key["tier"]),
+            )
+        )
+    return examples, undetectable, unkeyed
+
+
 def build_dataset(
     corpus_dir: Path,
     split: Mapping[str, Any],
@@ -313,41 +442,15 @@ def build_dataset(
     cache: Path | None,
     base_year: int,
 ) -> Dataset:
-    """Extract one partition and pair every control with its ground truth.
-
-    A descriptor that names a blind spot rather than a control is dropped: it has
-    no text, no identifiers, and no tokens, so it would contribute a row of
-    structural features and a label the model could only learn from position. The
-    engines short-circuit those at inference for the same reason, so training on
-    them would teach the model something inference never asks it.
-    """
+    """Extract one partition and pair every control with its ground truth."""
     dataset = Dataset(partition=partition)
     form_ids = _forms_in(split, partition)
-    for form_id, result, key in _extract_forms(corpus_dir, form_ids, guard, cache, base_year):
+    for form_id, result, key in extract_forms(corpus_dir, form_ids, guard, cache, base_year):
         dataset.forms += 1
-        truth = {
-            str(entry["selector"]): str(entry["label"])
-            for entry in key["fields"]
-            if isinstance(entry, Mapping)
-        }
-        for descriptor in result.fields:
-            if descriptor.undetectable_reason is not None:
-                dataset.undetectable += 1
-                continue
-            label = truth.get(descriptor.selector)
-            if label is None:
-                dataset.unkeyed += 1
-                continue
-            dataset.examples.append(
-                Example(
-                    descriptor=descriptor,
-                    label=label,
-                    form_id=form_id,
-                    template_id=str(key["template_id"]),
-                    locale=str(key["locale"]),
-                    tier=str(key["tier"]),
-                )
-            )
+        examples, undetectable, unkeyed = examples_for_form(form_id, result, key)
+        dataset.examples.extend(examples)
+        dataset.undetectable += undetectable
+        dataset.unkeyed += unkeyed
     return dataset
 
 
@@ -833,6 +936,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     base_year = int(manifest_document.get("base_year", time.gmtime().tm_year))
 
     cache: Path | None = args.cache
+    bind_cache(cache, _corpus_manifest_sha(corpus_dir))
     print(f"train.py: extracting the {TRAIN} partition")
     train_set = build_dataset(corpus_dir, split, TRAIN, guard, cache, base_year)
     print(f"  {train_set.forms} forms, {len(train_set.examples)} rows")

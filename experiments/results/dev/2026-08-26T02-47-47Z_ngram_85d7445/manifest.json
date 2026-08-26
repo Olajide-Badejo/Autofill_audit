@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0.0",
+  "run_id": "2026-08-26T02-47-47Z_ngram_85d7445",
+  "command_line": "eval.py --split dev --engine ngram --model models --cache .scratch/descriptor-cache --out experiments/results --note development sanity run, before the pre-registered policy file",
+  "split": "dev",
+  "engine": "ngram",
+  "engine_describe": {
+    "engine": "ngram",
+    "tool_version": "0.2.0",
+    "model_dir": "models",
+    "providers": "CPUExecutionProvider",
+    "intra_op_threads": "1",
+    "calibration_fitted_on": "dev",
+    "confidence_kind": "calibrated-probability",
+    "model_sha256": "a926f052739a1aa9422e961b7794f91b9fac8ff906899230b89cad07fda1e39a",
+    "vocab_sha256": "2df57cbd7caefb5307befa39efbe12547a4f9146df657bfe8b30cf4468a1d65e",
+    "calibration_sha256": "d8acb4a311b5cfd1ab0f995984ff75021a3c87b44ab3bf883ccab46f80e2661f",
+    "label_map_sha256": "1b83a9ecaca9316d6fed162f6a0d070e036142fc750550f15e261abb30f00e24",
+    "feature_width": "6656",
+    "class_count": "39",
+    "onnx_opset": "26"
+  },
+  "threshold_describe": {
+    "tau_high": "0.9498622881050033",
+    "tau_low": "0.8237827291133224",
+    "basis": "dev split of the seed 20260825 corpus, calibrated n-gram engine",
+    "source": "thresholds.json",
+    "measured": "true"
+  },
+  "artefact_sha256": {
+    "thresholds.json": "10ec4ff2de95ca9fdfb39bf92750cec6f3984244f341a9915e208cc5ec8df4a1",
+    "model.onnx": "a926f052739a1aa9422e961b7794f91b9fac8ff906899230b89cad07fda1e39a",
+    "vocab.json": "2df57cbd7caefb5307befa39efbe12547a4f9146df657bfe8b30cf4468a1d65e",
+    "calibration.json": "d8acb4a311b5cfd1ab0f995984ff75021a3c87b44ab3bf883ccab46f80e2661f",
+    "label_map.json": "1b83a9ecaca9316d6fed162f6a0d070e036142fc750550f15e261abb30f00e24"
+  },
+  "corpus_manifest_sha": "3450c48b009b3365f87f21e4f6703540e12c80885620a8612739e0e4eafcdb6b",
+  "split_file_sha": "67f524a0fd4c8590b3b758d6a000083210a1195d8304706185b4e24649bfbe60",
+  "seed": 20260825,
+  "git": {
+    "commit": "85d744501ae76af00f05b33d9b2de5e49274c1ed",
+    "dirty": false
+  },
+  "dependency_versions": {
+    "python": "3.14.4",
+    "numpy": "2.5.2",
+    "onnxruntime": "1.29.0",
+    "playwright": "1.62.0",
+    "click": "8.4.2",
+    "rich": "15.0.0",
+    "jinja2": "3.1.6",
+    "ml-experiment-triage": "1.0.0"
+  },
+  "machine": {
+    "os": "Linux 6.18.33.2-microsoft-standard-WSL2",
+    "machine": "x86_64",
+    "python": "3.14.4",
+    "python_implementation": "CPython",
+    "cpu_model": "Intel(R) Core(TM) i7-14700K",
+    "cpu_count": "28",
+    "gpu_present": "NVIDIA GeForce RTX 5070"
+  },
+  "started_at": "2026-08-26T02:47:47Z",
+  "finished_at": "2026-08-26T02:47:48Z",
+  "row_count": 1118,
+  "form_count": 120,
+  "notes": [
+    "development sanity run, before the pre-registered policy file",
+    "descriptors came from the cache, so the load and extract columns of wall_time are zero and the browser figures belong to the run that populated it"
+  ]
+}

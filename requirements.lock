@@ -4,6 +4,8 @@
 #
 #    pip-compile --extra=dev --extra=llm --output-file=requirements.lock --strip-extras pyproject.toml
 #
+absl-py==2.5.0
+    # via tensorboard
 anyio==4.14.2
     # via httpx
 ast-serialize==0.8.0
@@ -36,6 +38,8 @@ flatbuffers==25.12.19
     # via onnxruntime
 greenlet==3.5.5
     # via playwright
+grpcio==1.83.0
+    # via tensorboard
 h11==0.16.0
     # via httpcore
 httpcore==1.0.9
@@ -53,35 +57,48 @@ idna==3.19
 iniconfig==2.3.0
     # via pytest
 jinja2==3.1.6
-    # via autofill-audit (pyproject.toml)
+    # via
+    #   autofill-audit (pyproject.toml)
+    #   ml-experiment-triage
 joblib==1.5.3
     # via scikit-learn
 librt==0.15.0
     # via mypy
+markdown==3.10.3
+    # via tensorboard
 markdown-it-py==4.2.0
     # via rich
 markupsafe==3.0.3
-    # via jinja2
+    # via
+    #   jinja2
+    #   werkzeug
 mdurl==0.1.2
     # via markdown-it-py
 ml-dtypes==0.6.0
     # via onnx
+ml-experiment-triage @ git+https://github.com/Olajide-Badejo/ML-Experiment-Triage@v1.0.0
+    # via autofill-audit (pyproject.toml)
 mypy==2.3.1
     # via autofill-audit (pyproject.toml)
 mypy-extensions==1.1.0
     # via mypy
 narwhals==2.25.0
-    # via scikit-learn
+    # via
+    #   plotly
+    #   scikit-learn
 nodeenv==1.10.0
     # via pre-commit
 numpy==2.5.2
     # via
     #   autofill-audit (pyproject.toml)
     #   ml-dtypes
+    #   ml-experiment-triage
     #   onnx
     #   onnxruntime
+    #   pandas
     #   scikit-learn
     #   scipy
+    #   tensorboard
 onnx==1.22.0
     # via skl2onnx
 onnxruntime==1.29.0
@@ -90,16 +107,24 @@ packaging==26.3
     # via
     #   build
     #   onnxruntime
+    #   plotly
     #   pytest
+    #   tensorboard
     #   wheel
+pandas==3.0.5
+    # via ml-experiment-triage
 pathspec==1.1.1
     # via mypy
+pillow==12.3.0
+    # via tensorboard
 pip-tools==7.6.1
     # via autofill-audit (pyproject.toml)
 platformdirs==4.11.4
     # via virtualenv
 playwright==1.62.0
     # via autofill-audit (pyproject.toml)
+plotly==7.0.0
+    # via ml-experiment-triage
 pluggy==1.6.0
     # via
     #   pytest
@@ -110,6 +135,7 @@ protobuf==7.36.0
     # via
     #   onnx
     #   onnxruntime
+    #   tensorboard
 pyee==13.0.1
     # via playwright
 pygments==2.21.0
@@ -126,6 +152,8 @@ pytest==9.1.1
     #   pytest-cov
 pytest-cov==7.1.0
     # via autofill-audit (pyproject.toml)
+python-dateutil==2.9.0.post0
+    # via pandas
 python-discovery==1.5.3
     # via virtualenv
 pyyaml==6.0.3
@@ -141,20 +169,32 @@ scikit-learn==1.9.0
 scipy==1.18.1
     # via
     #   autofill-audit (pyproject.toml)
+    #   ml-experiment-triage
     #   scikit-learn
+six==1.17.0
+    # via python-dateutil
 skl2onnx==1.20.0
     # via autofill-audit (pyproject.toml)
 sortedcontainers==2.4.0
     # via hypothesis
+tensorboard==2.21.0
+    # via ml-experiment-triage
+tensorboard-data-server==0.7.2
+    # via tensorboard
 threadpoolctl==3.6.0
     # via scikit-learn
+tqdm==4.70.0
+    # via ml-experiment-triage
 typing-extensions==4.16.0
     # via
+    #   grpcio
     #   mypy
     #   onnx
     #   pyee
 virtualenv==21.7.4
     # via pre-commit
+werkzeug==3.1.8
+    # via tensorboard
 wheel==0.48.0
     # via pip-tools
 

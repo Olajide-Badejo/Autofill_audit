@@ -21,23 +21,121 @@ Two rules make the ledger binding rather than decorative.
 - `v1.0.0` may not be tagged here while any dependency is a git reference rather
   than a released version.
 
+---
+
+## What P5 found
+
+P5 is the phase that used the package for the first time, on `v1.0.0` installed
+from its git tag. This section is the phase's actual deliverable, so it is
+written out rather than summarised into a table.
+
+**The single sentence.** The package's statistical primitives fit this project
+exactly and are used unchanged; its data model, its ingestion layer and its
+comparison entry points do not fit at all, because they model a training run
+observed over time and this project measures a set of items observed once.
+
+That split runs cleanly through the middle of the package, and it is a more
+interesting result than either "it worked" or "it did not". The parts built
+around the *statistics* generalised. The parts built around the *shape of a
+training run* did not, and they did not because the shape was never a statistical
+assumption in the first place. It was the shape of the one program the package
+was extracted from.
+
+### Used unchanged, and they fit exactly
+
+| What | Where | Why it fit |
+|---|---|---|
+| `permutation_p_value(observed, null, exact)` | `triage.analysis.comparison` | It takes the null distribution as an argument. That is the seam a caller with its own resampling scheme needs, and it means the add-one correction of Phipson and Smyth is computed by that package rather than reimplemented on this side. |
+| `benjamini_hochberg(p_values, fdr)` | `triage.analysis.regression` | Spec section 13.3 asks for a step-up correction across the comparison family and this is one, with no assumption about where the p values came from. |
+| `classify(results, RegressionConfig)` and the `VERDICT_*` vocabulary | `triage.analysis.regression` | Spec section 13.3 point 4 demands a three way outcome in which the middle category is not dropped. That vocabulary is here already, plus a fourth verdict for a design whose smallest attainable p value is above alpha, which turned out to be the category every primary comparison in this project lands in. Used as a cross check rather than as the decision, for the reason in the third task below. |
+
+`evaluate/triage_bridge.py` is the only module in this repository that imports
+any of it, and `tests/unit/test_triage_bridge.py` walks every Python file under
+`src/`, `scripts/` and `tests/` and fails if a second importer appears.
+
+### Did not fit, filed, and worked around here in the meantime
+
+Every entry below has an issue on that repository with a concrete API proposal.
+None was worked around by monkey-patching, subclassing around, or reaching into a
+private name. The bridge imports six public names and nothing else.
+
 ## Open
 
-| Task | Why it blocks | Status | Landed in | Constraint here |
-|---|---|---|---|---|
-| Publish `ml-experiment-triage` to PyPI | The package exists only as a GitHub repository. P5 may pin a pre-release from a git tag, but the release rule above forbids tagging `v1.0.0` here while a dependency is a git reference, so publication is a hard blocker on this project's first stable release. | open | not yet | none yet; the dependency is deliberately absent from `pyproject.toml` until P5 |
-| Categorical-outcome support in the permutation machinery | That package's permutation tests were designed against continuous outcomes. This project's headline metric is per-label accuracy over a categorical outcome, and clustering must be by corpus template rather than by row. Whether the public API already covers this is unknown until P5 tries it. | anticipated, not yet filed | not yet | none yet |
+| Task | Issue | Why it blocks | Status | Landed in | Constraint here |
+|---|---|---|---|---|---|
+| Publish `ml-experiment-triage` to PyPI | [packaging half in #5](https://github.com/Olajide-Badejo/ML-Experiment-Triage/issues/5) | The package exists only as a GitHub repository. Spec section 0.5 permits a git ref at P5 and forbids one at this project's `v1.0.0`, so publication is a hard blocker on the first stable release here. | open | not yet | `ml-experiment-triage @ git+...@v1.0.0` in the `dev` extra of `pyproject.toml`, added at P5 | <!-- traceability: a specification section number and an issue number, neither a measurement -->
+| Ingestion of a cross-sectional run log | [#1](https://github.com/Olajide-Badejo/ML-Experiment-Triage/issues/1) | `JsonlParser` claims a spec section 13.1 run log and then refuses it: `records carry no step field; expected one of step, global_step, iteration, iter, epoch`. There is no step to add. The file has one row per classified field and no time axis, and inventing a step from the row index would let `compare_window_block` treat a set of unrelated fields as a stationary process. | open | not yet | none; the bridge reads its own JSONL |
+| Paired permutation with clustered resampling | [#2](https://github.com/Olajide-Badejo/ML-Experiment-Triage/issues/2) | Spec section 13.3 calls clustering non-negotiable, and no public entry point accepts a cluster assignment. Both comparison modes are also unpaired, and both reduce a metric series to a final window mean, which a categorical per-field outcome does not have. | open | not yet | none; the null is built here and handed to `permutation_p_value` |
+| An absolute practical-effect threshold | [#3](https://github.com/Olajide-Badejo/ML-Experiment-Triage/issues/3) | `RegressionConfig.practical_threshold_pct` is a relative percentage. This project pre-registered an absolute difference of two hundredths of a point of macro-F1, and a relative gate turns one pre-registered rule into a different rule in every slice. | open | not yet | none; the practical gate is applied here and `classify` runs alongside as a visible cross check | <!-- traceability: an issue number beside the words macro-F1, not a measurement -->
+| `classify()` reorders its output | [#4](https://github.com/Olajide-Badejo/ML-Experiment-Triage/issues/4) | It returns `rank(findings)`, and `Finding.tag` is not unique when one metric is compared across several slices, which is exactly this project's family. A positional zip attaches every verdict to the wrong comparison and nothing raises. | open | not yet | none; the bridge rejoins on `id(finding.result)` |
+| Ship `py.typed` | [#5](https://github.com/Olajide-Badejo/ML-Experiment-Triage/issues/5) | Without the marker, `mypy --strict` refuses to look inside the package and every value crossing the boundary arrives as `Any`. The source is thoroughly annotated, so the marker is the whole fix. | open | not yet | `[[tool.mypy.overrides]] module = ["triage.*"]` with `ignore_missing_imports` in `pyproject.toml` |
+| Split the ingestion and report dependencies into extras | [#5](https://github.com/Olajide-Badejo/ML-Experiment-Triage/issues/5) | Installing it pulls thirteen transitive packages including tensorboard, grpcio, pandas, plotly, pillow and werkzeug, for a consumer that uses three functions. A `pipx install autofill-audit` that dragged a training-metrics logging stack onto a developer's machine would be the wrong trade. | open | not yet | the dependency sits in the `dev` extra rather than in the runtime dependencies, so the shipped tool cannot compute its own significance tests |
 
 ## Closed
 
 Nothing yet.
 
-## Notes
+---
 
-The second row is written as an expectation rather than a defect on purpose. It
-is the specific friction the package boundary is expected to expose, and naming
-it in advance means that if P5 finds the public API sufficient, that is a result
-worth reporting too, rather than an absence nobody notices.
+## The two workarounds, described exactly
+
+Both are labelled in every result file they produce, because a workaround that is
+invisible in the output is indistinguishable from a capability.
+
+### The clustered null is built here
+
+`evaluate/triage_bridge.py` builds the paired sign-flip null at the template
+level and hands it to that package's `permutation_p_value`. The estimator and the
+correction stay on the far side of the boundary; the resampling scheme has ended
+<!-- traceability: a specification section number, not a measurement -->
+up on this side, where spec section 0.5 says it should not be.
+
+This is the case the P5 task file called out in advance: where the specification
+says clustering is non-negotiable, the absence of it in the dependency is a filed
+task **plus** a clearly labelled interim analysis that resamples at the template
+level before anything is passed to the harness. It is explicitly not a silent
+degradation to unclustered resampling, which would have made every comparison
+look more significant than it is, and which was the one outcome ruled out before
+the phase began.
+
+The manifest of every analysis records it, in `notes` and in the
+`harness.not_used_for` block of `analysis.json`.
+
+### A truthful mode string that the harness cannot label
+
+`ComparisonResult.mode` is a plain `str` with no validation, so the bridge writes
+`template_clustered_paired`, which is what ran. Two of that dataclass's derived
+members, `mode_label` and `to_dict`, look the value up in a table holding the two
+training modes and raise `KeyError` on anything else, so the bridge calls neither
+and serialises what it needs itself. Writing `seed_replicate` instead would make
+both members work and would be a false statement about which test was run.
+
+This one is deliberately not filed on its own. It is a consequence of the same
+modelling assumption as [#2](https://github.com/Olajide-Badejo/ML-Experiment-Triage/issues/2),
+and if a paired clustered mode lands there it will bring its own label with it.
+
+---
+
+## What did not need a task, and is worth saying
+
+Two things were expected to be friction and were not.
+
+**Categorical outcomes.** The anticipated task in this ledger, written before P5
+began, was categorical-outcome support in the permutation machinery. It turned
+out not to be needed, because `permutation_p_value` never sees an outcome. It
+sees an observed effect and a null distribution, both floats. The categorical
+part of this project's problem lives entirely in the statistic, and the statistic
+is the caller's. The anticipation was aimed one layer too low.
+
+**Benjamini Hochberg.** It needed nothing at all. It is a pure function over a
+list of p values, it is checked in that repository against the worked example
+from the original 1995 paper, and it did the right thing here on the first call.
+
+Both are results, and the second is the more interesting one: the piece of that
+package furthest from the domain it was extracted from is the piece that
+transferred without a scratch.
+
+---
 
 At P7 the other side of the link is added: that repository's README gains a
 "used by" entry pointing here with a one-line description of what this project

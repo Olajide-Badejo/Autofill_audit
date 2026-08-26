@@ -1,0 +1,55 @@
+{
+  "schema_version": "1.0.0",
+  "run_id": "2026-08-26T02-53-59Z_analysis_336175f",
+  "command_line": "analyze.py --baseline experiments/results/test/2026-08-26T02-50-54Z_rules_57d2aed --candidate experiments/results/test/2026-08-26T02-52-08Z_ngram_57d2aed --out experiments/results --policy experiments/predictions/p5-statistical-policy.md",
+  "split": "test",
+  "engine": "rules against ngram",
+  "engine_describe": {
+    "analysis": "paired permutation clustered by template, Benjamini Hochberg",
+    "harness": "ml-experiment-triage 1.0.0",
+    "clustering": "built here; the harness has no public clustered resampling"
+  },
+  "threshold_describe": {
+    "alpha": "0.05",
+    "false_discovery_rate": "0.05",
+    "practical_threshold_absolute": "0.02"
+  },
+  "artefact_sha256": {
+    "baseline_run.jsonl": "0e05f9c20615c860a49ee85b6810ae436019052b2e85612707869f25fccb37cf",
+    "candidate_run.jsonl": "81db59bd223b9cf7516eabaca0fe5c98009a8ef4e3bf22dddeebe28d5890fba2"
+  },
+  "corpus_manifest_sha": "3450c48b009b3365f87f21e4f6703540e12c80885620a8612739e0e4eafcdb6b",
+  "split_file_sha": "67f524a0fd4c8590b3b758d6a000083210a1195d8304706185b4e24649bfbe60",
+  "seed": 20260825,
+  "git": {
+    "commit": "336175f119db566ef9f7f61da28c23d6f64e0952",
+    "dirty": false
+  },
+  "dependency_versions": {
+    "python": "3.14.4",
+    "numpy": "2.5.2",
+    "onnxruntime": "1.29.0",
+    "playwright": "1.62.0",
+    "click": "8.4.2",
+    "rich": "15.0.0",
+    "jinja2": "3.1.6",
+    "ml-experiment-triage": "1.0.0"
+  },
+  "machine": {
+    "os": "Linux 6.18.33.2-microsoft-standard-WSL2",
+    "machine": "x86_64",
+    "python": "3.14.4",
+    "python_implementation": "CPython",
+    "cpu_model": "Intel(R) Core(TM) i7-14700K",
+    "cpu_count": "28",
+    "gpu_present": "NVIDIA GeForce RTX 5070"
+  },
+  "started_at": "2026-08-26T02:53:59Z",
+  "finished_at": "2026-08-26T02:53:59Z",
+  "row_count": 11,
+  "form_count": 120,
+  "notes": [
+    "the clustered resampling is built in evaluate/triage_bridge.py because the harness has no public entry point that accepts a cluster assignment; the p value and the Benjamini Hochberg adjustment are the harness's own",
+    "the policy file is experiments/predictions/p5-statistical-policy.md"
+  ]
+}

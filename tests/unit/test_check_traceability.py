@@ -8,6 +8,8 @@ CI-level half is the red scratch run recorded in ``docs/ci-proof.md``.
 
 from __future__ import annotations
 
+import json
+import subprocess
 from pathlib import Path
 
 import pytest
@@ -126,3 +128,112 @@ def test_main_accepts_explicit_paths(tmp_path: Path) -> None:
     target = tmp_path / "notes.md"
     target.write_text("It is 99% accurate.\n", encoding="utf-8")
     assert check_traceability.main(["--root", str(tmp_path), "notes.md"]) == 1
+
+
+# ---------------------------------------------------------------------------
+# Resolving the chain (P5), which is what turns a citation into a check.
+# ---------------------------------------------------------------------------
+
+
+def _repo_with_result(tmp_path: Path, *, dirty: bool = False) -> tuple[Path, str]:
+    """A git repository holding one result directory with a manifest."""
+    subprocess.run(["git", "init", "-q", "-b", "main"], cwd=tmp_path, check=True)
+    results = tmp_path / "experiments" / "results" / "test" / "run-one"
+    results.mkdir(parents=True)
+    (results / "run.jsonl").write_text("{}\n", encoding="utf-8")
+    (tmp_path / "seed.txt").write_text("x\n", encoding="utf-8")
+    subprocess.run(["git", "add", "-A"], cwd=tmp_path, check=True, capture_output=True)
+    subprocess.run(
+        [
+            "git",
+            "-c",
+            "user.name=Test",
+            "-c",
+            "user.email=test@example.invalid",
+            "commit",
+            "-q",
+            "-m",
+            "a run",
+        ],
+        cwd=tmp_path,
+        check=True,
+        capture_output=True,
+    )
+    commit = subprocess.run(
+        ["git", "rev-parse", "HEAD"], cwd=tmp_path, check=True, capture_output=True, text=True
+    ).stdout.strip()
+    (results / "manifest.json").write_text(
+        json.dumps({"git": {"commit": commit, "dirty": dirty}}), encoding="utf-8"
+    )
+    return tmp_path, commit
+
+
+def test_references_are_found_wherever_they_appear() -> None:
+    text = "macro-F1 was 0.77 (experiments/results/test/run-one/metrics.json)\n"
+    assert check_traceability.references_in(text) == [
+        "experiments/results/test/run-one/metrics.json"
+    ]
+
+
+def test_a_citation_that_resolves_passes(tmp_path: Path) -> None:
+    root, _ = _repo_with_result(tmp_path)
+    (root / "README.md").write_text(
+        "macro-F1 was 0.77 (experiments/results/test/run-one/run.jsonl)\n", encoding="utf-8"
+    )
+    assert check_traceability.main(["--root", str(root), "--resolve", "README.md"]) == 0
+
+
+def test_a_citation_of_a_file_that_does_not_exist_fails(tmp_path: Path) -> None:
+    """The failure the shape-only check could not catch."""
+    root, _ = _repo_with_result(tmp_path)
+    (root / "README.md").write_text(
+        "macro-F1 was 0.77 (experiments/results/test/imaginary/run.jsonl)\n", encoding="utf-8"
+    )
+    assert check_traceability.main(["--root", str(root), "--resolve", "README.md"]) == 1
+
+
+def test_a_citation_of_a_dirty_run_fails(tmp_path: Path) -> None:
+    """Spec section 18: a result from a dirty tree is not citable."""
+    root, _ = _repo_with_result(tmp_path, dirty=True)
+    (root / "README.md").write_text(
+        "macro-F1 was 0.77 (experiments/results/test/run-one/run.jsonl)\n", encoding="utf-8"
+    )
+    assert check_traceability.main(["--root", str(root), "--resolve", "README.md"]) == 1
+
+
+def test_a_manifest_naming_a_commit_that_does_not_resolve_fails(tmp_path: Path) -> None:
+    root, _ = _repo_with_result(tmp_path)
+    manifest = root / "experiments" / "results" / "test" / "run-one" / "manifest.json"
+    manifest.write_text(json.dumps({"git": {"commit": "0" * 40, "dirty": False}}), encoding="utf-8")
+    (root / "README.md").write_text(
+        "macro-F1 was 0.77 (experiments/results/test/run-one/run.jsonl)\n", encoding="utf-8"
+    )
+    assert check_traceability.main(["--root", str(root), "--resolve", "README.md"]) == 1
+
+
+def test_a_result_with_no_manifest_beside_it_fails(tmp_path: Path) -> None:
+    root, _ = _repo_with_result(tmp_path)
+    (root / "experiments" / "results" / "test" / "run-one" / "manifest.json").unlink()
+    (root / "README.md").write_text(
+        "macro-F1 was 0.77 (experiments/results/test/run-one/run.jsonl)\n", encoding="utf-8"
+    )
+    assert check_traceability.main(["--root", str(root), "--resolve", "README.md"]) == 1
+
+
+def test_a_citation_of_a_directory_of_runs_resolves_every_run_under_it(tmp_path: Path) -> None:
+    """A link to a directory points a reader at all of it, so all of it must resolve."""
+    root, commit = _repo_with_result(tmp_path)
+    second = root / "experiments" / "results" / "test" / "run-two"
+    second.mkdir()
+    (second / "manifest.json").write_text(
+        json.dumps({"git": {"commit": commit, "dirty": False}}), encoding="utf-8"
+    )
+    (root / "README.md").write_text(
+        "the runs live under experiments/results/test\n", encoding="utf-8"
+    )
+    assert check_traceability.main(["--root", str(root), "--resolve", "README.md"]) == 0
+
+    (second / "manifest.json").write_text(
+        json.dumps({"git": {"commit": commit, "dirty": True}}), encoding="utf-8"
+    )
+    assert check_traceability.main(["--root", str(root), "--resolve", "README.md"]) == 1

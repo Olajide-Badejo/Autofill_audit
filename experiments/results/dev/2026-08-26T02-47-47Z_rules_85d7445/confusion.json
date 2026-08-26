@@ -1,0 +1,149 @@
+{
+  "labels": [
+    "COMPOSITE_UNSPLIT",
+    "NOT_AUTOFILLABLE",
+    "UNKNOWN",
+    "address-level1",
+    "address-level2",
+    "address-line1",
+    "address-line2",
+    "cc-csc",
+    "cc-exp-month",
+    "cc-exp-year",
+    "cc-number",
+    "cc-type",
+    "country",
+    "country-name",
+    "email",
+    "family-name",
+    "given-name",
+    "honorific-prefix",
+    "honorific-suffix",
+    "name",
+    "new-password",
+    "one-time-code",
+    "organization",
+    "postal-code",
+    "street-address",
+    "tel",
+    "tel-country-code",
+    "tel-national",
+    "transaction-amount",
+    "url"
+  ],
+  "rows": 1118,
+  "cells": {
+    "COMPOSITE_UNSPLIT": {
+      "COMPOSITE_UNSPLIT": 56,
+      "UNKNOWN": 16
+    },
+    "NOT_AUTOFILLABLE": {
+      "NOT_AUTOFILLABLE": 56,
+      "UNKNOWN": 28
+    },
+    "UNKNOWN": {
+      "UNKNOWN": 60
+    },
+    "address-level1": {
+      "address-level1": 32
+    },
+    "address-level2": {
+      "UNKNOWN": 16,
+      "address-level2": 28
+    },
+    "address-line1": {
+      "UNKNOWN": 14,
+      "address-line1": 9,
+      "street-address": 1
+    },
+    "address-line2": {
+      "UNKNOWN": 7,
+      "address-line2": 17
+    },
+    "cc-csc": {
+      "UNKNOWN": 18,
+      "cc-csc": 30
+    },
+    "cc-exp-month": {
+      "cc-exp-month": 24
+    },
+    "cc-exp-year": {
+      "UNKNOWN": 9,
+      "cc-exp-year": 15
+    },
+    "cc-number": {
+      "UNKNOWN": 17,
+      "cc-number": 31
+    },
+    "cc-type": {
+      "cc-type": 24
+    },
+    "country": {
+      "country": 48
+    },
+    "country-name": {
+      "UNKNOWN": 4,
+      "country": 17,
+      "country-name": 3
+    },
+    "email": {
+      "email": 72
+    },
+    "family-name": {
+      "UNKNOWN": 9,
+      "family-name": 47
+    },
+    "given-name": {
+      "UNKNOWN": 9,
+      "given-name": 47
+    },
+    "honorific-prefix": {
+      "honorific-prefix": 24
+    },
+    "honorific-suffix": {
+      "UNKNOWN": 6,
+      "honorific-suffix": 18
+    },
+    "name": {
+      "name": 24
+    },
+    "new-password": {
+      "UNKNOWN": 13,
+      "new-password": 11
+    },
+    "one-time-code": {
+      "UNKNOWN": 11,
+      "one-time-code": 13
+    },
+    "organization": {
+      "organization": 24
+    },
+    "postal-code": {
+      "UNKNOWN": 24,
+      "postal-code": 42
+    },
+    "street-address": {
+      "UNKNOWN": 14,
+      "street-address": 10
+    },
+    "tel": {
+      "UNKNOWN": 7,
+      "tel": 17
+    },
+    "tel-country-code": {
+      "tel-country-code": 24
+    },
+    "tel-national": {
+      "UNKNOWN": 9,
+      "tel": 15
+    },
+    "transaction-amount": {
+      "UNKNOWN": 9,
+      "transaction-amount": 15
+    },
+    "url": {
+      "UNKNOWN": 6,
+      "url": 18
+    }
+  }
+}

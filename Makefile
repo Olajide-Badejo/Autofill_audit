@@ -15,10 +15,10 @@ PY ?= $(VENV)/bin/python
 PIP_COMPILE ?= $(PY) -m piptools compile
 
 .DEFAULT_GOAL := gates
-.PHONY: gates lint type test reach trace dashes build lock reports clean help
+.PHONY: gates lint type test reach trace ancestry dashes build lock reports clean help
 
 help:
-	@echo "targets: gates lint type test reach trace dashes build lock reports clean"
+	@echo "targets: gates lint type test reach trace ancestry dashes build lock reports clean"
 
 lint:
 	$(PY) -m ruff check .
@@ -34,13 +34,16 @@ reach:
 	$(PY) scripts/check_reachability.py
 
 trace:
-	$(PY) scripts/check_traceability.py
+	$(PY) scripts/check_traceability.py --resolve
+
+ancestry:
+	$(PY) scripts/check_prediction_ancestry.py
 
 dashes:
 	$(PY) scripts/check_dashes.py
 
 # The order here is the order of the CI job table in spec section 16.
-gates: lint dashes type test reach trace
+gates: lint dashes type test reach trace ancestry
 	@echo "all gates passed"
 
 build:

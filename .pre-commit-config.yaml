@@ -55,13 +55,22 @@ repos:
     rev: v6.0.0
     hooks:
       - id: check-added-large-files
-        # The committed ONNX model is a weight matrix over the whole feature
-        # vocabulary and is larger than the hook's default ceiling by design.
-        # Ground rule 8 requires it to be committed with its card, spec section
-        # 18 requires its sha to identify every run that used it, and neither is
-        # possible if the file is not in the repository. The exemption is for
-        # this one directory and nothing else.
-        exclude: ^models/
+        # Two directories are over the hook's default ceiling by design.
+        #
+        # models/ holds the ONNX file, a weight matrix over the whole feature
+        # vocabulary. Ground rule 8 requires it to be committed with its card,
+        # spec section 18 requires its sha to identify every run that used it,
+        # and neither is possible if the file is not in the repository.
+        #
+        # experiments/results/ holds run logs, one JSON object per classified
+        # field, and spec section 13.1 puts the engine's identity and the corpus
+        # sha on every row so that a log separated from its manifest still says
+        # what produced it. That repetition is most of the size and it is the
+        # point of the schema. Law 3's chain ends at a committed file, so a
+        # result too large to commit is a result nothing may cite, and the
+        # directory is append-only history rather than a working area: a wrong
+        # result gets a new run id and the old one stays.
+        exclude: ^(models|experiments/results)/
       - id: check-merge-conflict
       - id: check-toml
       - id: check-yaml

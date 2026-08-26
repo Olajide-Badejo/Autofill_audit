@@ -266,6 +266,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     manifest = json.loads((corpus_dir / "manifest.json").read_text(encoding="utf-8"))
     base_year = int(manifest.get("base_year", time.gmtime().tm_year))
+    train.bind_cache(args.cache, train._corpus_manifest_sha(corpus_dir))
     dev = train.build_dataset(corpus_dir, split, train.DEV, guard, args.cache, base_year)
     print(f"derive_thresholds: {dev.forms} dev forms, {len(dev.examples)} rows")
 
