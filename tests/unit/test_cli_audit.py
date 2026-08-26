@@ -15,7 +15,7 @@ from click.testing import CliRunner
 
 from autofill_audit import cli as cli_module
 from autofill_audit.audit.findings import FindingCode
-from autofill_audit.audit.thresholds import ThresholdsError
+from autofill_audit.audit.thresholds import DEFAULT_ENGINE, ThresholdsError
 from autofill_audit.cli import (
     BOUNDARY_FLAGS,
     ConfigError,
@@ -104,6 +104,35 @@ def test_the_ngram_engine_with_no_model_is_a_usage_error_and_not_a_fallback(
     assert result.exit_code == 2
     assert "no trained model was found" in result.output
     assert "rule baseline" not in result.output
+
+
+def test_the_train_command_finds_its_script(repo_root: Path) -> None:
+    """Spec section 14 makes train a wrapper, not a second implementation."""
+    assert cli_module.find_train_script(repo_root) == repo_root / "scripts" / "train.py"
+
+
+def test_the_train_command_needs_a_seed(runner: CliRunner) -> None:
+    """One seed reaches the generator, the split, and the training run (spec 18)."""
+    result = runner.invoke(cli, ["train", "--out", "models"])
+    assert result.exit_code != 0
+    assert "seed" in result.output
+
+
+def test_the_train_command_has_no_test_flag(runner: CliRunner) -> None:
+    """There is no legitimate reason for training to know where the test split is."""
+    result = runner.invoke(cli, ["train", "--help"])
+    assert result.exit_code == 0
+    assert "--test" not in result.output
+
+
+def test_the_train_command_says_so_when_the_script_is_not_installed(
+    runner: CliRunner, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """A wheel audits pages; it does not train models, and it says which."""
+    monkeypatch.setattr(cli_module, "find_train_script", lambda start: None)
+    result = runner.invoke(cli, ["train", "--seed", "1", "--out", str(tmp_path)])
+    assert result.exit_code == 2
+    assert "source checkout" in result.output
 
 
 def test_an_unknown_engine_is_refused_by_the_choice(runner: CliRunner) -> None:
@@ -213,11 +242,17 @@ def test_an_unparseable_config_is_exit_code_two(runner: CliRunner, tmp_path: Pat
 
 # ---------------------------------------------------------------------------
 # Threshold overrides.
+#
+# The engine is named because P4 gave the document a block per engine: the rule
+# tiers and a calibrated probability are different scales, and the loader will
+# not hand one engine another engine's boundary.
 # ---------------------------------------------------------------------------
+
+RULES_ENGINE = DEFAULT_ENGINE
 
 
 def test_min_confidence_lowers_the_low_threshold_and_says_so() -> None:
-    thresholds = _thresholds(0.2)
+    thresholds = _thresholds(RULES_ENGINE, 0.2)
     assert thresholds.tau_low == 0.2
     assert "overridden on the command line" in thresholds.basis
 
@@ -225,12 +260,12 @@ def test_min_confidence_lowers_the_low_threshold_and_says_so() -> None:
 def test_min_confidence_above_the_high_threshold_is_refused() -> None:
     """It would empty the low-confidence band rather than widen it."""
     with pytest.raises(ThresholdsError, match="above the high threshold"):
-        _thresholds(0.99)
+        _thresholds(RULES_ENGINE, 0.99)
 
 
 def test_min_confidence_outside_the_unit_interval_is_refused() -> None:
     with pytest.raises(ThresholdsError):
-        _thresholds(-0.5)
+        _thresholds(RULES_ENGINE, -0.5)
 
 
 def test_a_min_confidence_override_is_a_usage_error_at_the_command_line(
