@@ -635,3 +635,24 @@ through rather than guess, and the labels the table deliberately cannot separate
 took the rest of it. Every one of those makes the tool quieter, and every one of
 them is the difference between a check somebody keeps and a check somebody
 deletes.
+
+## 2026-08-26: P4, the prediction goes in first
+
+Phase P4 opens with a commit that contains no code.
+`experiments/predictions/p4-threshold-derivation.md` states, before the model
+exists, how the two decision thresholds will be computed, what precision target
+drives them, which classes get which calibration method, what the feature caps
+are, and what the confusion matrix is expected to show.
+
+The fourth law is the reason. A prediction committed after the measurement is not
+a prediction, and the ancestry check at P5 will verify that this commit is an
+ancestor of the commit carrying the derived values.
+
+Writing it first also settled a real ambiguity for free. The task file asks for
+the low threshold as the smallest confidence at which the near-miss band still
+captures at least half of what the high threshold gives up. Captured recall only
+ever falls as that threshold rises, so every value below a qualifying one also
+qualifies, the smallest qualifying value is always zero, and a threshold of zero
+says nothing. The prediction file records the non-degenerate reading, which is
+the greatest qualifying value, and it records it at a point where there were not
+yet two candidate answers to choose between.
