@@ -1094,3 +1094,27 @@ a mechanism was assumed rather than measured.
 six accusations from the rule table, thirty-two from the model, and not one of
 them wrong on the test split. That is the threshold policy working as designed on
 both engines, and it means the interesting axis between them is recall alone.
+
+### The gate that only failed once it was real
+
+The traceability job went red on the first push of this phase, on a check that
+had passed locally minutes earlier, and the failure was correct.
+
+`--resolve` asks this repository to produce the commit object each manifest
+names. The job checked out at the default depth of one, so the clone held only
+the tip commit, and every citation of a run taken in an earlier commit failed
+with a message saying the commit does not resolve in this repository. That
+sentence was true of the clone and false of the repository.
+
+Reproduced locally with `git clone --depth 1` before changing anything, because a
+CI failure that is fixed without being reproduced is a CI failure that is guessed
+at. The fix is `fetch-depth: 0` on that job, the same setting the ancestry job
+already carried for the same reason: both checks ask questions about history, and
+history is the input.
+
+Worth recording for two reasons. It is the first time a gate in this project has
+gone red on a real defect rather than on a deliberately broken scratch branch, so
+the P0 proof-of-failure argument now has a natural example beside its manufactured
+ones. And it is a defect that could only appear once law 3's chain went from a
+pattern match to a resolution: the check that had run in CI since P0 would have
+passed on this commit forever, because it never asked git for anything.
