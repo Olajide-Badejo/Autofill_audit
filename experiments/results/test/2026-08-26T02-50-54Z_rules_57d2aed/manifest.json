@@ -1,0 +1,60 @@
+{
+  "schema_version": "1.0.0",
+  "run_id": "2026-08-26T02-50-54Z_rules_57d2aed",
+  "command_line": "eval.py --split test --engine rules --i-am-measuring --out experiments/results --note extracted through a real browser, no descriptor cache, so the wall time split is a measurement",
+  "split": "test",
+  "engine": "rules",
+  "engine_describe": {
+    "engine": "rules",
+    "tool_version": "0.2.0",
+    "rule_table_version": "1.0.0",
+    "vocabulary_rules": "346",
+    "option_rules": "36",
+    "intrinsic_rules": "10",
+    "confidence_kind": "tier"
+  },
+  "threshold_describe": {
+    "tau_high": "0.7",
+    "tau_low": "0.4",
+    "basis": "rule-tier-band-mapping",
+    "source": "thresholds.json",
+    "measured": "false"
+  },
+  "artefact_sha256": {
+    "thresholds.json": "10ec4ff2de95ca9fdfb39bf92750cec6f3984244f341a9915e208cc5ec8df4a1"
+  },
+  "corpus_manifest_sha": "3450c48b009b3365f87f21e4f6703540e12c80885620a8612739e0e4eafcdb6b",
+  "split_file_sha": "67f524a0fd4c8590b3b758d6a000083210a1195d8304706185b4e24649bfbe60",
+  "seed": 20260825,
+  "git": {
+    "commit": "57d2aed7950836bd54ef20db8619c4c04bdc070a",
+    "dirty": false
+  },
+  "dependency_versions": {
+    "python": "3.14.4",
+    "numpy": "2.5.2",
+    "onnxruntime": "1.29.0",
+    "playwright": "1.62.0",
+    "click": "8.4.2",
+    "rich": "15.0.0",
+    "jinja2": "3.1.6",
+    "ml-experiment-triage": "1.0.0"
+  },
+  "machine": {
+    "os": "Linux 6.18.33.2-microsoft-standard-WSL2",
+    "machine": "x86_64",
+    "python": "3.14.4",
+    "python_implementation": "CPython",
+    "cpu_model": "Intel(R) Core(TM) i7-14700K",
+    "cpu_count": "28",
+    "gpu_present": "NVIDIA GeForce RTX 5070"
+  },
+  "started_at": "2026-08-26T02:50:54Z",
+  "finished_at": "2026-08-26T02:52:04Z",
+  "row_count": 1024,
+  "form_count": 120,
+  "notes": [
+    "extracted through a real browser, no descriptor cache, so the wall time split is a measurement",
+    "run with --i-am-measuring on the test split"
+  ]
+}

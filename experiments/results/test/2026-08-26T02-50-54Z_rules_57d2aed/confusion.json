@@ -1,0 +1,109 @@
+{
+  "labels": [
+    "CC_EXP_SPLIT_MONTH",
+    "CC_EXP_SPLIT_YEAR",
+    "NOT_AUTOFILLABLE",
+    "UNKNOWN",
+    "address-level1",
+    "address-level2",
+    "bday",
+    "cc-csc",
+    "cc-name",
+    "cc-number",
+    "cc-type",
+    "country",
+    "country-name",
+    "current-password",
+    "email",
+    "name",
+    "new-password",
+    "one-time-code",
+    "postal-code",
+    "sex",
+    "street-address",
+    "username"
+  ],
+  "rows": 1024,
+  "cells": {
+    "CC_EXP_SPLIT_MONTH": {
+      "CC_EXP_SPLIT_MONTH": 48
+    },
+    "CC_EXP_SPLIT_YEAR": {
+      "CC_EXP_SPLIT_YEAR": 48
+    },
+    "NOT_AUTOFILLABLE": {
+      "NOT_AUTOFILLABLE": 179,
+      "UNKNOWN": 49
+    },
+    "UNKNOWN": {
+      "UNKNOWN": 60
+    },
+    "address-level1": {
+      "address-level1": 32
+    },
+    "address-level2": {
+      "UNKNOWN": 15,
+      "address-level2": 25
+    },
+    "bday": {
+      "UNKNOWN": 7,
+      "bday": 17
+    },
+    "cc-csc": {
+      "UNKNOWN": 17,
+      "cc-csc": 31
+    },
+    "cc-name": {
+      "UNKNOWN": 3,
+      "cc-name": 45
+    },
+    "cc-number": {
+      "UNKNOWN": 17,
+      "cc-number": 31
+    },
+    "cc-type": {
+      "cc-type": 24
+    },
+    "country": {
+      "country": 24
+    },
+    "country-name": {
+      "UNKNOWN": 4,
+      "country": 17,
+      "country-name": 3
+    },
+    "current-password": {
+      "UNKNOWN": 24
+    },
+    "email": {
+      "UNKNOWN": 1,
+      "email": 47
+    },
+    "name": {
+      "name": 24
+    },
+    "new-password": {
+      "UNKNOWN": 17,
+      "new-password": 31
+    },
+    "one-time-code": {
+      "UNKNOWN": 10,
+      "one-time-code": 14
+    },
+    "postal-code": {
+      "UNKNOWN": 17,
+      "postal-code": 23
+    },
+    "sex": {
+      "sex": 24
+    },
+    "street-address": {
+      "UNKNOWN": 26,
+      "street-address": 22
+    },
+    "username": {
+      "UNKNOWN": 7,
+      "username": 41
+    }
+  }
+}
