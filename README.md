@@ -18,10 +18,24 @@ Because the label space *is* the specification's token set, the fix is a formatt
 
 ## Status
 
-`v0.1.0`. The tool works and is useful, and there is no machine learning in it
-yet. The extractor, the rule baseline, the audit engine, the three report
-renderers, and the exit-code contract are all here; the classifier ladder climbs
-from P4 onward and buys accuracy and evidence rather than usefulness.
+`v0.2.0`. The tool works and is useful. The extractor, the rule baseline, the
+audit engine, the three report renderers, and the exit-code contract have been
+here since `v0.1.0`, and the classifier ladder now has a second rung: an n-gram
+logistic regression, calibrated on a held-out development split and exported to
+ONNX, behind `--engine ngram`.
+
+`--engine auto` prefers the model when one loads and falls back to the rule
+baseline with one printed line when none does, which is the documented behaviour
+rather than a failure. A published wheel does not currently carry a model, so a
+`pipx` install runs the rule baseline until you train one or point
+`AUTOFILL_AUDIT_MODEL_DIR` at a bundle.
+
+**There are no accuracy numbers here yet, and that is deliberate.** No number
+appears in this README until it is reproducible from a committed result file with
+a run manifest behind it, which is what P5 produces. The development metrics that
+chose the model's thresholds are in `docs/model-card.md`, quoted from the files
+that produced them, and they are labeled there as what they are: measurements on
+a synthetic corpus, not a claim about the open web.
 
 ## Install
 
