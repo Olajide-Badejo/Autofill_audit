@@ -77,6 +77,11 @@ CI.
   that have no prompt.
 - The README's results section is a three-engine comparison, and every number in
   it links to one of the new run files.
+- The golden report snapshots moved, by the version string and nothing else. The
+  rule engine renders its own `tool_version` into the JSON and HTML reports, so a
+  release bump is a snapshot diff. Ground rule 12 requires that to be an
+  intentional, changelogged change rather than a refresh nobody read, and this is
+  the entry: nine snapshots, `0.3.1` to `0.4.0`, no other byte changed.
 
 ### Fixed
 
