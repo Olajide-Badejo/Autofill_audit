@@ -2,19 +2,15 @@
   "schema_version": 1,
   "split": "dev",
   "generated_on": "2026-08-26",
-  "corpus_manifest_sha256": "3450c48b009b3365f87f21e4f6703540e12c80885620a8612739e0e4eafcdb6b",
+  "corpus_manifest_sha256": "15c3136f75d2d9c6807dbc70a28ab507bca1c784df53c134650e4f9898e6e035",
   "counts": {
-    "train_forms": 300,
-    "train_rows": 2889,
+    "train_forms": 500,
+    "train_rows": 5402,
     "dev_forms": 120,
-    "dev_rows": 1118,
-    "excluded_forms": 60,
-    "classes_fitted": 39,
-    "labels_in_dev_only": [
-      "country-name",
-      "one-time-code",
-      "street-address"
-    ],
+    "dev_rows": 1596,
+    "excluded_forms": 100,
+    "classes_fitted": 42,
+    "labels_in_dev_only": [],
     "dropped_undetectable": 0,
     "dropped_unkeyed": 0
   },
@@ -30,98 +26,126 @@
     "results": [
       {
         "C": 0.25,
-        "dev_macro_f1": 0.49203302145497435
+        "dev_macro_f1": 0.730834127843587
       },
       {
         "C": 0.5,
-        "dev_macro_f1": 0.5080398731563828
+        "dev_macro_f1": 0.7374754562385074
       },
       {
         "C": 1.0,
-        "dev_macro_f1": 0.5123002010508959
+        "dev_macro_f1": 0.750490090973471
       },
       {
         "C": 2.0,
-        "dev_macro_f1": 0.5170371433575041
+        "dev_macro_f1": 0.7612095723163816
       },
       {
         "C": 4.0,
-        "dev_macro_f1": 0.5165872498990962
+        "dev_macro_f1": 0.7660162428504351
       },
       {
         "C": 8.0,
-        "dev_macro_f1": 0.5262392021629747
+        "dev_macro_f1": 0.7689521074601616
       }
     ],
     "chosen_C": 8.0
   },
   "headline": {
-    "dev_macro_f1": 0.5813340575260366,
-    "dev_accuracy": 0.7093023255813954
+    "dev_macro_f1": 0.7865914251903331,
+    "dev_accuracy": 0.8421052631578947
   },
   "per_label": {
-    "COMPOSITE_UNSPLIT": {
-      "precision": 0.5277777777777778,
-      "recall": 0.2638888888888889,
-      "f1": 0.35185185185185186,
-      "dev_support": 72,
+    "CC_EXP_SPLIT_MONTH": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "dev_support": 24,
       "train_support": 40
     },
+    "CC_EXP_SPLIT_YEAR": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "dev_support": 24,
+      "train_support": 40
+    },
+    "COMPOSITE_UNSPLIT": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "dev_support": 24,
+      "train_support": 160
+    },
     "NOT_AUTOFILLABLE": {
-      "precision": 0.6403508771929824,
-      "recall": 0.8690476190476191,
-      "f1": 0.7373737373737373,
-      "dev_support": 84,
-      "train_support": 350
+      "precision": 0.990990990990991,
+      "recall": 0.9649122807017544,
+      "f1": 0.9777777777777777,
+      "dev_support": 228,
+      "train_support": 610
     },
     "UNKNOWN": {
-      "precision": 0.5573770491803278,
-      "recall": 0.5666666666666667,
-      "f1": 0.5619834710743802,
+      "precision": 0.9076923076923077,
+      "recall": 0.9833333333333333,
+      "f1": 0.944,
       "dev_support": 60,
-      "train_support": 150
+      "train_support": 250
+    },
+    "additional-name": {
+      "precision": 0.7391304347826086,
+      "recall": 0.7083333333333334,
+      "f1": 0.723404255319149,
+      "dev_support": 24,
+      "train_support": 60
     },
     "address-level1": {
-      "precision": 0.6363636363636364,
-      "recall": 0.65625,
-      "f1": 0.6461538461538462,
+      "precision": 0.8275862068965517,
+      "recall": 0.75,
+      "f1": 0.7868852459016393,
       "dev_support": 32,
-      "train_support": 112
+      "train_support": 192
     },
     "address-level2": {
-      "precision": 0.5396825396825397,
-      "recall": 0.7727272727272727,
-      "f1": 0.6355140186915887,
+      "precision": 0.6666666666666666,
+      "recall": 0.6818181818181818,
+      "f1": 0.6741573033707865,
       "dev_support": 44,
-      "train_support": 140
+      "train_support": 228
     },
     "address-line1": {
-      "precision": 0.45454545454545453,
-      "recall": 0.625,
-      "f1": 0.5263157894736842,
+      "precision": 0.8571428571428571,
+      "recall": 0.75,
+      "f1": 0.8,
       "dev_support": 24,
-      "train_support": 140
+      "train_support": 180
     },
     "address-line2": {
-      "precision": 0.7333333333333333,
-      "recall": 0.9166666666666666,
-      "f1": 0.8148148148148148,
+      "precision": 0.6923076923076923,
+      "recall": 0.75,
+      "f1": 0.72,
       "dev_support": 24,
-      "train_support": 140
+      "train_support": 180
     },
     "address-line3": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1": 0.0,
-      "dev_support": 0,
+      "precision": 0.7241379310344828,
+      "recall": 0.875,
+      "f1": 0.7924528301886793,
+      "dev_support": 24,
+      "train_support": 40
+    },
+    "bday": {
+      "precision": 0.6666666666666666,
+      "recall": 0.8333333333333334,
+      "f1": 0.7407407407407407,
+      "dev_support": 24,
       "train_support": 40
     },
     "cc-csc": {
-      "precision": 0.9148936170212766,
-      "recall": 0.8958333333333334,
-      "f1": 0.9052631578947369,
+      "precision": 0.875,
+      "recall": 0.875,
+      "f1": 0.875,
       "dev_support": 48,
-      "train_support": 120
+      "train_support": 200
     },
     "cc-exp": {
       "precision": 0.0,
@@ -131,243 +155,264 @@
       "train_support": 40
     },
     "cc-exp-month": {
-      "precision": 0.6521739130434783,
-      "recall": 0.625,
-      "f1": 0.6382978723404256,
+      "precision": 0.8148148148148148,
+      "recall": 0.9166666666666666,
+      "f1": 0.8627450980392157,
       "dev_support": 24,
-      "train_support": 20
+      "train_support": 40
     },
     "cc-exp-year": {
-      "precision": 0.6111111111111112,
-      "recall": 0.4583333333333333,
-      "f1": 0.5238095238095238,
+      "precision": 0.7307692307692307,
+      "recall": 0.7916666666666666,
+      "f1": 0.76,
       "dev_support": 24,
-      "train_support": 20
+      "train_support": 40
     },
     "cc-name": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1": 0.0,
-      "dev_support": 0,
-      "train_support": 100
+      "precision": 0.9714285714285714,
+      "recall": 0.7083333333333334,
+      "f1": 0.8192771084337349,
+      "dev_support": 48,
+      "train_support": 140
     },
     "cc-number": {
-      "precision": 0.9787234042553191,
-      "recall": 0.9583333333333334,
-      "f1": 0.968421052631579,
+      "precision": 0.8979591836734694,
+      "recall": 0.9166666666666666,
+      "f1": 0.9072164948453608,
       "dev_support": 48,
-      "train_support": 120
+      "train_support": 200
     },
     "cc-type": {
       "precision": 1.0,
       "recall": 1.0,
       "f1": 1.0,
       "dev_support": 24,
-      "train_support": 20
+      "train_support": 60
     },
     "country": {
-      "precision": 0.7555555555555555,
-      "recall": 0.7083333333333334,
-      "f1": 0.7311827956989247,
+      "precision": 0.8461538461538461,
+      "recall": 0.9166666666666666,
+      "f1": 0.88,
       "dev_support": 48,
-      "train_support": 120
+      "train_support": 180
     },
     "country-name": {
+      "precision": 0.5652173913043478,
+      "recall": 0.5416666666666666,
+      "f1": 0.5531914893617021,
+      "dev_support": 24,
+      "train_support": 100
+    },
+    "current-password": {
       "precision": 0.0,
       "recall": 0.0,
       "f1": 0.0,
-      "dev_support": 24,
-      "train_support": 0
+      "dev_support": 0,
+      "train_support": 100
     },
     "email": {
-      "precision": 1.0,
-      "recall": 1.0,
-      "f1": 1.0,
+      "precision": 0.9016393442622951,
+      "recall": 0.7638888888888888,
+      "f1": 0.8270676691729323,
       "dev_support": 72,
-      "train_support": 160
+      "train_support": 320
     },
     "family-name": {
-      "precision": 0.875,
-      "recall": 0.75,
-      "f1": 0.8076923076923077,
+      "precision": 0.7450980392156863,
+      "recall": 0.6785714285714286,
+      "f1": 0.7102803738317757,
       "dev_support": 56,
-      "train_support": 96
+      "train_support": 216
     },
     "given-name": {
-      "precision": 0.8214285714285714,
-      "recall": 0.8214285714285714,
-      "f1": 0.8214285714285714,
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
       "dev_support": 56,
-      "train_support": 96
+      "train_support": 216
     },
     "honorific-prefix": {
       "precision": 1.0,
       "recall": 1.0,
       "f1": 1.0,
       "dev_support": 24,
-      "train_support": 20
+      "train_support": 100
     },
     "honorific-suffix": {
-      "precision": 0.9583333333333334,
-      "recall": 0.9583333333333334,
-      "f1": 0.9583333333333334,
+      "precision": 0.5769230769230769,
+      "recall": 0.625,
+      "f1": 0.6,
       "dev_support": 24,
-      "train_support": 20
+      "train_support": 100
     },
     "name": {
-      "precision": 0.875,
-      "recall": 0.875,
-      "f1": 0.875,
+      "precision": 0.5555555555555556,
+      "recall": 0.4166666666666667,
+      "f1": 0.47619047619047616,
+      "dev_support": 24,
+      "train_support": 80
+    },
+    "new-password": {
+      "precision": 1.0,
+      "recall": 0.9375,
+      "f1": 0.967741935483871,
+      "dev_support": 48,
+      "train_support": 180
+    },
+    "nickname": {
+      "precision": 0.78,
+      "recall": 0.8125,
+      "f1": 0.7959183673469388,
+      "dev_support": 48,
+      "train_support": 80
+    },
+    "one-time-code": {
+      "precision": 0.8117647058823529,
+      "recall": 0.9583333333333334,
+      "f1": 0.8789808917197452,
+      "dev_support": 72,
+      "train_support": 100
+    },
+    "organization": {
+      "precision": 0.84,
+      "recall": 0.5833333333333334,
+      "f1": 0.6885245901639344,
+      "dev_support": 72,
+      "train_support": 60
+    },
+    "postal-code": {
+      "precision": 0.8,
+      "recall": 0.8,
+      "f1": 0.8,
+      "dev_support": 40,
+      "train_support": 210
+    },
+    "sex": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
       "dev_support": 24,
       "train_support": 40
     },
-    "new-password": {
+    "street-address": {
+      "precision": 0.5555555555555556,
+      "recall": 0.625,
+      "f1": 0.5882352941176471,
+      "dev_support": 24,
+      "train_support": 60
+    },
+    "tel": {
+      "precision": 0.48148148148148145,
+      "recall": 0.5416666666666666,
+      "f1": 0.5098039215686274,
+      "dev_support": 24,
+      "train_support": 80
+    },
+    "tel-country-code": {
+      "precision": 1.0,
+      "recall": 0.9583333333333334,
+      "f1": 0.9787234042553191,
+      "dev_support": 24,
+      "train_support": 80
+    },
+    "tel-extension": {
+      "precision": 0.9230769230769231,
+      "recall": 1.0,
+      "f1": 0.96,
+      "dev_support": 24,
+      "train_support": 60
+    },
+    "tel-national": {
+      "precision": 0.5675675675675675,
+      "recall": 0.875,
+      "f1": 0.6885245901639344,
+      "dev_support": 24,
+      "train_support": 80
+    },
+    "transaction-amount": {
       "precision": 1.0,
       "recall": 1.0,
       "f1": 1.0,
       "dev_support": 24,
       "train_support": 80
     },
-    "one-time-code": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1": 0.0,
-      "dev_support": 24,
-      "train_support": 0
-    },
-    "organization": {
-      "precision": 0.9090909090909091,
-      "recall": 0.8333333333333334,
-      "f1": 0.8695652173913043,
-      "dev_support": 24,
-      "train_support": 60
-    },
-    "postal-code": {
-      "precision": 0.684931506849315,
-      "recall": 0.7575757575757576,
-      "f1": 0.7194244604316546,
-      "dev_support": 66,
-      "train_support": 125
-    },
-    "street-address": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1": 0.0,
-      "dev_support": 24,
-      "train_support": 0
-    },
-    "tel": {
-      "precision": 0.47619047619047616,
-      "recall": 0.4166666666666667,
-      "f1": 0.4444444444444444,
-      "dev_support": 24,
-      "train_support": 60
-    },
-    "tel-country-code": {
-      "precision": 0.9230769230769231,
-      "recall": 1.0,
-      "f1": 0.96,
-      "dev_support": 24,
-      "train_support": 40
-    },
-    "tel-extension": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1": 0.0,
-      "dev_support": 0,
-      "train_support": 40
-    },
-    "tel-national": {
-      "precision": 0.30952380952380953,
-      "recall": 0.5416666666666666,
-      "f1": 0.3939393939393939,
-      "dev_support": 24,
-      "train_support": 40
-    },
-    "transaction-amount": {
-      "precision": 0.9375,
-      "recall": 0.625,
-      "f1": 0.75,
-      "dev_support": 24,
-      "train_support": 20
-    },
     "url": {
-      "precision": 0.6666666666666666,
-      "recall": 0.75,
-      "f1": 0.7058823529411765,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
       "dev_support": 24,
-      "train_support": 40
+      "train_support": 60
     },
     "username": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1": 0.0,
-      "dev_support": 0,
-      "train_support": 60
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "dev_support": 24,
+      "train_support": 80
     }
   },
   "slices": {
     "per_locale": {
       "de-DE": {
-        "count": 180,
-        "accuracy": 0.75,
-        "macro_f1": 0.6001491537603877,
+        "count": 260,
+        "accuracy": 0.8576923076923076,
+        "macro_f1": 0.7788280596910869,
         "insufficient_data": false
       },
       "en-GB": {
-        "count": 188,
-        "accuracy": 0.7393617021276596,
-        "macro_f1": 0.6212921393343903,
+        "count": 268,
+        "accuracy": 0.8656716417910447,
+        "macro_f1": 0.8381136706961672,
         "insufficient_data": false
       },
       "en-NG": {
-        "count": 182,
-        "accuracy": 0.7692307692307693,
-        "macro_f1": 0.6545383065506905,
+        "count": 260,
+        "accuracy": 0.8923076923076924,
+        "macro_f1": 0.8374410471943377,
         "insufficient_data": false
       },
       "en-US": {
-        "count": 188,
-        "accuracy": 0.75,
-        "macro_f1": 0.6429911015551154,
+        "count": 268,
+        "accuracy": 0.8768656716417911,
+        "macro_f1": 0.8658931818095905,
         "insufficient_data": false
       },
       "fr-FR": {
-        "count": 180,
-        "accuracy": 0.5555555555555556,
-        "macro_f1": 0.43060237692077935,
+        "count": 260,
+        "accuracy": 0.7115384615384616,
+        "macro_f1": 0.6585161914109283,
         "insufficient_data": false
       },
       "ja-JP": {
-        "count": 200,
-        "accuracy": 0.69,
-        "macro_f1": 0.5940246984273835,
+        "count": 280,
+        "accuracy": 0.8464285714285714,
+        "macro_f1": 0.8216700262350468,
         "insufficient_data": false
       }
     },
     "per_tier": {
       "clean": {
-        "count": 249,
-        "accuracy": 0.8353413654618473,
-        "macro_f1": 0.7404475715611348,
+        "count": 369,
+        "accuracy": 0.9539295392953929,
+        "macro_f1": 0.9297587743239916,
         "insufficient_data": false
       },
       "hostile": {
-        "count": 310,
-        "accuracy": 0.5225806451612903,
-        "macro_f1": 0.40461550510126226,
+        "count": 429,
+        "accuracy": 0.662004662004662,
+        "macro_f1": 0.5900641417905994,
         "insufficient_data": false
       },
       "mixed": {
-        "count": 309,
-        "accuracy": 0.7022653721682848,
-        "macro_f1": 0.5888851098419324,
+        "count": 429,
+        "accuracy": 0.8298368298368298,
+        "macro_f1": 0.7705224527665026,
         "insufficient_data": false
       },
       "partial": {
-        "count": 250,
-        "accuracy": 0.824,
-        "macro_f1": 0.7065803288309682,
+        "count": 369,
+        "accuracy": 0.9539295392953929,
+        "macro_f1": 0.9273141230749926,
         "insufficient_data": false
       }
     }
@@ -376,26 +421,27 @@
   "calibration": {
     "switchover_count": 100,
     "methods": {
-      "CC_EXP_SPLIT_MONTH": "identity",
-      "CC_EXP_SPLIT_YEAR": "identity",
+      "CC_EXP_SPLIT_MONTH": "sigmoid",
+      "CC_EXP_SPLIT_YEAR": "sigmoid",
       "COMPOSITE_UNSPLIT": "sigmoid",
-      "NOT_AUTOFILLABLE": "sigmoid",
+      "NOT_AUTOFILLABLE": "isotonic",
       "UNKNOWN": "sigmoid",
-      "additional-name": "identity",
+      "additional-name": "sigmoid",
       "address-level1": "sigmoid",
       "address-level2": "sigmoid",
       "address-line1": "sigmoid",
       "address-line2": "sigmoid",
-      "address-line3": "identity",
-      "bday": "identity",
+      "address-line3": "sigmoid",
+      "bday": "sigmoid",
       "cc-csc": "sigmoid",
       "cc-exp": "identity",
       "cc-exp-month": "sigmoid",
       "cc-exp-year": "sigmoid",
-      "cc-name": "identity",
+      "cc-name": "sigmoid",
       "cc-number": "sigmoid",
       "cc-type": "sigmoid",
       "country": "sigmoid",
+      "country-name": "sigmoid",
       "current-password": "identity",
       "email": "sigmoid",
       "family-name": "sigmoid",
@@ -404,39 +450,42 @@
       "honorific-suffix": "sigmoid",
       "name": "sigmoid",
       "new-password": "sigmoid",
-      "nickname": "identity",
+      "nickname": "sigmoid",
+      "one-time-code": "sigmoid",
       "organization": "sigmoid",
       "postal-code": "sigmoid",
-      "sex": "identity",
+      "sex": "sigmoid",
+      "street-address": "sigmoid",
       "tel": "sigmoid",
       "tel-country-code": "sigmoid",
-      "tel-extension": "identity",
+      "tel-extension": "sigmoid",
       "tel-national": "sigmoid",
       "transaction-amount": "sigmoid",
       "url": "sigmoid",
-      "username": "identity"
+      "username": "sigmoid"
     },
     "dev_positives": {
-      "CC_EXP_SPLIT_MONTH": 0,
-      "CC_EXP_SPLIT_YEAR": 0,
-      "COMPOSITE_UNSPLIT": 72,
-      "NOT_AUTOFILLABLE": 84,
+      "CC_EXP_SPLIT_MONTH": 24,
+      "CC_EXP_SPLIT_YEAR": 24,
+      "COMPOSITE_UNSPLIT": 24,
+      "NOT_AUTOFILLABLE": 228,
       "UNKNOWN": 60,
-      "additional-name": 0,
+      "additional-name": 24,
       "address-level1": 32,
       "address-level2": 44,
       "address-line1": 24,
       "address-line2": 24,
-      "address-line3": 0,
-      "bday": 0,
+      "address-line3": 24,
+      "bday": 24,
       "cc-csc": 48,
       "cc-exp": 0,
       "cc-exp-month": 24,
       "cc-exp-year": 24,
-      "cc-name": 0,
+      "cc-name": 48,
       "cc-number": 48,
       "cc-type": 24,
       "country": 48,
+      "country-name": 24,
       "current-password": 0,
       "email": 72,
       "family-name": 56,
@@ -444,18 +493,20 @@
       "honorific-prefix": 24,
       "honorific-suffix": 24,
       "name": 24,
-      "new-password": 24,
-      "nickname": 0,
-      "organization": 24,
-      "postal-code": 66,
-      "sex": 0,
+      "new-password": 48,
+      "nickname": 48,
+      "one-time-code": 72,
+      "organization": 72,
+      "postal-code": 40,
+      "sex": 24,
+      "street-address": 24,
       "tel": 24,
       "tel-country-code": 24,
-      "tel-extension": 0,
+      "tel-extension": 24,
       "tel-national": 24,
       "transaction-amount": 24,
       "url": 24,
-      "username": 0
+      "username": 24
     },
     "before": {
       "bins": [
@@ -467,68 +518,68 @@
         {
           "low": 0.1,
           "high": 0.2,
-          "count": 16,
-          "mean_predicted": 0.16906082862988114,
-          "mean_observed": 0.1875
+          "count": 18,
+          "mean_predicted": 0.15723098234997857,
+          "mean_observed": 0.1111111111111111
         },
         {
           "low": 0.2,
           "high": 0.30000000000000004,
-          "count": 42,
-          "mean_predicted": 0.26043935262021567,
-          "mean_observed": 0.14285714285714285
+          "count": 64,
+          "mean_predicted": 0.264343632850796,
+          "mean_observed": 0.34375
         },
         {
           "low": 0.30000000000000004,
           "high": 0.4,
-          "count": 66,
-          "mean_predicted": 0.33945844254710456,
-          "mean_observed": 0.21212121212121213
+          "count": 84,
+          "mean_predicted": 0.35244316217445193,
+          "mean_observed": 0.20238095238095238
         },
         {
           "low": 0.4,
           "high": 0.5,
-          "count": 104,
-          "mean_predicted": 0.4471457176483594,
-          "mean_observed": 0.2692307692307692
+          "count": 71,
+          "mean_predicted": 0.4519679865366976,
+          "mean_observed": 0.4507042253521127
         },
         {
           "low": 0.5,
           "high": 0.6000000000000001,
-          "count": 89,
-          "mean_predicted": 0.5442909089367042,
-          "mean_observed": 0.30337078651685395
+          "count": 96,
+          "mean_predicted": 0.5488758298257986,
+          "mean_observed": 0.5625
         },
         {
           "low": 0.6000000000000001,
           "high": 0.7000000000000001,
-          "count": 88,
-          "mean_predicted": 0.6531699563969265,
-          "mean_observed": 0.6022727272727273
+          "count": 59,
+          "mean_predicted": 0.6540008955082651,
+          "mean_observed": 0.6440677966101694
         },
         {
           "low": 0.7000000000000001,
           "high": 0.8,
-          "count": 84,
-          "mean_predicted": 0.7594447135925293,
-          "mean_observed": 0.6785714285714286
+          "count": 78,
+          "mean_predicted": 0.7485464031879718,
+          "mean_observed": 0.8717948717948718
         },
         {
           "low": 0.8,
           "high": 0.9,
-          "count": 74,
-          "mean_predicted": 0.8491957952847352,
-          "mean_observed": 0.6486486486486487
+          "count": 111,
+          "mean_predicted": 0.8540126418208217,
+          "mean_observed": 0.7837837837837838
         },
         {
           "low": 0.9,
           "high": 1.0,
-          "count": 555,
-          "mean_predicted": 0.9739579743093199,
-          "mean_observed": 0.9423423423423424
+          "count": 1015,
+          "mean_predicted": 0.9804161296102214,
+          "mean_observed": 0.987192118226601
         }
       ],
-      "expected_calibration_error": 0.08697876474805082
+      "expected_calibration_error": 0.02806234539936959
     },
     "after": {
       "bins": [
@@ -540,182 +591,182 @@
         {
           "low": 0.1,
           "high": 0.2,
-          "count": 25,
-          "mean_predicted": 0.17082417401395428,
-          "mean_observed": 0.0
+          "count": 17,
+          "mean_predicted": 0.1780160068037667,
+          "mean_observed": 0.11764705882352941
         },
         {
           "low": 0.2,
           "high": 0.30000000000000004,
-          "count": 64,
-          "mean_predicted": 0.2533556009486241,
-          "mean_observed": 0.078125
+          "count": 77,
+          "mean_predicted": 0.2595604346829986,
+          "mean_observed": 0.19480519480519481
         },
         {
           "low": 0.30000000000000004,
           "high": 0.4,
-          "count": 107,
-          "mean_predicted": 0.35195902066868,
-          "mean_observed": 0.40186915887850466
+          "count": 78,
+          "mean_predicted": 0.354719704147079,
+          "mean_observed": 0.21794871794871795
         },
         {
           "low": 0.4,
           "high": 0.5,
-          "count": 73,
-          "mean_predicted": 0.4530846527567866,
-          "mean_observed": 0.4383561643835616
+          "count": 61,
+          "mean_predicted": 0.45782581195820815,
+          "mean_observed": 0.5081967213114754
         },
         {
           "low": 0.5,
           "high": 0.6000000000000001,
-          "count": 124,
-          "mean_predicted": 0.5475130523695415,
-          "mean_observed": 0.5887096774193549
+          "count": 76,
+          "mean_predicted": 0.5495108586986239,
+          "mean_observed": 0.6578947368421053
         },
         {
           "low": 0.6000000000000001,
           "high": 0.7000000000000001,
-          "count": 86,
-          "mean_predicted": 0.6526572955104226,
-          "mean_observed": 0.6744186046511628
+          "count": 72,
+          "mean_predicted": 0.6503609080609903,
+          "mean_observed": 0.875
         },
         {
           "low": 0.7000000000000001,
           "high": 0.8,
-          "count": 70,
-          "mean_predicted": 0.746690812823995,
-          "mean_observed": 0.5571428571428572
+          "count": 93,
+          "mean_predicted": 0.7458054573924767,
+          "mean_observed": 0.6774193548387096
         },
         {
           "low": 0.8,
           "high": 0.9,
-          "count": 170,
-          "mean_predicted": 0.862009740825944,
-          "mean_observed": 0.8941176470588236
+          "count": 112,
+          "mean_predicted": 0.8587396988087556,
+          "mean_observed": 0.8928571428571429
         },
         {
           "low": 0.9,
           "high": 1.0,
-          "count": 399,
-          "mean_predicted": 0.941870968757349,
-          "mean_observed": 0.9799498746867168
+          "count": 1010,
+          "mean_predicted": 0.9751633559749687,
+          "mean_observed": 0.9930693069306931
         }
       ],
-      "expected_calibration_error": 0.05617259907524589
+      "expected_calibration_error": 0.04538248688909209
     },
-    "macro_f1_before_calibration": 0.5262392021629747
+    "macro_f1_before_calibration": 0.7689521074601616
   },
   "abstention": {
-    "unknown_rate": 0.05456171735241502,
-    "accuracy_when_committed": 0.718070009460738
+    "unknown_rate": 0.040726817042606514,
+    "accuracy_when_committed": 0.8393207054212932
   },
   "confusions": [
     {
-      "truth": "COMPOSITE_UNSPLIT",
-      "predicted": "NOT_AUTOFILLABLE",
-      "count": 41
+      "truth": "email",
+      "predicted": "one-time-code",
+      "count": 9
     },
     {
-      "truth": "street-address",
-      "predicted": "address-level2",
-      "count": 14
-    },
-    {
-      "truth": "one-time-code",
-      "predicted": "COMPOSITE_UNSPLIT",
-      "count": 13
-    },
-    {
-      "truth": "tel",
-      "predicted": "tel-national",
-      "count": 13
-    },
-    {
-      "truth": "country",
-      "predicted": "address-level1",
-      "count": 12
-    },
-    {
-      "truth": "country-name",
-      "predicted": "address-level2",
-      "count": 12
-    },
-    {
-      "truth": "UNKNOWN",
-      "predicted": "postal-code",
-      "count": 11
+      "truth": "organization",
+      "predicted": "nickname",
+      "count": 9
     },
     {
       "truth": "address-level1",
       "predicted": "country",
-      "count": 11
-    },
-    {
-      "truth": "tel-national",
-      "predicted": "tel",
-      "count": 11
-    },
-    {
-      "truth": "COMPOSITE_UNSPLIT",
-      "predicted": "username",
-      "count": 7
-    },
-    {
-      "truth": "UNKNOWN",
-      "predicted": "tel-extension",
-      "count": 7
+      "count": 8
     },
     {
       "truth": "family-name",
+      "predicted": "honorific-suffix",
+      "count": 8
+    },
+    {
+      "truth": "honorific-suffix",
+      "predicted": "bday",
+      "count": 8
+    },
+    {
+      "truth": "email",
       "predicted": "tel-national",
       "count": 7
     },
     {
-      "truth": "one-time-code",
-      "predicted": "address-line1",
+      "truth": "tel",
+      "predicted": "tel-national",
+      "count": 7
+    },
+    {
+      "truth": "NOT_AUTOFILLABLE",
+      "predicted": "email",
       "count": 6
     },
     {
-      "truth": "url",
-      "predicted": "given-name",
+      "truth": "additional-name",
+      "predicted": "tel",
+      "count": 6
+    },
+    {
+      "truth": "cc-name",
+      "predicted": "cc-exp-year",
+      "count": 6
+    },
+    {
+      "truth": "country-name",
+      "predicted": "one-time-code",
+      "count": 6
+    },
+    {
+      "truth": "given-name",
+      "predicted": "family-name",
+      "count": 6
+    },
+    {
+      "truth": "name",
+      "predicted": "additional-name",
       "count": 6
     },
     {
       "truth": "address-level2",
-      "predicted": "address-line3",
+      "predicted": "street-address",
       "count": 5
     },
     {
-      "truth": "cc-exp-month",
-      "predicted": "family-name",
+      "truth": "cc-name",
+      "predicted": "cc-number",
       "count": 5
     },
     {
-      "truth": "cc-exp-year",
-      "predicted": "UNKNOWN",
+      "truth": "nickname",
+      "predicted": "given-name",
       "count": 5
     },
     {
-      "truth": "country-name",
-      "predicted": "address-line3",
-      "count": 5
+      "truth": "address-level2",
+      "predicted": "country-name",
+      "count": 4
     },
     {
-      "truth": "given-name",
-      "predicted": "UNKNOWN",
-      "count": 5
+      "truth": "address-line2",
+      "predicted": "country-name",
+      "count": 4
     },
     {
-      "truth": "one-time-code",
-      "predicted": "postal-code",
-      "count": 5
+      "truth": "country",
+      "predicted": "address-level1",
+      "count": 4
+    },
+    {
+      "truth": "family-name",
+      "predicted": "name",
+      "count": 4
     }
   ],
   "parity": {
-    "rows": 1118,
-    "argmax_agreements": 1118,
+    "rows": 1596,
+    "argmax_agreements": 1596,
     "argmax_agreement_rate": 1.0,
-    "max_absolute_probability_delta": 3.5762786865234375e-07,
+    "max_absolute_probability_delta": 4.76837158203125e-07,
     "tolerance": 1e-05,
     "passed": true
   }

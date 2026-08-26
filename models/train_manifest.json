@@ -1,16 +1,16 @@
 {
   "schema_version": 1,
-  "tool_version": "0.1.0",
-  "git_sha": "4b5d7900ed3aa6825a4eb28348ee45ed0a930d76",
-  "git_dirty": false,
+  "tool_version": "0.3.0",
+  "git_sha": "f7c92575d29f37de1b2db850011aa08cdbc7b346",
+  "git_dirty": true,
   "seed": 20260825,
-  "corpus_manifest_sha256": "3450c48b009b3365f87f21e4f6703540e12c80885620a8612739e0e4eafcdb6b",
-  "split_file_sha256": "67f524a0fd4c8590b3b758d6a000083210a1195d8304706185b4e24649bfbe60",
+  "corpus_manifest_sha256": "15c3136f75d2d9c6807dbc70a28ab507bca1c784df53c134650e4f9898e6e035",
+  "split_file_sha256": "c4c797ee27cec1162bc57ca3c53dc2a2392899199cbbe390e2674daba38a0ab8",
   "split_counts": {
     "dev": 120,
-    "excluded": 60,
-    "test": 120,
-    "train": 300
+    "excluded": 100,
+    "test": 240,
+    "train": 500
   },
   "held_out_locale": "fr-FR",
   "excluded_partition_used_for": "nothing at P4",
@@ -24,10 +24,10 @@
     "word_min_df": 2,
     "word_max_features": 50000
   },
-  "feature_width": 6656,
+  "feature_width": 7986,
   "feature_blocks": {
-    "c": 4905,
-    "w": 1701,
+    "c": 5760,
+    "w": 2176,
     "t": 32,
     "o": 5,
     "s": 13
@@ -65,6 +65,6 @@
     "gpu_used": false
   },
   "command_line": "train.py --corpus corpus --split-file corpus/split.json --seed 20260825 --out models --cache .scratch/descriptor-cache",
-  "started_at": "2026-08-26T00:54:59.220778+00:00",
-  "finished_at": "2026-08-26T00:55:17.808159+00:00"
+  "started_at": "2026-08-26T05:40:43.686240+00:00",
+  "finished_at": "2026-08-26T05:48:27.770301+00:00"
 }
