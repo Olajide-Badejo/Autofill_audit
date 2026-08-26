@@ -10,6 +10,21 @@
       "dev_recall": null,
       "corpus_manifest_sha": null,
       "derived_on": null
+    },
+    "ngram": {
+      "basis": "dev split of the seed 20260825 corpus, calibrated n-gram engine",
+      "tau_high": 0.9498622881050033,
+      "tau_low": 0.8237827291133224,
+      "target_precision": 0.98,
+      "dev_precision": 1.0,
+      "dev_recall": 0.03722084367245657,
+      "dev_accusations": 15,
+      "dev_fields_needing_accusation": 403,
+      "dev_recall_at_any_confidence": 0.6253101736972705,
+      "band_fraction_target": 0.5,
+      "band_recall_captured": 0.29528535980148884,
+      "corpus_manifest_sha": "3450c48b009b3365f87f21e4f6703540e12c80885620a8612739e0e4eafcdb6b",
+      "derived_on": "2026-08-26"
     }
   },
   "tier_values": {
