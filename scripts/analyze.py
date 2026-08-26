@@ -14,18 +14,25 @@ The two clusterings, and why both are here
 ------------------------------------------
 
 The **primary** analysis clusters by template, which is what spec section 13.3
-requires and what the policy file pre-registered. The test split holds five
-templates, one per family, because P1's leakage rule assigns whole templates to
-partitions. Five clusters give a paired sign-flip space of thirty-two
+requires and what the policy file pre-registered. The test split holds ten
+templates, two per family, because P1's leakage rule assigns whole templates to
+partitions and P5R widened the grid to eight per family for exactly this reason.
+Ten clusters give a paired sign-flip space of one thousand and twenty-four
 arrangements, so the test is exact rather than sampled and its smallest
-attainable two sided p value is 0.0625. That is above the pre-registered alpha
-of 0.05, so no comparison in the primary analysis can reach significance, and
-the correct report of every one of them is "the design cannot reach alpha"
-rather than "no significant difference". Those two sentences mean different
-things and only one of them is true here.
+attainable two sided p value is two orders of magnitude below the pre-registered
+alpha.
+
+It was not always so, and the reason the number matters is worth keeping here.
+At one test template per family the space held thirty-two arrangements and its
+floor sat above alpha, so no comparison in the primary analysis could reach
+significance at any effect size, and the correct report of every one of them was
+"the design cannot reach alpha" rather than "no significant difference". Those
+two sentences mean different things, the verdict vocabulary still carries both,
+and the underpowered verdict remains reachable: a slice thin enough to lose
+clusters can still hit it.
 
 The **secondary** analysis clusters by form. It is reported because an effect
-that is invisible at five clusters and obvious at a hundred and twenty is worth
+that is invisible at ten clusters and obvious at two hundred and forty is worth
 seeing, and it is labelled everywhere it appears, because clustering by form
 asserts that two locales of one template are independent, which is a stronger
 assumption than spec section 13.3 makes and is therefore anticonservative

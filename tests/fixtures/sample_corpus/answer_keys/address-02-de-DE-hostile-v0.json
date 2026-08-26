@@ -263,7 +263,7 @@
     }
   ],
   "form_id": "address-02-de-DE-hostile-v0",
-  "generator_version": "1.0.0",
+  "generator_version": "1.1.0",
   "locale": "de-DE",
   "page_notes": {
     "canvas_pseudo_fields": [],

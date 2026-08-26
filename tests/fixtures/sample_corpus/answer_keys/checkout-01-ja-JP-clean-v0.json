@@ -533,7 +533,7 @@
     }
   ],
   "form_id": "checkout-01-ja-JP-clean-v0",
-  "generator_version": "1.0.0",
+  "generator_version": "1.1.0",
   "locale": "ja-JP",
   "page_notes": {
     "canvas_pseudo_fields": [],

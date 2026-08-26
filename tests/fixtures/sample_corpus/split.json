@@ -1,9 +1,9 @@
 {
   "form_counts": {
-    "dev": 4,
+    "dev": 1,
     "excluded": 0,
-    "test": 3,
-    "train": 17
+    "test": 5,
+    "train": 18
   },
   "form_partitions": {
     "address-01-en-US-clean-v0": "train",
@@ -11,7 +11,7 @@
     "address-02-en-US-partial-v0": "train",
     "address-02-ja-JP-hostile-v0": "train",
     "address-03-en-US-hostile-v0": "test",
-    "address-04-en-US-mixed-v0": "dev",
+    "address-04-en-US-mixed-v0": "train",
     "checkout-01-de-DE-clean-v0": "train",
     "checkout-01-en-US-clean-v0": "train",
     "checkout-01-ja-JP-clean-v0": "train",
@@ -25,11 +25,11 @@
     "payment-01-en-US-clean-v0": "train",
     "payment-02-en-US-partial-v0": "train",
     "payment-03-en-US-hostile-v0": "train",
-    "payment-04-en-US-mixed-v0": "dev",
+    "payment-04-en-US-mixed-v0": "test",
     "signup-01-en-US-clean-v0": "train",
     "signup-02-en-US-partial-v0": "train",
     "signup-03-en-US-hostile-v0": "train",
-    "signup-04-en-US-mixed-v0": "dev"
+    "signup-04-en-US-mixed-v0": "test"
   },
   "held_out_locale": "fr-FR",
   "schema_version": 1,
@@ -41,32 +41,47 @@
     "address-01": "train",
     "address-02": "train",
     "address-03": "test",
-    "address-04": "dev",
+    "address-04": "train",
     "address-05": "train",
+    "address-06": "train",
+    "address-07": "dev",
+    "address-08": "test",
     "checkout-01": "train",
     "checkout-02": "test",
     "checkout-03": "train",
     "checkout-04": "train",
-    "checkout-05": "dev",
+    "checkout-05": "train",
+    "checkout-06": "test",
+    "checkout-07": "dev",
+    "checkout-08": "train",
     "login-01": "train",
     "login-02": "train",
     "login-03": "test",
     "login-04": "dev",
     "login-05": "train",
+    "login-06": "train",
+    "login-07": "train",
+    "login-08": "test",
     "payment-01": "train",
     "payment-02": "train",
     "payment-03": "train",
-    "payment-04": "dev",
+    "payment-04": "test",
     "payment-05": "test",
+    "payment-06": "train",
+    "payment-07": "dev",
+    "payment-08": "train",
     "signup-01": "train",
     "signup-02": "train",
     "signup-03": "train",
-    "signup-04": "dev",
-    "signup-05": "test"
+    "signup-04": "test",
+    "signup-05": "test",
+    "signup-06": "dev",
+    "signup-07": "train",
+    "signup-08": "train"
   },
   "templates_per_family": {
     "dev": 1,
-    "test": 1,
-    "train": 3
+    "test": 2,
+    "train": 5
   }
 }

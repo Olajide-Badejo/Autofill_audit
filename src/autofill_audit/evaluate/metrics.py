@@ -610,9 +610,9 @@ def suppressed_cells(cells: Iterable[SliceCell]) -> list[str]:
 # ---------------------------------------------------------------------------
 #
 # The significance test recomputes its statistic once per resampled arrangement,
-# which is thirty-two times for the exact test on this split and ten thousand
-# times for the sampled one, so the loop above is the wrong shape for it. These
-# are the same definitions over integer columns.
+# which is one thousand and twenty-four times for the exact test on this split
+# and ten thousand times for the sampled one, so the loop above is the wrong
+# shape for it. These are the same definitions over integer columns.
 #
 # There must be exactly one answer to "what is the macro-F1 of this run", so
 # `tests/unit/test_metrics.py` asserts these agree with the functions above on

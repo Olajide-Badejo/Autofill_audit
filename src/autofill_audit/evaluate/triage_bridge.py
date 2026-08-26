@@ -102,10 +102,14 @@ default, so the two agree and neither had to be bent to the other."""
 EXHAUSTIVE_LIMIT: Final[int] = 50000
 """Enumerate every sign vector when there are no more than this many.
 
-The same limit the harness uses for its own label permutations. With five test
-templates the space is thirty-two vectors, so the primary analysis in this
-project is exact rather than sampled, and the p values it reports are the exact
-permutation p values rather than Monte Carlo estimates of them."""
+The same limit the harness uses for its own label permutations. With ten test
+templates the space is one thousand and twenty-four vectors, so the primary
+analysis in this project is exact rather than sampled, and the p values it
+reports are the exact permutation p values rather than Monte Carlo estimates of
+them. It was exact at five test templates too, which is why the difference
+between that design and this one is a difference of power rather than of
+estimator: an exact test with too few clusters is exactly right about a floor it
+cannot get under."""
 
 VERDICTS: Final[tuple[str, ...]] = (
     VERDICT_IMPROVEMENT,
@@ -339,10 +343,16 @@ class ClusteredPairedResult:
         Worth its own field because of what it means when the design cannot
         reach alpha. A p value equal to the floor says the observed difference
         was more extreme than every other arrangement the clustered permutation
-        permits: it is the strongest evidence the design can produce, and it is
-        still not significance. Reporting the p value alone would let a reader
-        read 0.0625 as a near miss that more of the same data would fix, and it
-        is not: it is the floor of this split's template count.
+        permits: it is the strongest evidence the design can produce, and when
+        the floor is above alpha it is still not significance. Reporting the p
+        value alone would let a reader take a floor value for a near miss that
+        more of the same data would fix, and it is not: it is a function of the
+        split's template count and nothing else.
+
+        The field stays meaningful once the design has power. A comparison at the
+        floor of a design whose floor is below alpha is significant, and the flag
+        then says the effect was more extreme than every other arrangement rather
+        than that the design ran out of room.
         """
         return self.p_value <= self.min_attainable_p + 1e-12
 

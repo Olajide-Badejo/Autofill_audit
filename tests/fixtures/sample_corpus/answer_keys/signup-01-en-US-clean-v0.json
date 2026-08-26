@@ -171,7 +171,7 @@
     }
   ],
   "form_id": "signup-01-en-US-clean-v0",
-  "generator_version": "1.0.0",
+  "generator_version": "1.1.0",
   "locale": "en-US",
   "page_notes": {
     "canvas_pseudo_fields": [],
