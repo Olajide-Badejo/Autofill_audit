@@ -9,6 +9,96 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Nothing yet.
 
+## [0.4.0] - 2026-08-26
+
+The research layer, and the headline experiment the project was built to run. A
+third engine joins the ladder: a 12-billion-parameter instruction model at 4-bit
+quantization, served locally through Ollama with its response schema enforced by
+the server. The benchmark of spec section 13.4 ran across all three engines on
+the test split, and the significance family covers all three engine pairs
+corrected together.
+
+**The language model came third.** It lost to both classical engines on macro-F1
+and on micro-F1, on every markup-quality tier, and on the seen-locale slice, and
+most of those margins are certified by the clustered permutation test after
+correction. The one slice where it led the n-gram model is the unseen locale, and
+that difference does not survive the correction. The predictions were registered
+in `experiments/predictions/p6-llm-comparison.md` before the run; four of the
+eight held.
+
+Nothing about the tool's default changed and nothing needs to. The research layer
+is optional at runtime, is never required for an audit, and is never exercised by
+CI.
+
+### Added
+
+- `src/autofill_audit/llm/client.py`: the `LLMClient` interface of spec section
+  12.1, an `OllamaClient` against the OpenAI-compatible `/v1/chat/completions`
+  endpoint with a JSON schema passed on every request, a `CloudClient` for the
+  hosted config swap, and a transport seam so that every line of the validation
+  and retry logic is testable without a network.
+- `src/autofill_audit/llm/prompts.py`: `PROMPT_VERSION`, the system prompt of
+  spec section 12.2, the response schema with the label `enum` injected from
+  `taxonomy.py` at request time, and the descriptor pruning that drops geometry,
+  framework attributes and the declared `autocomplete` value.
+- `src/autofill_audit/classify/llm.py`: the `Classifier` implementation, which
+  chunks a page into requests, carries the per-field latency convention, and
+  reports `self-reported` as its confidence kind.
+- The validation and retry ladder of spec section 12.3: one parse retry carrying
+  the parser's error, one semantic retry naming the missing or invented
+  selectors, and on a second failure the affected fields scored `UNKNOWN`,
+  counted, and kept in the denominator.
+- `scripts/bench.py` and `autofill-audit bench`: the multi-engine benchmark,
+  which checks every engine's prerequisites before the first page loads and
+  assembles the section 13.4 grid from committed metrics documents rather than
+  recomputing anything.
+- An `llm` block in `thresholds.json`, at zero and zero, because spec section
+  12.1 forbids a self-reported confidence from feeding the threshold policy and
+  the decision procedure still needs two floats. The consequences are written
+  down in `docs/findings.md` and were registered before the run.
+- `docs/adr/0007-llm-model-and-quantization.md`: the resolved model, the serving
+  route, the observed VRAM headroom, and a bounded keep-alive policy.
+- `docs/llm-price-table.md`: the price table spec section 12.4 requires, honest
+  about carrying no prices.
+- LLM tests against twelve committed transcripts under `tests/fixtures/llm/`,
+  including deliberately malformed responses, plus live tests that are marked and
+  skipped unless `AUTOFILL_AUDIT_LLM_TESTS=1` and a reachable server agree.
+- A third arm in `audit/engine.py::_confidence_display`, so a self-reported
+  confidence is never rendered as a bare number beside a calibrated one.
+
+### Changed
+
+- `scripts/analyze.py` accepts `--run` repeatably and builds one comparison
+  family over every engine pair, corrected together. The family membership was
+  fixed in the prediction file before the runs.
+- `eval` and `audit` accept `--engine llm` and the three `--llm-*` flags, and
+  `audit` reads an `[llm]` block from the config file.
+- Every run-log row now carries `prompt_version`, which is null for the engines
+  that have no prompt.
+- The README's results section is a three-engine comparison, and every number in
+  it links to one of the new run files.
+- The golden report snapshots moved, by the version string and nothing else. The
+  rule engine renders its own `tool_version` into the JSON and HTML reports, so a
+  release bump is a snapshot diff. Ground rule 12 requires that to be an
+  intentional, changelogged change rather than a refresh nobody read, and this is
+  the entry: nine snapshots, `0.3.1` to `0.4.0`, no other byte changed.
+
+### Fixed
+
+- `load_engine(EngineChoice.LLM)` no longer refuses by naming a future phase. The
+  three ways its prerequisites can be missing now produce three different
+  messages, because the fixes are different.
+
+### Note on the earlier measurements
+
+The two classical engines reproduced their previous run exactly, every prediction
+and every finding, field for field. Only the re-measured latency columns differ.
+The earlier result files are untouched and the README no longer cites them.
+
+Every rules-against-ngram adjusted p value is larger in this release's analysis
+than in the previous one, because the family tripled. The underlying p values did
+not move. This was registered in advance for exactly this reason.
+
 ## [0.3.1] - 2026-08-26
 
 The corpus power repair. P5 measured the two engines against each other and then

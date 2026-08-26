@@ -90,10 +90,25 @@ def test_a_missing_target_is_a_usage_error(runner: CliRunner) -> None:
     assert "URL or a path" in result.output
 
 
-def test_an_engine_that_does_not_exist_yet_names_its_phase(runner: CliRunner) -> None:
-    result = runner.invoke(cli, ["audit", "page.html", "--engine", "llm"])
+def test_the_llm_engine_with_no_server_is_a_usage_error_and_not_a_fallback(
+    runner: CliRunner,
+) -> None:
+    """P6 built the engine this test used to find unimplemented, so what it now
+    asserts is the other half of the same rule.
+
+    ``--engine llm`` with nothing listening is exit code 2 and a sentence naming
+    what is missing and how to start it. It never quietly becomes the rule
+    baseline: ``auto`` is the only choice that substitutes, and it says which
+    engine it ended up with and why.
+    """
+    result = runner.invoke(
+        cli,
+        ["audit", "page.html", "--engine", "llm", "--llm-endpoint", "http://127.0.0.1:1/v1"],
+    )
     assert result.exit_code == 2
-    assert "phase P6" in result.output
+    assert "no server answered" in result.output
+    assert "ollama serve" in result.output
+    assert "rule baseline" not in result.output
 
 
 def test_the_ngram_engine_with_no_model_is_a_usage_error_and_not_a_fallback(

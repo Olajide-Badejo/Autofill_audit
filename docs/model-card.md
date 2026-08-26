@@ -564,3 +564,44 @@ CUDA to audit a form is a tool nobody installs (spec section 5.4).
 
 **The model is trained on synthetic data and its real-world accuracy is
 unmeasured until a real-world evaluation exists.**
+
+---
+
+## 11. How this model compares against a language model
+
+Added at P6, when the third engine arrived and the comparison of spec section
+13.4 was run. The numbers are in the README and in the result files it links to;
+what belongs on this card is what the comparison says about **this** model.
+
+**This model beat a 12-billion-parameter instruction model at 4-bit
+quantization** on macro-F1 and on micro-F1, on every markup-quality tier, and on
+the seen-locale slice, on the test split of this corpus. The language model led it
+on one slice, the held-out locale, and that difference did not survive the
+correction across the comparison family.
+
+**Three limits on reading that as a general result**, all of which favour this
+model and none of which it earned:
+
+1. **This model was fitted on this corpus's own training split.** The language
+   model saw the corpus for the first time at inference. A comparison between a
+   model fitted on the distribution and a model that was not is a comparison of
+   two different things, and on a synthetic corpus with a generator behind it the
+   fitted one has more to gain than it would on real pages.
+2. **The task is close to the worst case for a language model.** The entire input
+   is a short list of attribute strings and text fragments. There is no prose to
+   reason over and little for world knowledge to contribute beyond what a naming
+   convention already encodes.
+3. **One model, one quantization, one prompt.** No fine-tuning was attempted and
+   no prompt search was run. A different model or a better prompt could move it.
+
+**What the comparison does establish for this card** is that the calibrated
+confidence on this model is doing work that parameter count does not substitute
+for. The language model's confidence is self-reported, which spec section 12.1
+forbids from gating anything, so its threshold block is zero and it accuses
+whenever it has an answer. It found more real defects than this model and was
+wrong about roughly one accusation in five. This model, gated by a boundary
+derived against a pre-registered precision target, accused less often and was
+right far more often when it did.
+
+That is the trade section 6 of this card exists to document, measured against a
+system that has no equivalent of it.

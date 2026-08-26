@@ -71,12 +71,40 @@ def test_naming_rules_explicitly_prints_nothing() -> None:
     assert load_engine(EngineChoice.RULES).notice is None
 
 
-@pytest.mark.parametrize("choice", [EngineChoice.LLM])
-def test_an_engine_that_does_not_exist_yet_is_refused_by_name(choice: EngineChoice) -> None:
-    """Never silently a different engine: that is how a three-way benchmark
-    reports two engines under three names."""
-    with pytest.raises(UnavailableEngineError, match="phase P"):
-        load_engine(choice)
+def test_every_engine_choice_now_loads_or_names_the_phase_that_will_build_it() -> None:
+    """Since P6 the ladder has an implementation for every name it accepts.
+
+    The assertion is over the table rather than over a list of names, so adding a
+    choice to ``EngineChoice`` without implementing it fails here rather than
+    reaching a user as a ``KeyError``. The property this protects is the one the
+    parametrised version protected before P6 filled the last rung: a named engine
+    is never silently a different engine, because that is how a three-way
+    benchmark reports two engines under three names.
+    """
+    from autofill_audit.classify import _PENDING
+
+    implemented = {
+        EngineChoice.AUTO,
+        EngineChoice.RULES,
+        EngineChoice.NGRAM,
+        EngineChoice.LLM,
+    }
+    assert set(_PENDING) | implemented == set(EngineChoice)
+    assert not set(_PENDING) & implemented, "a choice cannot be both built and pending"
+
+
+def test_naming_the_llm_engine_with_no_server_refuses_rather_than_falling_back() -> None:
+    """The same rule as ``ngram`` with no model, for the one engine whose
+    prerequisite lives outside this repository.
+
+    Port 1 is the TCP port service multiplexer and nothing in this project ever
+    listens there, so this is the no-server case on any machine and it needs no
+    network to establish that.
+    """
+    from autofill_audit.llm.client import LLMConfig
+
+    with pytest.raises(UnavailableEngineError, match="no server answered"):
+        load_engine(EngineChoice.LLM, llm_config=LLMConfig(endpoint="http://127.0.0.1:1/v1"))
 
 
 def test_naming_the_ngram_engine_with_no_model_refuses_rather_than_falling_back() -> None:

@@ -1,0 +1,261 @@
+{
+  "labels": [
+    "CC_EXP_SPLIT_MONTH",
+    "CC_EXP_SPLIT_YEAR",
+    "COMPOSITE_UNSPLIT",
+    "NOT_AUTOFILLABLE",
+    "UNKNOWN",
+    "address-level1",
+    "address-level2",
+    "address-line1",
+    "address-line2",
+    "address-line3",
+    "bday",
+    "cc-csc",
+    "cc-exp",
+    "cc-exp-month",
+    "cc-exp-year",
+    "cc-name",
+    "cc-number",
+    "cc-type",
+    "country",
+    "country-name",
+    "current-password",
+    "email",
+    "family-name",
+    "given-name",
+    "honorific-prefix",
+    "honorific-suffix",
+    "name",
+    "new-password",
+    "one-time-code",
+    "organization",
+    "postal-code",
+    "sex",
+    "street-address",
+    "tel",
+    "tel-country-code",
+    "tel-extension",
+    "tel-national",
+    "url",
+    "username"
+  ],
+  "rows": 2317,
+  "cells": {
+    "CC_EXP_SPLIT_MONTH": {
+      "CC_EXP_SPLIT_MONTH": 48
+    },
+    "CC_EXP_SPLIT_YEAR": {
+      "CC_EXP_SPLIT_YEAR": 48
+    },
+    "COMPOSITE_UNSPLIT": {
+      "COMPOSITE_UNSPLIT": 44,
+      "NOT_AUTOFILLABLE": 4
+    },
+    "NOT_AUTOFILLABLE": {
+      "NOT_AUTOFILLABLE": 313,
+      "UNKNOWN": 4,
+      "address-level2": 4,
+      "address-line2": 2,
+      "cc-csc": 1,
+      "cc-name": 1,
+      "country-name": 2,
+      "email": 7,
+      "family-name": 1,
+      "given-name": 1
+    },
+    "UNKNOWN": {
+      "UNKNOWN": 74,
+      "address-level2": 6,
+      "address-line2": 9,
+      "bday": 1,
+      "cc-exp-month": 1,
+      "cc-name": 1,
+      "country-name": 6,
+      "given-name": 2,
+      "one-time-code": 10,
+      "postal-code": 4,
+      "tel-extension": 6
+    },
+    "address-level1": {
+      "address-level1": 53,
+      "country": 11
+    },
+    "address-level2": {
+      "address-level2": 69,
+      "address-line1": 3,
+      "address-line2": 2,
+      "country-name": 1,
+      "one-time-code": 1,
+      "street-address": 6,
+      "username": 2
+    },
+    "address-line1": {
+      "address-level2": 5,
+      "address-line1": 19
+    },
+    "address-line2": {
+      "address-level2": 2,
+      "address-line2": 21,
+      "country-name": 1
+    },
+    "address-line3": {
+      "address-level2": 2,
+      "address-line2": 4,
+      "address-line3": 13,
+      "country-name": 4,
+      "street-address": 1
+    },
+    "bday": {
+      "bday": 22,
+      "honorific-suffix": 2
+    },
+    "cc-csc": {
+      "cc-csc": 92,
+      "cc-exp-month": 1,
+      "cc-name": 3
+    },
+    "cc-exp": {
+      "cc-csc": 2,
+      "cc-exp": 19,
+      "cc-exp-month": 1,
+      "cc-exp-year": 2
+    },
+    "cc-exp-month": {
+      "cc-exp-month": 21,
+      "organization": 3
+    },
+    "cc-exp-year": {
+      "address-line1": 3,
+      "cc-csc": 1,
+      "cc-exp-year": 14,
+      "one-time-code": 1,
+      "street-address": 5
+    },
+    "cc-name": {
+      "address-level2": 3,
+      "cc-csc": 5,
+      "cc-name": 40
+    },
+    "cc-number": {
+      "address-level2": 1,
+      "cc-csc": 4,
+      "cc-exp-month": 3,
+      "cc-exp-year": 2,
+      "cc-name": 13,
+      "cc-number": 73
+    },
+    "cc-type": {
+      "cc-type": 68,
+      "sex": 4
+    },
+    "country": {
+      "address-level1": 30,
+      "country": 66
+    },
+    "country-name": {
+      "UNKNOWN": 4,
+      "address-level2": 9,
+      "address-line3": 1,
+      "cc-csc": 2,
+      "country-name": 30,
+      "postal-code": 1,
+      "street-address": 1
+    },
+    "current-password": {
+      "current-password": 40,
+      "new-password": 8
+    },
+    "email": {
+      "email": 132,
+      "family-name": 5,
+      "given-name": 6,
+      "tel": 1
+    },
+    "family-name": {
+      "UNKNOWN": 1,
+      "address-level2": 4,
+      "address-line1": 1,
+      "cc-csc": 5,
+      "family-name": 60,
+      "given-name": 1,
+      "honorific-suffix": 1,
+      "one-time-code": 1,
+      "organization": 3,
+      "tel-national": 7
+    },
+    "given-name": {
+      "address-level2": 3,
+      "cc-csc": 1,
+      "family-name": 2,
+      "given-name": 65,
+      "one-time-code": 5,
+      "organization": 4,
+      "tel-national": 4
+    },
+    "name": {
+      "name": 20,
+      "organization": 4
+    },
+    "new-password": {
+      "current-password": 2,
+      "new-password": 94
+    },
+    "one-time-code": {
+      "address-line1": 2,
+      "one-time-code": 46
+    },
+    "organization": {
+      "given-name": 3,
+      "name": 5,
+      "organization": 40
+    },
+    "postal-code": {
+      "address-level2": 2,
+      "address-line1": 6,
+      "address-line2": 1,
+      "country-name": 1,
+      "one-time-code": 2,
+      "organization": 6,
+      "postal-code": 82,
+      "street-address": 3,
+      "username": 2
+    },
+    "sex": {
+      "honorific-prefix": 1,
+      "sex": 23
+    },
+    "street-address": {
+      "UNKNOWN": 1,
+      "address-level2": 6,
+      "address-line1": 5,
+      "address-line2": 3,
+      "country-name": 3,
+      "one-time-code": 12,
+      "organization": 2,
+      "street-address": 39,
+      "username": 1
+    },
+    "tel": {
+      "tel": 18,
+      "tel-national": 6
+    },
+    "tel-country-code": {
+      "tel-country-code": 24
+    },
+    "tel-national": {
+      "tel": 7,
+      "tel-national": 17
+    },
+    "url": {
+      "given-name": 6,
+      "url": 18
+    },
+    "username": {
+      "family-name": 7,
+      "given-name": 17,
+      "one-time-code": 7,
+      "username": 41
+    }
+  }
+}

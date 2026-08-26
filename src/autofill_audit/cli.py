@@ -284,6 +284,14 @@ def _print_schema(ctx: click.Context, _param: click.Parameter, value: bool) -> N
     help="auto uses the strongest engine that loads, and says so when it falls back",
 )
 @click.option(
+    "--llm-endpoint",
+    type=str,
+    default=None,
+    help="research layer only: the OpenAI-compatible base URL, above the config file",
+)
+@click.option("--llm-model", type=str, default=None, help="research layer only: the model tag")
+@click.option("--llm-batch", type=int, default=None, help="research layer only: fields per request")
+@click.option(
     "--format",
     "formats",
     type=click.Choice(["terminal", "json", "html"]),
@@ -349,6 +357,9 @@ def audit(
     ctx: click.Context,
     target: str | None,
     engine: str,
+    llm_endpoint: str | None,
+    llm_model: str | None,
+    llm_batch: int | None,
     formats: tuple[str, ...],
     out: Path | None,
     fail_on: str,
@@ -387,7 +398,10 @@ def audit(
         _fail("--out is required for the html format", EXIT_USAGE)
 
     try:
-        loaded = load_engine(EngineChoice(engine))
+        loaded = load_engine(
+            EngineChoice(engine),
+            llm_config=_llm_config(ctx, config, engine, llm_endpoint, llm_model, llm_batch),
+        )
     except UnavailableEngineError as error:
         _fail(str(error), EXIT_USAGE)
 
@@ -426,6 +440,43 @@ def audit(
     _emit(report, chosen, out, quiet=quiet)
     threshold = None if fail_on == _NEVER else Severity(fail_on)
     ctx.exit(report.exit_code(threshold))
+
+
+def _llm_config(
+    ctx: click.Context,
+    config: Config,
+    engine: str,
+    endpoint_flag: str | None = None,
+    model_flag: str | None = None,
+    batch_flag: int | None = None,
+) -> Any:
+    """Build the LLM configuration from flags and the config file's ``[llm]`` block.
+
+    Spec section 14 puts the endpoint, model tag, batch size and timeout in the
+    config file, and puts a CLI flag above it and an environment variable between
+    them. That precedence is click's, applied by ``_from_config`` exactly as it is
+    for every other setting.
+
+    Returns None for every engine but ``llm``, so that auditing a page with the
+    rule baseline never imports the research layer (ground rule 11) and never
+    resolves a configuration it has no use for.
+    """
+    if engine != EngineChoice.LLM.value:
+        return None
+    from autofill_audit.llm.client import LLMConfig
+
+    block = config.get("llm") or {}
+    defaults = LLMConfig()
+    endpoint = _from_config(ctx, "llm_endpoint", config, endpoint_flag) or block.get("endpoint")
+    model_tag = _from_config(ctx, "llm_model", config, model_flag) or block.get("model")
+    batch = _from_config(ctx, "llm_batch", config, batch_flag) or block.get("batch")
+    timeout_s = block.get("timeout_s")
+    return LLMConfig(
+        endpoint=str(endpoint or defaults.endpoint),
+        model_tag=str(model_tag or defaults.model_tag),
+        batch=int(batch or defaults.batch),
+        timeout_s=float(timeout_s or defaults.timeout_s),
+    )
 
 
 def _configured_formats(config: Config) -> tuple[str, ...]:
@@ -799,10 +850,13 @@ _MEASURING_FLAG: Final[str] = "--i-am-measuring"
 )
 @click.option(
     "--engine",
-    type=click.Choice(["rules", "ngram"]),
+    type=click.Choice(["rules", "ngram", "llm"]),
     required=True,
     help="the engine to measure; never auto, because a benchmark must say what ran",
 )
+@click.option("--llm-endpoint", type=str, default=None, help="OpenAI-compatible base URL")
+@click.option("--llm-model", type=str, default=None, help="model tag, recorded in every row")
+@click.option("--llm-batch", type=int, default=None, help="fields per request")
 @click.option(
     "--out",
     type=click.Path(file_okay=False, path_type=Path),
@@ -826,6 +880,9 @@ def evaluate(
     split_file: Path | None,
     split: str,
     engine: str,
+    llm_endpoint: str | None,
+    llm_model: str | None,
+    llm_batch: int | None,
     out: Path,
     run_id: str | None,
     model: Path | None,
@@ -868,6 +925,136 @@ def evaluate(
         arguments.extend(["--seed", str(seed)])
     if measuring:
         arguments.append(_MEASURING_FLAG)
+    if llm_endpoint is not None:
+        arguments.extend(["--llm-endpoint", llm_endpoint])
+    if llm_model is not None:
+        arguments.extend(["--llm-model", llm_model])
+    if llm_batch is not None:
+        arguments.extend(["--llm-batch", str(llm_batch)])
+    for item in note:
+        arguments.extend(["--note", item])
+    raise SystemExit(subprocess.call(arguments))
+
+
+# ---------------------------------------------------------------------------
+# The headline benchmark (P6).
+# ---------------------------------------------------------------------------
+
+_BENCH_SCRIPT: Final[str] = "bench.py"
+
+_BENCH_ABSENT: Final[str] = (
+    "the headline benchmark needs a source checkout: scripts/bench.py is not in "
+    "this installation, and neither is the corpus it measures against. Clone the "
+    "repository and install the dev extra."
+)
+
+
+@cli.command(
+    "bench",
+    context_settings={"ignore_unknown_options": True},
+    help="The multi-engine headline benchmark. Wraps scripts/bench.py; needs a source checkout.",
+)
+@click.option("--corpus", "corpus_dir", type=click.Path(path_type=Path), default=Path("corpus"))
+@click.option("--split-file", type=click.Path(path_type=Path), default=None)
+@click.option("--split", type=click.Choice(["dev", "test"]), default="test", show_default=True)
+@click.option(
+    "--engines",
+    type=str,
+    default="rules,ngram,llm",
+    show_default=True,
+    help="comma separated; every one is checked before any of them runs",
+)
+@click.option(
+    "--out",
+    type=click.Path(file_okay=False, path_type=Path),
+    default=Path("experiments/results"),
+    show_default=True,
+)
+@click.option("--bench-id", type=str, default=None)
+@click.option("--run-id-prefix", type=str, default=None)
+@click.option("--model", type=click.Path(file_okay=False, path_type=Path), default=None)
+@click.option("--seed", type=int, default=None)
+@click.option(
+    "--repeats",
+    type=int,
+    default=None,
+    help="time the classifier this many times; the predictions are written once",
+)
+@click.option(
+    "--warmup", type=int, default=None, help="discarded timing passes before the measured one"
+)
+@click.option("--llm-endpoint", type=str, default=None)
+@click.option("--llm-model", type=str, default=None)
+@click.option("--llm-batch", type=int, default=None)
+@click.option(
+    _MEASURING_FLAG,
+    "measuring",
+    is_flag=True,
+    default=False,
+    help="required for --split test; the test split is spent the first time it is read",
+)
+@click.option("--note", multiple=True, help="a note recorded in every run manifest")
+@click.option("--skip-analysis", is_flag=True, default=False)
+def bench(
+    corpus_dir: Path,
+    split_file: Path | None,
+    split: str,
+    engines: str,
+    out: Path,
+    bench_id: str | None,
+    run_id_prefix: str | None,
+    model: Path | None,
+    seed: int | None,
+    repeats: int | None,
+    warmup: int | None,
+    llm_endpoint: str | None,
+    llm_model: str | None,
+    llm_batch: int | None,
+    measuring: bool,
+    note: tuple[str, ...],
+    skip_analysis: bool,
+) -> None:
+    """Run every named engine on one split and assemble the section 13.4 grid.
+
+    Fails fast when an engine's prerequisite is missing, and does it before the
+    first page loads rather than after the first engine has run. Spec section 14
+    asks for that so a three-engine benchmark cannot quietly report two, and the
+    timing matters because the language-model engine takes long enough that
+    discovering the problem at the end would waste the run.
+    """
+    script = find_script(Path.cwd(), _BENCH_SCRIPT)
+    if script is None:
+        _fail(_BENCH_ABSENT, EXIT_USAGE)
+    arguments = [
+        sys.executable,
+        str(script),
+        "--corpus",
+        str(corpus_dir),
+        "--split",
+        split,
+        "--engines",
+        engines,
+        "--out",
+        str(out),
+    ]
+    for flag, value in (
+        ("--split-file", split_file),
+        ("--bench-id", bench_id),
+        ("--run-id-prefix", run_id_prefix),
+        ("--model", model),
+        ("--seed", seed),
+        ("--repeats", repeats),
+        ("--warmup", warmup),
+        ("--llm-endpoint", llm_endpoint),
+        ("--llm-model", llm_model),
+        ("--llm-batch", llm_batch),
+    ):
+        if value is not None:
+            arguments.extend([flag, str(value)])
+    if measuring:
+        arguments.append(_MEASURING_FLAG)
+    if skip_analysis:
+        arguments.append("--skip-analysis")
     for item in note:
         arguments.extend(["--note", item])
     raise SystemExit(subprocess.call(arguments))

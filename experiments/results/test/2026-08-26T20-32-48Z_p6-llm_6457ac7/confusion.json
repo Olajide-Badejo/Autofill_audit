@@ -1,0 +1,255 @@
+{
+  "labels": [
+    "CC_EXP_SPLIT_MONTH",
+    "CC_EXP_SPLIT_YEAR",
+    "COMPOSITE_UNSPLIT",
+    "NOT_AUTOFILLABLE",
+    "UNKNOWN",
+    "additional-name",
+    "address-level1",
+    "address-level2",
+    "address-line1",
+    "address-line2",
+    "address-line3",
+    "bday",
+    "cc-csc",
+    "cc-exp",
+    "cc-exp-month",
+    "cc-exp-year",
+    "cc-name",
+    "cc-number",
+    "cc-type",
+    "country",
+    "country-name",
+    "current-password",
+    "email",
+    "family-name",
+    "given-name",
+    "name",
+    "new-password",
+    "one-time-code",
+    "organization",
+    "postal-code",
+    "sex",
+    "street-address",
+    "tel",
+    "tel-country-code",
+    "tel-national",
+    "transaction-amount",
+    "url",
+    "username"
+  ],
+  "rows": 2317,
+  "cells": {
+    "CC_EXP_SPLIT_MONTH": {
+      "CC_EXP_SPLIT_MONTH": 26,
+      "cc-exp-month": 22
+    },
+    "CC_EXP_SPLIT_YEAR": {
+      "CC_EXP_SPLIT_YEAR": 26,
+      "cc-exp-year": 22
+    },
+    "COMPOSITE_UNSPLIT": {
+      "NOT_AUTOFILLABLE": 10,
+      "UNKNOWN": 2,
+      "address-line1": 36
+    },
+    "NOT_AUTOFILLABLE": {
+      "NOT_AUTOFILLABLE": 332,
+      "one-time-code": 1,
+      "transaction-amount": 3
+    },
+    "UNKNOWN": {
+      "NOT_AUTOFILLABLE": 91,
+      "UNKNOWN": 22,
+      "address-level1": 1,
+      "address-line2": 1,
+      "address-line3": 1,
+      "email": 1,
+      "postal-code": 2,
+      "tel": 1
+    },
+    "address-level1": {
+      "NOT_AUTOFILLABLE": 3,
+      "address-level1": 60,
+      "country-name": 1
+    },
+    "address-level2": {
+      "NOT_AUTOFILLABLE": 7,
+      "UNKNOWN": 1,
+      "additional-name": 1,
+      "address-level1": 2,
+      "address-level2": 61,
+      "address-line1": 6,
+      "address-line2": 3,
+      "country-name": 1,
+      "family-name": 1,
+      "tel": 1
+    },
+    "address-line1": {
+      "NOT_AUTOFILLABLE": 2,
+      "address-line1": 19,
+      "address-line2": 2,
+      "address-line3": 1
+    },
+    "address-line2": {
+      "NOT_AUTOFILLABLE": 1,
+      "address-line2": 20,
+      "address-line3": 3
+    },
+    "address-line3": {
+      "NOT_AUTOFILLABLE": 2,
+      "address-level1": 1,
+      "address-level2": 1,
+      "address-line1": 1,
+      "address-line3": 19
+    },
+    "bday": {
+      "NOT_AUTOFILLABLE": 2,
+      "UNKNOWN": 3,
+      "bday": 17,
+      "given-name": 1,
+      "username": 1
+    },
+    "cc-csc": {
+      "NOT_AUTOFILLABLE": 6,
+      "cc-csc": 79,
+      "cc-exp-year": 4,
+      "cc-number": 6,
+      "postal-code": 1
+    },
+    "cc-exp": {
+      "CC_EXP_SPLIT_MONTH": 10,
+      "cc-exp": 10,
+      "cc-exp-month": 4
+    },
+    "cc-exp-month": {
+      "CC_EXP_SPLIT_MONTH": 2,
+      "cc-exp-month": 22
+    },
+    "cc-exp-year": {
+      "CC_EXP_SPLIT_YEAR": 2,
+      "cc-exp-year": 22
+    },
+    "cc-name": {
+      "cc-name": 36,
+      "cc-number": 3,
+      "name": 9
+    },
+    "cc-number": {
+      "NOT_AUTOFILLABLE": 5,
+      "UNKNOWN": 1,
+      "cc-csc": 1,
+      "cc-name": 3,
+      "cc-number": 86
+    },
+    "cc-type": {
+      "NOT_AUTOFILLABLE": 43,
+      "cc-type": 29
+    },
+    "country": {
+      "NOT_AUTOFILLABLE": 2,
+      "country": 18,
+      "country-name": 76
+    },
+    "country-name": {
+      "NOT_AUTOFILLABLE": 4,
+      "UNKNOWN": 1,
+      "country": 4,
+      "country-name": 37,
+      "postal-code": 1,
+      "tel": 1
+    },
+    "current-password": {
+      "current-password": 34,
+      "new-password": 14
+    },
+    "email": {
+      "NOT_AUTOFILLABLE": 8,
+      "UNKNOWN": 2,
+      "additional-name": 1,
+      "email": 132,
+      "given-name": 1
+    },
+    "family-name": {
+      "NOT_AUTOFILLABLE": 3,
+      "UNKNOWN": 4,
+      "additional-name": 8,
+      "family-name": 58,
+      "given-name": 11
+    },
+    "given-name": {
+      "NOT_AUTOFILLABLE": 8,
+      "additional-name": 10,
+      "family-name": 4,
+      "given-name": 62
+    },
+    "name": {
+      "name": 24
+    },
+    "new-password": {
+      "UNKNOWN": 1,
+      "current-password": 20,
+      "new-password": 75
+    },
+    "one-time-code": {
+      "NOT_AUTOFILLABLE": 15,
+      "UNKNOWN": 6,
+      "one-time-code": 27
+    },
+    "organization": {
+      "NOT_AUTOFILLABLE": 5,
+      "additional-name": 4,
+      "name": 10,
+      "organization": 29
+    },
+    "postal-code": {
+      "NOT_AUTOFILLABLE": 12,
+      "UNKNOWN": 1,
+      "additional-name": 1,
+      "address-line1": 3,
+      "address-line2": 2,
+      "country-name": 2,
+      "postal-code": 83,
+      "street-address": 1
+    },
+    "sex": {
+      "UNKNOWN": 14,
+      "sex": 10
+    },
+    "street-address": {
+      "NOT_AUTOFILLABLE": 9,
+      "additional-name": 2,
+      "address-level2": 1,
+      "address-line1": 40,
+      "address-line2": 2,
+      "country-name": 1,
+      "given-name": 1,
+      "street-address": 15,
+      "username": 1
+    },
+    "tel": {
+      "NOT_AUTOFILLABLE": 4,
+      "address-line1": 2,
+      "tel": 18
+    },
+    "tel-country-code": {
+      "NOT_AUTOFILLABLE": 8,
+      "tel-country-code": 16
+    },
+    "tel-national": {
+      "tel": 14,
+      "tel-national": 10
+    },
+    "url": {
+      "NOT_AUTOFILLABLE": 6,
+      "url": 18
+    },
+    "username": {
+      "NOT_AUTOFILLABLE": 5,
+      "UNKNOWN": 1,
+      "additional-name": 7,
+      "username": 59
+    }
+  }
+}

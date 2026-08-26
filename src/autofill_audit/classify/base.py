@@ -41,6 +41,7 @@ from autofill_audit.descriptors import FieldDescriptor, Prediction
 __all__ = [
     "CONFIDENCE_KIND_KEY",
     "CONFIDENCE_KIND_PROBABILITY",
+    "CONFIDENCE_KIND_SELF_REPORTED",
     "CONFIDENCE_KIND_TIER",
     "TIER_CONFIDENCE",
     "TIER_ORDER",
@@ -105,6 +106,22 @@ CONFIDENCE_KIND_PROBABILITY: Final[str] = "calibrated-probability"
 """What a P4 engine reports once its outputs have been calibrated on the dev
 split. Named here rather than at P4 so that the renderer's branch has both arms
 written down at the point the branch is introduced."""
+
+CONFIDENCE_KIND_SELF_REPORTED: Final[str] = "self-reported"
+"""What the P6 language-model engine reports: a number the model made up about
+its own answer.
+
+Named here, beside the other two, for the reason the line above gives and for a
+second one. ``audit/engine.py`` is the single place that formats a confidence and
+it needs this constant to branch on; importing it from ``classify/llm.py`` would
+put the research layer in the import graph of every audit, which ground rule 11
+forbids. A three-word string is not worth that, and the three scales this project
+produces belong in one place anyway.
+
+Spec section 12.1: it is not calibrated, it correlates with nothing in
+particular, it never feeds the threshold policy of spec section 11.3, and it is
+never rendered as a bare percentage beside a calibrated one without a marker
+distinguishing them."""
 
 
 def tier_for_confidence(confidence: float) -> ConfidenceTier:

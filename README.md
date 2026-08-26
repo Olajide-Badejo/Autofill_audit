@@ -192,15 +192,27 @@ templates assigned to the training, development and test splits so that no test
 form shares an author with a training form. How the tool behaves on real pages is
 unmeasured and is stated as unmeasured.
 
-**This is the second measurement of this comparison and the first one that could
-have certified a difference.** The first was taken on a corpus whose test
-partition held one template per family, which gave the clustered significance
-test too few clusters to reach the pre-registered level at any effect size. That
-was found and reported rather than worked around, the corpus was widened before
-anything else happened, and the reasoning was registered in advance in
-[`experiments/predictions/p5r-power-repair.md`](experiments/predictions/p5r-power-repair.md).
-The first measurement's result files are still here, unedited, and nothing below
-cites them.
+**This is the headline benchmark of the build specification's section 13.4:
+three engines, six locales, four markup-quality tiers, on the test split.** The
+predictions it was measured against were committed before it ran, in
+[`experiments/predictions/p6-llm-comparison.md`](experiments/predictions/p6-llm-comparison.md),
+and a CI job verifies that the prediction commit is an ancestor of every result
+file below. Half of those predictions turned out to be wrong, and the section
+that scores them says which.
+
+An earlier measurement of the two classical engines was taken on a corpus whose
+test partition held one template per family, which gave the clustered
+significance test too few clusters to reach the pre-registered level at any
+effect size. That was found and reported rather than worked around, and the
+corpus was widened before anything else happened. Those result files are still
+here, unedited, and nothing below cites them.
+
+**The two deterministic engines reproduced the previous measurement exactly**,
+every prediction and every finding, field for field across all 2317 fields
+([rules](experiments/results/test/2026-08-26T21-15-35Z_p6-rules_6457ac7/run.jsonl),
+[ngram](experiments/results/test/2026-08-26T21-17-53Z_p6-ngram_6457ac7/run.jsonl)).
+Only the latency columns differ, because those are re-measured rather than
+recomputed.
 
 ### What a developer experiences
 
@@ -210,120 +222,264 @@ than reporting raw classifier accuracy.
 
 | Engine | `MISSING_AUTOCOMPLETE` precision | Accusations | Recall | Fields needing one | Result file |
 |---|---|---|---|---|---|
-| `rules` | 1.0000 | 449 | 0.5684 | 790 | [metrics.json](experiments/results/test/2026-08-26T06-18-34Z_p5r-rules_0d900ff/metrics.json) |
-| `ngram` | 0.9731 | 334 | 0.4114 | 790 | [metrics.json](experiments/results/test/2026-08-26T06-21-03Z_p5r-ngram_0d900ff/metrics.json) |
+| `rules` | 1.0000 | 449 | 0.5684 | 790 | [metrics.json](experiments/results/test/2026-08-26T21-15-35Z_p6-rules_6457ac7/metrics.json) |
+| `ngram` | 0.9731 | 334 | 0.4114 | 790 | [metrics.json](experiments/results/test/2026-08-26T21-17-53Z_p6-ngram_6457ac7/metrics.json) |
+| `llm` | 0.7803 | 692 | 0.6835 | 790 | [metrics.json](experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json) |
 
-The rule baseline was right about every field it accused and found more of them.
-The model was wrong about nine of its accusations
-([metrics.json](experiments/results/test/2026-08-26T06-21-03Z_p5r-ngram_0d900ff/metrics.json)),
-which is the first time either engine has told a developer to add a token that
-the answer key does not agree with.
+The rule baseline was right about every field it accused. The language model
+found the most real defects and was wrong about roughly one accusation in five
+([metrics.json](experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json)),
+which on a developer tool means a fifth of the work it hands you is work you
+should not do.
 
-The other accusation code, `WRONG_AUTOCOMPLETE`, has its **recall** reported and
-its **precision** withheld for both engines. Thirty fields on the test split
-needed that accusation, which meets the reporting minimum this project fixed
-before it had any numbers, and neither engine made thirty accusations, which does
-not. The counts are in the result files either way. A precision computed over
-twenty-odd accusations and a precision computed over a thousand are the same
-number and are not the same claim.
+The other accusation code, `WRONG_AUTOCOMPLETE`, splits the engines:
 
-**Read the two rows as a comparison of two policies, not two classifiers.** The
-n-gram engine speaks only when a calibrated probability clears a threshold
+| Engine | `WRONG_AUTOCOMPLETE` precision | Accusations | Recall | Fields needing one | Result file |
+|---|---|---|---|---|---|
+| `rules` | insufficient data | 28 | 0.9333 | 30 | [metrics.json](experiments/results/test/2026-08-26T21-15-35Z_p6-rules_6457ac7/metrics.json) |
+| `ngram` | insufficient data | 23 | 0.7000 | 30 | [metrics.json](experiments/results/test/2026-08-26T21-17-53Z_p6-ngram_6457ac7/metrics.json) |
+| `llm` | 0.2320 | 125 | 0.9667 | 30 | [metrics.json](experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json) |
+
+Thirty fields needed that accusation, which meets the reporting minimum this
+project fixed before it had any numbers, so every recall is reported. Precision
+is withheld for the two classical engines because neither made thirty
+accusations, and reported for the language model because it made a hundred and
+twenty-five. **The asymmetry is the finding, not a formatting inconsistency**: the
+engine whose precision can be reported is the one that accused often enough to
+be measured, and the number that came back is in the table above ([metrics.json](experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json)).
+
+**Read these rows as a comparison of three policies, not three classifiers.**
+Each engine speaks under its own rule about when to speak. The n-gram engine
+speaks when a calibrated probability clears a boundary derived against a
 <!-- traceability: the target is a pre-registered policy constant in thresholds.json, not a measurement -->
-derived against a precision target of 0.98; the rule baseline speaks when a
-regular expression matches at a tier that a documented mapping calls confident.
-They are answering the same question under different rules about when to answer.
+precision target of 0.98; the rule baseline speaks when a regular expression
+matches at a tier a documented mapping calls confident; **the language model
+speaks whenever it has an answer**, because its confidence is self-reported and
+the build specification forbids a self-reported number from gating anything. Its
+threshold block is zero and zero, that was registered before the run, and the
+precision column above is the consequence.
 
 ### The classifier comparison
 
-| Engine | macro-F1 | micro-F1 | macro-F1, unseen locale | Result file |
-|---|---|---|---|---|
-| `rules` | 0.7911 | 0.7678 | 0.7276 | [metrics.json](experiments/results/test/2026-08-26T06-18-34Z_p5r-rules_0d900ff/metrics.json) |
-| `ngram` | 0.7394 | 0.8226 | 0.5637 | [metrics.json](experiments/results/test/2026-08-26T06-21-03Z_p5r-ngram_0d900ff/metrics.json) |
+| Engine | macro-F1 | micro-F1 | macro-F1, seen locales | macro-F1, unseen locale | Result file |
+|---|---|---|---|---|---|
+| `rules` | 0.7911 | 0.7678 | 0.7991 | 0.7276 | [metrics.json](experiments/results/test/2026-08-26T21-15-35Z_p6-rules_6457ac7/metrics.json) |
+| `ngram` | 0.7394 | 0.8226 | 0.7735 | 0.5637 | [metrics.json](experiments/results/test/2026-08-26T21-17-53Z_p6-ngram_6457ac7/metrics.json) |
+| `llm` | 0.6353 | 0.6953 | 0.6373 | 0.6045 | [metrics.json](experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json) |
+| `bert-onnx-int8` | absent | absent | absent | absent | not built; it is phase P8 |
 
-**The two averages disagree about who won, and that is the interesting part.**
-Macro-F1 weights every label equally and the rule baseline leads it; micro-F1
-weights every field equally and the model leads that
-([metrics.json](experiments/results/test/2026-08-26T06-21-03Z_p5r-ngram_0d900ff/metrics.json)).
-A rule table that abstains on a quarter of the fields loses field-weighted
-accuracy on exactly those fields, and a model that answers a rare class wrongly
-loses label-weighted average twice over. Neither average is the right one; the
-report has to carry both.
+The language model is `mistral-nemo:12b-instruct-2407-q4_K_M`, a 12-billion
+parameter instruction model at 4-bit quantization, running on a local GPU through
+Ollama with the response schema enforced by the server. The tag and the
+quantization are recorded in every row of its run log, because a table that named
+neither would not say what it had measured.
+
+**The 12-billion-parameter model came third on both averages** ([metrics.json](experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json)).
+The two averages disagree about which of the two classical engines won and agree
+about which came last. Macro weights every label equally and the rule baseline
+leads it; micro weights every field equally and the n-gram model leads that.
+Neither average is the right one, so both are here.
 
 The unseen-locale column is the multilingual claim's actual test: French forms
-whose templates are also unseen, so the model is not being asked about a naming
-convention it has met before. It is the one column where the gap is wide, and it
-is the column a broadly pretrained model would be expected to close.
+whose templates are also unseen. It is the **one** column where the language
+model beats the n-gram model ([analysis.json](experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json)),
+and that difference does not survive the correction across the comparison family.
+It is also the column where the rule table beats them both.
 
-Per markup-quality tier the ordering reverses:
+Per markup-quality tier:
 
 | Engine | clean | partial | mixed | hostile | Result file |
 |---|---|---|---|---|---|
-| `rules` | 0.8677 | 0.8677 | 0.8005 | 0.4681 | [metrics.json](experiments/results/test/2026-08-26T06-18-34Z_p5r-rules_0d900ff/metrics.json) |
-| `ngram` | 0.9350 | 0.9290 | 0.7151 | 0.5409 | [metrics.json](experiments/results/test/2026-08-26T06-21-03Z_p5r-ngram_0d900ff/metrics.json) |
+| `rules` | 0.8677 | 0.8677 | 0.8005 | 0.4681 | [metrics.json](experiments/results/test/2026-08-26T21-15-35Z_p6-rules_6457ac7/metrics.json) |
+| `ngram` | 0.9350 | 0.9290 | 0.7151 | 0.5409 | [metrics.json](experiments/results/test/2026-08-26T21-17-53Z_p6-ngram_6457ac7/metrics.json) |
+| `llm` | 0.6696 | 0.6522 | 0.6352 | 0.5265 | [metrics.json](experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json) |
 
-Macro-F1 per tier. The model is ahead on clean, partial and hostile markup and
-behind on mixed, which is the tier where a single form is made of sections drawn
-from different tiers and is the one real pages most resemble.
+Macro-F1 per tier. **The language model is the flattest engine and the worst one
+almost everywhere.** It loses to both on clean, partial and mixed markup by
+margins the significance test certifies, and on the hostile tier the three
+converge, as the row above shows ([metrics.json](experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json)).
+The hostile tier was the slice where broad pretrained knowledge was predicted to
+help most. It is the slice where all three engines are worst and where none of
+the differences is significant.
 
-Abstention explains most of the gap between the two macro averages.
+Abstention:
 
 | Engine | Answers `UNKNOWN` on | Accuracy on the rest | Result file |
 |---|---|---|---|
-| `rules` | 0.2620 | 0.9702 | [metrics.json](experiments/results/test/2026-08-26T06-18-34Z_p5r-rules_0d900ff/metrics.json) |
-| `ngram` | 0.0363 | 0.8204 | [metrics.json](experiments/results/test/2026-08-26T06-21-03Z_p5r-ngram_0d900ff/metrics.json) |
+| `rules` | 0.2620 | 0.9702 | [metrics.json](experiments/results/test/2026-08-26T21-15-35Z_p6-rules_6457ac7/metrics.json) |
+| `ngram` | 0.0363 | 0.8204 | [metrics.json](experiments/results/test/2026-08-26T21-17-53Z_p6-ngram_6457ac7/metrics.json) |
+| `llm` | 0.0255 | 0.7037 | [metrics.json](experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json) |
 
-A classifier that abstains often and is right when it commits is a legitimate
-design, and on this corpus it is still the one with the higher label-weighted
-average.
+The system prompt tells the model to answer `UNKNOWN` when the evidence is
+insufficient and not to guess. **It abstained less than either classical engine
+and was right less often when it committed**
+([metrics.json](experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json)).
+Instructing a model to decline is not the same as giving it a threshold, and this
+is the measurement of the difference.
 
 ### Latency, in the context that decides whether it matters
 
 | Engine | p50 | p95 | p99 | Result file |
 |---|---|---|---|---|
-| `rules` | 34.6 | 134.7 | 199.6 | [metrics.json](experiments/results/test/2026-08-26T06-18-34Z_p5r-rules_0d900ff/metrics.json) |
-| `ngram` | 170.3 | 256.6 | 342.7 | [metrics.json](experiments/results/test/2026-08-26T06-21-03Z_p5r-ngram_0d900ff/metrics.json) |
+| `rules` | 35.2 | 134.0 | 194.7 | [metrics.json](experiments/results/test/2026-08-26T21-15-35Z_p6-rules_6457ac7/metrics.json) |
+| `ngram` | 165.6 | 261.5 | 355.1 | [metrics.json](experiments/results/test/2026-08-26T21-17-53Z_p6-ngram_6457ac7/metrics.json) |
+| `llm` | 524189.3 | 674727.4 | 774080.6 | [metrics.json](experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json) |
 
-Microseconds per field, on a CPU, with the ONNX session warmed and its threads
-pinned. Both are comfortably inside a millisecond, and both are irrelevant to
-what anybody actually waits for.
+Microseconds per field. The two classical engines run on a CPU with the ONNX
+session warmed and its threads pinned, and both are comfortably inside a
+millisecond. The language model runs on a warmed GPU and is **about five thousand
+times slower than the rule table at the 95th percentile**
+([metrics.json](experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json)).
+
+**The language model's figure is a share, not a measurement.** It classifies a
+whole page in one request, so its per-field number is a batch's elapsed time
+divided by the fields in that batch. Batching amortises the round trip, which
+makes the figure flattering rather than harsh, and it is not comparable against a
+per-call measurement. The engine's own model card and run manifest say so.
+
+The context that decides whether latency matters:
 
 | Engine | Share of wall time spent loading and extracting the page | Result file |
 |---|---|---|
-| `rules` | 0.9913 | [metrics.json](experiments/results/test/2026-08-26T06-18-34Z_p5r-rules_0d900ff/metrics.json) |
-| `ngram` | 0.9870 | [metrics.json](experiments/results/test/2026-08-26T06-21-03Z_p5r-ngram_0d900ff/metrics.json) |
+| `rules` | 0.9912 | [metrics.json](experiments/results/test/2026-08-26T21-15-35Z_p6-rules_6457ac7/metrics.json) |
+| `ngram` | 0.9874 | [metrics.json](experiments/results/test/2026-08-26T21-17-53Z_p6-ngram_6457ac7/metrics.json) |
+| `llm` | 0.0537 | [metrics.json](experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json) |
 
-The browser is the cost. Celebrating the difference between the two latency
-columns would be celebrating a rounding error on a page load.
+**This is the row that turns a latency difference into a product difference.**
+For the two classical engines the browser is the cost and the classifier is a
+rounding error on a page load, so celebrating the difference between their
+latency columns would be celebrating nothing. For the language model that
+reverses: the browser becomes a twentieth of the wall time and the classifier becomes the rest ([metrics.json](experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json)).
+One is a classifier you do not wait for. The other is one you do.
+
+### What the language model cost, and what it did not
+
+| Quantity | Value | Result file |
+|---|---|---|
+| Requests | 480 | [metrics.json](experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json) |
+| Attempts | 480 | [metrics.json](experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json) |
+| Requests needing a retry | 0 | [metrics.json](experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json) |
+| Requests still failing after the retry | 0 | [metrics.json](experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json) |
+| Fields scored `UNKNOWN` by a schema failure | 0 | [metrics.json](experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json) |
+| Prompt tokens | 677632 | [metrics.json](experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json) |
+| Completion tokens | 159126 | [metrics.json](experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json) |
+| Monetary cost | null, not zero | [metrics.json](experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json) |
+
+**Schema compliance was perfect and that was not predicted.** The registered
+prediction was that between zero and five percent of requests would need a retry.
+Not one did
+([metrics.json](experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json)).
+Passing the JSON schema with the request and letting the server constrain
+decoding appears to remove the failure mode that the retry ladder exists for. The
+ladder is still there, still tested against recorded malformed responses, and on
+this run it never fired.
+
+Cost is recorded as null rather than zero because the calls were local. Zero is a
+measurement and the electricity was not free; null is the absence of one.
 
 ### Is the difference significant
 
-**No, and this time that sentence is a result rather than an admission.**
+**For the language model against both classical engines, yes, in most slices.**
 
 Fields inside one form template share an author, so the significance test
 resamples whole templates rather than individual fields. The test split holds ten
 templates, which gives an exact paired sign-flip space of one thousand and
-twenty-four arrangements and a smallest attainable two-sided p value of 0.0020 ([analysis.json](experiments/results/analysis/2026-08-26T06-23-41Z_p5r-analysis_0d900ff/analysis.json)),
+twenty-four arrangements and a smallest attainable two-sided p value well below the level ([analysis.json](experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json)),
 <!-- traceability: the level is a pre-registered policy constant, fixed before the runs in experiments/predictions/p5-statistical-policy.md -->
-comfortably below the false-discovery level of 0.05 that was fixed before any of
-these runs. **Every one of the eleven comparisons is decidable, and none of them
-is reported as inconclusive for design reasons**
-([analysis.json](experiments/results/analysis/2026-08-26T06-23-41Z_p5r-analysis_0d900ff/analysis.json)).
+which is the false-discovery level of 0.05 fixed before any of these
+runs. Every comparison is decidable and **none is reported as inconclusive for
+design reasons**
+([analysis.json](experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json)).
 
-All eleven come back as no significant change after the Benjamini Hochberg
-correction across the family
-([analysis.json](experiments/results/analysis/2026-08-26T06-23-41Z_p5r-analysis_0d900ff/analysis.json)).
-Five of them have an uncorrected p value below the level and none survives the
-correction, which is what a family of eleven correlated comparisons over ten
-clusters is expected to do and is exactly why the correction is applied across
-the whole family rather than inside whichever subset looks best.
+The family is **all three engine pairs over the same eleven comparisons, 33 in
+total, corrected together**. That membership was fixed in the prediction file
+before the runs, because the comparison this phase existed to make was the one
+against the language model, and a family containing only that pair would have
+been a third the size and would have produced smaller adjusted p values for
+exactly the comparisons the project most wanted to report.
 
-The honest reading is that the effects are real in size and not certified in
-sign: the rule baseline leads the label-weighted average by about five points
-and the model leads the field-weighted one, and ten templates is not enough
-resolution to call either. That is a different statement from the previous
-measurement's, which was that no answer was reachable at all, and it is the
-statement this corpus was widened in order to be able to make.
+| Outcome | Count | Result file |
+|---|---|---|
+| Improvement | 11 | [analysis.json](experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json) |
+| Regression | 5 | [analysis.json](experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json) |
+| Significant but below the practical threshold | 0 | [analysis.json](experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json) |
+| No significant change | 17 | [analysis.json](experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json) |
+| Inconclusive, the design cannot reach alpha | 0 | [analysis.json](experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json) |
+
+The middle row is reported even though it is empty, because a summary listing
+only the categories that occurred would drop it on exactly the runs where nothing
+landed in it.
+
+**Certified against the language model, after correction:** the rule table leads
+it overall and on the seen locales, and both classical engines lead it on clean
+and partial markup, every one of them clearing the level ([analysis.json](experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json)).
+The language model's `MISSING_AUTOCOMPLETE` recall is certified **better** than
+both, and its precision on both accusation codes certified **worse** than both.
+
+**Not certified:** everything on the hostile tier, everything on the unseen
+locale, and the language model against the n-gram model overall
+([analysis.json](experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json)).
+Those are the slices where the language model was expected to do well, and the
+honest report of them is that the differences are not large enough to call at ten
+clusters, in either direction.
+
+One consequence was registered in advance and arrived as predicted: **every
+rules-against-ngram comparison carries a larger adjusted p here than the same
+comparison carried when it was corrected inside a family of eleven.** The
+underlying p values did not move. The earlier analysis file is untouched.
+
+### The question this project exists to answer
+
+The build specification puts it directly:
+
+<!-- traceability: a quotation of the build specification's own question, not a measurement -->
+> Does a 50-kilobyte linear model that runs in microseconds on a CPU get close
+> enough to a 12-billion-parameter model to be the right default for a developer
+> tool?
+
+**The premise did not survive the measurement.** The linear model did not have to
+get close to the language model, because it beat it on both averages, as the classifier table above records ([ngram](experiments/results/test/2026-08-26T21-17-53Z_p6-ngram_6457ac7/metrics.json), [llm](experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json)).
+The rule table beat both. On this corpus, at this quantization, with this prompt,
+**the fifty-kilobyte model is not the compromise. It is the better classifier**,
+and it is also five thousand times faster, needs no GPU, and adds nothing to the
+install.
+
+That answer is narrower than it sounds and the limits are part of it. It is one
+12B model at 4-bit, one prompt, one synthetic corpus, and a task whose entire
+input is a short list of attribute strings, which is close to the worst case for
+a system whose advantage is world knowledge and nearly the best case for one that
+memorises naming conventions. The language model was not fine-tuned, and the two
+classical engines were fitted on this corpus's own training split. A different
+model, a better prompt, or real-world pages could all move this, and none of them
+has been tried here.
+
+What the measurement does support is the product decision, and it supports it
+more strongly than expected: the n-gram model is the right default, and on these
+numbers it is the right default on accuracy alone, before latency or footprint
+enters the argument.
+
+### What was predicted, and what was wrong
+
+Eight predictions were committed before the benchmark ran. Four held and four did
+not, and the four that did not are the more interesting half.
+
+| # | Prediction | Outcome | Result file |
+|---|---|---|---|
+| 1 | It beats the n-gram model on the hostile tier | **Wrong**, it lost | [metrics.json](experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json) |
+| 2 | It beats the n-gram model on the unseen locale | Held, but not significant | [analysis.json](experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json) |
+| 3 | It does not beat the rule table on the unseen locale | Held | [analysis.json](experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json) |
+| 4 | Latency differs by three orders of magnitude or more | Held | [metrics.json](experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json) |
+| 5 | Schema failures above zero and below five percent | **Wrong**, exactly zero | [metrics.json](experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json) |
+| 6 | The n-gram model stays the right default | Held, for a stronger reason | [analysis.json](experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json) |
+| 7 | `tel-national` read as `tel` occurs, `username` against `email` does not | Held, both directions | [metrics.json](experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json) |
+| 8 | Abstention lands between the two classical engines | **Wrong**, below both | [metrics.json](experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json) |
+
+A ninth prediction, about which confusions would dominate, was also wrong and in
+an informative direction. The failure was expected to be over-claiming: fields
+that are not personal data read as though they were. The largest single confusion
+is the reverse, fields whose answer key is `UNKNOWN` read as `NOT_AUTOFILLABLE` ([metrics.json](experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json)).
+The model declines more readily than predicted on the fields where declining is
+wrong, while declining less readily overall than either classical engine.
 
 The same rule applies to estimates. Anything estimated rather than measured is
 labeled as an estimate where it is displayed.
