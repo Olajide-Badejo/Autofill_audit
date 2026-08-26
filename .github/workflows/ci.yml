@@ -107,6 +107,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+        with:
+          # Law 3's chain ends at a commit, and --resolve asks this repository to
+          # produce the object each manifest names. A shallow clone holds only
+          # the tip, so every citation of a run taken in an earlier commit fails
+          # with a message about a commit that does not resolve, which is true of
+          # the clone and false of the repository. The whole history is the input.
+          fetch-depth: 0
       - uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
