@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.0.0",
+  "run_id": "2026-08-26T20-32-48Z_bench_6457ac7",
+  "command_line": "bench.py --split test --engines llm,rules,ngram --run-id-prefix p6 --i-am-measuring --note the spec section 13.4 headline benchmark; engine order puts llm first so it runs against a warmed model, see ADR 0007",
+  "split": "test",
+  "engine": "llm against rules against ngram",
+  "engine_describe": {
+    "llm": "{\"batch\": \"40\", \"batch_cap\": \"40\", \"confidence_kind\": \"self-reported\", \"confidence_note\": \"self-reported by the model and not calibrated against anything. Spec section 12.1: it never feeds the threshold policy of spec section 11.3.\", \"determinism\": \"not guaranteed: the server may ignore the seed and batched reductions are not order stable (spec section 12.3 point 7)\", \"endpoint\": \"http://127.0.0.1:11434/v1\", \"engine\": \"llm\", \"latency_note\": \"latency_us per field is a batch's elapsed time divided by its field count, not a per-field measurement. Batching amortises the round trip.\", \"model_tag\": \"mistral-nemo:12b-instruct-2407-q4_K_M\", \"prompt_fingerprint\": \"0691c3d4b5d7b60f05d48958792ccf9866863d6b4769c6b119d7954056d2483a\", \"prompt_version\": \"1.0.0\", \"quantization\": \"q4_K_M\", \"seed\": \"20260825\", \"structured_output\": \"json_schema passed with every request\", \"temperature\": \"0.0\", \"tool_version\": \"0.4.0\", \"transport\": \"httpx\"}",
+    "rules": "{\"confidence_kind\": \"tier\", \"engine\": \"rules\", \"intrinsic_rules\": \"10\", \"option_rules\": \"36\", \"rule_table_version\": \"1.0.0\", \"tool_version\": \"0.4.0\", \"vocabulary_rules\": \"346\"}",
+    "ngram": "{\"calibration_fitted_on\": \"dev\", \"calibration_sha256\": \"73cdeea3802a55fb6897bfe0e0f73a15a118cb5171b462d00f9f515b2bc15def\", \"class_count\": \"42\", \"confidence_kind\": \"calibrated-probability\", \"engine\": \"ngram\", \"feature_width\": \"7986\", \"intra_op_threads\": \"1\", \"label_map_sha256\": \"666976229f8676aff4ada3eb1eda70f3933ed2cb412343a5576651bc28d419f8\", \"model_dir\": \"/home/elijah/autofill-audit/models\", \"model_sha256\": \"8b867be6a01e4ae5a7b1ca81118824f5dd10d40b57fa3fc0e3008f21adeef561\", \"onnx_opset\": \"26\", \"providers\": \"CPUExecutionProvider\", \"tool_version\": \"0.4.0\", \"vocab_sha256\": \"e665c2d3d4e9f4377b43bd205ad13ce1c16c62ae2e24ead6fb0d64d935bff989\"}"
+  },
+  "threshold_describe": {
+    "llm": "{\"tau_high\": \"0.0\", \"tau_low\": \"0.0\", \"basis\": \"not a boundary: the self-reported scale decides nothing (spec section 12.1)\", \"source\": \"thresholds.json\", \"measured\": \"false\"}",
+    "rules": "{\"tau_high\": \"0.7\", \"tau_low\": \"0.4\", \"basis\": \"rule-tier-band-mapping\", \"source\": \"thresholds.json\", \"measured\": \"false\"}",
+    "ngram": "{\"tau_high\": \"0.8964138380289683\", \"tau_low\": \"0.62783476610004\", \"basis\": \"dev split of the seed 20260825 corpus, calibrated n-gram engine\", \"source\": \"thresholds.json\", \"measured\": \"true\"}"
+  },
+  "artefact_sha256": {
+    "llm/run.jsonl": "d366786d2be9a114512ed33644dc1d9be7395b074922248d7b1ff84c5163476b",
+    "rules/run.jsonl": "7e52cdae599216a9ba632e9a13c2a179e2d1a214e9ffc9920d38c3923bf5c7a3",
+    "ngram/run.jsonl": "5ef6d493853a4047c5e2eb689f4aa6ab86fad7783991c130da93a3f72b184b9d"
+  },
+  "corpus_manifest_sha": "15c3136f75d2d9c6807dbc70a28ab507bca1c784df53c134650e4f9898e6e035",
+  "split_file_sha": "c4c797ee27cec1162bc57ca3c53dc2a2392899199cbbe390e2674daba38a0ab8",
+  "seed": 20260825,
+  "git": {
+    "commit": "6457ac7a3066f5a21e35c554050b7a9dbbdc7100",
+    "dirty": false
+  },
+  "dependency_versions": {
+    "python": "3.14.4",
+    "numpy": "2.5.2",
+    "onnxruntime": "1.29.0",
+    "playwright": "1.62.0",
+    "click": "8.4.2",
+    "rich": "15.0.0",
+    "jinja2": "3.1.6",
+    "ml-experiment-triage": "1.0.0"
+  },
+  "machine": {
+    "os": "Linux 6.18.33.2-microsoft-standard-WSL2",
+    "machine": "x86_64",
+    "python": "3.14.4",
+    "python_implementation": "CPython",
+    "cpu_model": "Intel(R) Core(TM) i7-14700K",
+    "cpu_count": "28",
+    "gpu_present": "NVIDIA GeForce RTX 5070"
+  },
+  "started_at": "2026-08-26T20:32:48Z",
+  "finished_at": "2026-08-26T21:20:11Z",
+  "row_count": 6951,
+  "form_count": 240,
+  "notes": [
+    "the spec section 13.4 headline benchmark over 3 engines",
+    "every number in benchmark.json is copied from a committed metrics.json and none is recomputed here",
+    "bert-onnx-int8 absent: the transformer of spec section 10.7 is phase P8 and has not been built. Spec section 13.4 requires the row to say absent rather than be left blank, because a blank cell reads as a measurement of zero."
+  ]
+}

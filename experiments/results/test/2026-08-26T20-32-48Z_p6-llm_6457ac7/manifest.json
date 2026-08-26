@@ -1,0 +1,74 @@
+{
+  "schema_version": "1.0.0",
+  "run_id": "2026-08-26T20-32-48Z_p6-llm_6457ac7",
+  "command_line": "eval.py --corpus corpus --split test --engine llm --out experiments/results --seed 20260825 --run-id 2026-08-26T20-32-48Z_p6-llm_6457ac7 --i-am-measuring --note one engine of the spec section 13.4 benchmark 2026-08-26T20-32-48Z_bench_6457ac7 --note the spec section 13.4 headline benchmark; engine order puts llm first so it runs against a warmed model, see ADR 0007",
+  "split": "test",
+  "engine": "llm",
+  "engine_describe": {
+    "engine": "llm",
+    "tool_version": "0.4.0",
+    "prompt_version": "1.0.0",
+    "batch_cap": "40",
+    "confidence_kind": "self-reported",
+    "confidence_note": "self-reported by the model and not calibrated against anything. Spec section 12.1: it never feeds the threshold policy of spec section 11.3.",
+    "latency_note": "latency_us per field is a batch's elapsed time divided by its field count, not a per-field measurement. Batching amortises the round trip.",
+    "model_tag": "mistral-nemo:12b-instruct-2407-q4_K_M",
+    "quantization": "q4_K_M",
+    "endpoint": "http://127.0.0.1:11434/v1",
+    "batch": "40",
+    "temperature": "0.0",
+    "seed": "20260825",
+    "determinism": "not guaranteed: the server may ignore the seed and batched reductions are not order stable (spec section 12.3 point 7)",
+    "transport": "httpx",
+    "prompt_fingerprint": "0691c3d4b5d7b60f05d48958792ccf9866863d6b4769c6b119d7954056d2483a",
+    "structured_output": "json_schema passed with every request"
+  },
+  "threshold_describe": {
+    "tau_high": "0.0",
+    "tau_low": "0.0",
+    "basis": "not a boundary: the self-reported scale decides nothing (spec section 12.1)",
+    "source": "thresholds.json",
+    "measured": "false"
+  },
+  "artefact_sha256": {
+    "thresholds.json": "0d3b4e746689a54c9c72991755c246824eab9ad1b6e8596196a0a8c863578039"
+  },
+  "corpus_manifest_sha": "15c3136f75d2d9c6807dbc70a28ab507bca1c784df53c134650e4f9898e6e035",
+  "split_file_sha": "c4c797ee27cec1162bc57ca3c53dc2a2392899199cbbe390e2674daba38a0ab8",
+  "seed": 20260825,
+  "git": {
+    "commit": "6457ac7a3066f5a21e35c554050b7a9dbbdc7100",
+    "dirty": false
+  },
+  "dependency_versions": {
+    "python": "3.14.4",
+    "numpy": "2.5.2",
+    "onnxruntime": "1.29.0",
+    "playwright": "1.62.0",
+    "click": "8.4.2",
+    "rich": "15.0.0",
+    "jinja2": "3.1.6",
+    "ml-experiment-triage": "1.0.0"
+  },
+  "machine": {
+    "os": "Linux 6.18.33.2-microsoft-standard-WSL2",
+    "machine": "x86_64",
+    "python": "3.14.4",
+    "python_implementation": "CPython",
+    "cpu_model": "Intel(R) Core(TM) i7-14700K",
+    "cpu_count": "28",
+    "gpu_present": "NVIDIA GeForce RTX 5070"
+  },
+  "started_at": "2026-08-26T20:32:49Z",
+  "finished_at": "2026-08-26T21:15:35Z",
+  "row_count": 2317,
+  "form_count": 240,
+  "notes": [
+    "one engine of the spec section 13.4 benchmark 2026-08-26T20-32-48Z_bench_6457ac7",
+    "the spec section 13.4 headline benchmark; engine order puts llm first so it runs against a warmed model, see ADR 0007",
+    "run with --i-am-measuring on the test split",
+    "480 language-model requests, 480 attempts, 0 retried, 0 still failing after the retry, 0 fields scored UNKNOWN by that failure and kept in the denominator (spec section 12.3 point 4)",
+    "cost is null rather than zero: the calls were local. Spec section 12.4, zero is a measurement and the electricity was not free",
+    "latency_us per field is a batch's elapsed time divided by its field count, not a per-field measurement; batching amortises the round trip"
+  ]
+}
