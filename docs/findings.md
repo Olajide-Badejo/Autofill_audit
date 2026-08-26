@@ -643,3 +643,78 @@ and `EXTRACTION_INCOMPLETE`, do not depend on what the control means and can fir
 alongside any label. They carry structural evidence and the word `structural`
 where a confidence would go, because there is no classification to be confident
 about: the control has no label, or it has not, and that is either true or false.
+
+## Confidence scales, and the one engine whose confidence gates nothing
+
+Three engines produce a number in `Prediction.confidence` and the three numbers
+are not the same quantity. The decision procedure of spec section 11.2 is
+engine-agnostic by confidence value: it compares that float against `tau_high`
+whatever produced it. So every engine needs a block in `thresholds.json`, and an
+engine with no block is an error rather than an inheritance, because applying one
+engine's boundary to another engine's confidences would apply a scale to numbers
+produced on a different one, silently.
+
+| Engine | Confidence is | Its block is |
+|---|---|---|
+| `rules` | four ordered tiers, not probabilities, not measured | a documented tier-band mapping |
+| `ngram` | a calibrated probability | derived on the dev split against a precision target |
+| `llm` | the model's own claim about itself | zero and zero, so that it gates nothing |
+
+### Why the language model's block is zero
+
+Spec section 12.1 is explicit: a self-reported confidence "never feeds the
+threshold policy of Section 11.3". A language model asked how sure it is produces
+a number that correlates with nothing in particular, and no amount of it landing
+in the unit interval makes it a probability.
+
+That leaves one honest way to give the engine the two floats the decision
+procedure requires: set them where they cannot decide anything. `tau_high` and
+`tau_low` are both zero, and the block's `basis` string says in as many words
+that the numbers are not a boundary.
+
+**The engine still abstains.** Its abstention is the `UNKNOWN` label, which the
+system prompt instructs the model to use when the evidence is insufficient, and
+which is a decision the model makes rather than one a threshold makes for it.
+That is the difference between this engine and the other two: the rule table and
+the n-gram model decide whether to speak by comparing a number against a
+boundary, and the language model decides by answering.
+
+### The two consequences, both unflattering, both stated in advance
+
+They were pre-registered in `experiments/predictions/p6-llm-comparison.md` before
+the engine classified a field, because both would look like defects if they
+surfaced without warning.
+
+**The language model gets no threshold protection.** Every committed prediction
+that has a declaration becomes an accusation. The n-gram engine's accusations are
+gated by a boundary derived against a precision target; the language model's are
+not gated at all. So a finding-level precision comparison between them is **not**
+a comparison of two classifiers, and that sentence travels with every table that
+puts the two side by side.
+
+**`LOW_CONFIDENCE` is unreachable for this engine**, because `tau_high` fires
+first on every field. That is correct rather than broken. `LOW_CONFIDENCE` marks
+the band between "confident enough to accuse" and "not confident enough to
+speak", and an engine whose confidence is not a scale cannot have a band partway
+along one.
+
+### The alternative, and why it was refused before the measurement
+
+P4 derived the n-gram engine's boundary by picking the confidence that hit its
+pre-registered precision target on the dev split. The same procedure would run on
+the language model's self-reported numbers and would produce a threshold, and
+that threshold would almost certainly raise its finding-level precision.
+
+It was rejected in advance, which is the only time such a thing can be rejected
+honestly. It is what spec section 12.1 forbids, and the fact that it would
+flatter the engine is the reason to refuse it before seeing the numbers rather
+than a reason to reconsider after.
+
+### How a self-reported confidence is displayed
+
+`audit/engine.py::_confidence_display` is the single place that formats a
+confidence and it has one arm per scale. The rule engine's shows a tier name and
+never a percentage. The language model's shows the number with the words
+`self-reported` and `not calibrated` attached. Spec section 12.1 requires that it
+never appear as a bare percentage beside a calibrated one "without a marker
+distinguishing them", and that is the marker.
