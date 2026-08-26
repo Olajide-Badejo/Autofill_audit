@@ -187,14 +187,32 @@ def run_engine(
     return subprocess.call(command)
 
 
-def _newest_run(out: Path, split: str, engine: str, since: float) -> Path:
+def _newest_run(out: Path, split: str, engine: str, run_id: str | None, since: float) -> Path:
     """The run directory `eval` just wrote for this engine.
 
-    Located by modification time rather than by parsing the child's output,
-    because the run id is `eval`'s to choose and a second parser for it here
-    would be a second definition of the naming convention.
+    Two cases, because `eval` names a run two different ways. When this script
+    supplied a `--run-id`, the directory is exactly that name and looking for
+    anything else would be guessing at a value we already know. When it did not,
+    `eval` built the id from a timestamp, the engine, and the commit, so the
+    engine name is the part of it this script can match on.
+
+    Either way the directory has to be newer than the moment the child started,
+    which is what keeps a rerun from picking up the previous run of the same
+    engine. Located by name and time rather than by parsing the child's output,
+    because a parser for the run id here would be a second definition of a
+    convention `eval` already owns.
     """
     root = out / split
+    if not root.is_dir():
+        raise SystemExit(f"bench.py: {engine} reported success and wrote nothing under {root}")
+    if run_id is not None:
+        exact = root / run_id
+        if exact.is_dir():
+            return exact
+        raise SystemExit(
+            f"bench.py: {engine} reported success and wrote no directory named {run_id} "
+            f"under {root}"
+        )
     candidates = [
         path
         for path in root.iterdir()
@@ -397,7 +415,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         if status != 0:
             print(f"bench.py: {engine} exited {status}", file=sys.stderr)
             return status
-        directory = _newest_run(args.out, args.split, run_id or engine, since)
+        directory = _newest_run(args.out, args.split, engine, run_id, since)
         runs.append(load_engine_run(engine, directory))
 
     document: dict[str, Any] = {
