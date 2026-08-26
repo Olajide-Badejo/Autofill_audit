@@ -7,7 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-Nothing yet.
+### Changed
+
+- `requirements.lock` regenerated to add `matplotlib` and its transitive
+  packages to the `dev` extra. The figures in the P7 main report are generated
+  from committed result files by a script, which needs a plotting library, and a
+  hand-drawn figure would be a law 3 violation whatever it looked like. It is a
+  development dependency for the same reason the evaluation harness is one: the
+  audit path never imports it, and a `pipx` install of a command line auditor
+  has no business carrying a plotting stack.
 
 ## [0.4.0] - 2026-08-26
 

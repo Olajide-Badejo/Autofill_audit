@@ -69,6 +69,12 @@ dev = [
     # the wrong trade, and the audit path never imports it. The narrower extra
     # this wants is proposed in docs/cross-repo-tasks.md.
     "ml-experiment-triage @ git+https://github.com/Olajide-Badejo/ML-Experiment-Triage@v1.0.0",
+    # Figure generation for the P7 reports. It is a development dependency for
+    # the same reason the evaluation harness is one: `scripts/make_report_figures.py`
+    # runs from a checkout to produce committed PDFs, the audit path never
+    # imports it, and a plotting stack has no business in a `pipx` install of a
+    # command line auditor.
+    "matplotlib>=3.11.1",
     "mypy>=2.3.1",
     "pip-tools>=7.6.1",
     "pre-commit>=4.6.2",
