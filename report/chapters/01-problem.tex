@@ -1,0 +1,101 @@
+\chapter{The problem, and why it is worth measuring}
+\label{ch:problem}
+
+\section{What breaks}
+
+A browser fills a form field automatically only when the markup gives it enough
+to recognise what the field is for. When it cannot, the person on the other side
+of the screen types their street address by hand, on a phone, at the last step
+of a checkout. That is not a cosmetic defect. It is the point in a funnel where
+people stop.
+
+The web platform already says how to avoid it. The WHATWG HTML Living Standard
+defines the \code{autocomplete} attribute and a fixed set of autofill field name
+tokens, and the browser vendors' own form guidance explains what their
+heuristics do with them \cite{whatwg-autofill,webdev-forms,chrome-autofill}. The
+hard part is not knowing the rule. The hard part is standing in front of a page
+somebody else wrote, with sixty controls on it, and working out which ones are
+broken and exactly what to add to each.
+
+That is the gap this tool sits in. It loads a page in a real browser, walks the
+document including same origin frames and open shadow roots, collects the
+signals a browser's own heuristics would use, classifies every control against
+the specification's token set, and reports the controls that will not autofill
+together with the attribute to add to each one.
+
+\section{The one design commitment everything else follows from}
+
+The label space \emph{is} the specification's token set. Not a bespoke ontology
+that is later mapped onto it.
+
+This is worth stating early because it removes an entire class of bug from the
+product. A control classified as \code{postal-code} produces the advice
+\emph{add} \code{autocomplete="postal-code"}, and there is no second,
+undertested translation layer between the prediction and the fix. A project that
+invented its own categories would need a mapping table from category to token,
+that table would be wrong somewhere, and the wrongness would surface as
+confident bad advice on somebody's production markup.
+
+\section{Why the output needs evidence rather than confidence}
+
+The output of this tool is a list of accusations. \emph{This field will not
+autofill, and here is why.} A developer acts on those, edits production markup,
+and ships.
+
+A wrong finding costs them time and costs the tool its credibility. An
+unattributed finding costs more than either, because a finding that says
+\emph{this looks like a postal code} without saying which signal fired and how
+sure the classifier is cannot be argued with, which means it cannot be checked,
+which means the only available responses are to trust it or to delete the check.
+
+So every finding this tool emits carries a \code{signals} list naming the
+concrete inputs that triggered it, and, from the point at which a probabilistic
+classifier exists, a calibrated confidence. Below the reported threshold the
+tool says \code{LOW\_CONFIDENCE} or \code{UNDETECTABLE\_FIELD} rather than
+guessing quietly. There is no third branch, and in particular there is no path
+by which a rule table's default case becomes a confident answer.
+
+\section{What this report is}
+
+The tool is one half of the project. The other half is the question of whether
+any of it works, and that question has a specific form here.
+
+\begin{quote}
+Does a fifty kilobyte linear model that runs in microseconds on a CPU get close
+enough to a twelve billion parameter language model to be the right default for
+a developer tool?
+\end{quote}
+
+That is the headline experiment. It is a product question rather than a research
+one, and it was chosen because it is the question an engineer actually faces
+when deciding what to put in a wheel that people install with one command. This
+report answers it with numbers, and prints the answer the measurement gave
+rather than the one the project was built expecting.
+
+The measurement itself is described in Chapter~\ref{ch:method}, the numbers are
+in Chapter~\ref{ch:headline}, the significance procedure and its verdicts are in
+Chapter~\ref{ch:statistics}, and the predictions that were registered before any
+of it ran are scored in Chapter~\ref{ch:predictions}. What the answer does not
+license is in Chapter~\ref{ch:limitations}, and it is a longer chapter than the
+answer.
+
+\section{How to read the numbers in this document}
+
+\syntheticnote
+
+Two properties of this document are worth knowing before the first table.
+
+\textbf{No number here was typed by hand.} Every table is generated from a
+committed result file by \code{scripts/make\_report\_tables.py}, every figure by
+\code{scripts/make\_report\_figures.py}, and every number quoted in a sentence
+is a macro defined by the first of those beside the path it was read from. The
+chapters of this report contain no digits at all. A continuous integration job
+scans these sources for anything shaped like a measurement and fails the build
+unless the line names the result file behind it, then follows that file to its
+run manifest and the manifest to a commit object this repository can produce.
+
+\textbf{Every result cited here was produced from a clean working tree.} A run
+taken from a tree with uncommitted changes is marked dirty in its manifest and
+is not citable, and the traceability job fails on a citation of one. One
+artefact in this repository does carry that mark, and Chapter~\ref{ch:method}
+says which and what follows from it, rather than leaving the reader to find it.

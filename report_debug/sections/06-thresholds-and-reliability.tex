@@ -1,0 +1,130 @@
+\chapter{Calibration and threshold derivation}
+
+The phase where most of the work turned out to be arranging for numbers to be
+checkable rather than producing them.
+
+\begin{defect}{A threshold definition whose answer is always zero}
+\symptom{The low threshold was specified as the smallest confidence at which the
+near miss band still captures at least half of the recall the high threshold
+gives up. Written down carefully, that has a degenerate answer.}
+\diagnosis{Captured recall only ever falls as the threshold rises, so every value
+below a qualifying one also qualifies, the smallest qualifying value is always
+zero, and a threshold of zero says nothing.}
+\resolution{The non degenerate reading is the \emph{greatest} qualifying value,
+and it was written into the prediction file before the model existed.}
+\instead{Picking whichever reading produced a nicer boundary once both were
+computable. Writing the reading down first settled a real ambiguity at a point
+where there were not yet two candidate answers to choose between, which is the
+only time that choice is free.}
+\end{defect}
+
+\begin{defect}{One threshold document would have moved every rule engine finding}
+\symptom{The derived n-gram boundary sits far above the rule engine's confident
+band. A single pair of thresholds shared by both engines would have moved every
+rule engine finding on every page, churned every golden snapshot, and done it as
+a side effect of training a model.}
+\diagnosis{A confidence scale is a property of an engine. A calibrated
+probability and a rule tier band are different quantities that happen to be
+written in the same units.}
+\resolution{The threshold document carries a block per engine at a bumped schema
+version, the loader takes an engine name, and the command line resolves the
+engine first and then asks for that engine's block. The rule block is byte
+identical to what the previous phase committed, and the golden diff after the
+whole phase is the version string and nothing else, which is the evidence that it
+worked.}
+\instead{One global pair, or an inheritance rule for an engine with no block. An
+engine with no block raises. That was designed to bite when the language model
+arrived, and it did, which is how that engine's threshold decision came to be
+made deliberately and in advance rather than by inheriting a boundary derived on
+a different scale.}
+\end{defect}
+
+\begin{defect}{A precision of one over a denominator nobody could see}
+\symptom{The derived block reported that the precision target was met.}
+\diagnosis{A precision of one over fifteen accusations and a precision of one
+over fifteen hundred are the same number and are not the same claim. A reader of
+the file could not tell which they were looking at.}
+\resolution{The derived block records the denominators beside the rates, and the
+model card says the same thing in words.}
+\instead{Reporting the rate alone and mentioning the denominator in prose
+somewhere else. The file is what the runtime reads and what a reader opens
+first.}
+\end{defect}
+
+\begin{defect}{Calibration made the summary statistic worse}
+\symptom{Expected calibration error was lower before calibration than after it
+(\vEceBefore{} against \vEceAfter{}).}
+\diagnosis{The uncalibrated model on this corpus is already close to honest.
+Refitting a one versus rest sigmoid per class on a development split of one
+template per family, and then renormalising, moves classes that were already well
+behaved.}
+\resolution{The calibrator stays, and the model card says the error went the
+wrong way and by how much. Two reasons: macro-F1 is higher with it
+(\vMacroFBeforeCalibration{} before against \vDevMacroF{} after), and the
+argument for calibrating at all is about the number a single finding quotes to a
+developer rather than about an average gap across a split.}
+\instead{Dropping the calibrator. Removing a component because its summary
+statistic got worse, without re-registering a prediction first, is tuning on the
+thing being measured. The honest move was to keep the design, publish the
+number that went the wrong way, and say why the design still stands.}
+\end{defect}
+
+\begin{defect}{The sweep chose the edge of its own grid}
+\symptom{The chosen inverse regularisation is the largest value the
+pre-registered grid offered (Table in the main report's classifier chapter).}
+\diagnosis{Either the grid is too narrow or the model wants less regularisation
+than expected, and the data cannot distinguish those without a wider grid.}
+\resolution{The grid was not widened. The consequence is recorded in the model
+card instead: this model may be less regularised than a wider grid would have
+chosen.}
+\instead{Widening the grid and re-running. Widening a pre-registered grid because
+the answer landed at its edge is how a sweep becomes a search for a number. A
+later phase that revisits it re-registers first.}
+\end{defect}
+
+\begin{defect}{An abstention that was right by accident}
+\symptom{A model emitting the unknown label with a high calibrated probability
+reached the correct outcome, but through the wrong mechanism: the declaration
+lookup returned nothing, rather than the confidence gating anything.}
+\diagnosis{Right answer, wrong reason, and a wrong reason is a defect waiting for
+the code around it to change.}
+\resolution{An explicit branch. When the winning class is the unknown label the
+reported confidence is zero, exactly as the rule engine reports it, and the
+calibrated probability of the runner up stays on its own field where the
+confusion analysis can still read it.}
+\instead{Leaving it, on the grounds that the outcome was correct. The outcome was
+correct for a reason that no test asserted and that any refactor of the
+declaration lookup would have silently removed.}
+\end{defect}
+
+\begin{defect}{The model's first wrong accusations}
+\symptom{After the corpus repair, the n-gram engine accused
+\vNgramMissingAccusations{} fields of a missing declaration and was wrong about
+\vNgramMissingWrong{} of them. That is the first time in this project that an
+engine told a developer to add a token the answer key disagrees with.}
+\diagnosis{Not a regression in the threshold policy. The target precision behind
+the high threshold is the pre-registered one and the derivation script was run
+unmodified. What changed is that the derived threshold now sits on a model whose
+development precision at that point was itself below one, so a test split
+precision below one is the design working rather than failing.}
+\resolution{Recorded rather than rounded, in the engineering log, the model card
+and the main report. A precision target is a target, not a guarantee.}
+\instead{Raising the target until the wrong accusations disappeared. That is
+tuning a pre-registered constant against the test split, which is the single
+worst thing available in this project's rulebook.}
+\end{defect}
+
+\begin{defect}{A class that finally reached the isotonic switchover}
+\symptom{Not a defect. A prediction that was correct for one corpus and stopped
+being correct for the next.}
+\diagnosis{The earlier phase predicted that no class would ever have enough
+development positives for isotonic regression, and for its corpus that was true
+of every class. After the repair, the label covering search boxes and consent
+checkboxes crossed the switchover.}
+\resolution{The per class method is recorded in the model card, so the change is
+visible rather than implicit.}
+\instead{Nothing to refuse here. It is in this chapter because a prediction that
+holds under one corpus and fails under a larger one is exactly the kind of thing
+that gets quietly forgotten, and the record of it is what makes the next such
+prediction more careful.}
+\end{defect}

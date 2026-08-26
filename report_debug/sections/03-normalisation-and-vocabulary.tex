@@ -1,0 +1,140 @@
+\chapter{Text normalisation and the rule vocabulary}
+
+The unglamorous layer, and the one where the only genuinely subtle defects of the
+extractor lived. Two of the entries below were found by a property test in about
+two seconds each, and neither would have been found by reading the code.
+
+\begin{defect}{The published step order destroys its own worked example}
+\symptom{Normalisation is specified as compatibility normalisation, then case
+folding, then camel case splitting, then delimiter splitting, then a stoplist.
+Implemented in that order, the specification's own worked example becomes
+unreachable: the input folds to a single lowercase run in which no case boundary
+exists, so the boundary step has nothing to find.}
+\diagnosis{Two steps are in the wrong order relative to each other. Everything
+the fold is specified for is a per character property, so it does not need to
+happen before the boundary pass; the boundary pass genuinely does need the case
+information the fold destroys.}
+\resolution{Compatibility normalisation, then boundary insertion, then fold each
+resulting token. Nothing the fold exists for is lost. What is gained is that the
+boundary step works at all.}
+\instead{Following the order literally and adjusting the worked example. That
+would have been transcription rather than reading, and the resulting tokeniser
+would have been useless on the camel case identifiers that are most of what a
+hostile page leaves standing.}
+\end{defect}
+
+\begin{defect}{Combining marks were being treated as separators}
+\symptom{A property test asserting that normalisation is idempotent failed
+almost immediately, on the Turkish dotted capital letter I.}
+\diagnosis{The splitter was built on the language's word character class, which
+excludes combining marks. Folding the Turkish letter yields a base letter
+followed by a combining dot; splitting on that dot drops the dot; a second pass
+over the same text therefore returns something different from the first.}
+\resolution{Treat combining marks as part of the token they attach to.}
+\instead{Narrowing the property to the six locales the corpus covers and calling
+idempotence a practical guarantee. This is the entry that most nearly went the
+wrong way, and the reason it did not is worth keeping. Splitting on combining
+marks shreds Devanagari, Thai, pointed Hebrew and anything in decomposed form.
+None of that appears in this project's corpus, so the narrowed property would
+have passed forever, and the defect would have been waiting for the first person
+to point the tool at a page outside those six locales. The strategy went the
+other way instead and now sweeps the whole basic multilingual plane.}
+\end{defect}
+
+\begin{defect}{Case folding does not always produce lowercase}
+\symptom{The same property test failed again on the next run, on a different
+input.}
+\diagnosis{Cherokee folds upward. Folding a lowercase Latin letter beside a
+Cherokee capital therefore leaves a lowercase letter next to an uppercase one:
+a case transition that the camel case pass, which runs before the fold, never
+saw. Feed the output back in and it splits into two tokens, which is a different
+answer from the first.}
+\resolution{Bracket the fold with boundary insertion rather than running it once
+before. Folding before the boundary pass is not an option, because that is the
+defect in the entry above, so the only order satisfying both constraints is to
+insert boundaries, fold, and insert boundaries again.}
+\instead{Excluding scripts that fold upward. There is one obvious such script and
+assuming it is the only one is exactly the assumption that produced this defect
+in the first place.}
+\end{defect}
+
+\begin{defect}{A stoplist entry that could never match}
+\symptom{The one entry on the stoplist that names a real framework's generated
+identifier prefix never fired.}
+\diagnosis{It cannot survive the letter to digit split, which turns it into a
+letter fragment and a digit fragment. A stoplist applied only after splitting
+would never see it in the form the list is written in.}
+\resolution{Apply the stoplist twice, to the delimiter separated fragments first
+and to the finished tokens second, from one list.}
+\instead{Adding the split halves to the list. The halves are both extremely
+common substrings and adding them would have removed real signal from unrelated
+identifiers.}
+\end{defect}
+
+\begin{defect}{A German placeholder read as a whole name field}
+\symptom{On the hostile tier the label is stripped and the placeholder is all
+that survives. The German email placeholder is the conventional documentation
+address, the at sign does not survive normalisation, so the token stream reads as
+three ordinary words, and the whole name rule fired on the first of them.
+Ten confident wrong criticals across the hostile slice.}
+\diagnosis{The rule table had no way to recognise a placeholder that is an email
+address once the punctuation had been removed.}
+\resolution{A rule matching the reserved documentation domain of the relevant
+standards document, which is what essentially every placeholder on the web uses.}
+\instead{Removing the whole name rule's weakest pattern, or special casing the
+German locale. The domain rule turned ten wrong criticals into ten right ones
+across the entire hostile slice rather than fixing the German case, because the
+same placeholder convention is used in every locale in the corpus.}
+\end{defect}
+
+\begin{defect}{A Japanese section heading read as a card verification code}
+\symptom{A login password field on a Japanese form picked up a card security code
+classification from its surrounding context.}
+\diagnosis{The rule for the Japanese security code matched the bare word for
+\emph{security}, which is what a form's own security section heading contains.
+The context tier then fed the heading to the rule.}
+\resolution{Narrow the rule to the full compound.}
+\instead{Removing the context tier for that label. The context tier is what makes
+the hostile tier tractable at all, and removing it to fix one over match would
+have cost far more than it saved. This defect and the one above were both found
+by sweeping the generated corpus and cross checking every declaration finding
+against the generator's own provenance, which is a check worth keeping.}
+\end{defect}
+
+\begin{defect}{A rule that cannot fire, kept anyway}
+\symptom{The specification names the Japanese postal mark among the strings the
+postal code label should match. It never fires.}
+\diagnosis{Normalisation treats a lone symbol character as a delimiter, so the
+mark never reaches a token stream. The Japanese postal field is reached through
+its word form instead, which is why nothing was ever visibly broken.}
+\resolution{The rule stays in the table, with a comment saying it cannot fire and
+why, and a test asserting both halves of that: that the mark does not survive
+normalisation, and that the field is still reached by the word form.}
+\instead{Deleting the rule, or making it reachable. Deleting it would lose the
+record that the specification asks for something this normalisation cannot
+deliver. Making it reachable means changing what counts as a token character,
+which changes every golden snapshot and every committed fixture expectation, and
+that is a deliberate change with a cost rather than a quiet fix. It is written up
+as future work rather than done under cover of a different phase.}
+\end{defect}
+
+\begin{defect}{The tie is the feature}
+\symptom{Not a defect. It is recorded here because the first design was heading
+for one and the correction changed the shape of the whole rule table.}
+\diagnosis{German writes one phrase for both a whole street address and the first
+of several address lines. French does the same. A field labelled only
+\emph{Password} is a login field on one page and a registration field on the
+next. Writing one pattern per label and hoping they do not overlap produces, in
+each of those cases, a confident answer to a question the evidence does not
+settle.}
+\resolution{Make the overlaps deliberate. Both labels carry the same phrase at
+the same weight, the tier ties by construction, and the engine falls through to a
+tier that might separate them. A tie surviving every tier is
+\ident{UNKNOWN}. The property that a correct page produces no finding above the
+lowest severity fell out of this rather than being tuned into existence, and it
+passed the first time it was run across the entire correct markup slice.}
+\instead{Breaking each tie by picking a favourite. It would have looked like
+better coverage on every metric except the one that matters, and it would have
+produced a confident instruction to write the wrong token into somebody's
+production markup.}
+\end{defect}

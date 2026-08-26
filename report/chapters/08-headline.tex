@@ -1,0 +1,324 @@
+\chapter{The headline experiment}
+\label{ch:headline}
+
+\section{The answer, first}
+
+\begin{quote}
+Does a fifty kilobyte linear model that runs in microseconds on a CPU get close
+enough to a twelve billion parameter model to be the right default for a
+developer tool?
+\end{quote}
+
+\textbf{The premise did not survive the measurement. The linear model did not
+have to get close, because it beat the language model on both averages. The rule
+table beat both.}
+
+\begin{table}[htbp]
+  \centering
+  \caption{The headline benchmark: three engines on the test split, both
+  averages, and the fourth row that does not exist.}
+  \label{tab:headline}
+  \input{tables/headline.tex}
+\end{table}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.78\textwidth]{engine_f1.pdf}
+  \caption{Both averages for all three engines. They are shown together
+  because they disagree about which classical engine leads and agree about which
+  came last, and a chart carrying one of them would pick a winner by picking a
+  denominator.}
+  \label{fig:engine-f1}
+\end{figure}
+
+The language model reached \vLlmMacroF{} macro-F1 and \vLlmMicroF{} micro-F1;
+the n-gram model \vNgramMacroF{} and \vNgramMicroF{}; the rule table
+\vRulesMacroF{} and \vRulesMicroF{}.\footnote{Every number in this paragraph is a
+generated macro. The values are in Table~\ref{tab:headline} and the paths they
+came from are printed under it.} On this corpus, at this quantization, with this
+prompt, the small linear model is not the compromise. It is the better
+classifier, and it is also several thousand times faster, needs no accelerator,
+and adds nothing meaningful to an install.
+
+The fourth row of Table~\ref{tab:headline} reads \emph{absent} in words rather
+than being left blank. A transformer rung was specified as an optional later
+phase and has not been built. A blank cell in a comparison table reads as a
+measurement of zero, which would be a fabricated number in the one place a
+reader trusts most.
+
+\section{The two averages disagree, and the disagreement is the mechanism}
+
+Macro-F1 says the rule table wins. Micro-F1 says the n-gram model wins. Both are
+in the same files and both are correct.
+
+The mechanism is abstention. The rule table answers \code{UNKNOWN} on
+\vRulesAbstention{} of the fields and is right on \vRulesCommittedAccuracy{} of
+what it does answer. The n-gram model abstains on \vNgramAbstention{} and is
+right on \vNgramCommittedAccuracy{}. Abstention costs almost nothing under macro
+averaging, where an abstention is a miss on one class, and costs a full share of
+the field weighted denominator under micro averaging. A model that answers nearly
+everything therefore earns field weighted accuracy and pays label weighted
+average every time it guesses a rare class wrongly.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Abstention, and accuracy on the fields each engine did commit to.}
+  \label{tab:abstention}
+  \input{tables/abstention.tex}
+\end{table}
+
+That is not the rule table being timid. On this corpus abstention is the better
+policy, and the rule table has it by construction, because its default branch is
+a tier that never clears a threshold.
+
+\section{The language model abstained least of all}
+
+The system prompt tells the model to answer \code{UNKNOWN} when the evidence is
+insufficient and not to guess. It abstained on \vLlmAbstention{} of fields, less
+than either classical engine, and was right on \vLlmCommittedAccuracy{} of what
+it committed to, less than either
+(Table~\ref{tab:abstention}).
+
+\textbf{Instructing a model to decline is not equivalent to giving it a
+threshold}, and this is the measurement of that gap. It is also the prediction
+that failed in the most useful direction: abstention was registered to land
+between the two classical engines and landed below both.
+
+\section{Locale and tier}
+
+\begin{table}[htbp]
+  \centering
+  \caption{Seen locales against the held out locale. The unseen locale column is
+  the multilingual claim's actual test: French forms whose templates are also
+  unseen.}
+  \label{tab:slices}
+  \input{tables/slices.tex}
+\end{table}
+
+\begin{table}[htbp]
+  \centering
+  \caption{Macro-F1 by locale.}
+  \label{tab:by-locale}
+  \input{tables/by_locale.tex}
+\end{table}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.85\textwidth]{locale_profile.pdf}
+  \caption{Macro-F1 by locale, with the held out locale shaded. It is the only
+  column in which the language model leads the n-gram model, and it is also a
+  column in which the rule table leads them both.}
+  \label{fig:locale-profile}
+\end{figure}
+
+The held out locale is where broad pretrained world knowledge was supposed to
+pay. It is the one slice where the language model leads the n-gram model,
+\vLlmUnseenMacroF{} against \vNgramUnseenMacroF{}, and
+Chapter~\ref{ch:statistics} shows that this difference does not survive
+correction across the family. It is also a slice where the rule table leads both,
+at \vRulesUnseenMacroF{}. A vocabulary of localised regular expressions
+generalises to an unseen locale better than either learned system does here,
+which is an uncomfortable result and is printed as it stands.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Macro-F1 by markup quality tier.}
+  \label{tab:by-tier}
+  \input{tables/by_tier.tex}
+\end{table}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.78\textwidth]{tier_profile.pdf}
+  \caption{The tier profile, which is the most informative single picture in the
+  benchmark. The two classical engines have strong and opposite slopes; the
+  language model is nearly flat and below both until the tiers converge.}
+  \label{fig:tier-profile}
+\end{figure}
+
+Figure~\ref{fig:tier-profile} is worth reading slowly.
+
+\textbf{The n-gram model is the best engine on clean and partial markup and the
+worst classical engine on mixed markup.} It leads on clean at
+\vNgramCleanMacroF{} against \vRulesCleanMacroF{}, and trails on mixed at
+\vNgramMixedMacroF{} against \vRulesMixedMacroF{}. The mixed tier is the one
+built to look like a real page whose sections were written by different teams at
+different times. A model that is better on each tier separately and worse on the
+tier that mixes them is worth a paragraph rather than a footnote: it suggests the
+model is picking up a per page consistency that the mixed tier deliberately
+breaks.
+
+\textbf{The hostile tier is where every engine is worst and where the three
+converge.} The rule table falls furthest, to \vRulesHostileMacroF{}, because
+stripping labels removes most of what a vocabulary of regular expressions has to
+work with. The n-gram model reaches \vNgramHostileMacroF{} and the language model
+\vLlmHostileMacroF{}. This is the slice where broad pretrained knowledge was
+predicted to help most, and none of the differences on it is significant.
+
+The full locale by tier grid, all twenty four cells for all three engines, is
+Table~\ref{tab:locale-by-tier} in Appendix~\ref{app:tables}. Every cell clears
+the reporting minimum, so nothing in it is suppressed.
+
+\section{What a developer actually experiences}
+\label{sec:accusations}
+
+The finding level numbers matter more than the classifier numbers, because they
+are what a user of the tool sees. They run through the decision procedure and the
+thresholds rather than reporting raw classifier accuracy.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Finding level precision and recall. Precision is withheld for the two
+  classical engines on the second code because neither made enough accusations to
+  clear the reporting minimum, and that asymmetry is the finding rather than a
+  formatting inconsistency.}
+  \label{tab:findings}
+  \input{tables/findings.tex}
+\end{table}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.6\textwidth]{finding_pr.pdf}
+  \caption{Where each engine lands on precision against recall for the missing
+  declaration finding. \textbf{This compares three threshold policies, not three
+  classifiers.} Each engine speaks under its own rule about when to speak, and
+  the spread along the horizontal axis is mostly a picture of those rules.}
+  \label{fig:finding-pr}
+\end{figure}
+
+\textbf{The rule table was right about every field it accused.} It raised
+\vRulesMissingAccusations{} missing declaration accusations and
+\vRulesMissingWrong{} of them were wrong, at a precision of
+\vRulesMissingPrecision{} and a recall of \vRulesMissingRecall{} against
+\vMissingNeeded{} fields that needed one.
+
+\textbf{The n-gram model made this project's first wrong accusations.} It raised
+\vNgramMissingAccusations{} and was wrong about \vNgramMissingWrong{} of them.
+That is the first time in this project that an engine told a developer to add a
+token the answer key disagrees with, and it deserves recording rather than
+rounding. The threshold policy did not change and the derivation script was run
+unmodified; what changed is that the derived boundary now sits on a model whose
+development precision at that point was itself below one, so a test split
+precision below one is the design working rather than failing. A precision target
+is a target, not a guarantee, and a project that reported the target as though it
+were the outcome would be reporting a policy as a measurement.
+
+\textbf{The language model found the most real defects and was wrong about
+roughly one accusation in five.} It raised \vLlmMissingAccusations{} accusations,
+\vLlmMissingWrong{} of them wrong, at a precision of \vLlmMissingPrecision{} and
+the highest recall of the three at \vLlmMissingRecall{}. On a developer tool that
+means a fifth of the work it hands you is work you should not do.
+
+On the second accusation code the asymmetry is starker.
+\vWrongNeeded{} fields needed it, which clears the reporting minimum of
+\vReportingMinimum{}, so every recall is reported. Precision is withheld for both
+classical engines because neither made enough accusations to be measured, and is
+reported for the language model at \vLlmWrongPrecision{} because it made
+\vLlmWrongAccusations{}. The engine whose precision can be reported is the one
+that accused often enough to be measured, and that is the finding.
+
+None of this is a property of the language model as a classifier. It is a
+property of its threshold block, which is zero and zero because a self reported
+confidence is forbidden from gating anything, and which was registered before the
+run. \textbf{A finding level comparison between these engines is a comparison of
+three policies, and that sentence has to travel with the table.}
+
+\section{Latency, and the context that decides whether it matters}
+
+\begin{table}[htbp]
+  \centering
+  \caption{Per field latency in microseconds, and the share of each run's wall
+  clock spent loading and extracting the page.}
+  \label{tab:latency}
+  \input{tables/latency.tex}
+\end{table}
+
+\begin{table}[htbp]
+  \centering
+  \caption{Where each run's wall clock actually went, in seconds.}
+  \label{tab:walltime}
+  \input{tables/walltime.tex}
+\end{table}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.95\textwidth]{latency.pdf}
+  \caption{Latency percentiles on a log axis, beside the share of wall time the
+  browser takes. The log axis is not a stylistic choice: a linear one is
+  unreadable across this range.}
+  \label{fig:latency}
+\end{figure}
+
+The two classical engines run on a CPU with the inference session warmed and its
+threads pinned, and both are comfortably inside a millisecond per field:
+\vRulesLatencyNinetyFive{} and \vNgramLatencyNinetyFive{} microseconds at the
+ninety fifth percentile. The language model runs on a warmed local accelerator
+and reaches \vLlmLatencyNinetyFive{}, about \vLatencyRatio{} times the rule
+table's figure at the same percentile.
+
+\textbf{The language model's figure is a share, not a per call measurement.} It
+classifies a whole page in one request, so its per field number is a batch's
+elapsed time divided by the fields in that batch. Batching amortises the round
+trip, which makes the figure flattering rather than harsh, and it is not
+comparable against a per call measurement. The engine's own description says so
+and the run manifest records it.
+
+The row that turns a latency difference into a product difference is the share of
+wall time. For the rule engine the browser is \vRulesLoadShare{} of the run and
+for the n-gram engine \vNgramLoadShare{}, so the classifier is a rounding error
+on a page load and celebrating the difference between their latency columns would
+be celebrating nothing. For the language model the browser is \vLlmLoadShare{}
+and the classifier is the rest. One is a classifier you do not wait for. The
+other is one you do.
+
+In wall clock, over the identical page set: about \vRulesMinutes{} minutes for
+the rule engine, \vNgramMinutes{} for the n-gram engine, and \vLlmMinutes{} for
+the language model.
+
+\textbf{This is the finding that survives contact with real pages.} The accuracy
+gap depends on the corpus being synthetic. The runtime inversion does not.
+
+\section{What the language model run did, and what it did not}
+
+\begin{table}[htbp]
+  \centering
+  \caption{The language model run, including the failure mode that did not
+  occur.}
+  \label{tab:llm-run}
+  \input{tables/llm_run.tex}
+\end{table}
+
+\textbf{Schema compliance was perfect, and that was not predicted.} Across
+\vLlmRequests{} requests, \vLlmRetried{} needed a retry, \vLlmFailed{} still
+failed after one, and \vLlmUnresolved{} fields were scored \code{UNKNOWN} by a
+schema failure. Passing the response schema with the request and letting the
+server constrain decoding appears to remove the failure mode outright. The retry
+ladder is still there and is still tested against recorded transcripts including
+deliberately malformed ones; on this run it never fired. A benchmark whose most
+interesting failure mode did not occur is a result, and the honest report of it is
+the zero rather than a paragraph about robustness.
+
+\textbf{Cost is recorded as null rather than zero.} The calls were local. Zero is
+a measurement and the electricity was not free; null is the absence of one. No
+price list was retrieved, so no list price estimate is computed, and the price
+table document in this repository deliberately contains no prices.
+
+\section{The engine order in the benchmark was a methodological choice}
+
+The engines ran with the language model first, which is not the order the tables
+present. The two classical engines take a couple of minutes each of browser time
+with no inference call in them, so running the language model last would have
+meant several idle minutes before its first call, against a bounded keep alive
+policy. A keep alive expiry inside a measured run would have put a cold model
+load into the per field latency distribution. Warming immediately before and
+running it first avoids measuring the disk.
+
+\section{The two classical engines reproduced their previous run exactly}
+
+Every prediction and every finding, field for field across all \vTestFields{}
+fields, and every metric identical to the previous measurement on the same
+corpus. Only the latency columns differ, because those are re-measured rather
+than recomputed.
+
+That was not the purpose of re-running them. It is the strongest reproducibility
+evidence this project has produced and it is worth the sentence.

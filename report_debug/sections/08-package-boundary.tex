@@ -1,0 +1,157 @@
+\chapter{Friction at the package boundary}
+
+The evaluation harness is consumed here as an ordinary released dependency: not
+vendored, not submoduled, not copied file by file. That separation is a
+deliberate engineering claim, and the friction it exposes is the point rather
+than an inconvenience. Vendoring the code would have destroyed the evidence by
+making the boundary unobservable.
+
+Every entry below has an issue filed on that repository with a concrete API
+proposal, and every workaround that stands here in the meantime is labelled in
+every result file it produces, because a workaround that is invisible in the
+output is indistinguishable from a capability.
+
+\begin{defect}{The anticipated friction was aimed one layer too low}
+\symptom{The ledger predicted, before the integration began, that categorical
+outcome support in the permutation machinery would be the problem. It was not
+needed at all.}
+\diagnosis{The p value estimator never sees an outcome. It sees an observed
+effect and a null distribution, both numbers. The categorical part of this
+project's problem lives entirely in the statistic, and the statistic is the
+caller's. What actually broke was one layer above, in the data model.}
+\resolution{Record the miss in the ledger rather than quietly replacing the
+prediction with what turned out to be true.}
+\instead{Rewriting the anticipation to match the outcome. A ledger that only ever
+records correct anticipations is a ledger nobody can learn anything from.}
+\end{defect}
+
+\begin{defect}{The ingestion layer refuses a run log that has no time axis}
+\symptom{The harness's parser claims a run log of this project's schema and then
+refuses it, reporting that the records carry no step field and naming the several
+spellings it would accept.}
+\diagnosis{There is no step to add. The file has one row per classified field and
+no time axis at all. Inventing a step from the row index would let the harness's
+window comparison treat a set of unrelated fields as a stationary process, which
+is a stronger and false claim.}
+\resolution{Filed with a concrete proposal. In the meantime the bridge reads its
+own file format, which is a few lines, and nothing is reshaped at the last moment
+to fit an API that does not quite fit.}
+\instead{Emitting a synthetic step column. It would have made the parser accept
+the file and would have made every subsequent analysis silently wrong.}
+\end{defect}
+
+\begin{defect}{No public entry point accepts a cluster assignment}
+\symptom{The resampling unit is non negotiable in this project's design, and
+neither of the harness's comparison modes is clustered. Neither is paired, and
+both reduce a metric series to a final window mean.}
+\diagnosis{Three separate assumptions, all of them consequences of the harness
+having been extracted from a program that observed one training run over time.}
+\resolution{The clustered null is built on this side and handed to the harness's
+p value estimator, which is the one part of the interface that accepts a caller
+supplied null. The estimator and the correction stay on the far side of the
+boundary. The manifest of every analysis records that this happened, in its notes
+and in a block that names what the harness was and was not used for.}
+\instead{Degrading silently to unclustered resampling. That would have made every
+comparison look more significant than it is, and it was the one outcome ruled out
+before the integration began.}
+\end{defect}
+
+\begin{defect}{A verdict attached to the wrong comparison, and nothing raised}
+\symptom{The first cross check run attached the verdict for one metric to a row
+labelled with a different one. Every value in the row was plausible.}
+\diagnosis{The harness's classification entry point ends by returning its
+findings in severity order rather than input order, and the tag on a finding is
+not a unique key when one metric is compared across several slices, which is
+exactly this project's family. A positional zip therefore attaches every verdict
+to the wrong comparison, and because every value is plausible, nothing raises.}
+\resolution{The bridge rejoins on the identity of the result object each finding
+carries. Caught by reading one line of output that should have said one metric
+name and did not.}
+\instead{Sorting both sides by tag before zipping. The tag is not unique, so that
+produces a different wrong answer. Filed as its own issue with two proposed
+fixes, because joining on object identity is not a contract worth depending on
+and the fix belongs on the other side of the boundary.}
+\end{defect}
+
+\begin{defect}{A relative gate where an absolute one was pre-registered}
+\symptom{The harness's practical effect threshold is a relative percentage. This
+project pre-registered an absolute difference in the metric.}
+\diagnosis{A relative gate turns one pre-registered rule into a different rule in
+every slice, because the same relative percentage means something different
+against a large baseline than against a small one.}
+\resolution{The practical gate is applied here, and the harness's classification
+runs alongside as a visible cross check so that the two verdict columns can be
+compared. On this data the gap changed no verdict:
+\vCrossCheckDisagreements{} of \vCrossCheckChecked{} comparisons disagreed.}
+\instead{Adopting the relative gate because it happens to agree on this dataset.
+A gap that does not bite on one dataset is still a gap, and the dataset it would
+bite on is any slice with a small baseline, which is most of what a wider
+benchmark would add.}
+\end{defect}
+
+\begin{defect}{A truthful mode string the harness cannot label}
+\symptom{The comparison result's mode field is an unvalidated string, so the
+bridge writes what actually ran. Two of that type's derived members look the
+value up in a table holding the two training modes and raise on anything else.}
+\diagnosis{The type models a closed set of modes in its derived members and an
+open one in its field.}
+\resolution{The bridge does not call those two members and serialises what it
+needs itself.}
+\instead{Writing one of the two known mode strings so that both members work.
+That would make the derived members work and would be a false statement about
+which test was run, printed in the result file. This one is deliberately not
+filed on its own: it is a consequence of the same modelling assumption as the
+clustering issue, and if a paired clustered mode lands there it will bring its
+own label with it.}
+\end{defect}
+
+\begin{defect}{No typing marker, so every value crossing the boundary is
+unchecked}
+\symptom{Strict type checking refuses to look inside the package, so every value
+that crosses the boundary arrives untyped.}
+\diagnosis{The source is thoroughly annotated. The marker file is the whole fix
+and it is missing.}
+\resolution{A configuration override in this project's checker settings, filed on
+the other side, with the cost recorded: the bridge is the one module in the
+source tree whose external calls are unchecked, which is another reason for it to
+be the only module that makes them, and a test walks every source file and fails
+if a second importer appears.}
+\instead{Writing type stubs here. Stubs for somebody else's package, maintained
+in a consumer's repository, go stale silently and would have hidden exactly the
+kind of API change the boundary exists to expose.}
+\end{defect}
+
+\begin{defect}{A statistics dependency that drags in a logging stack}
+\symptom{Installing the harness pulls more than a dozen transitive packages,
+including a training metrics logging stack, a dataframe library, a plotting
+library and a web application toolkit, for a consumer that uses three functions.}
+\diagnosis{The harness's ingestion layer reads event files and its reports draw
+plots, and neither is separable at install time.}
+\resolution{The dependency sits in the development extra rather than in the
+runtime dependencies. The consequence is stated in the packaging file, in the
+ledger and in the main report rather than left to be discovered: \textbf{the
+shipped tool cannot compute its own significance tests}.}
+\instead{Putting it in the runtime dependencies. An install of a command line
+auditor that dragged a training metrics logging stack onto a developer's machine,
+so that a command they will never run could compute a permutation p value, would
+be the wrong trade. The narrower extra that would fix it properly is proposed in
+the ledger.}
+\end{defect}
+
+\begin{defect}{The part furthest from its origin transferred without a scratch}
+\symptom{Not a defect. The most interesting result of the whole integration.}
+\diagnosis{The step up correction procedure needed nothing at all. It is a pure
+function over a list of p values, it is checked in that repository against the
+worked example from the original paper, and it did the right thing here on the
+first call. The p value estimator fit because it takes the null as an argument.
+The verdict vocabulary already contained the three categories this project needs
+plus a fourth for a design that cannot reach its own level, which turned out to
+be the category every comparison in the first analysis landed in.}
+\resolution{Say so, in the ledger and in the main report.}
+\instead{Reporting only the friction. The split runs cleanly through the middle
+of the package: the parts built around the \emph{statistics} generalised, and the
+parts built around the \emph{shape of a training run} did not, because that shape
+was never a statistical assumption in the first place. It was the shape of the
+one program the package was extracted from, and that is a sharper finding than
+either half alone.}
+\end{defect}

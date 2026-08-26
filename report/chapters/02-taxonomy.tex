@@ -1,0 +1,88 @@
+\chapter{The taxonomy and where it comes from}
+\label{ch:taxonomy}
+
+\section{Provenance}
+
+The ground truth label space is the WHATWG autofill field name token set
+\cite{whatwg-autofill} plus a small, enumerated set of extra labels. Nothing in
+it was invented for convenience, and the extras are named individually rather
+than admitted by a rule, because a category that can be added by a rule is a
+category that grows until the label space is nobody's specification.
+
+The extras exist for outcomes the token set has no word for, and each one earns
+its place by naming something a report has to be able to say:
+
+\begin{itemize}
+  \item \code{NOT\_AUTOFILLABLE}, for a control that is a real control and has
+    no autofill meaning at all: a search box, a consent checkbox, a quantity
+    stepper. Without it the only honest answer for such a field would be
+    \code{UNKNOWN}, which reads as \emph{the tool could not tell} when the truth
+    is \emph{there is nothing to tell}.
+  \item \code{UNKNOWN}, for a control whose evidence genuinely does not decide.
+    This is an answer, not an absence of one.
+  \item \code{COMPOSITE\_UNSPLIT}, for one input holding what the specification
+    models as several fields, the archetype being a single expiry box
+    accepting month and year together.
+  \item \code{CC\_EXP\_SPLIT\_MONTH} and \code{CC\_EXP\_SPLIT\_YEAR}, for the
+    two halves of a split expiry pair, which are individually meaningless and
+    jointly a \code{cc-exp}.
+\end{itemize}
+
+\section{The growth rule, made mechanical}
+
+A label may exist only if it is a specification token or an enumerated extra,
+\emph{and} is emitted by at least one corpus answer key, \emph{and} is reachable
+by at least one rule or present in the model's training distribution, \emph{and}
+is asserted by at least one test. A label that cannot satisfy all four is
+deleted, or carries a dated and tracked exemption.
+
+That is a rule somebody will forget, so it is a script.
+\code{scripts/check\_reachability.py} runs in continuous integration, reads the
+taxonomy from the one source file that defines it, and fails the build on any
+clause it can currently enforce. Its clauses were activated one at a time as the
+phases that made each enforceable landed, and each activation moved a clause out
+of the file's own pending list in the same commit that made it checkable, which
+is the only way a pending list stays honest.
+
+Two further properties of the check are worth naming because they are
+strengthenings rather than restatements.
+
+\textbf{It scans for label strings written outside the taxonomy module.} Ground
+rule 6 says the taxonomy has exactly one definition in code. The check makes
+that mechanical by walking the source and the scripts for label literals. It
+deliberately excludes the handful of tokens that are also ordinary English
+words, because a check that fires on the word \code{name} in a comment is a
+check that gets switched off within a week.
+
+\textbf{It requires a training floor.} Every label a model can predict must
+appear in the training partition with at least a full template's worth of rows.
+That clause was added at the corpus repair described in
+Chapter~\ref{ch:corpus}, after three labels were found sitting at zero training
+rows, which means the model had been asked about classes it had never once seen
+and could only ever get wrong.
+
+\section{Coverage in the corpus as generated}
+
+Every label in the taxonomy is emitted by at least one answer key in the
+generated corpus. Table~\ref{tab:label-coverage} in Appendix~\ref{app:tables}
+lists the keyed field count per label, which is the evidence for clause (b) of
+the growth rule and also the honest picture of how uneven the class distribution
+is. Several labels are carried by a single template in a single position, and
+the per label results in Table~\ref{tab:per-label} should be read against that
+column rather than on their own.
+
+\section{Why not a bespoke ontology}
+
+The alternative was tempting and is worth refusing in writing.
+
+A bespoke ontology would have let the corpus, the rules and the model agree with
+each other perfectly, because all three would have been designed together. It
+would also have made the tool's central output, the exact attribute value to
+add, a translation step rather than a formatting step, and every disagreement
+between the ontology and the specification would have become a silent wrong
+answer in production markup.
+
+More importantly, it would have made the evaluation meaningless outside this
+repository. Measuring a classifier against categories the same project invented
+measures internal consistency. Measuring it against the token set that browsers
+actually implement measures the thing the tool claims to do.

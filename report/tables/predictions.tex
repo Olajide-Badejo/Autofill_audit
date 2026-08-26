@@ -1,0 +1,22 @@
+\begin{longtable}{p{.34\textwidth}p{.30\textwidth}p{.28\textwidth}}
+\toprule
+\textbf{Registered before the run} & \textbf{Measured} & \textbf{Outcome} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Registered before the run} & \textbf{Measured} & \textbf{Outcome} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+The language model beats the n-gram model on the hostile tier & llm 0.5265 against ngram 0.5409 & wrong: it lost \\  % results: experiments/results/bench/2026-08-26T20-32-48Z_bench_6457ac7/benchmark.json experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json
+The language model beats the n-gram model on the held out locale & llm 0.6045 against ngram 0.5637 & held, and not certified after correction \\  % results: experiments/results/bench/2026-08-26T20-32-48Z_bench_6457ac7/benchmark.json experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json
+The language model does not beat the rule table on the held out locale & llm 0.6045 against rules 0.7276 & held \\  % results: experiments/results/bench/2026-08-26T20-32-48Z_bench_6457ac7/benchmark.json experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json
+Latency differs by three orders of magnitude or more & p95 674727.4 against 134.0 & held \\  % results: experiments/results/bench/2026-08-26T20-32-48Z_bench_6457ac7/benchmark.json experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json
+Schema failures above zero and below one request in twenty & 0 retried of 480 requests & wrong: exactly none \\  % results: experiments/results/bench/2026-08-26T20-32-48Z_bench_6457ac7/benchmark.json experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json
+The n-gram model stays the right default & ngram macro-F1 0.7394 against llm 0.6353 & held, for a stronger reason than the one registered \\  % results: experiments/results/bench/2026-08-26T20-32-48Z_bench_6457ac7/benchmark.json experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json
+tel-national read as tel occurs; username read as email does not & tel-national as tel 14; username as email 0 & held in both directions \\  % results: experiments/results/bench/2026-08-26T20-32-48Z_bench_6457ac7/benchmark.json experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json
+Abstention lands between the two classical engines & llm 0.0255, ngram 0.0363, rules 0.2620 & wrong: below both \\  % results: experiments/results/bench/2026-08-26T20-32-48Z_bench_6457ac7/benchmark.json experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json
+\end{longtable}
+\par\smallskip\noindent{\footnotesize Source: \rpath{experiments/results/bench/2026-08-26T20-32-48Z_bench_6457ac7/benchmark.json}}
+\par\noindent{\footnotesize Source: \rpath{experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json}}

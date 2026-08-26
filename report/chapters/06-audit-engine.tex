@@ -1,0 +1,216 @@
+\chapter{The audit engine: what gets said out loud}
+\label{ch:audit}
+
+A classifier produces a label. An auditor produces an accusation. The distance
+between those two is the audit engine, and it is where most of the decisions
+that a user actually experiences are made.
+
+\section{The decision procedure}
+
+The procedure is ordered, first match wins, and it runs per control:
+
+\begin{enumerate}
+  \item If the control is undetectable, emit \code{UNDETECTABLE\_FIELD} with the
+    reason and stop.
+  \item If a declaration is present and parses to no token, emit
+    \code{AUTOCOMPLETE\_OFF} and stop.
+  \item If a declaration is present and is not a specification token, emit
+    \code{OFF\_SPEC\_TOKEN} naming the token that was meant, and stop.
+  \item If a declaration is present and the classifier is confident it names a
+    different field, emit \code{WRONG\_AUTOCOMPLETE} and stop.
+  \item If no declaration is present and the classifier is confident, emit
+    \code{MISSING\_AUTOCOMPLETE} with the token to add.
+  \item Otherwise emit the near miss or structural findings that apply, or
+    nothing.
+\end{enumerate}
+
+Three places in that ordering had to be read rather than transcribed, and each is
+a point where two parts of the specification pull against each other.
+
+\textbf{The composite finding has no branch of its own in the published
+pseudocode.} Its trigger reads as \emph{an inferred composite}, which taken
+literally fires a warning on every correctly declared month and year input,
+while the corpus design makes any finding above the lowest severity on a correct
+form a defect. Both hold only if the finding is about the \emph{absence} of the
+declaration, so it sits where the missing declaration finding sits and carries
+the composite's own fix text.
+
+\textbf{The off switch branch has no stop marker in the pseudocode.} Two other
+branches carry one and this one does not, but a declaration of \code{off} parses
+to no token, so without the stop a field collects both that finding and the
+missing declaration finding: two accusations with two contradictory fixes. The
+prose above the pseudocode says first match wins, so it stops.
+
+\textbf{The cross origin frame fix text contradicts the extractor's own
+guidance.} The generic template ends by suggesting the control be exposed in
+light DOM or the attribute declared on the host, which is sound for a closed
+shadow root and nonsense for a frame the page does not own. The more specific
+rule wins, and the override is data beside the template rather than a branch
+inside a renderer.
+
+\section{Thresholds are per engine, and one of them is a mapping}
+
+\begin{table}[htbp]
+  \centering
+  \caption{One threshold block per engine. An engine with no block is an error
+  rather than an inheritance.}
+  \label{tab:thresholds}
+  \input{tables/thresholds.tex}
+\end{table}
+
+Table~\ref{tab:thresholds} carries a genuine asymmetry and the report should not
+smooth it.
+
+The n-gram engine's boundary is derived on the development split against a
+precision target that was committed before the model existed. The rule engine's
+is a documented mapping from its six tiers onto the same two bands, and every
+key in its block that would hold a measurement is null. That is deliberate. A
+regular expression table has no probability, and printing a plausible looking
+number in a file the runtime reads would be a law 3 violation with a straight
+face. The renderers say in words that a rule tier confidence is a tier and not a
+frequency.
+
+The language model's block is zero and zero, for the reason given in
+Chapter~\ref{ch:classifiers}: a self reported confidence is forbidden from
+gating anything, and the engine still needs two numbers.
+
+\begin{table}[htbp]
+  \centering
+  \caption{The n-gram engine's derived boundary and what it bought on the
+  development split. The precision target was registered before the model
+  existed and the derivation script was run unmodified.}
+  \label{tab:threshold-derivation}
+  \input{tables/threshold_derivation.tex}
+\end{table}
+
+Two things about Table~\ref{tab:threshold-derivation} need saying rather than
+leaving in a file.
+
+\textbf{A precision figure is only as strong as its denominator.} A precision of
+one over a handful of accusations and a precision of one over a thousand are the
+same number and are not the same claim. The derived block therefore records the
+denominators beside the rates, so a reader does not have to go and find out which
+it is.
+
+\textbf{A high precision target makes a much quieter tool.} At this boundary the
+model raises far fewer accusations than there are fields that need one. That is
+what a pre-registered high precision target buys on a model whose calibrated
+confidences are honest about how often it is right, and it is the correct outcome
+of the policy rather than a failure of it. The policy exists because a false
+critical costs a developer far more than a missed one, and this is what
+\emph{far more} looks like when it is taken literally.
+
+The two engines' boundaries also had to stay separate. The derived n-gram
+boundary sits far above the rule engine's confident band, and a single pair of
+thresholds across both would have moved every rule engine finding on every page
+as a side effect of training a model. The threshold document therefore carries a
+block per engine, the loader takes an engine name, and an engine with no block
+raises rather than inheriting one. That was designed to bite when the language
+model arrived without a block, and it did, which is how the zero and zero
+decision came to be made deliberately and in advance.
+
+\section{The finding catalogue, in brief}
+
+\begin{table}[htbp]
+  \centering
+  \small
+  \begin{tabular}{l>{\raggedright\arraybackslash}p{.66\textwidth}}
+    \toprule
+    \textbf{Severity} & \textbf{Codes} \\
+    \midrule
+    critical & \ident{MISSING_AUTOCOMPLETE}, \ident{WRONG_AUTOCOMPLETE},
+               \ident{OFF_SPEC_TOKEN} \\
+    warning  & \ident{AUTOCOMPLETE_OFF}, \ident{UNLABELED_FIELD},
+               \ident{PLACEHOLDER_AS_LABEL}, \ident{SPLIT_FIELD},
+               \ident{COMPOSITE_FIELD}, \ident{UNDETECTABLE_FIELD} \\
+    info     & \ident{GENERIC_IDENTIFIER}, \ident{WRONG_INPUT_TYPE},
+               \ident{MISSING_NAME_ATTR}, \ident{EXTRACTION_INCOMPLETE} \\
+    note     & \ident{LOW_CONFIDENCE} \\
+    \bottomrule
+  \end{tabular}
+  \caption{The finding catalogue by severity. Each code carries a trigger, a
+  named evidence list, a confidence or a documented tier, and a one line fix.}
+  \label{tab:findings-catalogue}
+\end{table}
+
+Each carries a trigger, a severity, a named evidence list, a confidence or a
+documented tier, and a one line fix as text. There is no mode that edits the
+user's markup, because rewriting a production template from a probabilistic
+classifier's output is exactly the failure the first law exists to prevent.
+
+\section{A worked example}
+
+The following is real output against a checkout fixture authored in this
+repository to get things wrong in the ways real checkouts get them wrong.
+Nothing is edited except for trimming the middle of the table.
+
+\begin{shell}
+$ autofill-audit audit tests/fixtures/checkout_hostile.html
+autofill-audit  file:///.../tests/fixtures/checkout_hostile.html
+
+critical (6)
+
+ control          finding
+ .................................................................
+ #ck-email        MISSING_AUTOCOMPLETE
+                  add autocomplete="email" to #ck-email
+                  evidence: declaration:absent, label:email-words
+                  [rule tier HIGH]
+ #ck-postcode     OFF_SPEC_TOKEN
+                  autocomplete="zipcode" is not a valid autofill
+                  token; use "postal-code"
+                  evidence: declaration:off-spec, label:postcode-words
+                  [rule tier HIGH]
+ #ck-holder       WRONG_AUTOCOMPLETE
+                  #ck-holder declares autocomplete="name" but looks
+                  like cc-name; change to autocomplete="cc-name"
+                  evidence: declaration:token-mismatch,
+                  label:cardholder-words [rule tier HIGH]
+
+warning (8)
+
+ control          finding
+ .................................................................
+ #input7          PLACEHOLDER_AS_LABEL
+                  #input7 uses a placeholder as its label; add a
+                  real <label>
+                  evidence: structure:placeholder-is-the-only-label
+ frame[#hosted-pan] UNDETECTABLE_FIELD
+                  the control is inside a cross-origin frame, which
+                  is how hosted payment fields are built on purpose;
+                  this is not necessarily a defect. Audit that
+                  document separately
+                  evidence: structure:undetectable
+
+$ echo $?
+1
+\end{shell}
+
+The before and after that a developer actually applies is one attribute:
+
+\begin{markup}
+before, nothing tells the browser what this control is for:
+
+  <input type="text" id="ck-email" placeholder="name@example.com">
+
+after, one attribute, and the browser fills it:
+
+  <input type="email" id="ck-email" autocomplete="email"
+         placeholder="name@example.com">
+\end{markup}
+
+Three properties of that output are the whole design. Every finding names its
+evidence, so it can be argued with. The rule engine's confidence is a tier and
+prints as a tier, because turning a regular expression table's output into a
+percentage would assert a frequency nobody has measured. And a correct field is
+met with silence: the correctly declared card number input on that page does not
+appear in the report at all.
+
+\section{The exit code contract}
+
+The process exits non zero when a finding at or above the configured failure
+threshold is present, which is what lets the tool drop into a pipeline without a
+wrapper script. The threshold is configurable, the default is the critical
+severity, and the contract is exercised by end to end tests that run the tool in
+a subprocess so that the exit codes are the ones a shell sees rather than the
+ones a test harness believes.

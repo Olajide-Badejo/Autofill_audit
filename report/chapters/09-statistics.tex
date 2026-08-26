@@ -1,0 +1,130 @@
+\chapter{Is the difference significant}
+\label{ch:statistics}
+
+\section{What was run}
+
+A paired sign flip permutation clustered at the template level, exhaustive over
+the full arrangement space, with step up correction across a family of
+\vFamilySize{} comparisons, and an absolute practical effect gate. The design
+quantities are in Table~\ref{tab:design}.
+
+The test split holds \vTestTemplates{} templates, which gives \vArrangements{}
+arrangements and a smallest attainable two sided p value of \vMinAttainableP{},
+comfortably below the pre-registered level of \vAlpha{}. \textbf{Every
+comparison in this analysis is decidable}, which was not true of the first
+measurement this project made and is the whole point of the corpus repair
+described in Chapter~\ref{ch:corpus}.
+
+\section{The outcome categories, including the empty ones}
+
+\begin{table}[htbp]
+  \centering
+  \caption{Every verdict category in the family of comparisons, including the
+  two that came back empty. A summary listing only the categories that occurred
+  would drop them on exactly the runs where nothing landed in them.}
+  \label{tab:outcomes}
+  \input{tables/outcomes.tex}
+\end{table}
+
+Table~\ref{tab:outcomes} carries all five categories. Two are worth pointing at
+because they are empty.
+
+\textbf{Significant but below the practical threshold: \vBelowThreshold{}.} This
+category exists because a difference can be certain and still be too small to
+act on, and a reporting scheme that silently merges it into either neighbour is
+a reporting scheme that will one day sell a rounding error as a result. On this
+family nothing landed in it. It is printed anyway.
+
+\textbf{Inconclusive because the design cannot reach alpha: \vUnderpowered{}.}
+This is the category that held all \vOldFamilySize{} comparisons of the first
+analysis, when the test split had \vOldClusters{} clusters and a smallest
+attainable p of \vOldMinAttainableP{}. It is now empty, which is the measurable
+result of the repair.
+
+\section{What is certified, and what is not}
+
+\begin{table}[htbp]
+  \centering
+  \caption{All comparisons in the family, read in the direction they were
+  measured. The full table is Table~\ref{tab:comparisons} in
+  Appendix~\ref{app:tables}; this one repeats its shape for reference.}
+  \label{tab:cross-check}
+  \input{tables/cross_check.tex}
+\end{table}
+
+\textbf{Certified against the language model, after correction:} the rule table
+leads it overall and on the seen locales, and both classical engines lead it on
+clean and on partial markup. The language model's missing declaration recall is
+certified better than both, and its precision on both accusation codes is
+certified worse than both.
+
+\textbf{Not certified:} everything on the hostile tier, everything on the held
+out locale, and the language model against the n-gram model overall. Those are
+precisely the slices where the language model was expected to do well, and the
+honest report of them is that the differences are not large enough to call at
+\vClusters{} clusters, in either direction.
+
+\textbf{Not the same statement as no difference.} Comparisons in the \emph{no
+significant change} category are comparisons where this design, with this cluster
+count, could not resolve the effect. Reading them as evidence of equivalence
+would be reading the absence of a certificate as a certificate.
+
+The complete list, every comparison with its effect, its exact p value, its
+adjusted p value and its verdict, is Table~\ref{tab:comparisons}.
+
+\section{One reading hazard, stated explicitly}
+
+The comparison names in the result file read \code{baseline\_vs\_candidate} and
+the effect is computed as candidate minus baseline. A comparison named for the
+language model against the rule table with a verdict of \emph{improvement}
+therefore means \textbf{the rule table improved over the language model}, not the
+reverse.
+
+The file is self describing: every comparison carries its baseline and its
+candidate by name. But the string reads backwards at a glance, which is exactly
+the kind of thing that ends up in a report as a sentence pointing the wrong way.
+The table generator never renders the comparison name as a sentence. It reads the
+baseline, the candidate and the effect and builds the sentence, and the
+\emph{Comparison} column of Table~\ref{tab:comparisons} is that sentence.
+
+\section{The family size was fixed in advance, and it cost something}
+
+Every comparison between the two classical engines carries a larger adjusted p
+value in this analysis than the same comparison carried when it was corrected
+inside the smaller family of the previous phase. The underlying p values did not
+move. The earlier analysis file is untouched and is still in the repository.
+
+That was registered before the runs, with the reason: the comparison this phase
+existed to make was the one against the language model, and a family containing
+only that pair would have been a third the size and would have produced smaller
+adjusted p values for exactly the comparisons the project most wanted to be able
+to report. Fixing the family size while it was still costless is the only way
+that sentence can be written afterwards without it being an excuse.
+
+\section{The harness's own verdicts, as a cross check}
+
+The external harness carries its own end to end verdict machinery. Its
+statistical gate and its underpowered gate are the ones used above. Its practical
+gate reads a relative percentage where this project pre-registered an absolute
+difference, so a disagreement between the two verdict columns would be that gap
+and nothing else.
+
+It was run alongside on the same numbers as a visible cross check.
+\vCrossCheckChecked{} comparisons were checked and \vCrossCheckDisagreements{}
+disagreed. That gap therefore changed no verdict on this data, which is worth
+saying plainly and is not a reason to withdraw the filed issue: a gap that happens
+not to bite on one dataset is still a gap, and the dataset it would bite on is any
+slice with a small baseline.
+
+\section{The secondary analysis, and why nothing cites it}
+
+A secondary analysis clustered by form rather than by template reaches
+significance easily. It is computed, it is in the result file, and it is labelled
+anticonservative everywhere it appears, because clustering by form asserts that
+two locales of one template are independent, which is a stronger claim than this
+project's design makes.
+
+Nothing in this report, in the README, or in any document in this repository
+cites it as evidence. It is present so that the difference between the two
+clusterings is visible rather than assertable, and that is the only reason it is
+present.

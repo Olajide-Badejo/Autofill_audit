@@ -1,0 +1,101 @@
+\chapter{What is still open}
+\label{ch:still-open}
+
+Everything in the previous chapters was fixed, refused, or recorded as a
+deliberate decision with a cost. These are the ones that are still live, and they
+are listed here rather than in an issue tracker because a defect record that
+stops at the fixed ones is a marketing document.
+
+\begin{defect}{The training manifest of the shipped model is marked dirty}
+\symptom{The manifest of the training run that produced the currently shipped
+model records that the working tree carried uncommitted changes.}
+\diagnosis{The model was fitted in the same working session that authored the new
+corpus templates. The templates were in the tree and not yet committed at the
+moment of fitting, which is the natural order to work in and the wrong order to
+record in.}
+\resolution{None retroactively. Refitting now to obtain a clean manifest would be
+regenerating an artefact to fix a flag, which is the same move the
+reproducibility rules forbid for results, and it would produce a different model
+from the one every committed evaluation result was measured against.}
+\instead{Ignoring it, or refitting. What is done instead is to state it plainly in
+three places: the main report's method chapter, its limitations chapter, and
+here. What follows from it is bounded and worth being precise about. The model
+artefacts are committed and are content addressed into every evaluation run
+manifest, so \emph{which} model produced the headline numbers is not in doubt.
+The corpus digest in the training manifest matches the digest in every evaluation
+manifest, so the model was fitted on the same corpus it was evaluated against.
+What is genuinely weaker is the development split evidence, which rests on a run
+whose tree state was not pinned to a commit.
+
+The procedural fix is in the future work list and it is one sentence: commit the
+corpus change first, then train from the clean tree.}
+\end{defect}
+
+\begin{defect}{The evaluation runner still classifies every form twice}
+\symptom{Described in full in the language model chapter. The excess disagreement
+between a row's predicted label and its finding codes is on the order of two
+fields in seven hundred for a non deterministic engine.}
+\diagnosis{The runner classifies once directly and once through the audit engine,
+and for a non deterministic engine those are separate draws.}
+\resolution{Not applied. The fix is to pass the first pass's predictions into the
+audit rather than letting the audit reclassify.}
+\instead{Fixing it in the phase that measured it. Changing what the runner does
+for every engine after seeing the results is a regeneration, and the honest place
+for the fix is a phase that re-registers and re-runs.}
+\end{defect}
+
+\begin{defect}{A rule in the table that cannot fire}
+\symptom{The Japanese postal mark rule, described in the normalisation chapter.}
+\diagnosis{Normalisation treats a lone symbol character as a delimiter.}
+\resolution{Not applied. Making it reachable means changing what counts as a
+token character, which churns every golden snapshot and every committed fixture
+expectation.}
+\instead{A quiet fix inside an unrelated phase. It is a deliberate change with a
+cost and it belongs to a phase that pays the cost on purpose.}
+\end{defect}
+
+\begin{defect}{The published package carries no model}
+\symptom{An install from the published artefact runs the rule baseline, because
+no model bundle travels with it.}
+\diagnosis{Model binaries in a package index artefact are a size and licensing
+decision that has not been made, and the tool is designed to work without one.}
+\resolution{Documented behaviour rather than a silent fallback: the automatic
+engine prefers the model when one loads and falls back to the rule baseline with
+one printed line when none does.}
+\instead{Failing when no model is present, or shipping a model without deciding
+the question. The current state has a real cost and it is stated: the default
+install is not the default engine that the measurements recommend, and closing
+that gap is on the future work list.}
+\end{defect}
+
+\begin{defect}{Five cross repository issues, all open}
+\symptom{Every issue filed against the evaluation harness is still open. One of
+them, publication of that package to an index, is a hard blocker on tagging a
+stable release here, because this project's own rule forbids a stable tag while
+any dependency is a source reference rather than a released version.}
+\diagnosis{The rule is a gate criterion rather than a preference, and it was
+written before it became inconvenient.}
+\resolution{Not applied. The ledger records each issue with its status and the
+workaround, if any, that stands here in the meantime.}
+\instead{Vendoring the three functions this project uses and removing the
+dependency. That is the cheap move and it would destroy the evidence the boundary
+exists to produce, which is the whole reason the dependency is external in the
+first place. The rule holds even when holding it is the expensive option, which
+is the only circumstance in which a rule tells you anything.}
+\end{defect}
+
+\begin{defect}{Nothing here has been measured on a real page}
+\symptom{Every accuracy number in this project is a measurement on a corpus this
+repository generated.}
+\diagnosis{By design, because content from real pages never enters this
+repository. The cost is that the strongest objection to every accuracy number is
+that a generated corpus has a generator's habits, and the rule table's vocabulary
+and the corpus's label text were written by the same person.}
+\resolution{Not applied, and it is the single most valuable thing the project
+could do next.}
+\instead{Relaxing the synthetic data rule. The right shape is a small hand
+labelled set of real pages with a published labelling protocol and a published
+disagreement rate, which needs no scraping and no stored page content, and it
+should arrive with its prediction registered first. The honest registration is
+that the rule table's advantage will shrink.}
+\end{defect}

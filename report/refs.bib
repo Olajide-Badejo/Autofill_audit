@@ -1,0 +1,169 @@
+% Bibliography for the reports of spec section 17.
+%
+% One rule governs this file: an entry appears here only when the source was
+% actually retrieved and read. docs/references.md is the ledger, it carries the
+% retrieval date and the HTTP status observed from the build machine for every
+% entry below, and a citation this project has not read appears in neither
+% file. A plausible looking citation to a paper nobody opened is worse than no
+% citation, because it survives review by looking exactly like a real one.
+%
+% Page ranges are written with the word "to" rather than with a hyphen, because
+% the standard bibliography styles turn a hyphenated range into an en dash and
+% ground rule 13 forbids that character everywhere, including in generated
+% output.
+
+@misc{whatwg-autofill,
+  author       = {{WHATWG}},
+  title        = {{HTML} Living Standard: autofill},
+  howpublished = {\url{https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofill}},
+  note         = {The normative definition of the autocomplete attribute, the
+                  autofill field name tokens, the shipping and billing
+                  modifiers, the contact modifiers, section-* and the autofill
+                  anchor and expectation mantle algorithm. Retrieved
+                  2026-08-25},
+}
+
+@misc{mdn-autocomplete,
+  author       = {{Mozilla Developer Network}},
+  title        = {{HTML} attribute: autocomplete},
+  howpublished = {\url{https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/autocomplete}},
+  note         = {Per token documentation and browser support notes. The
+                  address requested at retrieval redirected here. Retrieved
+                  2026-08-25},
+}
+
+@misc{webdev-forms,
+  author       = {{Chrome Developer Relations}},
+  title        = {Learn Forms},
+  howpublished = {\url{https://web.dev/learn/forms/}},
+  note         = {Developer guidance on form design, autocomplete usage,
+                  labels and inputmode, and the source of the argument that
+                  broken autofill is a conversion problem rather than a
+                  cosmetic one. Retrieved 2026-08-25},
+}
+
+@misc{chrome-autofill,
+  author       = {{Chrome for Developers}},
+  title        = {Chrome for Developers documentation},
+  howpublished = {\url{https://developer.chrome.com/docs/}},
+  note         = {Chrome's own description of how autofill selects and fills
+                  fields. Retrieved 2026-08-25},
+}
+
+@misc{aria-apg,
+  author       = {{W3C Web Accessibility Initiative}},
+  title        = {{ARIA} Authoring Practices Guide},
+  howpublished = {\url{https://www.w3.org/WAI/ARIA/apg/}},
+  note         = {The basis for the label association signal hierarchy the
+                  extractor uses. Retrieved 2026-08-25},
+}
+
+@misc{playwright-python,
+  author       = {{Playwright}},
+  title        = {Playwright for {Python}},
+  howpublished = {\url{https://playwright.dev/python/docs/intro}},
+  note         = {Synchronous API, frames, shadow DOM piercing, waiting
+                  strategies, browser installation. Retrieved 2026-08-25},
+}
+
+@misc{scikit-learn,
+  author       = {{scikit-learn developers}},
+  title        = {scikit-learn user guide},
+  howpublished = {\url{https://scikit-learn.org/stable/}},
+  note         = {Text feature extraction including the char\_wb analyser and
+                  n-gram ranges, logistic regression, and probability
+                  calibration. Retrieved 2026-08-25},
+}
+
+@misc{skl2onnx,
+  author       = {{ONNX}},
+  title        = {sklearn-onnx converter documentation},
+  howpublished = {\url{https://onnx.ai/sklearn-onnx/}},
+  note         = {Converter reference and the documented limitations of the
+                  text vectorizer converters that the export phase planned
+                  around. Retrieved 2026-08-25},
+}
+
+@misc{onnxruntime,
+  author       = {{ONNX Runtime}},
+  title        = {{ONNX} Runtime documentation},
+  howpublished = {\url{https://onnxruntime.ai/docs/}},
+  note         = {Python API, execution providers, threading options, dynamic
+                  quantization. Retrieved 2026-08-25},
+}
+
+@misc{onnxruntime-quantization,
+  author       = {{ONNX Runtime}},
+  title        = {Quantization},
+  howpublished = {\url{https://onnxruntime.ai/docs/performance/model-optimizations/quantization.html}},
+  note         = {Dynamic INT8 quantization for transformer encoders, read for
+                  the optional transformer phase. Retrieved 2026-08-25},
+}
+
+@misc{ollama-api,
+  author       = {{Ollama}},
+  title        = {Ollama {API} documentation},
+  howpublished = {\url{https://github.com/ollama/ollama/blob/main/docs/api.md}},
+  note         = {Model library, modelfile parameters, structured outputs via
+                  JSON schema, and the OpenAI compatible endpoint. Retrieved
+                  2026-08-25},
+}
+
+@article{benjamini1995,
+  author  = {Benjamini, Yoav and Hochberg, Yosef},
+  title   = {Controlling the False Discovery Rate: A Practical and Powerful
+             Approach to Multiple Testing},
+  journal = {Journal of the Royal Statistical Society, Series B},
+  year    = {1995},
+  volume  = {57},
+  number  = {1},
+  pages   = {289 to 300},
+  note    = {The multiple comparison correction applied across this project's
+             comparison family. DOI 10.1111/j.2517-6161.1995.tb02031.x. The
+             DOI resolves; the publisher answered HTTP 403 to an automated
+             request from the build machine, which is a robot policy rather
+             than a broken link, and docs/references.md records it that way},
+}
+
+@misc{faker,
+  author       = {{Faker developers}},
+  title        = {Faker documentation},
+  howpublished = {\url{https://faker.readthedocs.io/en/master/}},
+  note         = {Locale providers and seeding. The address requested at
+                  retrieval redirected here. Retrieved 2026-08-25},
+}
+
+@misc{stripe-testing,
+  author       = {{Stripe}},
+  title        = {Testing},
+  howpublished = {\url{https://docs.stripe.com/testing}},
+  note         = {The published test card numbers used in the payment
+                  fixtures, so that no fixture can carry a real card number.
+                  Retrieved 2026-08-25},
+}
+
+@misc{triage,
+  author       = {Olajide Badejo},
+  title        = {{ML-Experiment-Triage}},
+  howpublished = {\url{https://github.com/Olajide-Badejo/ML-Experiment-Triage}},
+  note         = {The evaluation harness consumed here as a released
+                  dependency rather than vendored. Retrieved 2026-08-25},
+}
+
+@misc{autofill-audit,
+  author       = {Olajide Badejo},
+  title        = {autofill-audit},
+  howpublished = {\url{https://github.com/Olajide-Badejo/Autofill_audit}},
+  note         = {This project. The corpus generator, the extractor, the three
+                  engines, the evaluation runner and every result file cited in
+                  this report},
+}
+
+@misc{keepachangelog,
+  author       = {{Keep a Changelog}},
+  title        = {Keep a Changelog},
+  howpublished = {\url{https://keepachangelog.com/}},
+  note         = {The changelog format this project follows, alongside
+                  Semantic Versioning at \url{https://semver.org/}. Retrieved
+                  2026-08-25},
+}

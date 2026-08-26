@@ -1,0 +1,103 @@
+\chapter{What was predicted, and what was wrong}
+\label{ch:predictions}
+
+\section{Why the predictions are here at all}
+
+A prediction committed after the measurement is not a prediction. Every
+prediction in this project was written into a file, committed, and a continuous
+integration job verifies that the prediction commit is an ancestor of the commit
+carrying the result files it predicts about. That check is the only mechanism
+that makes the fourth law more than an intention.
+
+The predictions are printed beside the outcomes because that is the only form in
+which a prediction is worth anything. A report that showed only the outcomes
+would be indistinguishable from a report whose author had decided afterwards
+which results were interesting.
+
+\begin{table}[htbp]
+  \centering
+  \caption{The eight claims registered before the benchmark ran, the number that
+  settled each one, and the outcome. The measured column is read from the result
+  files by the table generator, so a prediction cannot be scored generously by
+  whoever writes the report.}
+  \label{tab:predictions}
+  \input{tables/predictions.tex}
+\end{table}
+
+\section{Four held and four did not}
+
+\textbf{The four that failed are the more interesting half}, and two of them
+should be read first.
+
+\textbf{Schema compliance was predicted to fail sometimes, and never failed.}
+The registered claim was that the retry rate would be above zero and below one
+request in twenty. It was exactly zero across every request of the run. The
+mechanism appears to be that passing the response schema with the request lets
+the server constrain decoding, which removes the failure mode rather than
+reducing it. The retry ladder was built for a problem that, on this serving
+route, does not arise. It is still there and still tested, because the next
+serving route may not have that property.
+
+\textbf{Abstention went the wrong way.} It was registered to land between the two
+classical engines, on the reasoning that a model instructed to decline would
+decline more than a model with no such instruction and less than a rule table
+whose default branch abstains by construction. It landed below both. Instructing
+a model to decline is not equivalent to giving it a threshold, and this is the
+measurement of that difference.
+
+\textbf{The hostile tier prediction was wrong in the direction that matters
+most.} The hostile tier is where labels are stripped and only obfuscated
+identifiers survive, which is where broad pretrained knowledge was supposed to
+pay for itself. The language model lost there too.
+
+\textbf{The confusion prediction was wrong in direction as well as in detail.}
+The failure was expected to be over claiming: fields that are not personal data
+read as though they were. The largest single confusion is the reverse, fields
+whose answer key is \code{UNKNOWN} read as the label for a control with no
+autofill meaning. The model declines more readily than predicted on the fields
+where declining is wrong, while declining less readily overall than either
+classical engine. Table~\ref{tab:predicted-pairs} in Appendix~\ref{app:tables}
+gives the counts for every confusion pair the specification named in advance, and
+Table~\ref{tab:confusions} gives the largest confusions each engine actually
+makes.
+
+\section{The pattern across every phase of this project}
+
+Read across all four prediction files rather than only this one, a pattern is
+visible and it is not flattering to the intuition that produced the predictions.
+
+\textbf{Every prediction that failed was about a model. Every prediction that
+held was about the system.} The predictions that held were the ones where the
+mechanism was already understood: page load dominates because a browser is slow;
+the n-gram engine is slower per field than the rule table because it enumerates
+n-grams in interpreted code; latency differs by orders of magnitude because one
+engine is a regular expression match and the other is a forward pass. The ones
+that failed were the ones where a mechanism was assumed rather than measured: the
+model will generalise better across locales; broad knowledge will help on
+degraded markup; instructing a model to abstain will make it abstain.
+
+Two earlier phases are worth listing beside this one, because the pattern is what
+makes them worth listing.
+
+At the phase that built the n-gram model, the prediction that the derived
+decision threshold would sit \emph{below} the rule engine's confident band was
+wrong in the other direction: it sits well above it. That single wrong prediction
+is the reason the two engines carry separate threshold blocks, and it is the most
+consequential wrong prediction in the project.
+
+At the first evaluation phase, three predictions about the model winning all
+failed, and a fourth about which confusion pairs would appear failed completely:
+not one of the four pairs named in advance occurred even once, in either
+direction, for either engine.
+
+\section{The temptation that was registered against}
+
+The prediction file for this benchmark records, in advance, the specific
+temptation that a three engine comparison creates: to correct across the one
+engine pair the project cared about rather than across all three. It also records
+the consequence of refusing that, which is that every comparison between the two
+classical engines would come out with a larger adjusted p than before.
+
+That is the shape a useful pre-registration takes. It is not a forecast of the
+result. It is a written commitment to the analysis choices that would otherwise
+be made after seeing it.
