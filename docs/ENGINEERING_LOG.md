@@ -873,3 +873,224 @@ flag also needed one fix to be honest: the output directory is untracked on a
 first run, so counting it would have marked every first training run dirty by
 construction and made the flag mean nothing. It now excludes the output directory
 and only that.
+
+---
+
+## 2026-08-26: P5, evaluation and the Triage integration
+
+### What was built
+
+The metrics module of spec section 13.2, the JSONL run-log writer at the schema
+of section 13.1 with its sibling manifest at section 18, `autofill-audit eval`,
+the bridge to the external evaluation harness, the prediction-ancestry check that
+makes law 4 mechanical, and the first result files this repository has ever
+carried: two development sanity runs, two test-split runs, and one significance
+analysis over the pair.
+
+The README carries numbers for the first time, and every one of them is a link
+that a CI job follows to a result file, to that file's manifest, and to a commit.
+
+### The result, which is not the one the ladder was built expecting
+
+On the test split the rule baseline beats the n-gram model on macro-F1 in every
+slice measured, by margins between one tenth and one third of a point. The model
+does not win anywhere. Not on the hostile tier, where a learned model's
+redundancy was supposed to pay; not on the unseen locale, where character n-grams
+were supposed to degrade more gracefully than a vocabulary of regular
+expressions.
+
+Three of the seven pre-registered predictions were about the model winning and
+all three failed. A fourth, about which confusion pairs would appear, failed
+completely: not one of the four pairs spec section 13.2 names occurred even once,
+in either direction, for either engine. The three that held were about the
+*shape* of the system rather than about the model. Both engines stay inside a
+millisecond per field, page load dominates the wall time so completely that
+classifier latency is a rounding error, and the model does abstain less often
+than the rule table.
+
+The full accounting sits in `experiments/predictions/p5-statistical-policy.md`
+beside the predictions themselves.
+
+**Why this is a P5 result rather than a P4 defect.** P4 measured the model on the
+development split and reported what it saw, honestly, and never measured the rule
+baseline on the same rows, because P4 had no evaluation runner. Nobody had put
+the two engines side by side until this phase, which is what an evaluation phase
+is for. The development-split sanity runs, taken and committed before the
+pre-registered policy file and cited inside it, already showed the same ordering,
+so the test split confirmed rather than revealed it.
+
+**Why the model loses is worth stating plainly**, because the number that
+explains it is already in the artefacts. The rule table answers `UNKNOWN` on a
+quarter of the fields and is right on almost everything it does answer; the model
+answers almost everything and is right on about seven tenths of that. Macro-F1
+over the union of observed labels punishes exactly that: a model that guesses a
+rare class and is wrong pays twice, once in that class's recall and once in the
+recall of the class it should have chosen. Abstention is not the model being
+timid. On this corpus it is the better policy, and the rule table has it by
+construction, because its default branch is a tier that never clears a threshold.
+
+### The finding nobody had noticed: this corpus cannot certify anything
+
+The larger result of the phase is statistical rather than about either engine.
+
+Spec section 13.3 requires resampling at the template level, because fields
+inside a template share an author. P1's leakage rule assigns whole templates to
+partitions, one template per family to test, so the test split holds five
+templates. A paired sign-flip permutation over five clusters has thirty-two
+arrangements, so the smallest two sided p value the design can produce is 0.0625.
+
+The pre-registered false discovery level is 0.05. **The design cannot reach it.**
+No comparison clustered by template on this split can ever be significant, at any
+effect size, and eleven of eleven comparisons in the analysis are reported as
+inconclusive for that reason. Seven of them sit exactly at the floor, meaning the
+observed difference was more extreme than all thirty-one other arrangements the
+design permits, which is the strongest evidence available here and is still not
+significance.
+
+This was computed and written into the policy file before the test runs, from
+`corpus/split.json` alone, which involved no test-split measurement. Writing it
+afterwards would have been indistinguishable from an excuse.
+
+The honest report of it is "inconclusive: the design cannot reach alpha", never
+"no significant difference". Those two sentences describe different worlds and
+only the first is true here. A secondary analysis clustered by form reaches
+significance easily, and it is labelled anticonservative everywhere it appears,
+because clustering by form asserts that two locales of one template are
+independent, which is a stronger claim than section 13.3 makes. Nothing in the
+README cites it.
+
+The fix is more templates per family, which changes the corpus and therefore the
+model, so it is P6 work rather than a footnote here. It is in the notes for P6
+with the arithmetic.
+
+### The harness, which is the phase's actual deliverable
+
+The split runs cleanly through the middle of that package. Its statistical
+primitives fit this project exactly and were used unchanged; its data model, its
+ingestion layer and its comparison entry points did not fit at all.
+
+`permutation_p_value` fit because it takes the null distribution as an argument,
+which is the seam a caller with its own resampling scheme needs.
+`benjamini_hochberg` fit unchanged and needed nothing. Its verdict vocabulary
+turned out to contain the three categories section 13.3 demands plus a fourth for
+a design that cannot reach alpha, which is the category every comparison here
+lands in.
+
+Everything shaped like a training run did not fit. `JsonlParser` claims a run log
+and then refuses it for having no step field, and there is no step to add,
+because the file has no time axis. No public entry point accepts a cluster
+assignment. Neither comparison mode is paired. Both reduce a metric series to a
+final window mean, which a categorical per-field outcome does not have.
+
+Five issues are filed on that repository, each with a concrete API proposal, and
+`docs/cross-repo-tasks.md` carries the ledger. Two workarounds live here in the
+meantime, both labelled in every result file they produce: the clustered null is
+built in `evaluate/triage_bridge.py` and handed to the harness's p value
+estimator, and the practical-effect gate is applied here because the harness's is
+relative where this project pre-registered an absolute one.
+
+That second gap changed no verdict on this data, because the underpowered gate
+fires first everywhere, and it is filed anyway. A gap that happens not to bite on
+one dataset is still a gap, and the dataset it would bite on is any slice with a
+small baseline, which is most of what P6 adds.
+
+**The anticipated task was aimed one layer too low.** The ledger predicted, before
+P5 began, that categorical-outcome support in the permutation machinery would be
+the friction. It was not needed at all. `permutation_p_value` never sees an
+outcome, only an effect and a null, both floats. The categorical part of the
+problem lives entirely in the statistic and the statistic is the caller's. What
+actually broke was one layer above, in the data model.
+
+### The bug that would not have raised
+
+`classify` ends with `return rank(findings)`, so it returns severity order rather
+than input order, and `Finding.tag` is not a unique key when one metric is
+compared across seven slices, which is exactly this project's family. The first
+cross-check run attached the verdict for `macro_f1/all` to a row labelled
+`finding_recall`, and every value in the row was plausible. Nothing raised. It
+was caught by reading one line of output that should have said `macro_f1` and did
+not.
+
+The bridge now rejoins on the identity of the result object each finding carries.
+That is not a contract worth depending on, so it is filed as its own issue with
+two proposed fixes.
+
+### Deviations, and decisions the specification left open
+
+**The run log's `engine` field carries the engine's own name.** Spec section 13.1
+writes `ngram-onnx` and section 13.4 uses the same label in its table, and
+`Prediction.engine` says `ngram`. Carrying two names for one engine across a
+repository is how a comparison table becomes ambiguous, so the run log records
+what the engine calls itself and a report can label its column however it likes.
+
+**`confidence_kind` is mapped rather than copied.** Section 13.1's vocabulary is
+`calibrated`, `rule_tier`, `self_reported`; the engines say
+`calibrated-probability` and `tier`, because those are the words P3 and P4 made
+load bearing in the renderers. The mapping is written down once, in
+`evaluate/runlog.py`, and it is total: an engine whose word is not in it raises
+rather than defaulting. P6 adds its word there deliberately.
+
+**The reporting minimum now applies to the finding-level rates.** P4 applied it to
+grid cells only and asked P5 to decide the rest. It is decided, in the policy
+file, before the test runs: each rate is judged against its own denominator. It
+fires immediately, on `WRONG_AUTOCOMPLETE` for both engines, where eleven fields
+were eligible. The counts are still reported and the rates are withheld.
+
+**It does not fire on the locale by tier grid**, which is where P4 predicted it
+would. That grid has twenty-four cells over a thousand-odd fields, so every cell
+clears thirty comfortably. The rule is exercised against real committed data by
+the finding-level case instead, and by a unit test that builds a thin cell
+directly.
+
+**`findings.jsonl` is a fourth artefact per run**, not in the specification's file
+list. Whether a page *needed* an accusation depends on the difference between
+declaring nothing, declaring off, and declaring a token outside the
+specification, and section 13.1's row carries only `declared_token`, which is
+null in all three. Without the file the finding-level significance test could not
+be reproduced from committed artefacts, and a number nobody can recompute is a
+number law 3 will not allow into the README.
+
+**Results are filed under `experiments/results/<split>/`.** Not tidiness. The
+pre-registered policy predicts about `experiments/results/test/`, and the
+development runs precede that policy and make no claim it covers. One flat
+directory would have made law 4's own check fail on a run that was correctly
+taken before the prediction was written.
+
+**The harness is a development dependency, not a runtime one.** Installing it
+pulls thirteen transitive packages including tensorboard, grpcio, pandas, plotly,
+pillow and werkzeug, and the audit path never imports it. A `pipx install` that
+dragged a training-metrics logging stack onto a developer's machine so that a
+command they will never run could compute a permutation p value would be the
+wrong trade. The consequence, stated here so it is not discovered later, is that
+the shipped wheel cannot compute its own significance tests. The narrower extra
+that would fix it is proposed in the ledger.
+
+**The descriptor cache is now bound to a corpus.** P4 left it keyed on the form id
+and nothing else, as a documented sharp edge. A stale cache is survivable for a
+training run and is a wrong headline number for an evaluation, so `bind_cache`
+records the corpus manifest sha and refuses a mismatch rather than either reusing
+it or silently emptying it. Both test-split runs bypassed the cache entirely and
+extracted through a real browser, so their load and extract columns are
+measurements on both engines rather than a cache read on the second.
+
+### What surprised me
+
+**The version string in the committed run logs says 0.2.0.** The test runs were
+taken before the version bump, so `engine_describe.tool_version` records the
+version that was actually running, and the manifest's commit resolves to a tree
+where `__version__` is that string. It is consistent, and it looks wrong at a
+glance. Re-running to make it prettier is exactly the regeneration section 18
+forbids, so it stays, and this paragraph is the explanation.
+
+**Every prediction that failed was about the model and every prediction that held
+was about the system.** That is worth carrying into P6, where the temptation to
+predict that a twelve-billion-parameter model will win will be considerable. The
+predictions that held were the ones where the mechanism was already understood:
+page load dominates because a browser is slow, the model is slower per field
+because it enumerates n-grams in Python. The ones that failed were the ones where
+a mechanism was assumed rather than measured.
+
+**The finding-level precision is exactly one for both engines.** Two hundred and
+six accusations from the rule table, thirty-two from the model, and not one of
+them wrong on the test split. That is the threshold policy working as designed on
+both engines, and it means the interesting axis between them is recall alone.

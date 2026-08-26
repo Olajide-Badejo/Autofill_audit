@@ -9,6 +9,87 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Nothing yet.
 
+## [0.3.0] - 2026-08-26
+
+The evaluation release. The repository carries measured results for the first
+time, and the README carries numbers for the first time, each one a link that CI
+follows to a result file, to its manifest, and to a commit.
+
+### Added
+
+- **`autofill-audit eval`** (spec section 14), wrapping `scripts/eval.py`. Takes
+  `--corpus`, `--split {dev,test}`, `--engine {rules,ngram}`, `--out` and
+  `--run-id`, and refuses `--split test` without `--i-am-measuring`, because the
+  test split is spent the first time it is read. `--engine auto` is deliberately
+  not offered: a result file whose engine column said `auto` would not say which
+  engine produced the number in it.
+- `evaluate/metrics.py`: per-label precision, recall and F1 with both counts,
+  macro-F1 and micro-F1, per-locale, per-tier, per-family and locale-by-tier
+  grids, the held-out-locale slice reported separately, abstention rate and
+  accuracy on the non-abstained subset, confusion matrices, calibration with
+  expected calibration error reported both including and excluding the twelve
+  classes whose calibrator is the identity, latency percentiles, the whole-run
+  wall time split into load, extract, classify and render, and finding-level
+  precision and recall against the answer key.
+- `evaluate/runlog.py`: the JSONL writer at the spec section 13.1 schema, with
+  its sibling manifest at spec section 18. Both refuse to overwrite an existing
+  file, because result files are append-only history and a wrong result gets a
+  new run id rather than a regeneration.
+- `evaluate/triage_bridge.py`: the only module permitted to import the external
+  evaluation harness, enforced by a test that walks every Python file in the
+  repository. It carries the paired permutation clustered by template, the
+  Benjamini Hochberg correction across the comparison family, and the three way
+  outcome classification with the middle category reported rather than promoted.
+- `scripts/analyze.py`: compares two committed run logs through the harness and
+  writes the significance analysis as a result file of its own.
+- `scripts/check_prediction_ancestry.py` and the `ancestry` make target and CI
+  job: law 4 made mechanical. Each prediction file names, in front matter, the
+  paths it predicts about, and the check verifies that the commit which added it
+  is an ancestor of the commit that last touched each of them. A prediction file
+  edited after it was added must declare the edit.
+- `experiments/predictions/p5-statistical-policy.md`, committed before any
+  test-split run, fixing the procedure, the false discovery level, the practical
+  effect threshold and its justification, seven predictions about what the test
+  split would show, and the power the design actually has.
+- `experiments/results/`: two development sanity runs, two test-split runs, and
+  one significance analysis, each with a run log, a manifest, a metrics document,
+  a confusion matrix, and the per-field finding-level judgements.
+- `docs/cross-repo-tasks.md` now carries what the harness turned out to need,
+  with five issues filed on that repository and a concrete API proposal in each.
+
+### Changed
+
+- `scripts/check_traceability.py` gained `--resolve`, which follows every
+  citation in the README and in `docs/` to a result file, to a manifest, and to a
+  commit this repository can produce, and fails when any step does not resolve.
+  A run marked dirty in its manifest fails the same way a missing one does. The
+  `traceability` CI job and `make trace` pass the flag.
+- The reporting minimum of thirty fields per cell now applies to the
+  finding-level rates as well as to the grid cells, judged separately against
+  each rate's own denominator. Decided in the pre-registered policy file, before
+  the test runs.
+- The descriptor cache is bound to the corpus that filled it. A cache built from
+  a different corpus is refused rather than silently reused or silently emptied.
+- `scripts/train.py` gained `extract_forms` and `examples_for_form` as public
+  functions, so the evaluation runner shares one definition of which controls
+  become examples rather than growing a second.
+- The lock file was regenerated to add the harness and its transitive
+  dependencies. No existing pin moved.
+
+### Notes
+
+- The harness is pinned as a git tag reference in the `dev` extra rather than in
+  the runtime dependencies. It pulls thirteen transitive packages including
+  tensorboard, grpcio, pandas, plotly, pillow and werkzeug, and the audit path
+  never imports it. The consequence is that the shipped wheel cannot compute its
+  own significance tests. Spec section 0.5 permits a git ref at this phase and
+  forbids one at `1.0.0`, and both the publication and the narrower extras are in
+  `docs/cross-repo-tasks.md`.
+- **The measured result is that the rule baseline beats the n-gram model on every
+  slice of the test split.** The default engine is unchanged and no threshold
+  moved, so no reported finding changes; what changed is that the README now says
+  which engine is better and links to the files that show it.
+
 ## [0.2.0] - 2026-08-26
 
 ### Added
@@ -234,6 +315,7 @@ Nothing yet.
   table row to the full width; a hook that trimmed those spaces would rewrite the
   committed expectation on every commit.
 
-[Unreleased]: https://github.com/Olajide-Badejo/autofill-audit/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/Olajide-Badejo/autofill-audit/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/Olajide-Badejo/autofill-audit/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/Olajide-Badejo/autofill-audit/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/Olajide-Badejo/autofill-audit/releases/tag/v0.1.0

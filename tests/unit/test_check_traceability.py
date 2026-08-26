@@ -218,3 +218,22 @@ def test_a_result_with_no_manifest_beside_it_fails(tmp_path: Path) -> None:
         "macro-F1 was 0.77 (experiments/results/test/run-one/run.jsonl)\n", encoding="utf-8"
     )
     assert check_traceability.main(["--root", str(root), "--resolve", "README.md"]) == 1
+
+
+def test_a_citation_of_a_directory_of_runs_resolves_every_run_under_it(tmp_path: Path) -> None:
+    """A link to a directory points a reader at all of it, so all of it must resolve."""
+    root, commit = _repo_with_result(tmp_path)
+    second = root / "experiments" / "results" / "test" / "run-two"
+    second.mkdir()
+    (second / "manifest.json").write_text(
+        json.dumps({"git": {"commit": commit, "dirty": False}}), encoding="utf-8"
+    )
+    (root / "README.md").write_text(
+        "the runs live under experiments/results/test\n", encoding="utf-8"
+    )
+    assert check_traceability.main(["--root", str(root), "--resolve", "README.md"]) == 0
+
+    (second / "manifest.json").write_text(
+        json.dumps({"git": {"commit": commit, "dirty": True}}), encoding="utf-8"
+    )
+    assert check_traceability.main(["--root", str(root), "--resolve", "README.md"]) == 1

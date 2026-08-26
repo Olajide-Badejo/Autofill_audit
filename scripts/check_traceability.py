@@ -260,6 +260,27 @@ def _git_has_commit(root: Path, commit: str) -> bool:
     return completed.returncode == 0
 
 
+def manifests_for(root: Path, target: Path) -> list[Path]:
+    """Every manifest a citation of ``target`` stands behind.
+
+    A citation names one of three things and all three are legitimate. A result
+    file, whose manifest is beside it. A run directory, whose manifest is inside
+    it. Or a directory of runs, in which case the citation stands behind every
+    run under it and each of them has to resolve, because a reader following the
+    link is being pointed at all of them.
+    """
+    directory = target if target.is_dir() else target.parent
+    for candidate in (directory, *directory.parents):
+        probe = candidate / MANIFEST_NAME
+        if probe.is_file():
+            return [probe]
+        if candidate == root:
+            break
+    if target.is_dir():
+        return sorted(target.glob(f"*/{MANIFEST_NAME}"))
+    return []
+
+
 def resolve_reference(root: Path, reference: str, *, source: str) -> Violation | None:
     """Walk one citation to a real commit, or say where the chain broke."""
     target = root / reference
@@ -267,24 +288,25 @@ def resolve_reference(root: Path, reference: str, *, source: str) -> Violation |
         return Violation(
             path=source, line=0, excerpt=reference, reason="cited result file does not exist"
         )
-    directory = target if target.is_dir() else target.parent
-    manifest_path: Path | None = None
-    for candidate in (directory, *directory.parents):
-        if candidate == root.parent:
-            break
-        probe = candidate / MANIFEST_NAME
-        if probe.is_file():
-            manifest_path = probe
-            break
-        if candidate == root:
-            break
-    if manifest_path is None:
+    manifests = manifests_for(root, target)
+    if not manifests:
         return Violation(
             path=source,
             line=0,
             excerpt=reference,
             reason="cited result has no manifest beside it (spec section 18)",
         )
+    for manifest_path in manifests:
+        failure = _resolve_manifest(root, manifest_path, reference, source)
+        if failure is not None:
+            return failure
+    return None
+
+
+def _resolve_manifest(
+    root: Path, manifest_path: Path, reference: str, source: str
+) -> Violation | None:
+    """Check one manifest names a commit this repository can produce."""
     try:
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as error:
