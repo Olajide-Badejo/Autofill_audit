@@ -410,7 +410,17 @@ def main(argv: Sequence[str] | None = None) -> int:
     for engine in engines:
         print()
         since = time.time()
-        run_id = f"{args.run_id_prefix}-{engine}" if args.run_id_prefix else None
+        # The prefix names the phase, and the id around it is the convention
+        # `eval` uses when it names a run itself: timestamp, engine, short
+        # commit. Building it here rather than passing the bare prefix keeps a
+        # benchmark's run ids the same shape as every other run id in
+        # `experiments/results/`, which is what lets a reader sort a directory
+        # listing and get chronology.
+        run_id = (
+            runlog.make_run_id(f"{args.run_id_prefix}-{engine}", commit)
+            if args.run_id_prefix
+            else None
+        )
         status = run_engine(engine, args, run_id)
         if status != 0:
             print(f"bench.py: {engine} exited {status}", file=sys.stderr)
@@ -506,7 +516,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.split_file is not None:
         analysis.extend(["--split-file", str(args.split_file)])
     if args.run_id_prefix:
-        analysis.extend(["--run-id", f"{args.run_id_prefix}-analysis"])
+        analysis.extend(["--run-id", runlog.make_run_id(f"{args.run_id_prefix}-analysis", commit)])
     return subprocess.call(analysis)
 
 
