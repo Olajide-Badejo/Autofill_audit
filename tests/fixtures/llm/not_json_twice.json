@@ -1,0 +1,54 @@
+{
+  "description": "Both attempts are prose. Spec section 12.3 point 4: record the failure, score every affected field UNKNOWN, do not retry a third time, and do not drop the fields from the denominator. This is the transcript the P6 gate shows.",
+  "selectors": [
+    "form#checkout >>> #f1",
+    "form#checkout >>> #f2",
+    "form#checkout >>> #f3"
+  ],
+  "responses": [
+    {
+      "id": "chatcmpl-recorded",
+      "object": "chat.completion",
+      "created": 1787729971,
+      "model": "mistral-nemo:12b-instruct-2407-q4_K_M",
+      "system_fingerprint": "fp_ollama",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "Certainly! Here are the classifications you asked for:"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 640,
+        "completion_tokens": 96,
+        "total_tokens": 736
+      }
+    },
+    {
+      "id": "chatcmpl-recorded",
+      "object": "chat.completion",
+      "created": 1787729971,
+      "model": "mistral-nemo:12b-instruct-2407-q4_K_M",
+      "system_fingerprint": "fp_ollama",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "Sorry, I cannot produce JSON. Here is a table instead: | field |"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 640,
+        "completion_tokens": 96,
+        "total_tokens": 736
+      }
+    }
+  ]
+}

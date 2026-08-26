@@ -43,6 +43,7 @@ README cites it.
 from __future__ import annotations
 
 import argparse
+import dataclasses
 import json
 import subprocess
 import sys
@@ -251,18 +252,55 @@ def finding_comparisons(
     return comparisons
 
 
-def analyse(
+def _pair_family(
     baseline: Run,
     candidate: Run,
     unseen_forms: frozenset[str],
-    policy: triage_bridge.StatisticalPolicy,
     cluster_key: str,
-) -> list[triage_bridge.ClusteredPairedResult]:
-    """Run the whole family at one clustering and correct across it."""
+) -> list[triage_bridge.PairedComparison]:
+    """Every comparison for one engine pair, with the pair named in each.
+
+    The pair goes in the comparison's name because a three-engine benchmark puts
+    three pairs in one family and a family holding three comparisons called
+    `macro_f1/all` could not be read.
+    """
     family = [
         *label_comparisons(baseline, candidate, unseen_forms, cluster_key),
         *finding_comparisons(baseline, candidate, cluster_key),
     ]
+    tag = f"{baseline.engine}_vs_{candidate.engine}"
+    return [dataclasses.replace(item, name=f"{tag}:{item.name}") for item in family]
+
+
+def analyse(
+    runs: Sequence[Run],
+    unseen_forms: frozenset[str],
+    policy: triage_bridge.StatisticalPolicy,
+    cluster_key: str,
+) -> list[triage_bridge.ClusteredPairedResult]:
+    """Run every engine pair at one clustering and correct across **all** of them.
+
+    The family is every ordered pair of the runs given, over the same eleven
+    comparisons each. One `adjust_family` call, over the whole set.
+
+    This is the decision `experiments/predictions/p6-llm-comparison.md` fixed
+    before the runs, and it is fixed there rather than here because the
+    temptation it forecloses is specific: the comparison this phase exists to
+    make is the one against the language model, and a family containing only that
+    pair would be a third the size and would produce smaller adjusted p values
+    for exactly the comparisons the project most wants to report. Correcting
+    inside a smaller family and calling it the family is the standard way to
+    manufacture a significant result, so the size was fixed while fixing it was
+    still costless.
+
+    The consequence, also pre-registered: every rules-against-ngram comparison
+    carries a larger adjusted p here than the same comparison carried in the P5R
+    analysis. The underlying p values did not move and the P5R file is untouched.
+    """
+    family: list[triage_bridge.PairedComparison] = []
+    for index, baseline in enumerate(runs):
+        for candidate in runs[index + 1 :]:
+            family.extend(_pair_family(baseline, candidate, unseen_forms, cluster_key))
     results = [triage_bridge.run_comparison(item, policy) for item in family]
     return triage_bridge.adjust_family(results, policy)
 
@@ -280,9 +318,20 @@ def _git(*arguments: str) -> str:
 
 def _arguments(argv: Sequence[str] | None) -> argparse.Namespace:
     """Parse the command line."""
-    parser = argparse.ArgumentParser(description="Compare two run logs through the harness.")
-    parser.add_argument("--baseline", type=Path, required=True, help="a run directory")
-    parser.add_argument("--candidate", type=Path, required=True, help="a run directory")
+    parser = argparse.ArgumentParser(description="Compare run logs through the harness.")
+    parser.add_argument("--baseline", type=Path, default=None, help="a run directory")
+    parser.add_argument("--candidate", type=Path, default=None, help="a run directory")
+    parser.add_argument(
+        "--run",
+        type=Path,
+        action="append",
+        default=[],
+        dest="runs",
+        help=(
+            "a run directory, repeatable. Two or more build one family over every pair, "
+            "which is what the P6 headline benchmark corrects across."
+        ),
+    )
     parser.add_argument("--split-file", type=Path, default=Path("corpus") / "split.json")
     parser.add_argument("--out", type=Path, default=evaluate.RESULTS_ROOT)
     parser.add_argument("--run-id", type=str, default=None)
@@ -298,9 +347,27 @@ def _arguments(argv: Sequence[str] | None) -> argparse.Namespace:
 def main(argv: Sequence[str] | None = None) -> int:
     """Compare, correct, classify, and write the analysis result file."""
     args = _arguments(argv)
-    baseline = load_run(args.baseline)
-    candidate = load_run(args.candidate)
-    align(baseline, candidate)
+    directories = list(args.runs)
+    if args.baseline is not None:
+        directories.insert(0, args.baseline)
+    if args.candidate is not None:
+        directories.append(args.candidate)
+    if len(directories) < 2:
+        print(
+            "analyze.py: name at least two runs, with --run twice or with "
+            "--baseline and --candidate",
+            file=sys.stderr,
+        )
+        return 2
+
+    runs = [load_run(directory) for directory in directories]
+    for index, first in enumerate(runs):
+        for second in runs[index + 1 :]:
+            align(first, second)
+    # The first run stands for the whole set wherever a single run is needed: the
+    # native-ingestion probe reads one file, and the split, the corpus sha and the
+    # form count are properties `align` has just proved every run shares.
+    baseline = runs[0]
 
     split = json.loads(args.split_file.read_text(encoding="utf-8"))
     unseen = frozenset(split.get("slices", {}).get("unseen_locale", []))
@@ -323,8 +390,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     print()
     print(f"analyze.py: {policy.describe()}")
     started = time.perf_counter()
-    primary = analyse(baseline, candidate, unseen, policy, "template_id")
-    secondary = analyse(baseline, candidate, unseen, policy, "form_id")
+    primary = analyse(runs, unseen, policy, "template_id")
+    secondary = analyse(runs, unseen, policy, "form_id")
     elapsed = time.perf_counter() - started
     cross_check = triage_bridge.harness_native_verdicts(primary, policy)
 
@@ -368,20 +435,28 @@ def main(argv: Sequence[str] | None = None) -> int:
         "native_ingestion": native.to_json(),
         "policy": policy.to_json(),
         "inputs": {
-            "baseline": {
-                "run_id": baseline.run_id,
-                "engine": baseline.engine,
-                "directory": str(args.baseline),
-                "git_commit": baseline.manifest["git"]["commit"],
-                "rows": len(baseline.rows),
-            },
-            "candidate": {
-                "run_id": candidate.run_id,
-                "engine": candidate.engine,
-                "directory": str(args.candidate),
-                "git_commit": candidate.manifest["git"]["commit"],
-                "rows": len(candidate.rows),
-            },
+            "runs": [
+                {
+                    "run_id": run.run_id,
+                    "engine": run.engine,
+                    "directory": str(directory),
+                    "git_commit": run.manifest["git"]["commit"],
+                    "rows": len(run.rows),
+                }
+                for run, directory in zip(runs, directories, strict=True)
+            ],
+            "pairs": [
+                f"{first.engine}_vs_{second.engine}"
+                for index, first in enumerate(runs)
+                for second in runs[index + 1 :]
+            ],
+            "family_membership": (
+                "every ordered pair of the runs named, over the same comparisons each, "
+                "corrected together as one family. Fixed in "
+                "experiments/predictions/p6-llm-comparison.md before the runs, because "
+                "correcting inside a smaller family and calling it the family is the "
+                "standard way to manufacture a significant result."
+            ),
             "split": baseline.manifest["split"],
             "corpus_manifest_sha": baseline.manifest["corpus_manifest_sha"],
         },
@@ -427,7 +502,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         run_id=run_id,
         command_line=" ".join([Path(sys.argv[0]).name, *sys.argv[1:]]),
         split=str(baseline.manifest["split"]),
-        engine=f"{baseline.engine} against {candidate.engine}",
+        engine=" against ".join(run.engine for run in runs),
         engine_describe={
             "analysis": "paired permutation clustered by template, Benjamini Hochberg",
             "harness": f"{triage_bridge.TRIAGE_DISTRIBUTION} {triage_bridge.harness_version()}",
@@ -439,8 +514,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             "practical_threshold_absolute": repr(policy.practical_threshold),
         },
         artefact_sha256={
-            "baseline_run.jsonl": runlog.sha256_of(args.baseline / runlog.RUNLOG_FILENAME),
-            "candidate_run.jsonl": runlog.sha256_of(args.candidate / runlog.RUNLOG_FILENAME),
+            f"{run.engine}/run.jsonl": runlog.sha256_of(directory / runlog.RUNLOG_FILENAME)
+            for run, directory in zip(runs, directories, strict=True)
         },
         corpus_manifest_sha=str(baseline.manifest["corpus_manifest_sha"]),
         split_file_sha=runlog.sha256_of(args.split_file),
@@ -484,14 +559,14 @@ def _counts(results: Sequence[triage_bridge.ClusteredPairedResult]) -> dict[str,
 def _print_family(results: Sequence[triage_bridge.ClusteredPairedResult]) -> None:
     """Print one family as the gate output shows it."""
     header = (
-        f"  {'comparison':<34} {'baseline':>9} {'candidate':>9} {'effect':>8} "
+        f"  {'comparison':<46} {'baseline':>9} {'candidate':>9} {'effect':>8} "
         f"{'p':>8} {'adj p':>8}  verdict"
     )
     print(header)
     for item in results:
         floor = " (at the design floor)" if item.at_design_floor else ""
         print(
-            f"  {item.name:<34} {item.baseline_statistic:>9.4f} "
+            f"  {item.name:<46} {item.baseline_statistic:>9.4f} "
             f"{item.candidate_statistic:>9.4f} {item.effect:>+8.4f} "
             f"{item.p_value:>8.4f} {item.adjusted_p or 0.0:>8.4f}  {item.verdict}{floor}"
         )

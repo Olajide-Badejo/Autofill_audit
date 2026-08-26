@@ -256,12 +256,20 @@ def rows_for(
     describe: Mapping[str, str],
     corpus_manifest_sha: str,
     split_name: str,
+    prompt_version: str | None = None,
 ) -> tuple[list[runlog.RunLogRow], list[metrics.FindingObservation], list[dict[str, Any]]]:
     """Turn the classified forms into run-log rows and finding observations.
 
     The third return value is the per-field finding-level judgement, carrying
     the slice keys of the row it belongs to so that `findings.jsonl` can be cut
     the same ways the run log can without a join.
+
+    ``prompt_version`` is null for every engine that has no prompt and is the
+    `PROMPT_VERSION` of spec section 12.2 for the one that does. It goes on every
+    row rather than only in the manifest because a prompt change is the language
+    model's equivalent of a model sha, and a row separated from its manifest still
+    has to say what produced it, which is the same reason `engine_describe` is
+    repeated (spec section 13.1).
     """
     kind = runlog.confidence_kind_for(describe)
     rows: list[runlog.RunLogRow] = []
@@ -299,6 +307,7 @@ def rows_for(
                     declared_token=example.descriptor.declared.token,
                     finding_codes=codes,
                     extraction_warnings=warnings,
+                    prompt_version=prompt_version,
                 )
             )
             row = rows[-1]
@@ -523,7 +532,22 @@ def _arguments(argv: Sequence[str] | None) -> argparse.Namespace:
     parser.add_argument("--corpus", type=Path, default=Path("corpus"))
     parser.add_argument("--split-file", type=Path, default=None)
     parser.add_argument("--split", choices=("dev", "test"), required=True)
-    parser.add_argument("--engine", choices=("rules", "ngram"), required=True)
+    parser.add_argument("--engine", choices=("rules", "ngram", "llm"), required=True)
+    parser.add_argument(
+        "--llm-endpoint",
+        type=str,
+        default=None,
+        help="the OpenAI-compatible base URL; default is Ollama on loopback",
+    )
+    parser.add_argument(
+        "--llm-model", type=str, default=None, help="the model tag, recorded in every row"
+    )
+    parser.add_argument(
+        "--llm-batch",
+        type=int,
+        default=None,
+        help="fields per request; a page under it is one request (spec section 12.3)",
+    )
     parser.add_argument("--out", type=Path, default=RESULTS_ROOT)
     parser.add_argument("--run-id", type=str, default=None)
     parser.add_argument("--model", type=Path, default=None)
@@ -537,6 +561,45 @@ def _arguments(argv: Sequence[str] | None) -> argparse.Namespace:
     )
     parser.add_argument("--note", action="append", default=[], help="a note for the manifest")
     return parser.parse_args(argv)
+
+
+def _llm_config(args: argparse.Namespace) -> Any:
+    """Build the language-model configuration, or None for every other engine.
+
+    Returns None rather than a default configuration when the engine is not
+    ``llm``, so that a run of the rule baseline never imports the research layer
+    and never touches the network to discover it did not need to (ground rule
+    11).
+    """
+    if args.engine != "llm":
+        return None
+    from autofill_audit.llm.client import LLMConfig
+
+    defaults = LLMConfig()
+    return LLMConfig(
+        endpoint=args.llm_endpoint or defaults.endpoint,
+        model_tag=args.llm_model or defaults.model_tag,
+        batch=args.llm_batch or defaults.batch,
+    )
+
+
+def _llm_block(engine: Any) -> dict[str, Any] | None:
+    """The cost and schema-compliance accounting, or None for a local engine.
+
+    Spec section 13.1's row schema is fixed and has no cost key, and P5's handoff
+    settled where the missing quantity goes: cost is a property of the run and
+    the provider rather than of the field, so it lives in the run manifest and
+    the metrics document beside every other per-run quantity. Adding a column to
+    the row would have bumped the run-log schema version for a value that is the
+    same on all 2317 of them.
+    """
+    accounting = getattr(engine, "accounting", None)
+    if accounting is None:
+        return None
+    block: dict[str, Any] = accounting.to_json()
+    block["fields_per_request_cap"] = getattr(engine, "batch", None)
+    block["prompt_version"] = engine.describe().get("prompt_version")
+    return block
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -555,7 +618,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     train.bind_cache(args.cache, corpus_manifest_sha)
 
     choice = EngineChoice(args.engine)
-    load = load_engine(choice, model_dir=args.model)
+    load = load_engine(choice, model_dir=args.model, llm_config=_llm_config(args))
     if load.notice:
         print(f"eval.py: {load.notice}")
     engine = load.classifier
@@ -600,6 +663,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         describe=describe,
         corpus_manifest_sha=corpus_manifest_sha,
         split_name=args.split,
+        prompt_version=describe.get("prompt_version"),
     )
     print(f"eval.py: {len(rows)} classified fields")
 
@@ -631,6 +695,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         calibrated=describe.get("confidence_kind") == "calibrated-probability",
     )
     document["audit_s"] = timings.get("audit_s", 0.0)
+    llm_block = _llm_block(engine)
+    document["llm"] = llm_block
     (destination / runlog.METRICS_FILENAME).write_text(
         json.dumps(document, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
@@ -643,6 +709,21 @@ def main(argv: Sequence[str] | None = None) -> int:
     notes = list(args.note)
     if args.measuring:
         notes.append("run with --i-am-measuring on the test split")
+    if llm_block is not None:
+        notes.append(
+            f"{llm_block['calls']} language-model requests, {llm_block['attempts']} attempts, "
+            f"{llm_block['retried_calls']} retried, {llm_block['failed_calls']} still failing "
+            f"after the retry, {llm_block['unresolved_fields_scored_unknown']} fields scored "
+            "UNKNOWN by that failure and kept in the denominator (spec section 12.3 point 4)"
+        )
+        notes.append(
+            "cost is null rather than zero: the calls were local. Spec section 12.4, zero "
+            "is a measurement and the electricity was not free"
+        )
+        notes.append(
+            "latency_us per field is a batch's elapsed time divided by its field count, "
+            "not a per-field measurement; batching amortises the round trip"
+        )
     if timing.extraction_source == "descriptor cache":
         notes.append(
             "descriptors came from the cache, so the load and extract columns of "
@@ -699,6 +780,23 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     suppressed = document["insufficient_data"]["locale_by_tier"]
     print(f"  suppressed cells    {len(suppressed)} of {len(document['grids']['locale_by_tier'])}")
+    if llm_block is not None:
+        retry_rate = llm_block["retry_rate"]
+        failure_rate = llm_block["failure_rate"]
+        print(
+            f"  llm requests        {llm_block['calls']} calls, "
+            f"{llm_block['attempts']} attempts, retry rate "
+            f"{'n/a' if retry_rate is None else f'{retry_rate:.4f}'}, failure rate "
+            f"{'n/a' if failure_rate is None else f'{failure_rate:.4f}'}"
+        )
+        print(
+            f"  llm unresolved      {llm_block['unresolved_fields_scored_unknown']} fields "
+            "scored UNKNOWN and kept in the denominator"
+        )
+        print(
+            f"  llm tokens          {llm_block['prompt_tokens']} prompt, "
+            f"{llm_block['completion_tokens']} completion, cost null (local)"
+        )
     if manifest.git_dirty:
         print("  WARNING: the tree was dirty, so this result is not citable (spec section 18)")
     return 0

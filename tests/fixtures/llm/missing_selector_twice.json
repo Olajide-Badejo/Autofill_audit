@@ -1,0 +1,54 @@
+{
+  "description": "The third selector is never answered. The two that were answered keep their labels and the third is scored UNKNOWN, in the denominator, counted. A partial failure costs the fields it affected and no others.",
+  "selectors": [
+    "form#checkout >>> #f1",
+    "form#checkout >>> #f2",
+    "form#checkout >>> #f3"
+  ],
+  "responses": [
+    {
+      "id": "chatcmpl-recorded",
+      "object": "chat.completion",
+      "created": 1787729971,
+      "model": "mistral-nemo:12b-instruct-2407-q4_K_M",
+      "system_fingerprint": "fp_ollama",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "{\n  \"fields\": [\n    {\n      \"selector\": \"form#checkout >>> #f1\",\n      \"label\": \"given-name\",\n      \"confidence\": 0.93,\n      \"reason\": \"reads as given-name\"\n    },\n    {\n      \"selector\": \"form#checkout >>> #f2\",\n      \"label\": \"postal-code\",\n      \"confidence\": 0.88,\n      \"reason\": \"reads as postal-code\"\n    }\n  ]\n}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 640,
+        "completion_tokens": 96,
+        "total_tokens": 736
+      }
+    },
+    {
+      "id": "chatcmpl-recorded",
+      "object": "chat.completion",
+      "created": 1787729971,
+      "model": "mistral-nemo:12b-instruct-2407-q4_K_M",
+      "system_fingerprint": "fp_ollama",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "{\n  \"fields\": [\n    {\n      \"selector\": \"form#checkout >>> #f1\",\n      \"label\": \"given-name\",\n      \"confidence\": 0.93,\n      \"reason\": \"reads as given-name\"\n    },\n    {\n      \"selector\": \"form#checkout >>> #f2\",\n      \"label\": \"postal-code\",\n      \"confidence\": 0.88,\n      \"reason\": \"reads as postal-code\"\n    }\n  ]\n}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 640,
+        "completion_tokens": 96,
+        "total_tokens": 736
+      }
+    }
+  ]
+}

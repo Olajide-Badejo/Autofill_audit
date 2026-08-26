@@ -25,6 +25,16 @@
       "band_recall_captured": 0.1514629948364888,
       "corpus_manifest_sha": "15c3136f75d2d9c6807dbc70a28ab507bca1c784df53c134650e4f9898e6e035",
       "derived_on": "2026-08-26"
+    },
+    "llm": {
+      "basis": "not a boundary: the self-reported scale decides nothing (spec section 12.1)",
+      "tau_high": 0.0,
+      "tau_low": 0.0,
+      "target_precision": null,
+      "dev_precision": null,
+      "dev_recall": null,
+      "corpus_manifest_sha": null,
+      "derived_on": null
     }
   },
   "tier_values": {
@@ -68,6 +78,29 @@
     "",
     "An engine with no block here is an error rather than an inheritance. Applying one",
     "engine's boundary to another engine's confidences would be applying a scale to",
-    "numbers produced on a different one, and it would do it silently."
+    "numbers produced on a different one, and it would do it silently.",
+    "",
+    "The llm block, added at P6, is the one block whose two numbers are not a boundary.",
+    "Spec section 12.1 says a self-reported confidence never feeds the threshold policy of",
+    "spec section 11.3, and the decision procedure in audit/engine.py is engine-agnostic by",
+    "confidence value: it compares prediction.confidence against tau_high whatever produced",
+    "it. So the engine needs two floats and must not be gated by them, and the only pair",
+    "that satisfies both is zero and zero. They were pre-registered in",
+    "experiments/predictions/p6-llm-comparison.md before the engine classified a field.",
+    "",
+    "Two consequences, stated here rather than discovered later. The language model gets no",
+    "threshold protection: every committed prediction with a declaration becomes an",
+    "accusation, where the n-gram engine's accusations are gated by a boundary derived",
+    "against a 0.98 precision target. A finding-level precision comparison between the two",
+    "is therefore not a comparison of two classifiers, and the sentence saying so travels",
+    "with the table. And LOW_CONFIDENCE is unreachable for this engine, because tau_high",
+    "fires first on every field; an engine whose confidence is not a scale cannot have a",
+    "band partway along it.",
+    "",
+    "Deriving a boundary on the self-reported scale against a precision target, the way P4",
+    "derived the n-gram engine's, was rejected in advance rather than after seeing whether",
+    "it would have helped. It is the thing spec section 12.1 forbids, and that it would",
+    "probably raise the language model's finding-level precision is the reason to refuse it",
+    "before the measurement rather than a reason to reconsider after one."
   ]
 }

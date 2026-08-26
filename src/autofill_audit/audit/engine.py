@@ -86,6 +86,7 @@ from autofill_audit.audit.findings import (
 from autofill_audit.audit.thresholds import Thresholds
 from autofill_audit.classify.base import (
     CONFIDENCE_KIND_KEY,
+    CONFIDENCE_KIND_SELF_REPORTED,
     CONFIDENCE_KIND_TIER,
     Classifier,
     tier_for_confidence,
@@ -342,14 +343,31 @@ def _declared_label(descriptor: FieldDescriptor) -> Label | None:
 
 
 def _confidence_display(prediction: Prediction, engine: Mapping[str, str]) -> str:
-    """Format a confidence for a person (spec sections 10.1 and 11.4).
+    """Format a confidence for a person (spec sections 10.1, 11.4 and 12.1).
 
-    For a tiered engine this is the tier name and never a percentage. Printing
-    "83%" from a regex table would assert a frequency nothing has observed, which
-    is a law 1 and a law 4 violation in a single number.
+    Three arms, one per confidence scale this project produces, because the three
+    numbers mean different things and a renderer that printed them identically
+    would be asserting that they were comparable.
+
+    For a **tiered** engine this is the tier name and never a percentage.
+    Printing "83%" from a regex table would assert a frequency nothing has
+    observed, which is a law 1 and a law 4 violation in a single number.
+
+    For a **self-reported** confidence the number is shown and labelled as the
+    model's own claim. Spec section 12.1 requires that it never be rendered as a
+    bare percentage beside the calibrated one "without a marker distinguishing
+    them", and this is that marker. The arm was added at P6, when the engine that
+    needs it arrived; P5's handoff named this function as the single place that
+    formats a confidence and therefore as the single edit.
+
+    Anything else is a **calibrated** probability, which is the only one of the
+    three that a bare number does not misrepresent.
     """
-    if engine.get(CONFIDENCE_KIND_KEY) == CONFIDENCE_KIND_TIER:
+    kind = engine.get(CONFIDENCE_KIND_KEY)
+    if kind == CONFIDENCE_KIND_TIER:
         return f"rule tier {tier_for_confidence(prediction.confidence).value}"
+    if kind == CONFIDENCE_KIND_SELF_REPORTED:
+        return f"self-reported {prediction.confidence:.2f}, not calibrated"
     return f"confidence {prediction.confidence:.2f}"
 
 
