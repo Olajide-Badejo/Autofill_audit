@@ -20,7 +20,7 @@ when the year turned would go red for a reason that has nothing to do with the
 commit under test.
 
 Every locale and every family, one variant each. That is the **entire** clean
-slice of the full corpus, not a sample of it: twenty five templates across six
+slice of the full corpus, not a sample of it: forty templates across six
 locales. The gate says "the entire clean-tier corpus slice" and the count is
 asserted below so that a generator change which quietly shrank it would fail
 here rather than pass on a smaller denominator.
@@ -42,7 +42,7 @@ from autofill_audit.audit.engine import AuditOptions, audit
 from autofill_audit.audit.findings import Finding, Severity, at_or_above
 from autofill_audit.audit.thresholds import load_thresholds
 from autofill_audit.classify.rules import RuleClassifier
-from autofill_audit.corpus.families import Family
+from autofill_audit.corpus.families import TEMPLATES, Family
 from autofill_audit.corpus.generator import grid_from, iter_forms
 from autofill_audit.corpus.profiles import LOCALE_IDS
 from autofill_audit.corpus.tiers import Tier
@@ -55,10 +55,14 @@ SEED: Final[int] = 20260825
 BASE_YEAR: Final[int] = 2026
 """Pinned, not read from the clock. See the module docstring."""
 
-EXPECTED_FORMS: Final[int] = 150
-"""Twenty five templates across six locales, one variant each. Asserted rather
-than trusted: a generator change that shrank the slice would otherwise make this
-gate easier to pass without anybody noticing."""
+EXPECTED_FORMS: Final[int] = len(TEMPLATES) * len(LOCALE_IDS)
+"""Every template in every locale, one variant each. Asserted rather than
+trusted: a generator change that shrank the slice would otherwise make this gate
+easier to pass without anybody noticing.
+
+Derived from the template set rather than written out, because P5R changed the
+number once and a hand-maintained count is exactly the thing that goes stale
+silently on the next change."""
 
 REPORTABLE: Final[Severity] = Severity.INFO
 """The line spec section 8.4 draws. Above this, meaning WARNING and CRITICAL, is

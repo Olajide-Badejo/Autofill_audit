@@ -163,14 +163,20 @@ def test_the_space_is_two_to_the_cluster_count_and_the_test_is_exact() -> None:
 
 
 def test_five_clusters_cannot_reach_an_alpha_of_five_percent() -> None:
-    """The property that decides every verdict in this project's primary family.
+    """The property that decided every verdict in P5's primary family.
 
     Not an accident of the data: with five templates the sign-flip space holds
     thirty-two arrangements, so the smallest two sided p value the design can
     produce is 0.0625. That is above alpha, so no comparison clustered by
-    template on this split can be significant, whatever the effect turns out to
+    template on such a split can be significant, whatever the effect turns out to
     be, and the honest report of every one of them is that the design cannot
     reach alpha rather than that there is no difference.
+
+    The corpus no longer has five test templates, and this test stays anyway. It
+    is the statement of the failure mode rather than a description of the current
+    split, the machinery that detects it is what makes the verdict honest when it
+    happens, and a project that deleted the test once its own corpus stopped
+    triggering it would have deleted the reason the corpus was widened.
     """
     clusters = tuple(f"t{index // 4}" for index in range(20))
     baseline, candidate = _perfect_and_wrong(clusters)
@@ -181,6 +187,27 @@ def test_five_clusters_cannot_reach_an_alpha_of_five_percent() -> None:
     assert decided[0].min_attainable_p > POLICY.alpha
     assert decided[0].verdict == "inconclusive: the design cannot reach alpha"
     assert decided[0].at_design_floor is True
+
+
+def test_ten_clusters_can_reach_the_same_alpha() -> None:
+    """The other half of the same property, and the one the repaired corpus has.
+
+    Ten clusters give one thousand and twenty-four arrangements, so the floor is
+    two over that, two orders of magnitude below alpha. The same comparison that
+    is unreportable at five clusters is decided at ten, and the verdict is a real
+    one rather than a statement about the design.
+    """
+    clusters = tuple(f"t{index // 4}" for index in range(40))
+    baseline, candidate = _perfect_and_wrong(clusters)
+    decided = triage_bridge.adjust_family(
+        [triage_bridge.run_comparison(_comparison(clusters, baseline, candidate), POLICY)],
+        POLICY,
+    )
+    assert decided[0].n_clusters == 10
+    assert decided[0].n_arrangements == 1024
+    assert decided[0].min_attainable_p == pytest.approx(2 / 1024)
+    assert decided[0].min_attainable_p < POLICY.alpha
+    assert decided[0].verdict != "inconclusive: the design cannot reach alpha"
 
 
 def test_many_clusters_reach_significance_on_the_same_effect() -> None:

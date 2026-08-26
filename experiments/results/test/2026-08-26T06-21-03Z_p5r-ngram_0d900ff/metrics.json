@@ -1,0 +1,876 @@
+{
+  "headline": {
+    "rows": 2317,
+    "forms": 240,
+    "templates": 10,
+    "labels_observed": 39,
+    "macro_f1": 0.7393996960636188,
+    "micro_f1": 0.8226154510142426,
+    "accuracy": 0.8226154510142426
+  },
+  "slices": {
+    "seen_locales": {
+      "rows": 1941,
+      "forms": 200,
+      "templates": 10,
+      "labels_observed": 39,
+      "macro_f1": 0.7734896467461017,
+      "micro_f1": 0.8531684698608965,
+      "accuracy": 0.8531684698608965
+    },
+    "unseen_locale": {
+      "rows": 376,
+      "forms": 40,
+      "templates": 10,
+      "labels_observed": 38,
+      "macro_f1": 0.5636803327818365,
+      "micro_f1": 0.6648936170212766,
+      "accuracy": 0.6648936170212766
+    }
+  },
+  "per_label": {
+    "CC_EXP_SPLIT_MONTH": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 48,
+      "predicted": 48
+    },
+    "CC_EXP_SPLIT_YEAR": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 48,
+      "predicted": 48
+    },
+    "COMPOSITE_UNSPLIT": {
+      "precision": 1.0,
+      "recall": 0.9166666666666666,
+      "f1": 0.9565217391304348,
+      "support": 48,
+      "predicted": 44
+    },
+    "NOT_AUTOFILLABLE": {
+      "precision": 0.9873817034700315,
+      "recall": 0.9315476190476191,
+      "f1": 0.9586523736600306,
+      "support": 336,
+      "predicted": 317
+    },
+    "UNKNOWN": {
+      "precision": 0.8809523809523809,
+      "recall": 0.6166666666666667,
+      "f1": 0.7254901960784315,
+      "support": 120,
+      "predicted": 84
+    },
+    "address-level1": {
+      "precision": 0.6385542168674698,
+      "recall": 0.828125,
+      "f1": 0.7210884353741497,
+      "support": 64,
+      "predicted": 83
+    },
+    "address-level2": {
+      "precision": 0.5948275862068966,
+      "recall": 0.8214285714285714,
+      "f1": 0.69,
+      "support": 84,
+      "predicted": 116
+    },
+    "address-line1": {
+      "precision": 0.48717948717948717,
+      "recall": 0.7916666666666666,
+      "f1": 0.6031746031746031,
+      "support": 24,
+      "predicted": 39
+    },
+    "address-line2": {
+      "precision": 0.5,
+      "recall": 0.875,
+      "f1": 0.6363636363636364,
+      "support": 24,
+      "predicted": 42
+    },
+    "address-line3": {
+      "precision": 0.9285714285714286,
+      "recall": 0.5416666666666666,
+      "f1": 0.6842105263157894,
+      "support": 24,
+      "predicted": 14
+    },
+    "bday": {
+      "precision": 0.9565217391304348,
+      "recall": 0.9166666666666666,
+      "f1": 0.9361702127659574,
+      "support": 24,
+      "predicted": 23
+    },
+    "cc-csc": {
+      "precision": 0.8141592920353983,
+      "recall": 0.9583333333333334,
+      "f1": 0.8803827751196173,
+      "support": 96,
+      "predicted": 113
+    },
+    "cc-exp": {
+      "precision": 1.0,
+      "recall": 0.7916666666666666,
+      "f1": 0.8837209302325582,
+      "support": 24,
+      "predicted": 19
+    },
+    "cc-exp-month": {
+      "precision": 0.7777777777777778,
+      "recall": 0.875,
+      "f1": 0.823529411764706,
+      "support": 24,
+      "predicted": 27
+    },
+    "cc-exp-year": {
+      "precision": 0.7777777777777778,
+      "recall": 0.5833333333333334,
+      "f1": 0.6666666666666666,
+      "support": 24,
+      "predicted": 18
+    },
+    "cc-name": {
+      "precision": 0.6896551724137931,
+      "recall": 0.8333333333333334,
+      "f1": 0.7547169811320755,
+      "support": 48,
+      "predicted": 58
+    },
+    "cc-number": {
+      "precision": 1.0,
+      "recall": 0.7604166666666666,
+      "f1": 0.8639053254437871,
+      "support": 96,
+      "predicted": 73
+    },
+    "cc-type": {
+      "precision": 1.0,
+      "recall": 0.9444444444444444,
+      "f1": 0.9714285714285714,
+      "support": 72,
+      "predicted": 68
+    },
+    "country": {
+      "precision": 0.8571428571428571,
+      "recall": 0.6875,
+      "f1": 0.7630057803468208,
+      "support": 96,
+      "predicted": 77
+    },
+    "country-name": {
+      "precision": 0.625,
+      "recall": 0.625,
+      "f1": 0.625,
+      "support": 48,
+      "predicted": 48
+    },
+    "current-password": {
+      "precision": 0.9523809523809523,
+      "recall": 0.8333333333333334,
+      "f1": 0.888888888888889,
+      "support": 48,
+      "predicted": 42
+    },
+    "email": {
+      "precision": 0.9496402877697842,
+      "recall": 0.9166666666666666,
+      "f1": 0.9328621908127208,
+      "support": 144,
+      "predicted": 139
+    },
+    "family-name": {
+      "precision": 0.8,
+      "recall": 0.7142857142857143,
+      "f1": 0.7547169811320756,
+      "support": 84,
+      "predicted": 75
+    },
+    "given-name": {
+      "precision": 0.6435643564356436,
+      "recall": 0.7738095238095238,
+      "f1": 0.7027027027027027,
+      "support": 84,
+      "predicted": 101
+    },
+    "honorific-prefix": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0,
+      "predicted": 1
+    },
+    "honorific-suffix": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0,
+      "predicted": 3
+    },
+    "name": {
+      "precision": 0.8,
+      "recall": 0.8333333333333334,
+      "f1": 0.816326530612245,
+      "support": 24,
+      "predicted": 25
+    },
+    "new-password": {
+      "precision": 0.9215686274509803,
+      "recall": 0.9791666666666666,
+      "f1": 0.9494949494949494,
+      "support": 96,
+      "predicted": 102
+    },
+    "one-time-code": {
+      "precision": 0.5411764705882353,
+      "recall": 0.9583333333333334,
+      "f1": 0.6917293233082706,
+      "support": 48,
+      "predicted": 85
+    },
+    "organization": {
+      "precision": 0.6451612903225806,
+      "recall": 0.8333333333333334,
+      "f1": 0.7272727272727272,
+      "support": 48,
+      "predicted": 62
+    },
+    "postal-code": {
+      "precision": 0.9425287356321839,
+      "recall": 0.780952380952381,
+      "f1": 0.8541666666666667,
+      "support": 105,
+      "predicted": 87
+    },
+    "sex": {
+      "precision": 0.8518518518518519,
+      "recall": 0.9583333333333334,
+      "f1": 0.9019607843137256,
+      "support": 24,
+      "predicted": 27
+    },
+    "street-address": {
+      "precision": 0.7090909090909091,
+      "recall": 0.5416666666666666,
+      "f1": 0.6141732283464567,
+      "support": 72,
+      "predicted": 55
+    },
+    "tel": {
+      "precision": 0.6923076923076923,
+      "recall": 0.75,
+      "f1": 0.7199999999999999,
+      "support": 24,
+      "predicted": 26
+    },
+    "tel-country-code": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 24,
+      "predicted": 24
+    },
+    "tel-extension": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0,
+      "predicted": 6
+    },
+    "tel-national": {
+      "precision": 0.5,
+      "recall": 0.7083333333333334,
+      "f1": 0.5862068965517241,
+      "support": 24,
+      "predicted": 34
+    },
+    "url": {
+      "precision": 1.0,
+      "recall": 0.75,
+      "f1": 0.8571428571428571,
+      "support": 24,
+      "predicted": 18
+    },
+    "username": {
+      "precision": 0.8913043478260869,
+      "recall": 0.5694444444444444,
+      "f1": 0.6949152542372882,
+      "support": 72,
+      "predicted": 46
+    }
+  },
+  "grids": {
+    "locale": {
+      "de-DE": {
+        "count": 376,
+        "accuracy": 0.8404255319148937,
+        "macro_f1": 0.7813802856650827,
+        "insufficient_data": false
+      },
+      "en-GB": {
+        "count": 392,
+        "accuracy": 0.8647959183673469,
+        "macro_f1": 0.8127909457674509,
+        "insufficient_data": false
+      },
+      "en-NG": {
+        "count": 377,
+        "accuracy": 0.8885941644562334,
+        "macro_f1": 0.8595478811626425,
+        "insufficient_data": false
+      },
+      "en-US": {
+        "count": 392,
+        "accuracy": 0.8647959183673469,
+        "macro_f1": 0.8023786205516668,
+        "insufficient_data": false
+      },
+      "fr-FR": {
+        "count": 376,
+        "accuracy": 0.6648936170212766,
+        "macro_f1": 0.5636803327818365,
+        "insufficient_data": false
+      },
+      "ja-JP": {
+        "count": 404,
+        "accuracy": 0.8094059405940595,
+        "macro_f1": 0.7598977235600652,
+        "insufficient_data": false
+      }
+    },
+    "tier": {
+      "clean": {
+        "count": 520,
+        "accuracy": 0.9442307692307692,
+        "macro_f1": 0.9349757900515733,
+        "insufficient_data": false
+      },
+      "hostile": {
+        "count": 639,
+        "accuracy": 0.651017214397496,
+        "macro_f1": 0.5408632236200269,
+        "insufficient_data": false
+      },
+      "mixed": {
+        "count": 639,
+        "accuracy": 0.7996870109546166,
+        "macro_f1": 0.7151066253652791,
+        "insufficient_data": false
+      },
+      "partial": {
+        "count": 519,
+        "accuracy": 0.9402697495183044,
+        "macro_f1": 0.9290100149216455,
+        "insufficient_data": false
+      }
+    },
+    "family": {
+      "address": {
+        "count": 352,
+        "accuracy": 0.78125,
+        "macro_f1": 0.41942718691356135,
+        "insufficient_data": false
+      },
+      "checkout": {
+        "count": 821,
+        "accuracy": 0.8246041412911084,
+        "macro_f1": 0.6447229085475269,
+        "insufficient_data": false
+      },
+      "login": {
+        "count": 216,
+        "accuracy": 0.8287037037037037,
+        "macro_f1": 0.46998574974283475,
+        "insufficient_data": false
+      },
+      "payment": {
+        "count": 384,
+        "accuracy": 0.8671875,
+        "macro_f1": 0.5464279174531581,
+        "insufficient_data": false
+      },
+      "signup": {
+        "count": 544,
+        "accuracy": 0.8125,
+        "macro_f1": 0.5520708060995706,
+        "insufficient_data": false
+      }
+    },
+    "locale_by_tier": {
+      "de-DE/clean": {
+        "count": 84,
+        "accuracy": 0.9642857142857143,
+        "macro_f1": 0.961157796451914,
+        "insufficient_data": false
+      },
+      "de-DE/hostile": {
+        "count": 104,
+        "accuracy": 0.6634615384615384,
+        "macro_f1": 0.5401329901329901,
+        "insufficient_data": false
+      },
+      "de-DE/mixed": {
+        "count": 104,
+        "accuracy": 0.8269230769230769,
+        "macro_f1": 0.7561010789080965,
+        "insufficient_data": false
+      },
+      "de-DE/partial": {
+        "count": 84,
+        "accuracy": 0.9523809523809523,
+        "macro_f1": 0.952170868347339,
+        "insufficient_data": false
+      },
+      "en-GB/clean": {
+        "count": 88,
+        "accuracy": 0.9886363636363636,
+        "macro_f1": 0.990204081632653,
+        "insufficient_data": false
+      },
+      "en-GB/hostile": {
+        "count": 108,
+        "accuracy": 0.7037037037037037,
+        "macro_f1": 0.6258258258258258,
+        "insufficient_data": false
+      },
+      "en-GB/mixed": {
+        "count": 108,
+        "accuracy": 0.8240740740740741,
+        "macro_f1": 0.782946073486614,
+        "insufficient_data": false
+      },
+      "en-GB/partial": {
+        "count": 88,
+        "accuracy": 0.9886363636363636,
+        "macro_f1": 0.990204081632653,
+        "insufficient_data": false
+      },
+      "en-NG/clean": {
+        "count": 85,
+        "accuracy": 0.9882352941176471,
+        "macro_f1": 0.990204081632653,
+        "insufficient_data": false
+      },
+      "en-NG/hostile": {
+        "count": 104,
+        "accuracy": 0.7307692307692307,
+        "macro_f1": 0.6284046000262217,
+        "insufficient_data": false
+      },
+      "en-NG/mixed": {
+        "count": 104,
+        "accuracy": 0.8846153846153846,
+        "macro_f1": 0.875273379440046,
+        "insufficient_data": false
+      },
+      "en-NG/partial": {
+        "count": 84,
+        "accuracy": 0.9880952380952381,
+        "macro_f1": 0.990204081632653,
+        "insufficient_data": false
+      },
+      "en-US/clean": {
+        "count": 88,
+        "accuracy": 0.9886363636363636,
+        "macro_f1": 0.990204081632653,
+        "insufficient_data": false
+      },
+      "en-US/hostile": {
+        "count": 108,
+        "accuracy": 0.6944444444444444,
+        "macro_f1": 0.5703549108954514,
+        "insufficient_data": false
+      },
+      "en-US/mixed": {
+        "count": 108,
+        "accuracy": 0.8333333333333334,
+        "macro_f1": 0.7727109542899017,
+        "insufficient_data": false
+      },
+      "en-US/partial": {
+        "count": 88,
+        "accuracy": 0.9886363636363636,
+        "macro_f1": 0.990204081632653,
+        "insufficient_data": false
+      },
+      "fr-FR/clean": {
+        "count": 84,
+        "accuracy": 0.7619047619047619,
+        "macro_f1": 0.6919169719169719,
+        "insufficient_data": false
+      },
+      "fr-FR/hostile": {
+        "count": 104,
+        "accuracy": 0.5096153846153846,
+        "macro_f1": 0.33465102149312675,
+        "insufficient_data": false
+      },
+      "fr-FR/mixed": {
+        "count": 104,
+        "accuracy": 0.6634615384615384,
+        "macro_f1": 0.5841697181750946,
+        "insufficient_data": false
+      },
+      "fr-FR/partial": {
+        "count": 84,
+        "accuracy": 0.7619047619047619,
+        "macro_f1": 0.6919169719169719,
+        "insufficient_data": false
+      },
+      "ja-JP/clean": {
+        "count": 91,
+        "accuracy": 0.967032967032967,
+        "macro_f1": 0.934945054945055,
+        "insufficient_data": false
+      },
+      "ja-JP/hostile": {
+        "count": 111,
+        "accuracy": 0.6036036036036037,
+        "macro_f1": 0.5125212341428558,
+        "insufficient_data": false
+      },
+      "ja-JP/mixed": {
+        "count": 111,
+        "accuracy": 0.7657657657657657,
+        "macro_f1": 0.7097603014269681,
+        "insufficient_data": false
+      },
+      "ja-JP/partial": {
+        "count": 91,
+        "accuracy": 0.9560439560439561,
+        "macro_f1": 0.9016117216117217,
+        "insufficient_data": false
+      }
+    }
+  },
+  "insufficient_data": {
+    "minimum": 30,
+    "locale": [],
+    "tier": [],
+    "family": [],
+    "locale_by_tier": []
+  },
+  "abstention": {
+    "rows": 2317,
+    "unknown": 84,
+    "unknown_rate": 0.03625377643504532,
+    "committed": 2233,
+    "accuracy_when_committed": 0.8204209583519928
+  },
+  "findings": {
+    "MISSING_AUTOCOMPLETE": {
+      "code": "MISSING_AUTOCOMPLETE",
+      "accusations": 334,
+      "correct_accusations": 325,
+      "fields_needing_one": 790,
+      "precision": 0.9730538922155688,
+      "recall": 0.41139240506329117,
+      "f1": 0.5782918149466192,
+      "precision_insufficient_data": false,
+      "recall_insufficient_data": false,
+      "minimum": 30
+    },
+    "WRONG_AUTOCOMPLETE": {
+      "code": "WRONG_AUTOCOMPLETE",
+      "accusations": 23,
+      "correct_accusations": 21,
+      "fields_needing_one": 30,
+      "precision": null,
+      "recall": 0.7,
+      "f1": null,
+      "precision_insufficient_data": true,
+      "recall_insufficient_data": false,
+      "minimum": 30
+    }
+  },
+  "latency_us_per_field": {
+    "p50": 170.25137640303,
+    "p95": 256.56999787315726,
+    "p99": 342.7453339099884
+  },
+  "wall_time": {
+    "load_s": 131.9492995319306,
+    "extract_s": 4.477365824452136,
+    "classify_s": 0.4738019873620942,
+    "render_s": 0.021013472985941917,
+    "total_s": 138.21816909499466,
+    "forms": 240,
+    "fields": 2317,
+    "extraction_source": "browser",
+    "load_and_extract_share": 0.9870385800192399
+  },
+  "confusions": [
+    {
+      "truth": "country",
+      "predicted": "address-level1",
+      "count": 30
+    },
+    {
+      "truth": "username",
+      "predicted": "given-name",
+      "count": 17
+    },
+    {
+      "truth": "cc-number",
+      "predicted": "cc-name",
+      "count": 13
+    },
+    {
+      "truth": "street-address",
+      "predicted": "one-time-code",
+      "count": 12
+    },
+    {
+      "truth": "address-level1",
+      "predicted": "country",
+      "count": 11
+    },
+    {
+      "truth": "UNKNOWN",
+      "predicted": "one-time-code",
+      "count": 10
+    },
+    {
+      "truth": "UNKNOWN",
+      "predicted": "address-line2",
+      "count": 9
+    },
+    {
+      "truth": "country-name",
+      "predicted": "address-level2",
+      "count": 9
+    },
+    {
+      "truth": "current-password",
+      "predicted": "new-password",
+      "count": 8
+    },
+    {
+      "truth": "NOT_AUTOFILLABLE",
+      "predicted": "email",
+      "count": 7
+    },
+    {
+      "truth": "family-name",
+      "predicted": "tel-national",
+      "count": 7
+    },
+    {
+      "truth": "tel-national",
+      "predicted": "tel",
+      "count": 7
+    },
+    {
+      "truth": "username",
+      "predicted": "family-name",
+      "count": 7
+    },
+    {
+      "truth": "username",
+      "predicted": "one-time-code",
+      "count": 7
+    },
+    {
+      "truth": "UNKNOWN",
+      "predicted": "address-level2",
+      "count": 6
+    },
+    {
+      "truth": "UNKNOWN",
+      "predicted": "country-name",
+      "count": 6
+    },
+    {
+      "truth": "UNKNOWN",
+      "predicted": "tel-extension",
+      "count": 6
+    },
+    {
+      "truth": "address-level2",
+      "predicted": "street-address",
+      "count": 6
+    },
+    {
+      "truth": "email",
+      "predicted": "given-name",
+      "count": 6
+    },
+    {
+      "truth": "postal-code",
+      "predicted": "address-line1",
+      "count": 6
+    }
+  ],
+  "predicted_confusion_pairs": {
+    "username as email": 0,
+    "email as username": 0,
+    "address-level1 as address-level2": 0,
+    "address-level2 as address-level1": 0,
+    "tel as tel-national": 6,
+    "tel-national as tel": 7,
+    "cc-exp as cc-exp-month": 1,
+    "cc-exp-month as cc-exp": 0
+  },
+  "calibration": {
+    "all_classes": {
+      "scored_rows": 2233,
+      "excluded_labels": [],
+      "excluded_rows": 84,
+      "bins": [
+        {
+          "low": 0.0,
+          "high": 0.1,
+          "count": 0
+        },
+        {
+          "low": 0.1,
+          "high": 0.2,
+          "count": 18,
+          "mean_predicted": 0.1739971584092801,
+          "mean_observed": 0.1111111111111111
+        },
+        {
+          "low": 0.2,
+          "high": 0.3,
+          "count": 80,
+          "mean_predicted": 0.26412956888419115,
+          "mean_observed": 0.275
+        },
+        {
+          "low": 0.3,
+          "high": 0.4,
+          "count": 101,
+          "mean_predicted": 0.3509491144690626,
+          "mean_observed": 0.21782178217821782
+        },
+        {
+          "low": 0.4,
+          "high": 0.5,
+          "count": 105,
+          "mean_predicted": 0.4397906748324092,
+          "mean_observed": 0.45714285714285713
+        },
+        {
+          "low": 0.5,
+          "high": 0.6,
+          "count": 128,
+          "mean_predicted": 0.5499437663945105,
+          "mean_observed": 0.5703125
+        },
+        {
+          "low": 0.6,
+          "high": 0.7,
+          "count": 158,
+          "mean_predicted": 0.6487628272252715,
+          "mean_observed": 0.6645569620253164
+        },
+        {
+          "low": 0.7,
+          "high": 0.8,
+          "count": 113,
+          "mean_predicted": 0.7447580959603654,
+          "mean_observed": 0.6283185840707964
+        },
+        {
+          "low": 0.8,
+          "high": 0.9,
+          "count": 187,
+          "mean_predicted": 0.8525989494273772,
+          "mean_observed": 0.8502673796791443
+        },
+        {
+          "low": 0.9,
+          "high": 1.0,
+          "count": 1343,
+          "mean_predicted": 0.9732101640051194,
+          "mean_observed": 0.9903201787043932
+        }
+      ],
+      "expected_calibration_error": 0.026397005092735945
+    },
+    "calibrated_classes_only": {
+      "scored_rows": 2172,
+      "excluded_labels": [
+        "cc-exp",
+        "current-password"
+      ],
+      "excluded_rows": 145,
+      "bins": [
+        {
+          "low": 0.0,
+          "high": 0.1,
+          "count": 0
+        },
+        {
+          "low": 0.1,
+          "high": 0.2,
+          "count": 18,
+          "mean_predicted": 0.1739971584092801,
+          "mean_observed": 0.1111111111111111
+        },
+        {
+          "low": 0.2,
+          "high": 0.3,
+          "count": 80,
+          "mean_predicted": 0.26412956888419115,
+          "mean_observed": 0.275
+        },
+        {
+          "low": 0.3,
+          "high": 0.4,
+          "count": 100,
+          "mean_predicted": 0.3507209414034799,
+          "mean_observed": 0.21
+        },
+        {
+          "low": 0.4,
+          "high": 0.5,
+          "count": 105,
+          "mean_predicted": 0.4397906748324092,
+          "mean_observed": 0.45714285714285713
+        },
+        {
+          "low": 0.5,
+          "high": 0.6,
+          "count": 125,
+          "mean_predicted": 0.5501457402212881,
+          "mean_observed": 0.568
+        },
+        {
+          "low": 0.6,
+          "high": 0.7,
+          "count": 154,
+          "mean_predicted": 0.6486606214971091,
+          "mean_observed": 0.6558441558441559
+        },
+        {
+          "low": 0.7,
+          "high": 0.8,
+          "count": 112,
+          "mean_predicted": 0.7451098842437566,
+          "mean_observed": 0.625
+        },
+        {
+          "low": 0.8,
+          "high": 0.9,
+          "count": 181,
+          "mean_predicted": 0.8528176522777421,
+          "mean_observed": 0.8453038674033149
+        },
+        {
+          "low": 0.9,
+          "high": 1.0,
+          "count": 1297,
+          "mean_predicted": 0.9730263337497168,
+          "mean_observed": 0.9907478797224364
+        }
+      ],
+      "expected_calibration_error": 0.027178108015446734
+    }
+  },
+  "audit_s": 0.4017165752593428
+}

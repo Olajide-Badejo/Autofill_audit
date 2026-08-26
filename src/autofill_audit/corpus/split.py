@@ -54,12 +54,31 @@ HELD_OUT_LOCALE: Final[str] = "fr-FR"
 """Recorded in ``docs/adr/0005-held-out-locale.md``. Changing it later to make a
 number look better is a law-4 violation dressed as an experiment."""
 
-TRAIN_DEV_TEST_PER_FAMILY: Final[tuple[int, int, int]] = (3, 1, 1)
-"""Templates per family in each partition. Five templates per family at 3/1/1 is
-the 60/20/20 of spec section 8.6, and it guarantees the two properties that
-section requires: the test partition holds at least one template from every
+TRAIN_DEV_TEST_PER_FAMILY: Final[tuple[int, int, int]] = (5, 1, 2)
+"""Templates per family in each partition. Eight templates per family at 5/1/2
+keeps the roughly 60/20/20 of spec section 8.6 and guarantees the two properties
+that section requires: the test partition holds at least one template from every
 family, and every locale appears in it, because every template is generated in
-every locale."""
+every locale.
+
+**Why the test share is two rather than one.** The template is the clustering
+unit of spec section 13.3, so the test partition's template count is the number
+of clusters the paired sign-flip permutation gets, and the design's power is
+decided entirely by that number:
+
+    clusters   arrangements   smallest attainable two sided p
+        5            32                   0.0625
+        6            64                   0.0313
+        8           256                   0.0078
+       10          1024                   0.0020
+
+At one template per family the test partition held five, whose floor sits above
+the pre-registered alpha, so no comparison clustered by template could reach
+significance at any effect size. P5 measured on that design and reported eleven
+inconclusive comparisons for exactly that reason. Two per family gives ten
+clusters and a floor two orders of magnitude below the level. The dev share stays
+at one per family: dev decides hyperparameters and thresholds rather than
+significance, and nothing computed there is a clustered test."""
 
 PARTITIONS: Final[tuple[str, ...]] = ("train", "dev", "test", "excluded")
 SPLIT_SCHEMA_VERSION: Final[int] = 1

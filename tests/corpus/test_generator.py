@@ -6,7 +6,14 @@ from pathlib import Path
 
 import pytest
 
-from autofill_audit.corpus.families import TEMPLATES, Family, ItemKind, SectionItem, Template
+from autofill_audit.corpus.families import (
+    TEMPLATES,
+    TEMPLATES_PER_FAMILY,
+    Family,
+    ItemKind,
+    SectionItem,
+    Template,
+)
 from autofill_audit.corpus.generator import (
     GENERATOR_VERSION,
     build_form,
@@ -43,7 +50,7 @@ def test_grid_from_rejects_zero_variants() -> None:
 
 
 def test_variants_multiply_the_grid() -> None:
-    templates = 5
+    templates = TEMPLATES_PER_FAMILY
     grid = grid_from(seed=1, families=["login"], locales=["en-US"], tiers=["clean"], variants=3)
     assert len(list(grid.cells())) == templates * 3
     forms = [form for form, _ in iter_forms(grid)]
@@ -136,7 +143,7 @@ def test_write_corpus_records_the_realised_grid(tmp_path: Path) -> None:
     assert manifest["generator_version"] == GENERATOR_VERSION
     assert manifest["seed"] == 20260825
     assert manifest["base_year"] == 2026
-    assert manifest["form_count"] == result.form_count == 5 * 2 * len(Tier)
+    assert manifest["form_count"] == result.form_count == TEMPLATES_PER_FAMILY * 2 * len(Tier)
     assert manifest["cells"]
     assert sum(cell["forms"] for cell in manifest["cells"]) == manifest["form_count"]
     assert manifest["split_sha256"]

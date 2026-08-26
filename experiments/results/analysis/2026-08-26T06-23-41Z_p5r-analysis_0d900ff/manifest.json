@@ -1,0 +1,55 @@
+{
+  "schema_version": "1.0.0",
+  "run_id": "2026-08-26T06-23-41Z_p5r-analysis_0d900ff",
+  "command_line": "analyze.py --baseline experiments/results/test/2026-08-26T06-18-34Z_p5r-rules_0d900ff --candidate experiments/results/test/2026-08-26T06-21-03Z_p5r-ngram_0d900ff --split-file corpus/split.json --out experiments/results --run-id 2026-08-26T06-23-41Z_p5r-analysis_0d900ff --policy experiments/predictions/p5r-power-repair.md",
+  "split": "test",
+  "engine": "rules against ngram",
+  "engine_describe": {
+    "analysis": "paired permutation clustered by template, Benjamini Hochberg",
+    "harness": "ml-experiment-triage 1.0.0",
+    "clustering": "built here; the harness has no public clustered resampling"
+  },
+  "threshold_describe": {
+    "alpha": "0.05",
+    "false_discovery_rate": "0.05",
+    "practical_threshold_absolute": "0.02"
+  },
+  "artefact_sha256": {
+    "baseline_run.jsonl": "dda8e1c3598fc7206b08123b0a5174aed499ccbd704f21e62790a172a94de36c",
+    "candidate_run.jsonl": "40ecab986efe13cc2280cd2f470de671420fab1cba2b76a4d87a64b3cd1a162c"
+  },
+  "corpus_manifest_sha": "15c3136f75d2d9c6807dbc70a28ab507bca1c784df53c134650e4f9898e6e035",
+  "split_file_sha": "c4c797ee27cec1162bc57ca3c53dc2a2392899199cbbe390e2674daba38a0ab8",
+  "seed": 20260825,
+  "git": {
+    "commit": "0d900ff25ddfa88a48cacacc03a4b108661ac4d3",
+    "dirty": false
+  },
+  "dependency_versions": {
+    "python": "3.14.4",
+    "numpy": "2.5.2",
+    "onnxruntime": "1.29.0",
+    "playwright": "1.62.0",
+    "click": "8.4.2",
+    "rich": "15.0.0",
+    "jinja2": "3.1.6",
+    "ml-experiment-triage": "1.0.0"
+  },
+  "machine": {
+    "os": "Linux 6.18.33.2-microsoft-standard-WSL2",
+    "machine": "x86_64",
+    "python": "3.14.4",
+    "python_implementation": "CPython",
+    "cpu_model": "Intel(R) Core(TM) i7-14700K",
+    "cpu_count": "28",
+    "gpu_present": "NVIDIA GeForce RTX 5070"
+  },
+  "started_at": "2026-08-26T06:23:47Z",
+  "finished_at": "2026-08-26T06:23:47Z",
+  "row_count": 11,
+  "form_count": 240,
+  "notes": [
+    "the clustered resampling is built in evaluate/triage_bridge.py because the harness has no public entry point that accepts a cluster assignment; the p value and the Benjamini Hochberg adjustment are the harness's own",
+    "the policy file is experiments/predictions/p5r-power-repair.md"
+  ]
+}

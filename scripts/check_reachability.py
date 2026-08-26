@@ -21,6 +21,15 @@ catches the opposite failure, a sample that has silently gone stale against the
 generator. Neither alone would notice the other's defect, and both together
 still run in about a second, which is the budget a CI job of this kind deserves.
 
+**The fifth check is not a fifth clause.** P5R adds a train-partition minimum,
+and it is registered beside the law's four clauses rather than folded into one of
+them. Clause (b) asks whether a label is emitted anywhere in the corpus, and a
+label emitted only outside the training partition satisfies it while still being
+a class the model has never once seen and can therefore only get wrong. Three
+labels were in exactly that position. Widening a law by quietly changing what one
+of its clauses means is how a law stops meaning anything, so the new requirement
+is stated as itself.
+
 Usage:
     check_reachability.py [--root DIR]
 
@@ -37,6 +46,7 @@ import re
 import subprocess
 import sys
 import tempfile
+from collections import Counter
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from pathlib import Path
@@ -48,7 +58,8 @@ if str(_REPO_ROOT / "src") not in sys.path:
 from autofill_audit.classify.rules_table import labels_with_rules  # noqa: E402
 from autofill_audit.corpus.answer_key import build_answer_key  # noqa: E402
 from autofill_audit.corpus.families import Family  # noqa: E402
-from autofill_audit.corpus.generator import grid_from, iter_forms  # noqa: E402
+from autofill_audit.corpus.generator import GeneratedForm, grid_from, iter_forms  # noqa: E402
+from autofill_audit.corpus.split import build_split  # noqa: E402
 from autofill_audit.corpus.tiers import Tier  # noqa: E402
 from autofill_audit.taxonomy import (  # noqa: E402
     ALL_LABELS,
@@ -64,6 +75,23 @@ _REACHABILITY_BASE_YEAR = 2026
 """Pinned rather than taken from the clock. This check runs in CI on every push,
 and a check whose input changed when the year turned would go red for a reason
 that has nothing to do with the commit under test."""
+
+_TRAIN_PARTITION = "train"
+MIN_TRAIN_ROWS_PER_LABEL = 20
+"""How many training rows a label must have before the model may be asked about it.
+
+Arithmetic, not taste. A template is generated in six locales and four tiers at
+one variant, and the held-out locale is lifted out of the training partition, so
+one training template contributes exactly twenty training rows for a field it
+carries in every locale. The constant therefore states the smallest fact that is
+not an accident of a single locale profile: **at least one whole training
+template carries this label**.
+
+A label below it is not a corpus-coverage problem, it is a class the model has
+never seen. It costs twice under macro averaging, once in its own recall and once
+in the recall of whichever class the model chooses instead, and P5's model
+carried three such classes into a headline table. The constant is enforced rather
+than documented for the same reason the other four clauses are."""
 
 # The taxonomy module owns every label string. Any other module carrying one as
 # a literal is the drift ground rule 6 forbids. At P0 the scan is restricted to
@@ -454,6 +482,76 @@ def check_test_reachability(root: Path) -> CheckResult:
     return CheckResult(name, True, f"all {len(ALL_LABELS)} labels carry a label-tagged test")
 
 
+def train_partition_counts() -> Counter[str]:
+    """Count answer-key rows per label in the training partition of the full grid.
+
+    The full grid rather than one locale, because the training partition is
+    defined by the split and the split lifts the held-out locale out of it. A
+    single-locale approximation would count rows the model never trains on and
+    would pass on a corpus that starves a class.
+
+    The grid is generated rather than read from ``corpus/``, which is gitignored
+    and regenerable (spec section 18), and the seed and base year are pinned for
+    the same reason every other pinned constant in this file is.
+    """
+    grid = grid_from(
+        seed=_REACHABILITY_SEED,
+        families=[family.value for family in Family],
+        locales=None,
+        tiers=[tier.value for tier in Tier],
+        variants=1,
+        base_year=_REACHABILITY_BASE_YEAR,
+    )
+    forms: list[GeneratedForm] = []
+    documents: list[dict[str, object]] = []
+    for form, _ in iter_forms(grid):
+        forms.append(form)
+        documents.append(build_answer_key(form))
+
+    split = build_split(grid, forms)
+    partitions: dict[str, str] = split["form_partitions"]
+    counts: Counter[str] = Counter()
+    for form, document in zip(forms, documents, strict=True):
+        if partitions[form.form_id] != _TRAIN_PARTITION:
+            continue
+        fields: list[dict[str, str]] = document["fields"]  # type: ignore[assignment]
+        for entry in fields:
+            counts[entry["label"]] += 1
+    return counts
+
+
+def check_train_label_minimum(root: Path) -> CheckResult:
+    """Every label a model can predict has enough training rows to be learnable.
+
+    Not one of law 2's four clauses, and deliberately not presented as one. See
+    the module docstring: clause (b) is satisfied by a label emitted anywhere in
+    the corpus, and a label emitted only in the dev or test partition is still a
+    class the model has never seen.
+    """
+    del root
+    name = "train partition minimum"
+    counts = train_partition_counts()
+    thin = sorted(
+        (label.value, counts[label.value])
+        for label in ALL_LABELS
+        if counts[label.value] < MIN_TRAIN_ROWS_PER_LABEL
+    )
+    if thin:
+        return CheckResult(
+            name,
+            False,
+            f"below {MIN_TRAIN_ROWS_PER_LABEL} training rows: "
+            + ", ".join(f"{label} ({count})" for label, count in thin),
+        )
+    smallest = min((counts[label.value], label.value) for label in ALL_LABELS)
+    return CheckResult(
+        name,
+        True,
+        f"all {len(ALL_LABELS)} labels have at least {MIN_TRAIN_ROWS_PER_LABEL} training rows; "
+        f"the thinnest is {smallest[1]} at {smallest[0]}",
+    )
+
+
 CHECKS: list[Callable[[Path], CheckResult]] = [
     check_taxonomy_populated,
     check_no_duplicate_label_values,
@@ -462,6 +560,7 @@ CHECKS: list[Callable[[Path], CheckResult]] = [
     check_corpus_reachability,
     check_rule_reachability,
     check_test_reachability,
+    check_train_label_minimum,
 ]
 
 # Clauses of the law that no artefact exists to check yet. Empty since P3, which
@@ -492,7 +591,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         for pending in PENDING:
             print(f"  [WAIT] {pending}")
     else:
-        print("check_reachability: all four clauses of law 2 are enforced")
+        print(
+            "check_reachability: all four clauses of law 2 are enforced, "
+            "plus the train partition minimum"
+        )
 
     failed = [result for result in results if not result.passed]
     if failed:

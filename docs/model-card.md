@@ -62,24 +62,36 @@ numbers.
 ```
 results: models/train_manifest.json
 seed                     20260825
-corpus manifest sha256   3450c48b009b3365f87f21e4f6703540e12c80885620a8612739e0e4eafcdb6b
-split file sha256        67f524a0fd4c8590b3b758d6a000083210a1195d8304706185b4e24649bfbe60
-form counts              train 300, dev 120, test 120, excluded 60
+corpus manifest sha256   15c3136f75d2d9c6807dbc70a28ab507bca1c784df53c134650e4f9898e6e035
+split file sha256        c4c797ee27cec1162bc57ca3c53dc2a2392899199cbbe390e2674daba38a0ab8
+form counts              train 500, dev 120, test 240, excluded 100
 ```
 
 ```
 results: models/dev_metrics.json
-train forms      300        train rows   2889
-dev forms        120        dev rows     1118
-excluded forms    60        classes fit    39
+train forms      500        train rows   5402
+dev forms        120        dev rows     1596
+excluded forms   100        classes fit    42
 controls dropped as undetectable   0
 controls with no answer key entry  0
 ```
 
-The corpus is five form families across six locales and four markup-quality
-tiers (spec section 8). The tiers are the point: `clean` is correct markup,
-`hostile` has its labels stripped and its identifiers obfuscated, and the model
-is measured on each separately below.
+The corpus is five form families of eight templates each, across six locales and
+four markup-quality tiers (spec section 8). The tiers are the point: `clean` is
+correct markup, `hostile` has its labels stripped and its identifiers obfuscated,
+and the model is measured on each separately below.
+
+**This is the second model this card has described, and none of its numbers are
+comparable with the first.** The corpus was widened at P5R from five templates
+per family to eight, because the test partition's template count is the
+clustering unit of the significance test and five clusters could not reach the
+pre-registered level at any effect size. The training partition therefore grew
+from fifteen templates to twenty-five and the model was refitted from scratch.
+The reason was written down before the change, in
+`experiments/predictions/p5r-power-repair.md` and in `docs/ENGINEERING_LOG.md`,
+and the previous model's numbers are in this file's own history rather than
+beside these ones, because two models fitted on two corpora do not belong in one
+table.
 
 ### 2.1 The split policy, and the held-out locale
 
@@ -100,53 +112,71 @@ template is a training template. The training script does not read them.
 
 ### 2.2 Per-label training counts
 
-Three labels appear in dev and in no training row, which is a fact about the
-split rather than a defect: the split partitions templates, and no training
-template happens to emit them. The model cannot predict them at all, and their
-zero rows below are the honest consequence.
+**Every label in the taxonomy now has training rows**, which was not true of the
+previous model. Three labels then appeared in dev and in no training row at all,
+so the model could not predict them under any circumstances and scored zero on
+them by construction. `scripts/check_reachability.py` now enforces a minimum
+directly: every label must carry at least one whole training template's worth of
+rows, and the build fails otherwise. The thinnest label in the table below sits
+at that minimum's double.
 
 ```
 results: models/dev_metrics.json
 label                   train   dev    prec     rec      f1
-COMPOSITE_UNSPLIT          40    72    0.53    0.26    0.35
-NOT_AUTOFILLABLE          350    84    0.64    0.87    0.74
-UNKNOWN                   150    60    0.56    0.57    0.56
-address-level1            112    32    0.64    0.66    0.65
-address-level2            140    44    0.54    0.77    0.64
-address-line1             140    24    0.45    0.62    0.53
-address-line2             140    24    0.73    0.92    0.81
-address-line3              40     0    0.00    0.00    0.00
-cc-csc                    120    48    0.91    0.90    0.91
+CC_EXP_SPLIT_MONTH         40    24    1.00    1.00    1.00
+CC_EXP_SPLIT_YEAR          40    24    1.00    1.00    1.00
+COMPOSITE_UNSPLIT         160    24    1.00    1.00    1.00
+NOT_AUTOFILLABLE          610   228    0.99    0.96    0.98
+UNKNOWN                   250    60    0.91    0.98    0.94
+additional-name            60    24    0.74    0.71    0.72
+address-level1            192    32    0.83    0.75    0.79
+address-level2            228    44    0.67    0.68    0.67
+address-line1             180    24    0.86    0.75    0.80
+address-line2             180    24    0.69    0.75    0.72
+address-line3              40    24    0.72    0.88    0.79
+bday                       40    24    0.67    0.83    0.74
+cc-csc                    200    48    0.88    0.88    0.88
 cc-exp                     40     0    0.00    0.00    0.00
-cc-exp-month               20    24    0.65    0.62    0.64
-cc-exp-year                20    24    0.61    0.46    0.52
-cc-name                   100     0    0.00    0.00    0.00
-cc-number                 120    48    0.98    0.96    0.97
-cc-type                    20    24    1.00    1.00    1.00
-country                   120    48    0.76    0.71    0.73
-country-name                0    24    0.00    0.00    0.00
-email                     160    72    1.00    1.00    1.00
-family-name                96    56    0.88    0.75    0.81
-given-name                 96    56    0.82    0.82    0.82
-honorific-prefix           20    24    1.00    1.00    1.00
-honorific-suffix           20    24    0.96    0.96    0.96
-name                       40    24    0.88    0.88    0.88
-new-password               80    24    1.00    1.00    1.00
-one-time-code               0    24    0.00    0.00    0.00
-organization               60    24    0.91    0.83    0.87
-postal-code               125    66    0.68    0.76    0.72
-street-address              0    24    0.00    0.00    0.00
-tel                        60    24    0.48    0.42    0.44
-tel-country-code           40    24    0.92    1.00    0.96
-tel-extension              40     0    0.00    0.00    0.00
-tel-national               40    24    0.31    0.54    0.39
-transaction-amount         20    24    0.94    0.62    0.75
-url                        40    24    0.67    0.75    0.71
-username                   60     0    0.00    0.00    0.00
+cc-exp-month               40    24    0.81    0.92    0.86
+cc-exp-year                40    24    0.73    0.79    0.76
+cc-name                   140    48    0.97    0.71    0.82
+cc-number                 200    48    0.90    0.92    0.91
+cc-type                    60    24    1.00    1.00    1.00
+country                   180    48    0.85    0.92    0.88
+country-name              100    24    0.57    0.54    0.55
+current-password          100     0    0.00    0.00    0.00
+email                     320    72    0.90    0.76    0.83
+family-name               216    56    0.75    0.68    0.71
+given-name                216    56    0.75    0.75    0.75
+honorific-prefix          100    24    1.00    1.00    1.00
+honorific-suffix          100    24    0.58    0.62    0.60
+name                       80    24    0.56    0.42    0.48
+new-password              180    48    1.00    0.94    0.97
+nickname                   80    48    0.78    0.81    0.80
+one-time-code             100    72    0.81    0.96    0.88
+organization               60    72    0.84    0.58    0.69
+postal-code               210    40    0.80    0.80    0.80
+sex                        40    24    1.00    1.00    1.00
+street-address             60    24    0.56    0.62    0.59
+tel                        80    24    0.48    0.54    0.51
+tel-country-code           80    24    1.00    0.96    0.98
+tel-extension              60    24    0.92    1.00    0.96
+tel-national               80    24    0.57    0.88    0.69
+transaction-amount         80    24    1.00    1.00    1.00
+url                        60    24    1.00    1.00    1.00
+username                   80    24    1.00    1.00    1.00
 ```
 
-Labels with no row in that table carry no dev examples and no dev predictions.
-The full label space is the forty two labels of `src/autofill_audit/taxonomy.py`.
+**Two labels have training rows and no dev rows**, `cc-exp` and
+`current-password`, and their zeros are a scoring artefact rather than a
+statement about the model: a label with no dev examples cannot earn recall on a
+split that contains none of it. The dev partition is one template per family, and
+those five templates happen to carry neither a single native month expiry input
+nor a sign-in password. The consequence that matters is in section 6: both are
+uncalibrated, and the card names them there.
+
+The full label space is the forty two labels of
+`src/autofill_audit/taxonomy.py`, and every one of them appears above.
 
 ---
 
@@ -158,13 +188,13 @@ import. There is no second implementation, because train/serve feature skew is
 the most common way a deployed text classifier silently degrades.
 
 ```
-results: models/vocab.json
-character n-grams (char_wb, 3 to 5)   4905 columns
-word n-grams (1 to 2)                 1701 columns
+results: models/train_manifest.json
+character n-grams (char_wb, 3 to 5)   5760 columns
+word n-grams (1 to 2)                 2176 columns
 categorical one-hots                    32 columns
 option-shape features                    5 columns
 structural features                     13 columns
-total feature width                   6656 columns
+total feature width                   7986 columns
 ```
 
 **A fixed vocabulary, fitted on train and committed** (spec section 10.2). The
@@ -196,20 +226,23 @@ grid, never on test:
 
 ```
 results: models/dev_metrics.json
-C = 0.25   dev macro-F1 0.4920
-C = 0.5    dev macro-F1 0.5080
-C = 1.0    dev macro-F1 0.5123
-C = 2.0    dev macro-F1 0.5170
-C = 4.0    dev macro-F1 0.5166
-C = 8.0    dev macro-F1 0.5262   <- chosen
+C = 0.25   dev macro-F1 0.7308
+C = 0.5    dev macro-F1 0.7375
+C = 1.0    dev macro-F1 0.7505
+C = 2.0    dev macro-F1 0.7612
+C = 4.0    dev macro-F1 0.7660
+C = 8.0    dev macro-F1 0.7690   <- chosen
 ```
 
-**The chosen value is at the edge of the grid**, which is worth saying plainly.
-The grid was fixed before the run and is not being widened after seeing the
-result, because widening a pre-registered grid because the answer landed at its
-edge is how a sweep becomes a search for a number. The consequence is that this
-model may be less regularised than a wider grid would have chosen, and a later
-phase that revisits it should say so and re-register.
+**The chosen value is at the edge of the grid**, which is worth saying plainly,
+and it is the same edge the previous model chose. The grid was fixed before the
+first run and is not being widened after seeing the result twice, because
+widening a pre-registered grid because the answer landed at its edge is how a
+sweep becomes a search for a number. The consequence is that this model may be
+less regularised than a wider grid would have chosen, and a later phase that
+revisits it re-registers first. The spread across the whole grid is a few points
+of macro-F1 either way, which is smaller than the change the wider corpus
+produced on its own.
 
 ---
 
@@ -221,11 +254,11 @@ against the rule baseline is a P5 result with a run manifest behind it.
 
 ```
 results: models/dev_metrics.json
-dev macro-F1                     0.5813
-dev accuracy                     0.7093
-dev macro-F1 before calibration  0.5262
-abstention rate                  0.0546
-accuracy when not abstaining     0.7181
+dev macro-F1                     0.7866
+dev accuracy                     0.8421
+dev macro-F1 before calibration  0.7690
+abstention rate                  0.0407
+accuracy when not abstaining     0.8393
 ```
 
 ### 5.1 Per locale
@@ -233,27 +266,35 @@ accuracy when not abstaining     0.7181
 ```
 results: models/dev_metrics.json
 locale     rows   accuracy   macro-F1
-de-DE       180      0.750      0.600
-en-GB       188      0.739      0.621
-en-NG       182      0.769      0.655
-en-US       188      0.750      0.643
-fr-FR       180      0.556      0.431
-ja-JP       200      0.690      0.594
+de-DE       260      0.858      0.779
+en-GB       268      0.866      0.838
+en-NG       260      0.892      0.837
+en-US       268      0.877      0.866
+fr-FR       260      0.712      0.659
+ja-JP       280      0.846      0.822
 ```
 
 `fr-FR` is the held-out locale and it is the worst cell in the table, by a
-margin. That was the pre-registered prediction and it is what happened.
+margin. That was the pre-registered prediction, it was true of the previous
+model, and it is true of this one.
 
 ### 5.2 Per markup-quality tier
 
 ```
 results: models/dev_metrics.json
 tier       rows   accuracy   macro-F1
-clean       249      0.835      0.740
-hostile     310      0.523      0.405
-mixed       309      0.702      0.589
-partial     250      0.824      0.707
+clean       369      0.954      0.930
+hostile     429      0.662      0.590
+mixed       429      0.830      0.771
+partial     369      0.954      0.927
 ```
+
+The ordering is the one the tiers were designed to produce: correct markup is
+easy, obfuscated markup is hard, and the mixed tier sits between them because it
+is literally made of both. The clean and partial cells being equal is worth a
+sentence: a wrong `autocomplete` attribute is invisible to this model, which
+never sees the declared token, so the partial tier is only as hard as its labels
+and identifiers make it and those are intact.
 
 A cell with fewer than thirty rows would report its count and no metric. None of
 these cells is that small, and the rule is enforced in
@@ -264,23 +305,32 @@ these cells is that small, and the rule is enforced in
 ```
 results: models/dev_metrics.json
 truth                 predicted             count
-COMPOSITE_UNSPLIT     NOT_AUTOFILLABLE         41
-street-address        address-level2           14
-one-time-code         COMPOSITE_UNSPLIT        13
-tel                   tel-national             13
-country               address-level1           12
-country-name          address-level2           12
-UNKNOWN               postal-code              11
-address-level1        country                  11
-tel-national          tel                      11
-COMPOSITE_UNSPLIT     username                  7
+email                 one-time-code             9
+organization          nickname                  9
+address-level1        country                   8
+family-name           honorific-suffix          8
+honorific-suffix      bday                      8
+email                 tel-national              7
+tel                   tel-national              7
+NOT_AUTOFILLABLE      email                     6
+additional-name       tel                       6
+cc-name               cc-exp-year               6
 ```
 
-Three of the four pairs predicted in advance under law 4 are here: `tel` against
-`tel-national` in both directions, the address levels against `country`, and the
-address family against itself. `username` against `email` is **not**, and the
-reason is visible in the per-label table: `email` is the one label the model gets
-exactly right, and `username` has no dev rows at all in this split.
+**The confusion table is a different shape from the previous model's.** The
+largest single confusion there ran to forty-one occurrences and was structural,
+`COMPOSITE_UNSPLIT` read as `NOT_AUTOFILLABLE`; the largest here is in single
+figures, and `COMPOSITE_UNSPLIT` is now scored perfectly on dev. What is left is
+mostly pairs that genuinely share their evidence: `tel` against `tel-national`
+differs by whether a dialling code is expected, which is a fact about the form's
+intent rather than about its markup, and `organization` against `nickname` is two
+free-text fields whose labels are both a proper noun.
+
+`email` against `one-time-code` is new and is worth naming: the dev split's
+verification-code fields sit beside an email address on the same page in more
+than one template, and a hostile-tier code field with no label is a short numeric
+input in the same neighbourhood as an email input. It is the sort of confusion
+more templates create rather than remove.
 
 ---
 
@@ -295,41 +345,43 @@ The switchover was fixed before the run: isotonic regression for a class with at
 least one hundred dev positives, Platt scaling below that, and the identity for a
 class with fewer than two, where fitting anything would be fitting the example.
 
-**No class reached the isotonic switchover.** The dev split is one fifth of the
-corpus spread across forty two labels, and the arithmetic does not leave room.
-That was predicted in advance and it is what happened, and it means every
-calibrated class in this model is calibrated by Platt scaling.
+**One class reached the isotonic switchover**, `NOT_AUTOFILLABLE`, and it is the
+first one ever to. The previous model had none, and the prediction registered
+before it was fitted said none would. A wider corpus put enough dev positives
+behind the one label that covers every search box, quantity spinner, coupon
+field, comment area and consent checkbox, and nothing else came close.
 
-**Twelve classes are uncalibrated and this card names them.** They have no dev
-positives, so their probability passes through untouched, and a report quoting
-one of them is quoting an uncalibrated softmax output. They are:
-`CC_EXP_SPLIT_MONTH`, `CC_EXP_SPLIT_YEAR`, `additional-name`, `address-line3`,
-`bday`, `cc-exp`, `cc-name`, `current-password`, `nickname`, `sex`,
-`tel-extension`, and `username`.
+**Two classes are uncalibrated and this card names them**, `cc-exp` and
+`current-password`. They have no dev positives, so their probability passes
+through untouched, and a report quoting one of them is quoting an uncalibrated
+softmax output. The previous model had twelve such classes; the reduction is a
+consequence of the wider dev split rather than of anything done to the
+calibrator.
 
 ```
 results: models/dev_metrics.json
 label                    dev pos        method
-CC_EXP_SPLIT_MONTH             0      identity
-CC_EXP_SPLIT_YEAR              0      identity
-COMPOSITE_UNSPLIT             72       sigmoid
-NOT_AUTOFILLABLE              84       sigmoid
+CC_EXP_SPLIT_MONTH            24       sigmoid
+CC_EXP_SPLIT_YEAR             24       sigmoid
+COMPOSITE_UNSPLIT             24       sigmoid
+NOT_AUTOFILLABLE             228      isotonic
 UNKNOWN                       60       sigmoid
-additional-name                0      identity
+additional-name               24       sigmoid
 address-level1                32       sigmoid
 address-level2                44       sigmoid
 address-line1                 24       sigmoid
 address-line2                 24       sigmoid
-address-line3                  0      identity
-bday                           0      identity
+address-line3                 24       sigmoid
+bday                          24       sigmoid
 cc-csc                        48       sigmoid
 cc-exp                         0      identity
 cc-exp-month                  24       sigmoid
 cc-exp-year                   24       sigmoid
-cc-name                        0      identity
+cc-name                       48       sigmoid
 cc-number                     48       sigmoid
 cc-type                       24       sigmoid
 country                       48       sigmoid
+country-name                  24       sigmoid
 current-password               0      identity
 email                         72       sigmoid
 family-name                   56       sigmoid
@@ -337,18 +389,20 @@ given-name                    56       sigmoid
 honorific-prefix              24       sigmoid
 honorific-suffix              24       sigmoid
 name                          24       sigmoid
-new-password                  24       sigmoid
-nickname                       0      identity
-organization                  24       sigmoid
-postal-code                   66       sigmoid
-sex                            0      identity
+new-password                  48       sigmoid
+nickname                      48       sigmoid
+one-time-code                 72       sigmoid
+organization                  72       sigmoid
+postal-code                   40       sigmoid
+sex                           24       sigmoid
+street-address                24       sigmoid
 tel                           24       sigmoid
 tel-country-code              24       sigmoid
-tel-extension                  0      identity
+tel-extension                 24       sigmoid
 tel-national                  24       sigmoid
 transaction-amount            24       sigmoid
 url                           24       sigmoid
-username                       0      identity
+username                      24       sigmoid
 ```
 
 ### 6.1 How well the numbers match reality
@@ -359,9 +413,24 @@ and what happened.
 
 ```
 results: models/dev_metrics.json
-expected calibration error, before   0.0870
-expected calibration error, after    0.0562
+expected calibration error, before   0.0281
+expected calibration error, after    0.0454
 ```
+
+**Calibration made the expected error worse, and that is reported rather than
+hidden.** The uncalibrated model of this corpus is already close to honest, and
+one-vs-rest Platt scaling followed by renormalisation is not a free operation: it
+refits forty-two independent sigmoids on a dev split of one template per family
+and then divides by their sum, and where a class was already well behaved the
+refit moves it for no gain. The previous model was badly enough calibrated that
+the same procedure helped it; this one is not.
+
+The right response to that is not to drop the calibrator, because macro-F1 rises
+with it (section 5) and because the argument in spec section 10.4 is about the
+confidence a finding quotes rather than about the average gap. It is to say
+plainly that the number a finding quotes is a calibrated probability whose
+expected gap from reality is what the block above says it is, and to keep the
+high threshold where the derivation put it.
 
 The reliability curve after calibration, over the winning class's probability:
 
@@ -369,24 +438,26 @@ The reliability curve after calibration, over the winning class's probability:
 results: models/dev_metrics.json
 bin              count   predicted    observed
 0.0 to 0.1           0
-0.1 to 0.2          25       0.171       0.000
-0.2 to 0.3          64       0.253       0.078
-0.3 to 0.4         107       0.352       0.402
-0.4 to 0.5          73       0.453       0.438
-0.5 to 0.6         124       0.548       0.589
-0.6 to 0.7          86       0.653       0.674
-0.7 to 0.8          70       0.747       0.557
-0.8 to 0.9         170       0.862       0.894
-0.9 to 1.0         399       0.942       0.980
+0.1 to 0.2          17       0.178       0.118
+0.2 to 0.3          77       0.260       0.195
+0.3 to 0.4          78       0.355       0.218
+0.4 to 0.5          61       0.458       0.508
+0.5 to 0.6          76       0.550       0.658
+0.6 to 0.7          72       0.650       0.875
+0.7 to 0.8          93       0.746       0.677
+0.8 to 0.9         112       0.859       0.893
+0.9 to 1.0        1010       0.975       0.993
 ```
 
 Two things in that curve deserve to be said rather than left for a reader to
-find. The model remains **overconfident at the bottom**: in the two lowest
-occupied bins it says roughly a fifth to a quarter and is right far less often
-than that. And it is mildly **under**confident at the top, where it says
-ninety-four and is right ninety-eight. The second of those is the direction that
-costs nothing; the first is the direction that would matter, and it is the
-argument for the high threshold sitting where it does rather than lower.
+find. The model is still **overconfident at the bottom**: in the three lowest
+occupied bins it says roughly a fifth to a third and is right less often than
+that. And it is **under**confident through the middle, most visibly in the bin
+just below seven tenths, where it says roughly two thirds and is right closer to
+nine tenths. The first is the direction that would matter and it is the argument
+for the high threshold sitting where it does rather than lower; the second costs
+recall and nothing else. The top bin holds most of the mass and is close to
+right, which is the bin the reported findings come from.
 
 ### 6.2 Abstention
 
@@ -418,9 +489,9 @@ pipeline and through the ONNX session and compared row by row:
 
 ```
 results: models/dev_metrics.json
-rows compared                        1118
-rows agreeing on argmax              1118
-largest per-class probability gap    3.576e-07
+rows compared                        1596
+rows agreeing on argmax              1596
+largest per-class probability gap    4.768e-07
 tolerance                            1.0e-05
 ```
 
@@ -438,21 +509,25 @@ a particular answer rather than a reason not to use the model.
 - **Hostile markup.** The hostile tier is the worst cell in the per-tier table.
   Labels are stripped and identifiers are obfuscated there, which is exactly the
   case the tool exists for and exactly the case with the least evidence in it.
-- **A label with no training rows.** Three labels in the dev split have no
-  training row and the model predicts them never. A label the split did not put
-  in train is a label this model cannot produce, and no amount of confidence
-  changes that.
-- **Composite and split controls.** `COMPOSITE_UNSPLIT` is the largest confusion
-  in the table and it goes to `NOT_AUTOFILLABLE`. The structural difference lives
-  in `group_role`, which is one feature against thousands of text features.
+- **A label with no dev rows.** `cc-exp` and `current-password` have training
+  rows and no dev examples, so they are uncalibrated and their reported
+  confidence is a raw softmax output rather than a probability. The failure mode
+  the previous model had, a label with no *training* rows that it could never
+  predict at all, is now impossible: `check_reachability.py` fails the build on
+  it.
+- **The labels that share their evidence.** `name` against the split name pair,
+  `street-address` against `address-level2`, and `country-name` against
+  `country` are the three lowest F1 scores in the per-label table. Each is a pair
+  the markup genuinely does not separate, which is why the rule table declines to
+  separate some of them at all.
 - **Custom widgets.** A control inside a closed shadow root or drawn on a canvas
   never reaches the model at all. The extractor reports it as undetectable and
   the engine short-circuits it, which is the honest outcome and is not a
   classification.
 - **Telephone fields.** `tel` and `tel-national` differ by whether a dialling
   code is expected, which is a fact about the form's intent and is almost never
-  in the markup. Both directions are in the confusion table and both have the
-  lowest F1 scores of any label with training rows.
+  in the markup. The pair is in the confusion table in both directions and `tel`
+  carries one of the lowest F1 scores in the per-label table.
 
 ---
 

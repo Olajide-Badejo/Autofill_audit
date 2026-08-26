@@ -8,6 +8,7 @@ import pytest
 from click.testing import CliRunner
 
 from autofill_audit.cli import cli
+from autofill_audit.corpus.families import TEMPLATES_PER_FAMILY
 
 
 @pytest.fixture
@@ -100,7 +101,9 @@ def test_generate_accepts_several_axes(runner: CliRunner, tmp_path: Path) -> Non
         ],
     )
     assert result.exit_code == 0, result.output
-    assert len(list((out / "forms").glob("*.html"))) == 10 * 2 * 1 * 2
+    families, locales, tiers, variants = 2, 2, 1, 2
+    expected = TEMPLATES_PER_FAMILY * families * locales * tiers * variants
+    assert len(list((out / "forms").glob("*.html"))) == expected
 
 
 def test_validate_is_green_on_a_full_corpus(runner: CliRunner, tmp_path: Path) -> None:

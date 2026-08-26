@@ -91,6 +91,28 @@ def test_template_partitions_follow_the_declared_ratio(seed: int) -> None:
         assert counts == {"train": train, "dev": dev, "test": test}
 
 
+@pytest.mark.parametrize("seed", SEEDS)
+def test_the_test_partition_can_reach_the_pre_registered_alpha(seed: int) -> None:
+    """The property P5R exists to establish, asserted at the split rather than at
+    the analysis.
+
+    The template is the clustering unit of spec section 13.3, so the number of
+    test-partition templates is the number of clusters a paired sign-flip
+    permutation gets, and the smallest two sided p value that design can produce
+    is two over two to that count. At five clusters the floor sits above the
+    pre-registered alpha and no comparison can ever be significant, which is what
+    P5 measured and what no amount of extra resampling fixes. This asserts the
+    repair where the repair lives: a later change that shrinks the test partition
+    back below the level fails here, rather than silently producing a page of
+    inconclusive verdicts three phases later.
+    """
+    alpha = 0.05
+    assignment = template_partitions(seed, list(Family))
+    clusters = sum(1 for partition in assignment.values() if partition == "test")
+    assert clusters == TRAIN_DEV_TEST_PER_FAMILY[2] * len(Family)
+    assert 2 / 2**clusters < alpha
+
+
 def test_every_form_has_exactly_one_partition() -> None:
     split, forms = _full_split(20260825)
     assert set(split["form_partitions"]) == {form.form_id for form in forms}

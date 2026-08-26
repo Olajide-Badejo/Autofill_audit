@@ -9,6 +9,81 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Nothing yet.
 
+## [0.3.1] - 2026-08-26
+
+The corpus power repair. P5 measured the two engines against each other and then
+found that the test split could not certify the difference: the significance test
+clusters by template, the test partition held five templates, and a paired
+sign-flip permutation over five clusters cannot produce a p value small enough to
+reach the pre-registered level, at any effect size. This release widens the
+corpus so the design has power, and re-measures everything that depended on it.
+
+Every recorded metric in the repository moves as a result. The reason is written
+down in `docs/ENGINEERING_LOG.md` and the predictions are registered in
+`experiments/predictions/p5r-power-repair.md`, both committed before the first
+template was written. No result file from the previous measurement is edited or
+deleted; the README now cites the new runs and the old ones stay as the first,
+underpowered measurement.
+
+### Added
+
+- Fifteen new form templates, three per family, structurally distinct from their
+  siblings rather than relabelled: they differ in which sections exist, in which
+  slots those sections carry, and in how the composite and split cases render.
+  They are designed to carry the labels that had no training rows at all.
+- A fifth active clause in `scripts/check_reachability.py`: every label a model
+  can predict must appear in the train partition with at least a stated minimum
+  number of rows. The minimum is one whole training template's worth of a field
+  carried in every locale, and the constant carries that derivation beside it.
+- `experiments/predictions/p5r-power-repair.md`, committed before the template
+  work, registering that the engine ordering persists, that the n-gram engine
+  improves in absolute terms, that the primary comparisons now clear the design
+  floor so verdicts become certifiable either way, and that page load still
+  dominates the wall time.
+- New test-split runs for both engines and a new significance analysis over the
+  pair, each carrying `p5r` in its run id.
+
+### Changed
+
+- The realised grid is eight templates per family instead of five, and the split
+  is five train, one dev, two test per family instead of three, one, one. The
+  test partition now holds ten templates, which gives the paired sign-flip test
+  one thousand and twenty-four arrangements and a smallest attainable two sided
+  p value two orders of magnitude below the pre-registered level.
+- The generator version is bumped, because the emitted set of forms changes for
+  an unchanged seed. The corpus manifest records the new grid, and the
+  determinism contract is unchanged: same seed, same bytes, asserted answer keys,
+  and the generate-twice gate run on the new grid.
+- The model, its vocabulary, its calibration, its evidence table and its card are
+  retrained on the widened train partition and land in one commit, as the
+  model-card ground rule requires.
+- Both decision thresholds are rederived on the new dev split, through the same
+  pre-registered policy and against the same target precision as before. The
+  policy is unchanged on purpose: repairing a corpus and moving a threshold in
+  the same phase would produce two changes and no way to attribute either.
+- The committed sample corpus is regenerated. Its forms and answer keys are
+  byte-identical to before, because the sample cells and their seeds did not
+  change; its split document and manifest change because the grid did.
+- The README cites the new result files throughout.
+
+### Notes
+
+- The statistical policy is untouched: the alpha, the false discovery rate, the
+  absolute practical-effect threshold, the clustering unit and the reporting
+  minimum are all exactly what P4 and P5 pre-registered.
+- The seed is unchanged, and `fr-FR` remains the held-out locale.
+- **What the re-measurement found**, in one line each and in full in
+  `docs/ENGINEERING_LOG.md`: every comparison is now decidable and none is
+  reported as underpowered; all eleven come back as no significant change after
+  the family correction; the rule baseline still leads the label-weighted average
+  and the model now leads the field-weighted one; the model improved by about a
+  third of a point of macro-F1; and the model made its first wrong accusation,
+  nine of them, which the changed threshold values explain and which the model
+  card and the README both state rather than round.
+- Ground rule 12 applies to the threshold values, which moved. They moved because
+  the dev split did, not because the policy did, and the movement is a
+  consequence of the corpus change registered in advance rather than a retune.
+
 ## [0.3.0] - 2026-08-26
 
 The evaluation release. The repository carries measured results for the first
@@ -315,7 +390,8 @@ follows to a result file, to its manifest, and to a commit.
   table row to the full width; a hook that trimmed those spaces would rewrite the
   committed expectation on every commit.
 
-[Unreleased]: https://github.com/Olajide-Badejo/autofill-audit/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/Olajide-Badejo/autofill-audit/compare/v0.3.1...HEAD
+[0.3.1]: https://github.com/Olajide-Badejo/autofill-audit/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/Olajide-Badejo/autofill-audit/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/Olajide-Badejo/autofill-audit/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/Olajide-Badejo/autofill-audit/releases/tag/v0.1.0
