@@ -1,0 +1,722 @@
+{
+  "schema_version": 1,
+  "split": "dev",
+  "generated_on": "2026-08-26",
+  "corpus_manifest_sha256": "3450c48b009b3365f87f21e4f6703540e12c80885620a8612739e0e4eafcdb6b",
+  "counts": {
+    "train_forms": 300,
+    "train_rows": 2889,
+    "dev_forms": 120,
+    "dev_rows": 1118,
+    "excluded_forms": 60,
+    "classes_fitted": 39,
+    "labels_in_dev_only": [
+      "country-name",
+      "one-time-code",
+      "street-address"
+    ],
+    "dropped_undetectable": 0,
+    "dropped_unkeyed": 0
+  },
+  "sweep": {
+    "grid": [
+      0.25,
+      0.5,
+      1.0,
+      2.0,
+      4.0,
+      8.0
+    ],
+    "results": [
+      {
+        "C": 0.25,
+        "dev_macro_f1": 0.49203302145497435
+      },
+      {
+        "C": 0.5,
+        "dev_macro_f1": 0.5080398731563828
+      },
+      {
+        "C": 1.0,
+        "dev_macro_f1": 0.5123002010508959
+      },
+      {
+        "C": 2.0,
+        "dev_macro_f1": 0.5170371433575041
+      },
+      {
+        "C": 4.0,
+        "dev_macro_f1": 0.5165872498990962
+      },
+      {
+        "C": 8.0,
+        "dev_macro_f1": 0.5262392021629747
+      }
+    ],
+    "chosen_C": 8.0
+  },
+  "headline": {
+    "dev_macro_f1": 0.5813340575260366,
+    "dev_accuracy": 0.7093023255813954
+  },
+  "per_label": {
+    "COMPOSITE_UNSPLIT": {
+      "precision": 0.5277777777777778,
+      "recall": 0.2638888888888889,
+      "f1": 0.35185185185185186,
+      "dev_support": 72,
+      "train_support": 40
+    },
+    "NOT_AUTOFILLABLE": {
+      "precision": 0.6403508771929824,
+      "recall": 0.8690476190476191,
+      "f1": 0.7373737373737373,
+      "dev_support": 84,
+      "train_support": 350
+    },
+    "UNKNOWN": {
+      "precision": 0.5573770491803278,
+      "recall": 0.5666666666666667,
+      "f1": 0.5619834710743802,
+      "dev_support": 60,
+      "train_support": 150
+    },
+    "address-level1": {
+      "precision": 0.6363636363636364,
+      "recall": 0.65625,
+      "f1": 0.6461538461538462,
+      "dev_support": 32,
+      "train_support": 112
+    },
+    "address-level2": {
+      "precision": 0.5396825396825397,
+      "recall": 0.7727272727272727,
+      "f1": 0.6355140186915887,
+      "dev_support": 44,
+      "train_support": 140
+    },
+    "address-line1": {
+      "precision": 0.45454545454545453,
+      "recall": 0.625,
+      "f1": 0.5263157894736842,
+      "dev_support": 24,
+      "train_support": 140
+    },
+    "address-line2": {
+      "precision": 0.7333333333333333,
+      "recall": 0.9166666666666666,
+      "f1": 0.8148148148148148,
+      "dev_support": 24,
+      "train_support": 140
+    },
+    "address-line3": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "dev_support": 0,
+      "train_support": 40
+    },
+    "cc-csc": {
+      "precision": 0.9148936170212766,
+      "recall": 0.8958333333333334,
+      "f1": 0.9052631578947369,
+      "dev_support": 48,
+      "train_support": 120
+    },
+    "cc-exp": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "dev_support": 0,
+      "train_support": 40
+    },
+    "cc-exp-month": {
+      "precision": 0.6521739130434783,
+      "recall": 0.625,
+      "f1": 0.6382978723404256,
+      "dev_support": 24,
+      "train_support": 20
+    },
+    "cc-exp-year": {
+      "precision": 0.6111111111111112,
+      "recall": 0.4583333333333333,
+      "f1": 0.5238095238095238,
+      "dev_support": 24,
+      "train_support": 20
+    },
+    "cc-name": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "dev_support": 0,
+      "train_support": 100
+    },
+    "cc-number": {
+      "precision": 0.9787234042553191,
+      "recall": 0.9583333333333334,
+      "f1": 0.968421052631579,
+      "dev_support": 48,
+      "train_support": 120
+    },
+    "cc-type": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "dev_support": 24,
+      "train_support": 20
+    },
+    "country": {
+      "precision": 0.7555555555555555,
+      "recall": 0.7083333333333334,
+      "f1": 0.7311827956989247,
+      "dev_support": 48,
+      "train_support": 120
+    },
+    "country-name": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "dev_support": 24,
+      "train_support": 0
+    },
+    "email": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "dev_support": 72,
+      "train_support": 160
+    },
+    "family-name": {
+      "precision": 0.875,
+      "recall": 0.75,
+      "f1": 0.8076923076923077,
+      "dev_support": 56,
+      "train_support": 96
+    },
+    "given-name": {
+      "precision": 0.8214285714285714,
+      "recall": 0.8214285714285714,
+      "f1": 0.8214285714285714,
+      "dev_support": 56,
+      "train_support": 96
+    },
+    "honorific-prefix": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "dev_support": 24,
+      "train_support": 20
+    },
+    "honorific-suffix": {
+      "precision": 0.9583333333333334,
+      "recall": 0.9583333333333334,
+      "f1": 0.9583333333333334,
+      "dev_support": 24,
+      "train_support": 20
+    },
+    "name": {
+      "precision": 0.875,
+      "recall": 0.875,
+      "f1": 0.875,
+      "dev_support": 24,
+      "train_support": 40
+    },
+    "new-password": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "dev_support": 24,
+      "train_support": 80
+    },
+    "one-time-code": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "dev_support": 24,
+      "train_support": 0
+    },
+    "organization": {
+      "precision": 0.9090909090909091,
+      "recall": 0.8333333333333334,
+      "f1": 0.8695652173913043,
+      "dev_support": 24,
+      "train_support": 60
+    },
+    "postal-code": {
+      "precision": 0.684931506849315,
+      "recall": 0.7575757575757576,
+      "f1": 0.7194244604316546,
+      "dev_support": 66,
+      "train_support": 125
+    },
+    "street-address": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "dev_support": 24,
+      "train_support": 0
+    },
+    "tel": {
+      "precision": 0.47619047619047616,
+      "recall": 0.4166666666666667,
+      "f1": 0.4444444444444444,
+      "dev_support": 24,
+      "train_support": 60
+    },
+    "tel-country-code": {
+      "precision": 0.9230769230769231,
+      "recall": 1.0,
+      "f1": 0.96,
+      "dev_support": 24,
+      "train_support": 40
+    },
+    "tel-extension": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "dev_support": 0,
+      "train_support": 40
+    },
+    "tel-national": {
+      "precision": 0.30952380952380953,
+      "recall": 0.5416666666666666,
+      "f1": 0.3939393939393939,
+      "dev_support": 24,
+      "train_support": 40
+    },
+    "transaction-amount": {
+      "precision": 0.9375,
+      "recall": 0.625,
+      "f1": 0.75,
+      "dev_support": 24,
+      "train_support": 20
+    },
+    "url": {
+      "precision": 0.6666666666666666,
+      "recall": 0.75,
+      "f1": 0.7058823529411765,
+      "dev_support": 24,
+      "train_support": 40
+    },
+    "username": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "dev_support": 0,
+      "train_support": 60
+    }
+  },
+  "slices": {
+    "per_locale": {
+      "de-DE": {
+        "count": 180,
+        "accuracy": 0.75,
+        "macro_f1": 0.6001491537603877,
+        "insufficient_data": false
+      },
+      "en-GB": {
+        "count": 188,
+        "accuracy": 0.7393617021276596,
+        "macro_f1": 0.6212921393343903,
+        "insufficient_data": false
+      },
+      "en-NG": {
+        "count": 182,
+        "accuracy": 0.7692307692307693,
+        "macro_f1": 0.6545383065506905,
+        "insufficient_data": false
+      },
+      "en-US": {
+        "count": 188,
+        "accuracy": 0.75,
+        "macro_f1": 0.6429911015551154,
+        "insufficient_data": false
+      },
+      "fr-FR": {
+        "count": 180,
+        "accuracy": 0.5555555555555556,
+        "macro_f1": 0.43060237692077935,
+        "insufficient_data": false
+      },
+      "ja-JP": {
+        "count": 200,
+        "accuracy": 0.69,
+        "macro_f1": 0.5940246984273835,
+        "insufficient_data": false
+      }
+    },
+    "per_tier": {
+      "clean": {
+        "count": 249,
+        "accuracy": 0.8353413654618473,
+        "macro_f1": 0.7404475715611348,
+        "insufficient_data": false
+      },
+      "hostile": {
+        "count": 310,
+        "accuracy": 0.5225806451612903,
+        "macro_f1": 0.40461550510126226,
+        "insufficient_data": false
+      },
+      "mixed": {
+        "count": 309,
+        "accuracy": 0.7022653721682848,
+        "macro_f1": 0.5888851098419324,
+        "insufficient_data": false
+      },
+      "partial": {
+        "count": 250,
+        "accuracy": 0.824,
+        "macro_f1": 0.7065803288309682,
+        "insufficient_data": false
+      }
+    }
+  },
+  "insufficient_data_minimum": 30,
+  "calibration": {
+    "switchover_count": 100,
+    "methods": {
+      "CC_EXP_SPLIT_MONTH": "identity",
+      "CC_EXP_SPLIT_YEAR": "identity",
+      "COMPOSITE_UNSPLIT": "sigmoid",
+      "NOT_AUTOFILLABLE": "sigmoid",
+      "UNKNOWN": "sigmoid",
+      "additional-name": "identity",
+      "address-level1": "sigmoid",
+      "address-level2": "sigmoid",
+      "address-line1": "sigmoid",
+      "address-line2": "sigmoid",
+      "address-line3": "identity",
+      "bday": "identity",
+      "cc-csc": "sigmoid",
+      "cc-exp": "identity",
+      "cc-exp-month": "sigmoid",
+      "cc-exp-year": "sigmoid",
+      "cc-name": "identity",
+      "cc-number": "sigmoid",
+      "cc-type": "sigmoid",
+      "country": "sigmoid",
+      "current-password": "identity",
+      "email": "sigmoid",
+      "family-name": "sigmoid",
+      "given-name": "sigmoid",
+      "honorific-prefix": "sigmoid",
+      "honorific-suffix": "sigmoid",
+      "name": "sigmoid",
+      "new-password": "sigmoid",
+      "nickname": "identity",
+      "organization": "sigmoid",
+      "postal-code": "sigmoid",
+      "sex": "identity",
+      "tel": "sigmoid",
+      "tel-country-code": "sigmoid",
+      "tel-extension": "identity",
+      "tel-national": "sigmoid",
+      "transaction-amount": "sigmoid",
+      "url": "sigmoid",
+      "username": "identity"
+    },
+    "dev_positives": {
+      "CC_EXP_SPLIT_MONTH": 0,
+      "CC_EXP_SPLIT_YEAR": 0,
+      "COMPOSITE_UNSPLIT": 72,
+      "NOT_AUTOFILLABLE": 84,
+      "UNKNOWN": 60,
+      "additional-name": 0,
+      "address-level1": 32,
+      "address-level2": 44,
+      "address-line1": 24,
+      "address-line2": 24,
+      "address-line3": 0,
+      "bday": 0,
+      "cc-csc": 48,
+      "cc-exp": 0,
+      "cc-exp-month": 24,
+      "cc-exp-year": 24,
+      "cc-name": 0,
+      "cc-number": 48,
+      "cc-type": 24,
+      "country": 48,
+      "current-password": 0,
+      "email": 72,
+      "family-name": 56,
+      "given-name": 56,
+      "honorific-prefix": 24,
+      "honorific-suffix": 24,
+      "name": 24,
+      "new-password": 24,
+      "nickname": 0,
+      "organization": 24,
+      "postal-code": 66,
+      "sex": 0,
+      "tel": 24,
+      "tel-country-code": 24,
+      "tel-extension": 0,
+      "tel-national": 24,
+      "transaction-amount": 24,
+      "url": 24,
+      "username": 0
+    },
+    "before": {
+      "bins": [
+        {
+          "low": 0.0,
+          "high": 0.1,
+          "count": 0
+        },
+        {
+          "low": 0.1,
+          "high": 0.2,
+          "count": 16,
+          "mean_predicted": 0.16906082862988114,
+          "mean_observed": 0.1875
+        },
+        {
+          "low": 0.2,
+          "high": 0.30000000000000004,
+          "count": 42,
+          "mean_predicted": 0.26043935262021567,
+          "mean_observed": 0.14285714285714285
+        },
+        {
+          "low": 0.30000000000000004,
+          "high": 0.4,
+          "count": 66,
+          "mean_predicted": 0.33945844254710456,
+          "mean_observed": 0.21212121212121213
+        },
+        {
+          "low": 0.4,
+          "high": 0.5,
+          "count": 104,
+          "mean_predicted": 0.4471457176483594,
+          "mean_observed": 0.2692307692307692
+        },
+        {
+          "low": 0.5,
+          "high": 0.6000000000000001,
+          "count": 89,
+          "mean_predicted": 0.5442909089367042,
+          "mean_observed": 0.30337078651685395
+        },
+        {
+          "low": 0.6000000000000001,
+          "high": 0.7000000000000001,
+          "count": 88,
+          "mean_predicted": 0.6531699563969265,
+          "mean_observed": 0.6022727272727273
+        },
+        {
+          "low": 0.7000000000000001,
+          "high": 0.8,
+          "count": 84,
+          "mean_predicted": 0.7594447135925293,
+          "mean_observed": 0.6785714285714286
+        },
+        {
+          "low": 0.8,
+          "high": 0.9,
+          "count": 74,
+          "mean_predicted": 0.8491957952847352,
+          "mean_observed": 0.6486486486486487
+        },
+        {
+          "low": 0.9,
+          "high": 1.0,
+          "count": 555,
+          "mean_predicted": 0.9739579743093199,
+          "mean_observed": 0.9423423423423424
+        }
+      ],
+      "expected_calibration_error": 0.08697876474805082
+    },
+    "after": {
+      "bins": [
+        {
+          "low": 0.0,
+          "high": 0.1,
+          "count": 0
+        },
+        {
+          "low": 0.1,
+          "high": 0.2,
+          "count": 25,
+          "mean_predicted": 0.17082417401395428,
+          "mean_observed": 0.0
+        },
+        {
+          "low": 0.2,
+          "high": 0.30000000000000004,
+          "count": 64,
+          "mean_predicted": 0.2533556009486241,
+          "mean_observed": 0.078125
+        },
+        {
+          "low": 0.30000000000000004,
+          "high": 0.4,
+          "count": 107,
+          "mean_predicted": 0.35195902066868,
+          "mean_observed": 0.40186915887850466
+        },
+        {
+          "low": 0.4,
+          "high": 0.5,
+          "count": 73,
+          "mean_predicted": 0.4530846527567866,
+          "mean_observed": 0.4383561643835616
+        },
+        {
+          "low": 0.5,
+          "high": 0.6000000000000001,
+          "count": 124,
+          "mean_predicted": 0.5475130523695415,
+          "mean_observed": 0.5887096774193549
+        },
+        {
+          "low": 0.6000000000000001,
+          "high": 0.7000000000000001,
+          "count": 86,
+          "mean_predicted": 0.6526572955104226,
+          "mean_observed": 0.6744186046511628
+        },
+        {
+          "low": 0.7000000000000001,
+          "high": 0.8,
+          "count": 70,
+          "mean_predicted": 0.746690812823995,
+          "mean_observed": 0.5571428571428572
+        },
+        {
+          "low": 0.8,
+          "high": 0.9,
+          "count": 170,
+          "mean_predicted": 0.862009740825944,
+          "mean_observed": 0.8941176470588236
+        },
+        {
+          "low": 0.9,
+          "high": 1.0,
+          "count": 399,
+          "mean_predicted": 0.941870968757349,
+          "mean_observed": 0.9799498746867168
+        }
+      ],
+      "expected_calibration_error": 0.05617259907524589
+    },
+    "macro_f1_before_calibration": 0.5262392021629747
+  },
+  "abstention": {
+    "unknown_rate": 0.05456171735241502,
+    "accuracy_when_committed": 0.718070009460738
+  },
+  "confusions": [
+    {
+      "truth": "COMPOSITE_UNSPLIT",
+      "predicted": "NOT_AUTOFILLABLE",
+      "count": 41
+    },
+    {
+      "truth": "street-address",
+      "predicted": "address-level2",
+      "count": 14
+    },
+    {
+      "truth": "one-time-code",
+      "predicted": "COMPOSITE_UNSPLIT",
+      "count": 13
+    },
+    {
+      "truth": "tel",
+      "predicted": "tel-national",
+      "count": 13
+    },
+    {
+      "truth": "country",
+      "predicted": "address-level1",
+      "count": 12
+    },
+    {
+      "truth": "country-name",
+      "predicted": "address-level2",
+      "count": 12
+    },
+    {
+      "truth": "UNKNOWN",
+      "predicted": "postal-code",
+      "count": 11
+    },
+    {
+      "truth": "address-level1",
+      "predicted": "country",
+      "count": 11
+    },
+    {
+      "truth": "tel-national",
+      "predicted": "tel",
+      "count": 11
+    },
+    {
+      "truth": "COMPOSITE_UNSPLIT",
+      "predicted": "username",
+      "count": 7
+    },
+    {
+      "truth": "UNKNOWN",
+      "predicted": "tel-extension",
+      "count": 7
+    },
+    {
+      "truth": "family-name",
+      "predicted": "tel-national",
+      "count": 7
+    },
+    {
+      "truth": "one-time-code",
+      "predicted": "address-line1",
+      "count": 6
+    },
+    {
+      "truth": "url",
+      "predicted": "given-name",
+      "count": 6
+    },
+    {
+      "truth": "address-level2",
+      "predicted": "address-line3",
+      "count": 5
+    },
+    {
+      "truth": "cc-exp-month",
+      "predicted": "family-name",
+      "count": 5
+    },
+    {
+      "truth": "cc-exp-year",
+      "predicted": "UNKNOWN",
+      "count": 5
+    },
+    {
+      "truth": "country-name",
+      "predicted": "address-line3",
+      "count": 5
+    },
+    {
+      "truth": "given-name",
+      "predicted": "UNKNOWN",
+      "count": 5
+    },
+    {
+      "truth": "one-time-code",
+      "predicted": "postal-code",
+      "count": 5
+    }
+  ],
+  "parity": {
+    "rows": 1118,
+    "argmax_agreements": 1118,
+    "argmax_agreement_rate": 1.0,
+    "max_absolute_probability_delta": 3.5762786865234375e-07,
+    "tolerance": 1e-05,
+    "passed": true
+  }
+}

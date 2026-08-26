@@ -71,12 +71,23 @@ def test_naming_rules_explicitly_prints_nothing() -> None:
     assert load_engine(EngineChoice.RULES).notice is None
 
 
-@pytest.mark.parametrize("choice", [EngineChoice.NGRAM, EngineChoice.LLM])
+@pytest.mark.parametrize("choice", [EngineChoice.LLM])
 def test_an_engine_that_does_not_exist_yet_is_refused_by_name(choice: EngineChoice) -> None:
     """Never silently a different engine: that is how a three-way benchmark
     reports two engines under three names."""
     with pytest.raises(UnavailableEngineError, match="phase P"):
         load_engine(choice)
+
+
+def test_naming_the_ngram_engine_with_no_model_refuses_rather_than_falling_back() -> None:
+    """P4's half of the same rule, now that ``ngram`` has an implementation.
+
+    ``auto`` substitutes and says so; a named engine never does. The suite runs
+    with the model search pointed at an empty directory, so this is the
+    no-model case whether or not a bundle is checked out.
+    """
+    with pytest.raises(UnavailableEngineError, match="no trained model was found"):
+        load_engine(EngineChoice.NGRAM)
 
 
 # ---------------------------------------------------------------------------

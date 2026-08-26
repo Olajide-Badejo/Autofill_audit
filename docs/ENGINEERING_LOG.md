@@ -635,3 +635,241 @@ through rather than guess, and the labels the table deliberately cannot separate
 took the rest of it. Every one of those makes the tool quieter, and every one of
 them is the difference between a check somebody keeps and a check somebody
 deletes.
+
+## 2026-08-26: P4, the prediction goes in first
+
+Phase P4 opens with a commit that contains no code.
+`experiments/predictions/p4-threshold-derivation.md` states, before the model
+exists, how the two decision thresholds will be computed, what precision target
+drives them, which classes get which calibration method, what the feature caps
+are, and what the confusion matrix is expected to show.
+
+The fourth law is the reason. A prediction committed after the measurement is not
+a prediction, and the ancestry check at P5 will verify that this commit is an
+ancestor of the commit carrying the derived values.
+
+Writing it first also settled a real ambiguity for free. The task file asks for
+the low threshold as the smallest confidence at which the near-miss band still
+captures at least half of what the high threshold gives up. Captured recall only
+ever falls as that threshold rises, so every value below a qualifying one also
+qualifies, the smallest qualifying value is always zero, and a threshold of zero
+says nothing. The prediction file records the non-degenerate reading, which is
+the greatest qualifying value, and it records it at a point where there were not
+yet two candidate answers to choose between.
+
+## 2026-08-26: P4, the n-gram model, its calibration, and its ONNX export
+
+### The ONNX route was a design decision, not a retreat
+
+Section 10.5 anticipates a fight with skl2onnx's text vectorizer converters and
+names a fallback: move the whole text pipeline into hand-rolled Python, export
+only the linear layer, and take that quickly rather than spending a day coaxing a
+converter.
+
+The fight never started, because the feature set was never convertible. Section
+10.2 has five feature blocks and three of them are categorical one-hots,
+option-shape booleans, and structural buckets, which no scikit-learn transformer
+produces. Putting the whole featurisation in the graph would have meant writing
+custom converters for three bespoke transformers **and** trusting the vectorizer
+converters, which is a larger version of exactly the risk the section warns
+about. The fallback's Python featuriser is not a retreat from the design; it is
+the only design in which one implementation serves both paths, which section 10.2
+required from the beginning.
+
+The second argument arrived for free and is the one that will matter longer. A
+vectorizer anywhere in the inference path puts scikit-learn on the dependency
+list of a tool that installs with `pipx`. The route taken means an installed
+wheel needs numpy and onnxruntime and nothing else.
+
+The cost is real and is recorded rather than waved past: a Python analyser is
+slower than a C one, and its faithfulness to `char_wb` is a claim rather than an
+identity. So it is tested. `tests/unit/test_features.py` asserts, over ten inputs
+including empty strings, words shorter than the n-gram length, and Japanese text,
+that this project's enumeration is character for character scikit-learn's. The
+short-word rule is the detail an independent reimplementation gets wrong: a word
+shorter than n yields its padded self once rather than once per n, and getting
+that wrong would silently triple the weight of every two letter token.
+
+### The opset probe, and why the warning is recorded rather than suppressed
+
+Section 10.5 says to export at the newest opset the resolved onnxruntime accepts,
+determined by probe. The probe walks down from the newest the installed `onnx`
+package defines and takes the first that both converts and opens in a session.
+
+```
+probe rejected opset 27: onnxruntime supports ai.onnx to opset 26; 27 is under
+                         development
+probe accepted opset 26
+```
+
+skl2onnx warns at both attempts that the requested opset is above the newest it
+has been tested against. That warning is in ADR 0006 rather than filtered out,
+because it is precisely the case where a successful export proves nothing. What
+proves something is the parity gate, and that is the point of section 10.5 having
+a gate rather than a deliverable.
+
+### The graph turned out to hold its weights in an attribute
+
+Worth writing down because it changed a design. The exported graph is one
+`ai.onnx.ml.LinearClassifier` node followed by an L1 `Normalizer`, and the
+coefficients, the intercepts, and the class order live in the node's
+**attributes**, not in graph initialisers. onnxruntime does not hand a caller a
+node's attributes, so the inference path cannot read its own weights, and naming
+the n-grams behind a prediction would otherwise have required the `onnx` package
+at runtime to produce one line of a report.
+
+Hence `models/evidence.json`: each class's highest weighted features, written by
+the same training run. A derived file is a drift risk, so the parity suite reads
+the weights back out of the graph and asserts the table agrees with them. A stale
+evidence file now fails the build rather than naming the wrong n-grams in a
+finding, which would have satisfied law 1 in form and violated it in substance.
+
+### The training run
+
+Every number here is in `models/dev_metrics.json` and
+`models/train_manifest.json`, which is where they came from.
+
+```
+results: models/dev_metrics.json
+train   300 forms   2889 rows
+dev     120 forms   1118 rows
+features 6656 columns: char 4905, word 1701, categorical 32, option 5, structural 13
+sweep    C in {0.25, 0.5, 1.0, 2.0, 4.0, 8.0}, chosen 8.0 on dev macro-F1
+dev macro-F1  0.5813    dev accuracy 0.7093
+```
+
+**The sweep chose the edge of its own grid.** The grid was pre-registered, so it
+is not being widened now: widening a pre-registered grid because the answer landed
+at its edge is how a sweep becomes a search for a number. The consequence is
+recorded in the model card instead, and it is that this model may be less
+regularised than a wider grid would have chosen. A later phase that revisits it
+re-registers first.
+
+### The predictions, and which of them survived
+
+The prediction file was committed before any of this existed. Four of its claims
+were checkable today.
+
+**Held.** Most classes would fall below the isotonic switchover. In fact *every*
+class did: no label reached one hundred dev positives, so every calibrated class
+in this model is calibrated by Platt scaling and twelve classes with no dev
+positives at all are uncalibrated and named as such in the card.
+
+**Held.** The held-out locale would be materially worse. `fr-FR` is the worst
+cell in the per-locale table by a wide margin, and it is the only locale the model
+never trained on.
+
+**Held.** The hostile tier would be the weakest. It is, by a similar margin.
+
+**Held, mostly.** Three of the four confusion pairs section 13.2 names are in the
+confusion table: telephone against national telephone in both directions, the
+address levels against country, and the address family against itself.
+
+**Contradicted.** `username` against `email` is not in the table, and the
+prediction that the derived high threshold would sit *below* the rule engine's
+confident band is wrong in the other direction: it sits well above it. Both are
+worth more than the three that held. The first is contradicted by the split
+rather than by the model, since `username` has no dev rows at all here and `email`
+is the one label the model gets exactly right. The second is the finding of the
+phase and has a section of its own below.
+
+### The threshold derivation, and a tool that got much quieter
+
+The pre-registered optimisation was applied without amendment.
+
+```
+results: src/autofill_audit/audit/thresholds.json
+target precision   0.98
+tau_high           0.9498622881050033
+tau_low            0.8237827291133224
+dev precision      1.0 over 15 accusations
+dev recall         0.0372 of 403 fields that need one
+recall at any confidence  0.6253
+near-miss band captures   0.2953, which is 0.5021 of the recall given up
+```
+
+Two things about that need saying plainly rather than being left in a file.
+
+**The precision target is met on a denominator of fifteen.** A precision of one
+over fifteen accusations and a precision of one over fifteen hundred are the same
+number and are not the same claim. The derived block therefore records the
+denominators beside the rates, so that a reader of the file does not have to go
+and find out which it is, and the model card says the same thing in words.
+
+**At this threshold the model is a much quieter tool than the rule baseline.** On
+the dev split it would raise fifteen missing-declaration findings where four
+hundred and three fields need one. That is what a pre-registered high precision
+target buys on a model whose calibrated confidences are honest about how often it
+is right, and it is the correct outcome of the policy rather than a failure of it:
+section 11.3 says to fix the target high because a false critical costs far more
+than a missed one, and this is what "far more" looks like when it is taken
+literally.
+
+It is also the reason the comparison the README is not yet allowed to make is
+going to be interesting. The rule engine accuses on far more fields at a
+confidence that is not a probability at all. Which of those a developer prefers
+is a real question, it is exactly what P5's finding-level precision and recall
+measure, and neither engine's number exists yet.
+
+### One threshold document, two engines
+
+The derived boundary sits at roughly nought point nine five. The rule engine's
+confident band starts at nought point seven, and its `MEDIUM` tier *is* nought
+point seven. A single pair of thresholds across both engines would therefore have
+moved every rule-engine finding on every page, churned every golden snapshot, and
+done it as a side effect of training a model.
+
+So `thresholds.json` grew a block per engine at schema version two, `load_thresholds`
+takes the engine name, and the CLI resolves the engine first and then asks for
+that engine's block. The rule block is byte-identical to what P3 committed, and
+the golden diff after the whole phase is the version string and nothing else,
+which is the evidence that it worked.
+
+An engine with no block is an error rather than an inheritance. That will bite P6
+when the language model engine arrives with no threshold block, and it is meant
+to: an engine's decision boundary is a recorded choice, and inheriting another
+engine's would apply one confidence scale to numbers produced on a different one.
+
+### The abstention branch, made explicit
+
+P3's handoff pointed out that a model emitting `UNKNOWN` with a high calibrated
+probability would reach the right outcome by accident, through `declaration_for`
+returning nothing rather than through the confidence, and said it would be worth
+an explicit branch. It is now one: when the winning class is `UNKNOWN` the
+reported confidence is zero, exactly as the rule engine reports it, and the
+calibrated probability of the runner-up stays on `runner_up` where the confusion
+analysis at P5 can still read it.
+
+### Latency, informally
+
+Not a measurement of record. P5 measures latency properly, with percentiles, a
+warmed session, and a run manifest. This is a sanity check that the numbers are
+in the range section 5.3 states as a target:
+
+```
+informal, forty dev pages, warmed session, threads pinned
+ngram   per field p50 164 us,  p95 218 us
+rules   per field p50  37 us,  p95  73 us
+```
+
+Both are comfortably inside the sub-millisecond per-field target, and the
+difference between them is dominated by the Python n-gram enumeration rather than
+by the session, which is the cost ADR 0006 said the route would have.
+
+### What surprised me
+
+**How much of the phase was arranging for the numbers to be checkable rather than
+producing them.** The model took an afternoon. The prediction file, the per-engine
+threshold document, the evidence table and the test that keeps it honest, the
+denominators beside the rates, and the dirty-tree flag on the training manifest
+took the rest of it, and every one of them exists so that a number in this
+repository can be argued with.
+
+**The dirty-tree flag caught its first real case immediately.** Section 18 says a
+result produced from a dirty tree is marked dirty and is not citable. The first
+full training run was made from a working tree with uncommitted changes and the
+manifest said so, so the run was thrown away and repeated from a clean tree. The
+flag also needed one fix to be honest: the output directory is untracked on a
+first run, so counting it would have marked every first training run dirty by
+construction and made the flag mean nothing. It now excludes the output directory
+and only that.

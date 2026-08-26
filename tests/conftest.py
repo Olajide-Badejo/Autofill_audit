@@ -13,6 +13,7 @@ level up would not otherwise be importable.
 
 from __future__ import annotations
 
+import os
 import sys
 from collections.abc import Iterator
 from pathlib import Path
@@ -20,6 +21,7 @@ from pathlib import Path
 import pytest
 from playwright.sync_api import Browser
 
+from autofill_audit.classify.onnx_model import MODEL_DIR_ENV
 from autofill_audit.loader import browser_session
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -27,6 +29,7 @@ TESTS_DIR = REPO_ROOT / "tests"
 SCRIPTS_DIR = REPO_ROOT / "scripts"
 SAMPLE_CORPUS = TESTS_DIR / "fixtures" / "sample_corpus"
 FIXTURES = TESTS_DIR / "fixtures"
+MODEL_DIR = REPO_ROOT / "models"
 
 for _directory in (SCRIPTS_DIR, TESTS_DIR):
     if str(_directory) not in sys.path:
@@ -49,6 +52,39 @@ def sample_corpus() -> Path:
 def fixtures_dir() -> Path:
     """The hand-authored fixture directory."""
     return FIXTURES
+
+
+@pytest.fixture(scope="session")
+def model_dir() -> Path:
+    """The committed model bundle, for the tests that are about the model."""
+    return MODEL_DIR
+
+
+@pytest.fixture(scope="session", autouse=True)
+def _no_ambient_model(tmp_path_factory: pytest.TempPathFactory) -> Iterator[None]:
+    """Point the model search at an empty directory for the whole suite.
+
+    The committed bundle lives at ``models/`` in the repository root, and the
+    engine loader finds it by walking up from the working directory. Without this
+    fixture, every test that runs ``--engine auto`` would silently start using
+    whichever model happened to be checked out, and a suite whose engine depends
+    on the state of an untracked directory is a suite that proves nothing.
+
+    So the ambient answer is "no model", and the handful of tests that are about
+    the model set the variable themselves and say so. The variable is set in the
+    real environment rather than through ``monkeypatch`` because the end-to-end
+    tests run the tool in a subprocess and inherit it.
+    """
+    empty = tmp_path_factory.mktemp("no-model-here")
+    previous = os.environ.get(MODEL_DIR_ENV)
+    os.environ[MODEL_DIR_ENV] = str(empty)
+    try:
+        yield
+    finally:
+        if previous is None:
+            del os.environ[MODEL_DIR_ENV]
+        else:
+            os.environ[MODEL_DIR_ENV] = previous
 
 
 @pytest.fixture(scope="session")

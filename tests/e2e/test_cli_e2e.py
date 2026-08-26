@@ -27,11 +27,14 @@ diagnostic and a documented exit code, never a traceback.
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
 
 import pytest
+
+from autofill_audit.classify.onnx_model import MODEL_DIR_ENV
 
 pytestmark = pytest.mark.e2e
 
@@ -41,19 +44,30 @@ MODIFIERS = "checkout_modifiers.html"
 _ENTRY = [sys.executable, "-m", "autofill_audit.cli"]
 
 
-def _run(*arguments: str, cwd: Path | None = None) -> tuple[int, str]:
+def _run(
+    *arguments: str, cwd: Path | None = None, model_dir: Path | None = None
+) -> tuple[int, str]:
     """Run the installed command surface in a subprocess.
 
     Standard output and standard error are joined, because a reader looking at a
     terminal sees them joined and every assertion here is about what that reader
     sees.
+
+    The subprocess inherits the empty model directory the root conftest points the
+    search at, so every test here is the no-model case unless it passes
+    ``model_dir``. That is deliberate: a suite whose engine depended on whether a
+    bundle happened to be checked out would prove nothing about either engine.
     """
+    environment = dict(os.environ)
+    if model_dir is not None:
+        environment[MODEL_DIR_ENV] = str(model_dir)
     completed = subprocess.run(
         [*_ENTRY, *arguments],
         capture_output=True,
         text=True,
         check=False,
         cwd=cwd,
+        env=environment,
     )
     return completed.returncode, completed.stdout + completed.stderr
 
@@ -169,10 +183,101 @@ def test_the_html_report_needs_nothing_from_the_network(
 def test_the_fallback_notice_is_printed_once_and_is_not_an_error(
     runner: None, fixtures_dir: Path
 ) -> None:
-    """Spec section 10.1: one clear line, and the run continues."""
+    """Spec section 10.1: one clear line, and the run continues.
+
+    The subprocess inherits the empty model directory the root conftest points
+    the search at, so this is the missing-model case by construction rather than
+    by whatever happens to be checked out.
+    """
     _, output = _audit(runner, fixtures_dir / MODIFIERS)
-    assert output.count("no trained model is installed") == 1
+    assert output.count("the n-gram model did not load") == 1
     assert "not an error" in output
+
+
+def test_naming_the_ngram_engine_with_no_model_refuses_with_the_usage_code(
+    runner: None, fixtures_dir: Path
+) -> None:
+    """An engine that silently became a different one would make a three-way
+    benchmark report two engines under three names."""
+    code, output = _audit(runner, fixtures_dir / MODIFIERS, "--engine", "ngram")
+    assert code == 2
+    assert "no trained model was found" in output
+    assert "rule baseline" not in output
+
+
+def test_the_ngram_engine_runs_on_a_fixture_and_quotes_a_probability(
+    runner: None, fixtures_dir: Path, model_dir: Path, tmp_path: Path
+) -> None:
+    """The P4 gate item, at the level a user experiences it.
+
+    The confidence is a number rather than a tier, which is the whole of what
+    ``confidence_kind`` buys: no renderer changed to make that happen.
+    """
+    out = tmp_path / "ngram.json"
+    code, _ = _run(
+        "audit",
+        str(fixtures_dir / HOSTILE),
+        "--engine",
+        "ngram",
+        "--format",
+        "json",
+        "--out",
+        str(out),
+        "--fail-on",
+        "never",
+        model_dir=model_dir,
+    )
+    assert code == 0
+    document = json.loads(out.read_text(encoding="utf-8"))
+    assert document["engine"]["engine"] == "ngram"
+    assert document["engine"]["confidence_kind"] == "calibrated-probability"
+    assert len(document["engine"]["model_sha256"]) == 64
+    assert document["thresholds"]["measured"] == "true"
+    assert document["findings"]
+
+
+def test_the_ngram_engine_names_ngrams_as_its_evidence(
+    runner: None, fixtures_dir: Path, model_dir: Path, tmp_path: Path
+) -> None:
+    """Law 1's named evidence, produced by the model rather than beside it."""
+    out = tmp_path / "evidence.json"
+    _run(
+        "audit",
+        str(fixtures_dir / HOSTILE),
+        "--engine",
+        "ngram",
+        "--format",
+        "json",
+        "--out",
+        str(out),
+        "--fail-on",
+        "never",
+        model_dir=model_dir,
+    )
+    document = json.loads(out.read_text(encoding="utf-8"))
+    signals = {signal for finding in document["findings"] for signal in finding["signals"]}
+    assert any(signal.startswith("ngram:") for signal in signals)
+
+
+def test_auto_prefers_the_ngram_engine_when_a_model_loads(
+    runner: None, fixtures_dir: Path, model_dir: Path, tmp_path: Path
+) -> None:
+    """``auto`` means the strongest engine that actually loads, and it is silent
+    when nothing had to be substituted."""
+    out = tmp_path / "auto.json"
+    _, output = _run(
+        "audit",
+        str(fixtures_dir / MODIFIERS),
+        "--format",
+        "json",
+        "--out",
+        str(out),
+        "--fail-on",
+        "never",
+        model_dir=model_dir,
+    )
+    assert "did not load" not in output
+    assert json.loads(out.read_text(encoding="utf-8"))["engine"]["engine"] == "ngram"
 
 
 def test_a_non_default_threshold_is_announced(runner: None, fixtures_dir: Path) -> None:

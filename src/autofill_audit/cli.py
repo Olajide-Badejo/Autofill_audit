@@ -42,6 +42,7 @@ on each of them.
 from __future__ import annotations
 
 import json
+import subprocess
 import sys
 import time
 import tomllib
@@ -58,7 +59,12 @@ from autofill_audit import __version__
 from autofill_audit.audit.engine import AuditOptions, AuditReport, Suppression
 from autofill_audit.audit.engine import audit as run_audit
 from autofill_audit.audit.findings import FindingCode, Severity
-from autofill_audit.audit.thresholds import Thresholds, ThresholdsError, load_thresholds
+from autofill_audit.audit.thresholds import (
+    Thresholds,
+    ThresholdsError,
+    available_engines,
+    load_thresholds,
+)
 from autofill_audit.classify import EngineChoice, UnavailableEngineError, load_engine
 from autofill_audit.corpus.families import Family
 from autofill_audit.corpus.generator import grid_from
@@ -252,12 +258,12 @@ def version() -> None:
     for key, value in load_engine(EngineChoice.RULES).classifier.describe().items():
         click.echo(f"  {key}: {value}")
     try:
-        thresholds = load_thresholds()
+        engines = available_engines()
+        for name in engines:
+            for key, value in load_thresholds(name).describe().items():
+                click.echo(f"  {name} threshold {key}: {value}")
     except ThresholdsError as error:  # pragma: no cover - a corrupt install
         click.echo(f"  thresholds: unreadable ({error})", err=True)
-        return
-    for key, value in thresholds.describe().items():
-        click.echo(f"  threshold {key}: {value}")
 
 
 def _print_schema(ctx: click.Context, _param: click.Parameter, value: bool) -> None:
@@ -381,13 +387,18 @@ def audit(
         _fail("--out is required for the html format", EXIT_USAGE)
 
     try:
-        thresholds = _thresholds(min_confidence)
-    except ThresholdsError as error:
-        _fail(str(error), EXIT_USAGE)
-
-    try:
         loaded = load_engine(EngineChoice(engine))
     except UnavailableEngineError as error:
+        _fail(str(error), EXIT_USAGE)
+
+    # The engine is resolved first, and then its thresholds. ``auto`` may have
+    # become either engine, and the two are on different confidence scales: the
+    # rule tiers are ordered placeholders and the n-gram engine's are calibrated
+    # probabilities. Loading one policy for whichever engine was asked for, rather
+    # than for whichever one ran, would silently apply one scale to the other.
+    try:
+        thresholds = _thresholds(loaded.classifier.name, min_confidence)
+    except ThresholdsError as error:
         _fail(str(error), EXIT_USAGE)
 
     if loaded.notice is not None and not quiet:
@@ -427,9 +438,9 @@ def _configured_formats(config: Config) -> tuple[str, ...]:
     return tuple(str(item) for item in configured)
 
 
-def _thresholds(min_confidence: float | None) -> Thresholds:
-    """Load the committed thresholds, with any command-line override applied."""
-    thresholds = load_thresholds()
+def _thresholds(engine: str, min_confidence: float | None) -> Thresholds:
+    """Load one engine's committed thresholds, with any override applied."""
+    thresholds = load_thresholds(engine)
     if min_confidence is None:
         return thresholds
     return thresholds.with_low(float(min_confidence))
@@ -662,6 +673,93 @@ def corpus_validate(corpus_dir: Path, quiet: bool) -> None:
         click.echo(f"corpus validate: {len(report.problems)} problem(s)", err=True)
         raise SystemExit(EXIT_USAGE)
     click.echo("corpus validate: green")
+
+
+# ---------------------------------------------------------------------------
+# Training (P4).
+# ---------------------------------------------------------------------------
+
+_TRAIN_SCRIPT: Final[str] = "train.py"
+
+_TRAIN_ABSENT: Final[str] = (
+    "training needs a source checkout: scripts/train.py is not in this "
+    "installation, and neither are scikit-learn and skl2onnx, which it fits and "
+    "exports with. Clone the repository and install the dev extra. An installed "
+    "wheel audits pages; it does not train models, which is a minutes-long "
+    "offline job with a different dependency set."
+)
+
+
+def find_train_script(start: Path) -> Path | None:
+    """Locate ``scripts/train.py``, upward from ``start`` and from this package.
+
+    Spec section 14 makes ``train`` a wrapper around the script rather than a
+    second implementation of it, and the script is a development artefact rather
+    than package data. Searching both roots means a source checkout and an
+    editable install both find it without either of them configuring anything.
+    """
+    roots = [start, Path(__file__).resolve()]
+    for root in roots:
+        for directory in (root, *root.parents):
+            candidate = directory / "scripts" / _TRAIN_SCRIPT
+            if candidate.is_file():
+                return candidate
+    return None
+
+
+@cli.command(
+    context_settings={"ignore_unknown_options": True},
+    help="Train the n-gram model. Wraps scripts/train.py; needs a source checkout.",
+)
+@click.option("--corpus", "corpus_dir", type=click.Path(path_type=Path), default=Path("corpus"))
+@click.option("--split-file", type=click.Path(path_type=Path), default=None)
+@click.option("--seed", type=int, required=True, help="the one seed, propagated everywhere")
+@click.option("--out", type=click.Path(file_okay=False, path_type=Path), required=True)
+@click.option(
+    "--sweep/--no-sweep",
+    default=True,
+    show_default=True,
+    help="choose the regularisation strength on the dev split",
+)
+@click.option(
+    "--cache",
+    type=click.Path(file_okay=False, path_type=Path),
+    default=None,
+    help="reuse extracted descriptors from here, and write them here",
+)
+def train(
+    corpus_dir: Path,
+    split_file: Path | None,
+    seed: int,
+    out: Path,
+    sweep: bool,
+    cache: Path | None,
+) -> None:
+    """Train, calibrate, and export the n-gram model.
+
+    There is no ``--test`` flag and there will not be one (spec section 14).
+    The script this wraps enforces the same thing from the other end, with a
+    guard that raises if a test-partition path is opened at all.
+    """
+    script = find_train_script(Path.cwd())
+    if script is None:
+        _fail(_TRAIN_ABSENT, EXIT_USAGE)
+    arguments = [
+        sys.executable,
+        str(script),
+        "--corpus",
+        str(corpus_dir),
+        "--seed",
+        str(seed),
+        "--out",
+        str(out),
+        "--sweep" if sweep else "--no-sweep",
+    ]
+    if split_file is not None:
+        arguments.extend(["--split-file", str(split_file)])
+    if cache is not None:
+        arguments.extend(["--cache", str(cache)])
+    raise SystemExit(subprocess.call(arguments))
 
 
 # ---------------------------------------------------------------------------
