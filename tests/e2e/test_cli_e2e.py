@@ -169,9 +169,14 @@ def test_the_html_report_needs_nothing_from_the_network(
 def test_the_fallback_notice_is_printed_once_and_is_not_an_error(
     runner: None, fixtures_dir: Path
 ) -> None:
-    """Spec section 10.1: one clear line, and the run continues."""
+    """Spec section 10.1: one clear line, and the run continues.
+
+    The subprocess inherits the empty model directory the root conftest points
+    the search at, so this is the missing-model case by construction rather than
+    by whatever happens to be checked out.
+    """
     _, output = _audit(runner, fixtures_dir / MODIFIERS)
-    assert output.count("no trained model is installed") == 1
+    assert output.count("the n-gram model did not load") == 1
     assert "not an error" in output
 
 

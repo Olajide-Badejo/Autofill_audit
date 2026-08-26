@@ -91,9 +91,19 @@ def test_a_missing_target_is_a_usage_error(runner: CliRunner) -> None:
 
 
 def test_an_engine_that_does_not_exist_yet_names_its_phase(runner: CliRunner) -> None:
+    result = runner.invoke(cli, ["audit", "page.html", "--engine", "llm"])
+    assert result.exit_code == 2
+    assert "phase P6" in result.output
+
+
+def test_the_ngram_engine_with_no_model_is_a_usage_error_and_not_a_fallback(
+    runner: CliRunner,
+) -> None:
+    """Exit code 2 and a sentence, never a quiet substitution of the baseline."""
     result = runner.invoke(cli, ["audit", "page.html", "--engine", "ngram"])
     assert result.exit_code == 2
-    assert "phase P4" in result.output
+    assert "no trained model was found" in result.output
+    assert "rule baseline" not in result.output
 
 
 def test_an_unknown_engine_is_refused_by_the_choice(runner: CliRunner) -> None:
