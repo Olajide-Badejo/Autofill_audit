@@ -72,6 +72,17 @@ underpowered measurement.
   absolute practical-effect threshold, the clustering unit and the reporting
   minimum are all exactly what P4 and P5 pre-registered.
 - The seed is unchanged, and `fr-FR` remains the held-out locale.
+- **What the re-measurement found**, in one line each and in full in
+  `docs/ENGINEERING_LOG.md`: every comparison is now decidable and none is
+  reported as underpowered; all eleven come back as no significant change after
+  the family correction; the rule baseline still leads the label-weighted average
+  and the model now leads the field-weighted one; the model improved by about a
+  third of a point of macro-F1; and the model made its first wrong accusation,
+  nine of them, which the changed threshold values explain and which the model
+  card and the README both state rather than round.
+- Ground rule 12 applies to the threshold values, which moved. They moved because
+  the dev split did, not because the policy did, and the movement is a
+  consequence of the corpus change registered in advance rather than a retune.
 
 ## [0.3.0] - 2026-08-26
 

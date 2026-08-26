@@ -1228,3 +1228,150 @@ analysis. The old
 result files are never touched: spec section 18 makes them append-only history,
 they were correctly taken, and the honest description of them is the first,
 underpowered measurement rather than something to be tidied away.
+
+## 2026-08-26: P5R, what the repaired corpus measured
+
+The entry above was written before the work. This one is written after it, and
+the two are deliberately separate commits so that a reader can see which claims
+predated the data.
+
+### The design has power now, and the first thing to say is what that changed
+
+```
+results: experiments/results/analysis/2026-08-26T06-23-41Z_p5r-analysis_0d900ff/analysis.json
+                          old design      new design
+test templates                     5              10
+sign-flip arrangements            32            1024
+smallest attainable p         0.0625          0.0020
+comparisons in the family         11              11
+inconclusive: cannot reach alpha  11               0
+```
+
+Eleven of eleven unreachable became zero of eleven unreachable. Every comparison
+now lands in one of the three categories spec section 13.3 requires, which is
+what the phase was for.
+
+**All eleven land in the same one: no significant change.** Five of them have an
+uncorrected p value below the level and none survives the Benjamini Hochberg
+correction across a family of eleven. That is not the same finding as the last
+one and the difference matters: last time the design could not answer, this time
+it answered and the answer is that ten clusters do not resolve these effects.
+
+The temptation to report the uncorrected column, or to correct inside a subset,
+is exactly what the family size in the result file exists to make visible. The
+family is eleven because eleven comparisons were run, not because eleven were
+worth reporting afterwards.
+
+### The engines, old design beside new
+
+Both columns are macro-F1 on the test split. The old numbers are from the first,
+underpowered measurement and are not comparable as measurements of the same
+thing, because the test split is now ten different templates. They are here
+because ground rule 4 requires a moved metric to be explained, not because the
+two are being averaged.
+
+```
+results: experiments/results/test/2026-08-26T06-18-34Z_p5r-rules_0d900ff/metrics.json
+                              rules old   rules new   ngram old   ngram new
+macro-F1                         0.7785      0.7911      0.4151      0.7394
+micro-F1                         0.7744      0.7678      0.7041      0.8226
+macro-F1 unseen locale           0.7193      0.7276      0.4057      0.5637
+macro-F1 clean tier              0.8500      0.8677      0.5885      0.9350
+macro-F1 hostile tier            0.5163      0.4681      0.4052      0.5409
+abstention rate                  0.2676      0.2620      0.0508      0.0363
+accuracy when committed          0.9773      0.9702      0.6996      0.8204
+```
+
+**The rule baseline barely moved and the model moved by a third of a point of
+macro-F1.** That is the shape the prediction file expected: the rule table is a
+fixed function of the markup and a different set of templates asks it slightly
+different questions, while the model gained ten training templates and lost its
+three untrainable classes.
+
+**The registered predictions, and which held.**
+
+- *The ordering persists.* Held on macro-F1, overall and on the unseen locale.
+  The rule baseline still leads the label-weighted average.
+- *The model improves absolutely.* Held, and by more than expected.
+- *The comparisons clear the design floor.* Held. Zero comparisons report the
+  underpowered verdict.
+- *Page load still dominates.* Held. The load and extract share is above
+  ninety-eight percent for both engines.
+- *Latency stays inside a millisecond and the model stays slower.* Held on both
+  halves.
+- *Finding-level precision stays at or very near one.* Held for the rule
+  baseline exactly and held loosely for the model, which is discussed below.
+
+### The two averages disagree, which is the result worth carrying forward
+
+Macro-F1 says the rule table wins. Micro-F1 says the model wins. Both are in the
+same two files and both are correct.
+
+The mechanism is the abstention asymmetry, seen from the other side this time.
+The rule table answers `UNKNOWN` on about a quarter of the fields, which costs it
+nothing under macro averaging (an abstention is a miss on one class) and costs it
+a quarter of the field-weighted denominator. The model answers nearly everything,
+which earns field-weighted accuracy and pays label-weighted average whenever it
+guesses a rare class wrongly.
+
+At P5 the model was bad enough that both averages agreed. It is not any more, and
+the honest report of a two-engine comparison on this corpus now has to carry both
+columns and say what each of them weights. P6's headline table has three engines
+and the same problem, one column wider.
+
+### The model's first wrong accusation
+
+The rule baseline accused four hundred and forty-nine fields and was right about
+all of them
+([metrics.json](experiments/results/test/2026-08-26T06-18-34Z_p5r-rules_0d900ff/metrics.json)).
+The model accused three hundred and thirty-four and was wrong about nine
+([metrics.json](experiments/results/test/2026-08-26T06-21-03Z_p5r-ngram_0d900ff/metrics.json)).
+
+That is the first time in this project that either engine has told a developer to
+add a token the answer key disagrees with, and it deserves to be recorded rather
+than rounded. The threshold policy did not change: the target precision behind
+`tau_high` is the pre-registered one and the derivation script was run
+unmodified. What changed is that the derived threshold sits on a model whose dev
+precision at that point was itself below one, so a test-split precision below one
+is the design working rather than failing. A precision target is a target, not a
+guarantee, and a project that reported the target as though it were the outcome
+would be reporting a policy as a measurement.
+
+### Calibration got worse, and the calibrator stayed
+
+Expected calibration error before calibration was lower than after it. The
+uncalibrated model of this corpus is already close to honest, and refitting
+forty-two one-vs-rest sigmoids on a dev split of one template per family and then
+renormalising moves classes that were already well behaved.
+
+The calibrator stays, for two reasons that are in the model card in full: macro-F1
+is higher with it, and the argument in spec section 10.4 is about the number a
+finding quotes rather than about an average gap. What changes is the card, which
+now says the error went the wrong way and by how much. Dropping the calibrator
+because its summary statistic got worse, without re-registering, would be tuning
+on the thing being measured.
+
+### What did not go as expected
+
+**One class reached the isotonic switchover.** `NOT_AUTOFILLABLE`, the label that
+covers every search box and consent checkbox, is the first class in this project
+ever to have enough dev positives for isotonic regression. P4 predicted none ever
+would and that prediction was correct for its corpus.
+
+**The confusion table is smaller and more structural.** The largest single
+confusion on dev fell from the forties into single figures. What is left is
+mostly genuine ambiguity: a telephone against a national telephone, an
+organization against a nickname, a country name against a country.
+
+**The mixed tier is the model's weak tier now.** It leads the rule baseline on
+clean, partial and hostile markup and trails it on mixed, which is the tier built
+to look like a real page whose sections were written by different teams at
+different times. A model that is better on each tier separately and worse on the
+tier that mixes them is worth a paragraph in the report rather than a footnote.
+
+### The version string in the committed run logs says 0.3.0
+
+Again, and for the same reason as at P5: the runs were taken before the version
+bump, `engine_describe.tool_version` records what was actually running, and the
+manifest's commit resolves to a tree where that is true. Re-running to make it
+prettier is the regeneration spec section 18 forbids.

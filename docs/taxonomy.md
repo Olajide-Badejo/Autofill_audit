@@ -150,6 +150,31 @@ and into `CHECKS` in the same commit that makes it enforceable, because a green
 run that silently claimed more than it checked would be worse than an honest
 partial one.
 
+### The train-partition minimum, which is not one of the four clauses
+
+`check_train_label_minimum` runs beside them and is registered separately, on
+purpose. Clause (b) asks whether a label is emitted *anywhere* in the corpus, and
+a label emitted only in the dev or test partition satisfies it while still being
+a class the model has never once seen and can therefore only get wrong. Three
+labels were in exactly that position before P5R: `country-name`, `one-time-code`
+and `street-address`. Each cost the model twice under macro averaging, once in
+its own recall and once in the recall of whichever class the model chose instead,
+and all three were in a shipped model card.
+
+The rule is that every label must carry at least `MIN_TRAIN_ROWS_PER_LABEL`
+answer-key rows in the train partition of the full grid. The constant is
+arithmetic rather than taste: a template is generated in six locales and four
+tiers at one variant, and the held-out locale is lifted out of train, so one
+training template contributes exactly that many training rows for a field it
+carries in every locale. The requirement is therefore "at least one whole
+training template carries this label", which is the smallest statement about a
+label that is not an accident of a single locale profile.
+
+It is not folded into clause (c), whose "stated minimum count of examples" is
+about a *model-only* label. This applies to every label, including the ones a
+rule reaches, because a rule reaching a label does nothing for the model that
+also has to predict it.
+
 Clause (d)'s mechanism is a pytest marker. A test that asserts an outcome
 depending on one label carries `@pytest.mark.label("postal-code")`, the check
 collects the markers from a real collection run rather than by reading the
