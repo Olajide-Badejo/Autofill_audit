@@ -1118,3 +1118,113 @@ the P0 proof-of-failure argument now has a natural example beside its manufactur
 ones. And it is a defect that could only appear once law 3's chain went from a
 pattern match to a resolution: the check that had run in CI since P0 would have
 passed on this commit forever, because it never asked git for anything.
+
+## 2026-08-26: P5R, the corpus power repair, written before anything moved
+
+This entry is committed **before** the work it describes, together with
+`experiments/predictions/p5r-power-repair.md` and the changelog entry. Ground
+rule 4 forbids baseline drift, and from P5 onward this repository carries
+recorded results, so a phase that is about to move every recorded metric in it
+owes the explanation first rather than afterwards. Writing it afterwards would be
+indistinguishable from an excuse, which is the same argument P5 made for
+computing its own power before its runs.
+
+### What is wrong, and why it is not fixable by measuring harder
+
+P5 found that the test split cannot certify anything. Spec section 13.3 requires
+the resampling unit to be the template, P1's leakage rule assigns whole templates
+to partitions, and the realised grid carried five templates per family at a
+three, one, one split. The test partition therefore held five templates, a paired
+sign-flip permutation over five clusters has thirty-two arrangements, and the
+smallest two sided p value such a design can produce is two over thirty-two.
+
+```
+test templates   arrangements   smallest attainable two sided p
+      5                32                    0.0625
+      6                64                    0.0313
+      8               256                    0.0078
+     10              1024                    0.0020
+```
+
+The pre-registered level is the one P5 fixed before its runs, and thirty-two
+arrangements cannot reach it. All eleven of P5's comparisons came back
+inconclusive because the design cannot reach alpha, seven of them sitting exactly
+at the floor. More resamples do not help: at five clusters the test is already
+exhaustive. Only more templates help.
+
+### The repair, and the three options it was chosen from
+
+The notes for P6 set out three ways forward: generate more templates per family,
+accept the floor and report every comparison as inconclusive, or pre-register a
+different alpha. The third would clear the floor at a level of one in ten and
+looks exactly like moving the goalposts, because it would be chosen after seeing
+that the original level was unreachable. The second leaves the headline benchmark
+of spec section 13.4 answering its question with effect sizes and no significance
+at all.
+
+The first was chosen, and it is being done now rather than at P6 so that the
+language model arrives at a corpus that can certify a difference. The cost is a
+regeneration, a retraining, a threshold rederivation and a re-measurement, all
+four of which are scripted and three of which have been done once already.
+
+### Why every recorded number in this repository is about to move
+
+Eight templates per family instead of five, split five, one, two instead of
+three, one, one. That is the whole change and everything below follows from it
+mechanically:
+
+- the realised grid changes, so the corpus manifest sha changes;
+- the descriptor cache is bound to that sha, so it is refused and rebuilt;
+- the training partition grows from fifteen templates to twenty-five, so the
+  model, its vocabulary, its calibration and its evidence table are all
+  different, and none of them is comparable to P4's;
+- the dev partition is a different five templates, so both decision thresholds
+  are derived on different data and may land anywhere;
+- every metric in the model card and in `models/dev_metrics.json` moves;
+- the test partition is ten different templates, so both engines' test-split
+  numbers move, in either direction, and a movement in the rule baseline is not
+  a change in the rule table but a change in what it was asked about.
+
+None of that is a regression and none of it is a defect. It is one deliberate
+change to the corpus design, and the reason it is written down in advance is that
+a reader comparing the README against its own history a month from now will
+otherwise see every number change at once with no stated cause.
+
+### What deliberately does not move
+
+The seed stays where P1 set it. The held-out locale stays `fr-FR`, which spec
+section 8.6 forbids changing and which nothing here touches. The excluded
+partition keeps the rule P1 gave it. The statistical policy is untouched: the
+alpha, the false discovery rate, the absolute practical-effect threshold, the
+clustering unit, and the target precision behind tau_high are all exactly what P4
+and P5 pre-registered. Repairing the corpus is only honest if the standards it is
+measured against stay where they were, and a phase that moved a threshold and a
+corpus at the same time would have produced two changes and no attribution.
+
+### The one addition, and the arithmetic behind its constant
+
+A new clause joins law 2's enforcement: every label a model can predict must
+appear in the train partition with at least twenty rows. Three labels currently
+sit at zero there, `country-name`, `one-time-code` and `street-address`, which
+means the model has been asked about labels it has never once seen, and every one
+of those is a class it can only get wrong.
+
+Twenty is arithmetic rather than taste. A template is generated in six locales
+and four tiers at one variant, and the held-out locale is lifted out of train, so
+one training template contributes exactly twenty training rows for a field it
+carries in every locale. The constant therefore says "at least one whole training
+template carries this label", which is the smallest statement about a label that
+is not an accident of one locale profile. The three new templates per family are
+designed to carry the starved labels deliberately rather than to acquire them by
+luck.
+
+### The order of the commits, which is the part that matters
+
+This entry, the changelog entry and the prediction file are one commit and they
+are the first commit of the phase. Then the templates, the regeneration and the
+retraining, with the new model artefacts and the new model card in a single
+commit, as the model-card ground rule requires. Then the new runs and the new
+analysis. The old
+result files are never touched: spec section 18 makes them append-only history,
+they were correctly taken, and the honest description of them is the first,
+underpowered measurement rather than something to be tidied away.
