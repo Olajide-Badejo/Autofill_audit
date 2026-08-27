@@ -197,7 +197,7 @@ work that will not happen for a while and a stable tag is needed now.
 So the deviation is recorded here, in the ledger that exists for exactly this:
 **v1.0.0 is tagged while `ml-experiment-triage` is consumed from its git tag
 rather than from a package index.** The publication task stays open below and is
-the first item of post-1.0 housekeeping. The dependency sits in the `dev` extra,
+the first item of housekeeping after the stable tag. The dependency sits in the `dev` extra,
 so the shipped wheel is unaffected; what is affected is the reproducibility
 guarantee of the evaluation toolchain, which now rests on a git tag rather than
 on an immutable index release.

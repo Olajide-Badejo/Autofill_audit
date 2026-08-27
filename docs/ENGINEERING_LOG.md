@@ -1753,8 +1753,9 @@ if it does not, the deliverable is the paragraph saying so with the numbers.
 
 ## 2026-08-27: the v1.0.0 tag, applied by direction
 
-The P7 entry above records why the tag was withheld: section 0.5 forbids a
-stable tag while any dependency is a git ref, and `ml-experiment-triage` is one.
+The P7 entry above records why the tag was withheld: the dependency contract in
+the build specification forbids a stable tag while any dependency is a git ref,
+and `ml-experiment-triage` is one.
 The project owner has directed that the tag be applied now, with the pin in
 place, because the index publication will not happen for a while and the stable
 tag is needed on the repository today.
