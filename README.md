@@ -10,6 +10,22 @@ The web platform already says how to avoid this. The [WHATWG HTML autofill secti
 
 That is what this tool does.
 
+![autofill-audit running against a deliberately hostile checkout fixture, printing findings and exiting non-zero](docs/assets/demo.gif)
+
+The animation is regenerated from a committed fixture by [`scripts/make_demo_gif.sh`](scripts/make_demo_gif.sh), so it is reproducible rather than hand-edited. The full report that run produced is published here: [sample HTML report](docs/examples/checkout_hostile_report.html) ([rendered](https://htmlpreview.github.io/?https://github.com/Olajide-Badejo/Autofill_audit/blob/main/docs/examples/checkout_hostile_report.html)).
+
+## How well does it actually work
+
+Three documents answer that, in increasing order of length. Every number in all three resolves to a committed result file.
+
+| | |
+|---|---|
+| [**`docs/report.md`**](docs/report.md) | The short answer, in markdown. Method, corpus, the headline experiment, and the honest result including the language model comparison whichever way it went. |
+| [**`report/main.pdf`**](report/main.pdf) | The full write-up. The corpus design, the classifier ladder, the headline experiment in full with per-locale and per-tier grids, the statistical procedure, the pre-registered predictions beside their outcomes, and the limitations. |
+| [**`report_debug/debug_report.pdf`**](report_debug/debug_report.pdf) | The record of what went wrong. Grouped by theme: DOM traversal, waiting and flake, normalisation, generator determinism, export fidelity, thresholds, language model behaviour, the package boundary, and a corpus design defect that invalidated a whole phase's ability to certify anything. |
+
+The debug report is published deliberately. The honest record of what went wrong is the part of a project that ordinarily evaporates, and almost nobody publishes one.
+
 ## What it does
 
 Point it at a URL or a local HTML file. It loads the page in a real browser, walks the DOM including same-origin frames and open shadow roots, collects the signals a browser's own heuristics would use, classifies each control against the specification's token set, and reports the controls that will not autofill together with the attribute to add.
@@ -18,23 +34,24 @@ Because the label space *is* the specification's token set, the fix is a formatt
 
 ## Status
 
-`v0.3.0`. The tool works and is useful. The extractor, the rule baseline, the
-audit engine, the three report renderers, and the exit-code contract have been
-here since `v0.1.0`, and the classifier ladder has a second rung: an n-gram
-logistic regression, calibrated on a held-out development split and exported to
-ONNX, behind `--engine ngram`.
+`v1.0.0`. The extractor, the rule baseline, the audit engine, the three report
+renderers, and the exit-code contract have been here since `v0.1.0`. The
+classifier ladder has three rungs: a table of regular expressions, an n-gram
+logistic regression calibrated on a held-out development split and exported to
+ONNX, and an optional local language model that exists for the comparison rather
+than for the product.
 
-`--engine auto` prefers the model when one loads and falls back to the rule
-baseline with one printed line when none does, which is the documented behaviour
-rather than a failure. A published wheel does not currently carry a model, so a
-`pipx` install runs the rule baseline until you train one or point
-`AUTOFILL_AUDIT_MODEL_DIR` at a bundle.
+`--engine auto` is the default. It prefers the model when one loads and falls
+back to the rule baseline with one printed line when none does, which is
+documented behaviour rather than a failure. A published wheel does not currently
+carry a model, so a `pipx` install runs the rule baseline until you train one or
+point `AUTOFILL_AUDIT_MODEL_DIR` at a bundle.
 
-**The default engine is the rule baseline, and the measurements below are the
-reason.** On the first test-split evaluation the n-gram model lost to the rule
-table on every slice measured. That is not the result the classifier ladder was
-built expecting, it is printed here anyway, and what to do about it is the
-subject of the next phase rather than of a rewritten paragraph in this one.
+**The measurements below say the n-gram model is the right default, and they say
+so on accuracy rather than on speed.** They also say the rule baseline leads the
+label-weighted average, and that the two averages disagree about which of the two
+classical engines wins. Both are printed. The twelve-billion-parameter language
+model came third on both.
 
 ## Install
 
@@ -62,55 +79,26 @@ autofill-audit audit ./checkout.html --format json --out report.json
 autofill-audit audit ./checkout.html --format html --out report.html --fail-on warning
 ```
 
-### A worked example
+### The fix, before and after
 
-This is real output, from
-[`tests/fixtures/checkout_hostile.html`](tests/fixtures/checkout_hostile.html),
-a checkout authored in this repository to get things wrong in the ways real
-checkouts get things wrong. Nothing here is edited except for trimming the
-middle of the table.
+This is the whole product in four lines. The field on the left will not autofill; the field on the right will.
+
+```html
+<!-- before: nothing tells the browser what this control is for -->
+<input type="text" id="ck-email" placeholder="name@example.com">
+```
 
 ```console
-$ autofill-audit audit tests/fixtures/checkout_hostile.html
-autofill-audit  file:///.../tests/fixtures/checkout_hostile.html
-
-critical (6)
-
- control          finding
- ─────────────────────────────────────────────────────────────────────────────
+$ autofill-audit audit ./checkout.html
  #ck-email        MISSING_AUTOCOMPLETE
                   add autocomplete="email" to #ck-email
                   evidence: declaration:absent, label:email-words [rule tier HIGH]
- #ck-postcode     OFF_SPEC_TOKEN
-                  autocomplete="zipcode" is not a valid autofill token;
-                  use "postal-code"
-                  evidence: declaration:off-spec, label:postcode-words [rule tier HIGH]
- #ck-holder       WRONG_AUTOCOMPLETE
-                  #ck-holder declares autocomplete="name" but looks like cc-name;
-                  change to autocomplete="cc-name"
-                  evidence: declaration:token-mismatch, label:cardholder-words [rule tier HIGH]
+```
 
-warning (8)
-
- control          finding
- ─────────────────────────────────────────────────────────────────────────────
- #input7          PLACEHOLDER_AS_LABEL
-                  #input7 uses a placeholder as its label; add a real <label>
-                  evidence: structure:placeholder-is-the-only-label [structural]
- #ck-mm           SPLIT_FIELD
-                  #ck-mm is one half of a split expiry; set
-                  autocomplete="cc-exp-month" and "cc-exp-year" on the pair
-                  evidence: structure:split-expiry-group [structural]
- frame[#hosted-pan] UNDETECTABLE_FIELD
-                  the control is inside a cross-origin frame, which is how hosted
-                  payment fields are built on purpose; this is not necessarily a
-                  defect. Autofill still works inside the frame, and the frame's
-                  own document is where its autocomplete attributes belong. Audit
-                  that document separately
-                  evidence: structure:undetectable [structural]
-
-$ echo $?
-1
+```html
+<!-- after: one attribute, and the browser fills it -->
+<input type="email" id="ck-email" autocomplete="email"
+       placeholder="name@example.com">
 ```
 
 Three things in that output are the whole design.
@@ -119,15 +107,78 @@ Three things in that output are the whole design.
 matched and which stream it matched in. A finding you cannot argue with is a
 finding you cannot check, so there are none.
 
-**The confidence is a tier, not a percentage.** The rule baseline is a table of
-regular expressions. It has no probabilities, so it does not print any. Turning a
-regex table's output into a percentage would assert a frequency nobody has
-measured, which this project's third law forbids.
+**The confidence is a tier, not a percentage, when a tier is what exists.** The
+rule baseline is a table of regular expressions. It has no probabilities, so it
+does not print any. The n-gram engine prints a calibrated probability, because it
+has one. Turning a regex table's output into a percentage would assert a
+frequency nobody has measured, which this project's third law forbids.
 
-**A correct field is met with silence.** The card-number input on that page is
-correctly declared and does not appear in the report at all. On a page where
-every field is correct the whole report is one line saying so, and that property
-is a test over the entire correct-markup slice of the corpus.
+**A correct field is met with silence.** The correctly declared card-number input
+on that page does not appear in the report at all. On a page where every field is
+correct the whole report is one line saying so, and that property is a test over
+the entire correct-markup slice of the corpus.
+
+## Architecture
+
+```mermaid
+flowchart TD
+    subgraph load["Loader (loader.py)"]
+        L["Playwright, sync API<br/>bounded waits, file:// or URL<br/>never clicks, never fills"]
+    end
+    subgraph extract["Extractor (extract/)"]
+        W["DOM walker (walker.py)<br/>same-origin frames, open shadow roots"]
+        S["Signal collector (signals.py)<br/>labels, ARIA, placeholder, name/id/class, context"]
+        N["Normaliser (normalize.py)<br/>NFKC, boundary split, casefold, stoplist twice"]
+        G["Group detection (groups.py)<br/>split expiry, address runs, radio groups"]
+        SEL["Selector generation (selector.py)<br/>stable, ranked, unique within the form"]
+        W --> S --> N
+        W --> G
+        W --> SEL
+    end
+    FD["FieldDescriptor (descriptors.py)<br/>the only interface anything downstream sees<br/>no classifier ever touches the DOM"]
+    subgraph classify["Classifier ladder (classify/)"]
+        RU["Rules engine (rules.py + rules_table.py)<br/>392 rules, 9 locale vocabularies, 6 tiers<br/>ties fall through to UNKNOWN by design"]
+        NG["N-gram ONNX (onnx_model.py + features.py)<br/>calibrated, CPU only, microseconds per field"]
+        LL["LLM research mode (llm/, classify/llm.py)<br/>Ollama, server-enforced JSON schema, optional"]
+    end
+    subgraph audit["Audit engine (audit/)"]
+        DP["Decision procedure (engine.py)<br/>declared vs inferred, equivalence sets, first match wins"]
+        TH["Thresholds (thresholds.json)<br/>one block per engine, derived on dev<br/>against a preregistered precision target"]
+        DP --- TH
+    end
+    subgraph report["Renderers (report/)"]
+        T["terminal"]
+        JS["JSON"]
+        H["HTML"]
+    end
+    subgraph corpus["Corpus and evaluation side channel"]
+        GEN["Seeded generator (corpus/)<br/>960 forms, 40 templates, 6 locales, 4 tiers<br/>answer keys, byte-identical from its seed"]
+        EV["Eval runner (scripts/eval.py)<br/>JSONL run logs, manifests, metrics, findings"]
+        TR["ML-Experiment-Triage<br/>clustered permutation tests, BH correction"]
+        GEN --> EV --> TR
+    end
+    L --> W
+    N --> FD
+    G --> FD
+    SEL --> FD
+    FD --> RU
+    FD --> NG
+    FD --> LL
+    RU --> DP
+    NG --> DP
+    LL --> DP
+    DP --> T
+    DP --> JS
+    DP --> H
+    JS --> X["exit code contract<br/>0 clean, 1 findings at or above the threshold<br/>2 usage, 3 unreachable, 4 internal error"]
+    GEN -.-> L
+    EV -.-> classify
+```
+
+`FieldDescriptor` is the load-bearing contract. A classifier never sees the DOM
+and never sees an answer key; it sees a descriptor. That boundary is why
+selector generation, group detection, the honeypot rule and every normalisation
+step are covered by tests that run in milliseconds without a browser.
 
 ### The findings, in brief
 
@@ -142,28 +193,6 @@ Each one, with its trigger, its exact fix text, and a before-and-after example,
 is in [`docs/findings.md`](docs/findings.md), along with the exit-code contract
 and the `autofill-audit.toml` format.
 
-## Roadmap
-
-The build order is deliberate and the reason is worth stating: **the tool becomes
-useful before any machine learning exists.**
-
-| Phase | What lands |
-|---|---|
-| P0 | Repository, packaging, taxonomy, the six CI gates, the toolchain record |
-| P1 | The seeded corpus generator, locale profiles, answer keys, the split policy |
-| P2 | The Playwright extractor: DOM walk, frames, shadow roots, signal collection |
-| P3 | The rule baseline, the audit engine, three renderers, the CLI. First usable release |
-| P4 | The n-gram classifier, calibration, ONNX export, the model card |
-| P5 | Metrics, run logs, statistical significance through the external harness |
-| P6 | The optional local language model comparison and the headline benchmark |
-| P7 | The full documentation set and the compiled reports. First stable release |
-
-P3 is the milestone that matters to somebody who just wants their checkout page
-fixed, and it has shipped as `v0.1.0`. Everything after it buys accuracy and
-evidence rather than usefulness, and a project that shipped the model first and
-the product last would have no way to tell whether the model was solving a
-problem anybody has.
-
 ## Boundaries
 
 These are deliberate boundaries, not missing features, and each one is a decision rather than an omission.
@@ -175,6 +204,7 @@ These are deliberate boundaries, not missing features, and each one is a decisio
 - **No scraped training data.** Nothing in this repository fetches HTML from a live site and keeps it. The corpus is generated.
 - **No personal data.** Test fixtures use self-evidently invented names and addresses and the officially published test card numbers. No real name, address, phone number, email, or card number is present, including the author's own.
 - **HTML forms only.** Native mobile forms, PDF forms, and canvas-rendered widgets are out of scope. A canvas is reported as undetectable rather than guessed at.
+- **The tool does not verify that a browser autofills.** It verifies that the markup gives the browser what it needs. Those are different claims and only the second one is made.
 
 ## On accuracy
 
@@ -352,6 +382,9 @@ latency columns would be celebrating nothing. For the language model that
 reverses: the browser becomes a twentieth of the wall time and the classifier becomes the rest ([metrics.json](experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json)).
 One is a classifier you do not wait for. The other is one you do.
 
+**It is also the finding most likely to survive contact with real pages**, because
+it does not depend on the corpus being synthetic. The accuracy gap does.
+
 ### What the language model cost, and what it did not
 
 | Quantity | Value | Result file |
@@ -484,22 +517,83 @@ wrong, while declining less readily overall than either classical engine.
 The same rule applies to estimates. Anything estimated rather than measured is
 labeled as an estimate where it is displayed.
 
+### One known limitation of the evaluation itself
+
+The evaluation runner classifies every form twice: once directly, which is where
+the run log's predicted label and per-field latency come from, and once through
+the audit engine, which is where the finding codes come from. For the two
+deterministic engines the passes agree by construction. For the language model
+they are two draws of a model that is not guaranteed to be deterministic, and the
+excess disagreement between a row's label and its finding codes is on the order
+of two fields in seven hundred.
+
+It is small, it is real, and it should be known before anyone builds on the
+finding-level numbers. It is not fixed here, because changing what the runner
+does for every engine after seeing the results is the regeneration this project's
+reproducibility rules forbid. The fix and the reasoning are in
+[`report_debug/debug_report.pdf`](report_debug/debug_report.pdf) and in
+[`docs/report.md`](docs/report.md).
+
 ## The research layer
 
 Alongside the tool there is an honest evaluation: a seeded synthetic corpus with answer keys, a ladder of classifiers from a rule table to an n-gram model to a local large language model, and statistical significance decided by an external harness.
 
 That harness is [ML-Experiment-Triage](https://github.com/Olajide-Badejo/ML-Experiment-Triage), a separate, independently released package, and it stays separate on purpose. A piece of infrastructure with exactly one consumer has not been shown to be infrastructure; it has been shown to be part of that one program. This project is its second consumer, across a real package boundary, and the friction that boundary exposes is recorded in [`docs/cross-repo-tasks.md`](docs/cross-repo-tasks.md) rather than smoothed away by vendoring the code.
 
-The full write-up, including the headline comparison and whatever it turned out to show, is published at P7.
+The split runs cleanly through the middle of that package, and where it runs is
+the result: its statistical primitives fit exactly and were used unchanged, and
+its data model, its ingestion layer and its comparison entry points did not fit
+at all, because they model a training run observed over time and this project
+measures a set of items observed once. Five issues are open there, each with a
+concrete API proposal, and the ledger records them.
+
+## Roadmap
+
+The build order is deliberate and the reason is worth stating: **the tool becomes
+useful before any machine learning exists.**
+
+| Phase | What lands |
+|---|---|
+| P0 | Repository, packaging, taxonomy, the six CI gates, the toolchain record |
+| P1 | The seeded corpus generator, locale profiles, answer keys, the split policy |
+| P2 | The Playwright extractor: DOM walk, frames, shadow roots, signal collection |
+| P3 | The rule baseline, the audit engine, three renderers, the CLI. First usable release |
+| P4 | The n-gram classifier, calibration, ONNX export, the model card |
+| P5 | Metrics, run logs, statistical significance through the external harness |
+| P5R | The corpus power repair, after the first design proved unable to certify anything |
+| P6 | The optional local language model comparison and the headline benchmark |
+| P7 | The full documentation set and the three compiled reports |
+| P8 | The transformer stretch, conditional and not built |
+
+P3 is the milestone that matters to somebody who just wants their checkout page
+fixed, and it shipped as `v0.1.0`. Everything after it buys accuracy and evidence
+rather than usefulness, and a project that shipped the model first and the
+product last would have no way to tell whether the model was solving a problem
+anybody has.
 
 ## Documentation
 
+- [`docs/report.md`](docs/report.md): how well it actually works, in short.
+- [`report/main.pdf`](report/main.pdf) and [`report_debug/debug_report.pdf`](report_debug/debug_report.pdf): the full write-up and the record of what went wrong.
+- [`docs/taxonomy.md`](docs/taxonomy.md): the label set, the extras and their justifications, the growth rule, and locale provider status.
+- [`docs/findings.md`](docs/findings.md): every finding code with its trigger, severity, fix template and a worked example.
+- [`docs/model-card.md`](docs/model-card.md): the shipped model, its training data, its measured behaviour, and what is unmeasured.
 - [`docs/environment.md`](docs/environment.md): the resolved toolchain and the machine it was resolved on.
-- [`docs/adr/`](docs/adr/): architecture decision records, written when the decision is made.
+- [`docs/adr/`](docs/adr/): architecture decision records.
 - [`docs/ENGINEERING_LOG.md`](docs/ENGINEERING_LOG.md): dated, append-only, including what went wrong.
+- [`docs/cross-repo-tasks.md`](docs/cross-repo-tasks.md): the ledger for the dependency boundary.
 - [`docs/ci-proof.md`](docs/ci-proof.md): every CI job observed failing, with run links, because a gate that has only ever been green is indistinguishable from a gate that always returns green.
 - [`docs/references.md`](docs/references.md): sources, with retrieval dates.
+- [`CONTRIBUTING.md`](CONTRIBUTING.md): the phase-gate discipline, the four laws, and the synthetic-data-only rule.
 - [`CHANGELOG.md`](CHANGELOG.md): keepachangelog format.
+
+## Contributing
+
+The most valuable contribution is a false positive report: a page where the tool
+accused a field it should not have. That is the feedback channel that improves
+the thing the tool is judged on, and there is an issue template for it. Read
+[`CONTRIBUTING.md`](CONTRIBUTING.md) first, because this repository has rules that
+are unusual and mechanical.
 
 ## License
 

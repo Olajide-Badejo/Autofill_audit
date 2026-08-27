@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: How the project works before you file
+    url: https://github.com/Olajide-Badejo/Autofill_audit/blob/main/CONTRIBUTING.md
+    about: The four laws, the phase gate discipline, the dash rule, and the synthetic data rule. Most of them are enforced by a script rather than by review.
+  - name: How well does it actually work
+    url: https://github.com/Olajide-Badejo/Autofill_audit/blob/main/docs/report.md
+    about: The measured answer, with every number linked to the committed result file that produced it.
+  - name: What the tool deliberately does not do
+    url: https://github.com/Olajide-Badejo/Autofill_audit#boundaries
+    about: No crawling, no filling, no markup rewriting, no scraped training data. Each is a decision rather than a missing feature.

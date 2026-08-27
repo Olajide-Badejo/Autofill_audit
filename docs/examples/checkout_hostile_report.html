@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>autofill-audit report: file:///home/elijah/autofill-audit/tests/fixtures/checkout_hostile.html</title>
+<style>
+:root {
+  color-scheme: light dark;
+  --ink: #1b1b1b;
+  --paper: #ffffff;
+  --rule: #d9d9d9;
+  --muted: #5c5c5c;
+  --critical: #a4143c;
+  --warning: #8a5a00;
+  --info: #12566b;
+  --note: #5c5c5c;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #ececec;
+    --paper: #16181c;
+    --rule: #35383e;
+    --muted: #a6a6a6;
+    --critical: #ff8095;
+    --warning: #e5b25d;
+    --info: #7cc7dd;
+    --note: #a6a6a6;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+  max-width: 60rem;
+  background: var(--paper);
+  color: var(--ink);
+  font: 15px/1.55 ui-sans-serif, system-ui, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+h1 { font-size: 1.4rem; margin: 0 0 .25rem; }
+h2 { font-size: 1.05rem; margin: 2rem 0 .5rem; }
+p.target { margin: 0 0 1.5rem; color: var(--muted); word-break: break-all; }
+table { border-collapse: collapse; width: 100%; margin: 0 0 1rem; }
+th, td {
+  text-align: left;
+  vertical-align: top;
+  padding: .5rem .6rem;
+  border-bottom: 1px solid var(--rule);
+}
+th { font-weight: 600; }
+td.control { width: 38%; word-break: break-all; }
+code, .sel {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .92em;
+}
+.code { font-weight: 600; }
+.evidence { color: var(--muted); font-size: .88em; margin-top: .35rem; word-break: break-word; }
+.critical .code { color: var(--critical); }
+.warning .code { color: var(--warning); }
+.info .code { color: var(--info); }
+.note .code { color: var(--note); }
+dl.summary {
+  display: grid;
+  grid-template-columns: max-content auto;
+  gap: .3rem 1.25rem;
+  margin: 0;
+}
+dl.summary dt { color: var(--muted); }
+dl.summary dd { margin: 0; }
+ul.notes { color: var(--muted); padding-left: 1.1rem; }
+footer {
+  margin-top: 2.5rem;
+  color: var(--muted);
+  font-size: .85em;
+  border-top: 1px solid var(--rule);
+  padding-top: .75rem;
+}
+.empty { color: var(--muted); }
+</style>
+</head>
+<body>
+<h1>autofill-audit report</h1>
+<p class="target"><span class="sel">file:///home/elijah/autofill-audit/tests/fixtures/checkout_hostile.html</span></p>
+<h2>summary</h2><dl class="summary"><dt>critical</dt><dd>6</dd><dt>warning</dt><dd>8</dd><dt>info</dt><dd>3</dd><dt>note</dt><dd>2</dd><dt>autofill readiness</dt><dd>2 of 11 controls declare autocomplete</dd><dt>controls audited</dt><dd>11</dd></dl>
+<h2>critical (6)</h2>
+<table class="critical">
+<thead><tr><th>control</th><th>finding and fix</th></tr></thead>
+<tbody>
+<tr><td class="control"><span class="sel">#ck-email</span></td><td><div class="code">MISSING_AUTOCOMPLETE</div><div>add autocomplete=&quot;email&quot; to #ck-email</div><div class="evidence">evidence: declaration:absent, label:email-words, label:address-word [rule tier HIGH]</div></td></tr>
+<tr><td class="control"><span class="sel">#input7</span></td><td><div class="code">MISSING_AUTOCOMPLETE</div><div>add autocomplete=&quot;name&quot; to #input7</div><div class="evidence">evidence: declaration:absent, placeholder:full-name-words, placeholder:name-word [rule tier MEDIUM]</div></td></tr>
+<tr><td class="control"><span class="sel">#ck-postcode</span></td><td><div class="code">OFF_SPEC_TOKEN</div><div>autocomplete=&quot;zipcode&quot; is not a valid autofill token; use &quot;postal-code&quot;</div><div class="evidence">evidence: declaration:off-spec, label:postcode-words [rule tier HIGH]</div></td></tr>
+<tr><td class="control"><span class="sel">#ck-holder</span></td><td><div class="code">WRONG_AUTOCOMPLETE</div><div>#ck-holder declares autocomplete=&quot;name&quot; but looks like cc-name; change to autocomplete=&quot;cc-name&quot;</div><div class="evidence">evidence: declaration:token-mismatch, label:name-word, label:cardholder-words [rule tier HIGH]</div></td></tr>
+<tr><td class="control"><span class="sel">#ck-mm</span></td><td><div class="code">MISSING_AUTOCOMPLETE</div><div>add autocomplete=&quot;cc-exp-month&quot; to #ck-mm</div><div class="evidence">evidence: declaration:absent, intrinsic:expiry-pair-month [rule tier HIGH]</div></td></tr>
+<tr><td class="control"><span class="sel">#ck-yy</span></td><td><div class="code">MISSING_AUTOCOMPLETE</div><div>add autocomplete=&quot;cc-exp-year&quot; to #ck-yy</div><div class="evidence">evidence: declaration:absent, intrinsic:expiry-pair-year [rule tier HIGH]</div></td></tr>
+</tbody>
+</table>
+<h2>warning (8)</h2>
+<table class="warning">
+<thead><tr><th>control</th><th>finding and fix</th></tr></thead>
+<tbody>
+<tr><td class="control"><span class="sel">#ck-phone</span></td><td><div class="code">AUTOCOMPLETE_OFF</div><div>remove autocomplete=&quot;off&quot; from #ck-phone; browsers may ignore it and users lose autofill</div><div class="evidence">evidence: declaration:off, intrinsic:type-tel [rule tier HIGH]</div></td></tr>
+<tr><td class="control"><span class="sel">#input7</span></td><td><div class="code">PLACEHOLDER_AS_LABEL</div><div>#input7 uses a placeholder as its label; add a real &lt;label&gt;</div><div class="evidence">evidence: structure:placeholder-is-the-only-label [structural]</div></td></tr>
+<tr><td class="control"><span class="sel">form[name=&quot;checkout&quot;] [name=&quot;ck_addr&quot;]</span></td><td><div class="code">UNLABELED_FIELD</div><div>add a &lt;label for=&quot;ck_addr&quot;&gt;...&lt;/label&gt; to form[name=&quot;checkout&quot;] [name=&quot;ck_addr&quot;]</div><div class="evidence">evidence: structure:no-accessible-label [structural]</div></td></tr>
+<tr><td class="control"><span class="sel">form[name=&quot;checkout&quot;] [name=&quot;ck_q1&quot;]</span></td><td><div class="code">UNLABELED_FIELD</div><div>add a &lt;label for=&quot;ck_q1&quot;&gt;...&lt;/label&gt; to form[name=&quot;checkout&quot;] [name=&quot;ck_q1&quot;]</div><div class="evidence">evidence: structure:no-accessible-label [structural]</div></td></tr>
+<tr><td class="control"><span class="sel">#ck-mm</span></td><td><div class="code">SPLIT_FIELD</div><div>#ck-mm is one half of a split expiry; set autocomplete=&quot;cc-exp-month&quot; and &quot;cc-exp-year&quot; on the pair</div><div class="evidence">evidence: structure:split-expiry-group [structural]</div></td></tr>
+<tr><td class="control"><span class="sel">frame[#hosted-pan]</span></td><td><div class="code">UNDETECTABLE_FIELD</div><div>the control is inside a cross-origin frame, which is how hosted payment fields are built on purpose; this is not necessarily a defect. Autofill still works inside the frame, and the frame&#x27;s own document is where its autocomplete attributes belong. Audit that document separately</div><div class="evidence">evidence: structure:undetectable [structural]</div></td></tr>
+<tr><td class="control"><span class="sel">#ck-exp2</span></td><td><div class="code">COMPOSITE_FIELD</div><div>#ck-exp2 collects several values in one control; declare autocomplete=&quot;cc-exp&quot; or split it</div><div class="evidence">evidence: declaration:absent, label:expiry-words, label:mmyy-shape [rule tier HIGH]</div></td></tr>
+<tr><td class="control"><span class="sel">#ce-1</span></td><td><div class="code">UNDETECTABLE_FIELD</div><div>the control is inside a closed shadow root: autofill cannot see this field; expose it in light DOM or declare autocomplete on the host</div><div class="evidence">evidence: structure:undetectable [structural]</div></td></tr>
+</tbody>
+</table>
+<h2>info (3)</h2>
+<table class="info">
+<thead><tr><th>control</th><th>finding and fix</th></tr></thead>
+<tbody>
+<tr><td class="control"><span class="sel">#ck-email</span></td><td><div class="code">WRONG_INPUT_TYPE</div><div>set type=&quot;email&quot; on #ck-email</div><div class="evidence">evidence: structure:input-attribute-mismatch, label:email-words, label:address-word [rule tier HIGH]</div></td></tr>
+<tr><td class="control"><span class="sel">#input7</span></td><td><div class="code">GENERIC_IDENTIFIER</div><div>give #input7 a meaningful name/id, or declare autocomplete</div><div class="evidence">evidence: structure:generic-identifier [structural]</div></td></tr>
+<tr><td class="control"><span class="sel">#input7</span></td><td><div class="code">MISSING_NAME_ATTR</div><div>add a name attribute to #input7</div><div class="evidence">evidence: structure:no-name-attribute [structural]</div></td></tr>
+</tbody>
+</table>
+<h2>note (2)</h2>
+<table class="note">
+<thead><tr><th>control</th><th>finding and fix</th></tr></thead>
+<tbody>
+<tr><td class="control"><span class="sel">form[name=&quot;checkout&quot;] [name=&quot;ck_addr&quot;]</span></td><td><div class="code">LOW_CONFIDENCE</div><div>form[name=&quot;checkout&quot;] [name=&quot;ck_addr&quot;] may be street-address (rule tier LOW); declare autocomplete explicitly</div><div class="evidence">evidence: declaration:absent, context:address-word [rule tier LOW]</div></td></tr>
+<tr><td class="control"><span class="sel">form[name=&quot;checkout&quot;] [name=&quot;ck_q1&quot;]</span></td><td><div class="code">LOW_CONFIDENCE</div><div>form[name=&quot;checkout&quot;] [name=&quot;ck_q1&quot;] may be organization (rule tier LOW); declare autocomplete explicitly</div><div class="evidence">evidence: declaration:absent, context:address-word, context:organization-words [rule tier LOW]</div></td></tr>
+</tbody>
+</table>
+<h2>page notes</h2><ul class="notes"><li>could not read 1 frame(s): frame[#hosted-pan]</li></ul>
+<footer>autofill-audit 0.4.0<br>confidence_kind=tier, engine=rules, intrinsic_rules=10, option_rules=36, rule_table_version=1.0.0, tool_version=0.4.0, vocabulary_rules=346<br>Confidences are rule tiers, not probabilities, and the thresholds behind them are a documented mapping rather than a measurement (rule-tier-band-mapping).</footer>
+</body>
+</html>
