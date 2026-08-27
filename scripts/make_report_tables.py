@@ -48,6 +48,24 @@ RUN = {
     "ngram": "experiments/results/test/2026-08-26T21-17-53Z_p6-ngram_6457ac7",
     "llm": "experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7",
 }
+# P8, the transformer that was measured and did not ship. Read separately rather
+# than out of the benchmark above, because the benchmark is a committed artefact
+# of P6 and result files are append only history: the transformer got its own
+# run, and the benchmark's fourth row stays absent for a new reason.
+P8_TEST = "experiments/results/test/2026-08-27T03-32-53Z_p8-bert_ab32195/metrics.json"
+P8_ANALYSIS = "experiments/results/analysis/2026-08-27T03-38-22Z_p8-analysis_623303a/analysis.json"
+P8_TRAINING = (
+    "experiments/results/dev/2026-08-27T03-30-52Z_p8-bert_959bf19/training/dev_metrics.json"
+)
+P8_PREDICTION = "experiments/predictions/p8-transformer.md"
+"""Where the three bars come from. Not a result file: the two margins and the
+budget below are quoted from the pre-registered condition rather than measured,
+so their generated macros cite it and not a run."""
+
+P8_UNSEEN_MARGIN = 0.05
+P8_OVERALL_TOLERANCE = 0.01
+P8_LATENCY_BUDGET_US = 5000.0
+
 P5_ANALYSIS = "experiments/results/analysis/2026-08-26T02-53-59Z_analysis_336175f/analysis.json"
 P5R_ANALYSIS = (
     "experiments/results/analysis/2026-08-26T06-23-41Z_p5r-analysis_0d900ff/analysis.json"
@@ -1084,6 +1102,9 @@ def values_file(
     thresholds: Mapping[str, Any],
     corpus: Mapping[str, Any],
     p5: Mapping[str, Any],
+    p8_test: Mapping[str, Any],
+    p8_analysis: Mapping[str, Any],
+    p8_training: Mapping[str, Any],
 ) -> Doc:
     """Define one LaTeX macro per number the prose quotes.
 
@@ -1206,6 +1227,90 @@ def values_file(
         P5_ANALYSIS,
     )
 
+    # P8. The three bars, the three numbers, and everything the write-up quotes
+    # about the engine that led the table and did not ship. The two baselines the
+    # bars are built from come out of the n-gram block of the benchmark, so a
+    # macro naming a bar cites the prediction file for the margin and the
+    # arithmetic is done here rather than in a chapter.
+    ngram_block = engines["ngram"]
+    p8_latency = p8_test["latency_us_per_field"]
+    define("BertMacroF", p8_test["headline"]["macro_f1"], P8_TEST)
+    define("BertMicroF", p8_test["headline"]["micro_f1"], P8_TEST)
+    define("BertUnseenMacroF", p8_test["slices"]["unseen_locale"]["macro_f1"], P8_TEST)
+    define("BertSeenMacroF", p8_test["slices"]["seen_locales"]["macro_f1"], P8_TEST)
+    define("BertAbstention", p8_test["abstention"]["unknown_rate"], P8_TEST)
+    define("BertLatencyFifty", p8_latency["p50"], P8_TEST, 1)
+    define("BertLatencyNinetyFive", p8_latency["p95"], P8_TEST, 1)
+    define(
+        "BertClassifyShare",
+        p8_test["wall_time"]["classify_s"] / p8_test["wall_time"]["total_s"],
+        P8_TEST,
+    )
+    define("BertLoadShare", p8_test["wall_time"]["load_and_extract_share"], P8_TEST)
+    define(
+        "BertMissingPrecision", p8_test["findings"]["MISSING_AUTOCOMPLETE"]["precision"], P8_TEST
+    )
+    define("BertMissingRecall", p8_test["findings"]["MISSING_AUTOCOMPLETE"]["recall"], P8_TEST)
+    for tier in TIERS:
+        label = tier.capitalize()
+        measured = p8_test["grids"]["tier"][tier]["macro_f1"]
+        define(f"Bert{label}MacroF", measured, P8_TEST)
+        define(f"Bert{label}Gain", measured - ngram_block["by_tier"][tier]["macro_f1"], P8_TEST)
+    define(
+        "BertOverallGain",
+        p8_test["headline"]["macro_f1"] - ngram_block["headline"]["macro_f1"],
+        P8_TEST,
+    )
+    define(
+        "BertUnseenGain",
+        p8_test["slices"]["unseen_locale"]["macro_f1"]
+        - ngram_block["slices"]["unseen_locale"]["macro_f1"],
+        P8_TEST,
+    )
+    define(
+        "BertMissingRecallGain",
+        p8_test["findings"]["MISSING_AUTOCOMPLETE"]["recall"]
+        - ngram_block["findings"]["MISSING_AUTOCOMPLETE"]["recall"],
+        P8_TEST,
+    )
+    define(
+        "BertLatencyRatio",
+        p8_latency["p95"] / ngram_block["latency_us_per_field"]["p95"],
+        P8_TEST,
+        0,
+    )
+    define("BertUnseenMargin", P8_UNSEEN_MARGIN, P8_PREDICTION, 2)
+    define("BertOverallTolerance", P8_OVERALL_TOLERANCE, P8_PREDICTION, 2)
+    define("BertBarLatency", P8_LATENCY_BUDGET_US, P8_PREDICTION, 1)
+    define(
+        "BertBarUnseen",
+        ngram_block["slices"]["unseen_locale"]["macro_f1"] + P8_UNSEEN_MARGIN,
+        P8_PREDICTION,
+    )
+    define(
+        "BertBarOverall",
+        ngram_block["headline"]["macro_f1"] - P8_OVERALL_TOLERANCE,
+        P8_PREDICTION,
+    )
+    p8_parity = p8_training["parity"]
+    define("BertParityRows", p8_parity["rows"], P8_TRAINING)
+    define("BertParityAgreements", p8_parity["argmax_agreements"], P8_TRAINING)
+    define("BertParityDelta", p8_parity["max_absolute_logit_delta"], P8_TRAINING, 6)
+    define("BertParityTolerance", p8_parity["tolerance"], P8_TRAINING, 3)
+    p8_quant = p8_training["quantization"]
+    define("BertIntEightAgreement", p8_quant["argmax_agreement_rate"], P8_TRAINING)
+    define("BertIntEightAgreementBar", p8_quant["minimum_agreement_rate"], P8_TRAINING, 2)
+    define("BertIntEightDrop", p8_quant["dev_macro_f1_drop"], P8_TRAINING)
+    define("BertIntEightDropBar", p8_quant["maximum_drop"], P8_TRAINING, 2)
+    define("BertFpMegabytes", p8_quant["fp32_bytes"] / 1e6, P8_TRAINING, 0)
+    define("BertIntEightMegabytes", p8_quant["int8_bytes"] / 1e6, P8_TRAINING, 0)
+    define("BertDevMacroF", p8_training["headline"]["dev_macro_f1"], P8_TRAINING)
+    define("BertSweepCells", len(p8_training["sweep"]["cells"]), P8_TRAINING)
+    define("BertEpochs", p8_training["sweep"]["chosen"]["epochs"], P8_TRAINING)
+    define("BertMaxLength", p8_training["sweep"]["chosen"]["max_length"], P8_TRAINING)
+    define("BertFamilySize", p8_analysis["primary"]["family_size"], P8_ANALYSIS)
+    define("BertPairs", len(p8_analysis["inputs"]["pairs"]), P8_ANALYSIS)
+
     define("CorpusForms", corpus["form_count"], CORPUS_MANIFEST)
     define("CorpusFields", corpus["field_count"], CORPUS_MANIFEST)
     define("CorpusTemplates", len(corpus["grid"]["templates"]), CORPUS_MANIFEST)
@@ -1300,7 +1405,19 @@ def build(root: Path, out: Path) -> list[Path]:
         ("provenance.tex", table_provenance(root)),
         (
             "values.tex",
-            values_file(bench, analysis, metrics, dev, manifest, thresholds, corpus, p5),
+            values_file(
+                bench,
+                analysis,
+                metrics,
+                dev,
+                manifest,
+                thresholds,
+                corpus,
+                p5,
+                load(root, P8_TEST),
+                load(root, P8_ANALYSIS),
+                load(root, P8_TRAINING),
+            ),
         ),
     )
     for name, doc in documents:

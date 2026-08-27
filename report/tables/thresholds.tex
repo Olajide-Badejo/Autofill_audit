@@ -6,6 +6,7 @@
 \texttt{rules} & 0.7000 & 0.4000 & null & rule-tier-band-mapping \\  % results: src/autofill_audit/audit/thresholds.json
 \texttt{ngram} & 0.8964 & 0.6278 & 0.9800 & dev split of the seed 20260825 corpus, calibrated n-gram engine \\  % results: src/autofill_audit/audit/thresholds.json
 \texttt{llm} & 0.0000 & 0.0000 & null & not a boundary: the self-reported scale decides nothing (spec section 12.1) \\  % results: src/autofill_audit/audit/thresholds.json
+\texttt{bert} & 0.8813 & 0.4609 & 0.9800 & dev split of the seed 20260825 corpus, calibrated INT8 encoder. Derived under the identical policy of experiments/predictions/p4-threshold-derivation.md, before the test-split run and before the ship condition of spec section 10.7 was evaluated \\  % results: src/autofill_audit/audit/thresholds.json
 \bottomrule
 \end{tabular}
 \endgroup

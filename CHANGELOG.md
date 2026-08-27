@@ -10,6 +10,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 The P8 transformer stretch of spec section 10.7, which is a conditional phase:
 its deliverable is a decision, and both values of that decision are a pass.
 
+**The decision is no-ship, and the version is unchanged at `1.0.0` with no new
+tag.** The fine-tuned encoder cleared both accuracy bars of its pre-registered
+condition and missed the latency budget by nearly threefold, and the condition is
+a conjunction. Nothing the tool installs or runs changes: there is no fourth
+engine, no new runtime dependency, no committed model, and no behaviour
+difference in any shipped code path. What lands is a measurement, a decision
+record, and the write-up that spec section 10.7 names as the deliverable of
+exactly this outcome.
+
 ### Added
 
 - **`experiments/predictions/p8-transformer.md`**, the first commit of the
@@ -32,6 +41,50 @@ its deliverable is a decision, and both values of that decision are a pass.
   `scripts/train.py`, whose loaders it imports rather than reimplements.
 - **`scripts/bert_engine.py`**, the field serialiser, the pinned-thread CPU
   session, and the engine behind the `Classifier` protocol.
+- **The dev-split run, its training record, the test-split run, and the
+  four-engine analysis**, under `experiments/results/`. The analysis corrects six
+  engine pairs over sixty-six comparisons in one step-up call, at the family size
+  the prediction file fixed before the encoder classified a field.
+- **A `bert` block in `src/autofill_audit/audit/thresholds.json`**, derived on
+  dev by the existing script against the same pre-registered precision target
+  that produced the n-gram block. It is committed whether or not the engine
+  ships, which was pre-registered, because the committed test-split result was
+  produced with it and a file that dropped it would make that result
+  unreproducible.
+
+### Changed
+
+- **`docs/report.md`** carries the transformer section: the three numbers beside
+  their bars, the mechanical verdict, what the engine cost and what it bought,
+  which of the specification's own predictions about it held, and the
+  quantization contract it failed. The headline table's fourth row stops reading
+  `absent` and carries the measurement.
+- **`report/main.pdf` and its sources** gain the same section, written from
+  generated macros like every other number in that document, plus a note on why
+  a threshold block exists for an engine the build does not offer.
+- **`docs/model-card.md`** gains a section comparing the shipped model against
+  the transformer, including the two things the shipped model keeps and the
+  admission that the ceiling the card documents is the ceiling of a small linear
+  model rather than of the problem.
+- **The `absent` row's sentence in `scripts/bench.py`** stops saying the
+  transformer has not been built and starts naming the measured outcome and the
+  result file it is in. The row itself stays absent, because the engine is not
+  one this build has.
+
+### Not done, deliberately
+
+- **No `v1.1.0` tag and no version bump.** Both were conditional on the ship
+  condition being met.
+- **No fourth entry in `EngineChoice`**, no `--engine bert` in the CLI, and no
+  `tokenizers` dependency in the wheel.
+- **No committed model.** Ground rule 8 pairs a card with a committed model;
+  there is no committed model here, so there is no card for one. The FP32 export
+  is 541 MB and the quantized graph is 135 MB, the latter over the hard per-file
+  limit this repository can push.
+- **No fourth `confidence_kind`.** The handoff into this phase expected one. The
+  encoder's confidences are one-vs-rest calibrated probabilities fitted on dev by
+  the identical procedure the n-gram engine's use, so they report the identical
+  word, and inventing a fourth would assert a distinction that does not exist.
 
 ## [1.0.0] - 2026-08-27
 

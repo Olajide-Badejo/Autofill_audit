@@ -57,24 +57,28 @@ pre-registration:
     also the most expensive.
 \end{itemize}
 
-\section{The transformer rung}
+\section{A smaller encoder than the one that was measured}
 
-The classifier ladder specifies a small multilingual encoder, fine tuned and
-exported with dynamic integer quantization, as an optional fourth engine
-\cite{onnxruntime-quantization}. It has not been built, which is why the fourth
-row of Table~\ref{tab:headline} reads \emph{absent} in words.
+The transformer rung is no longer future work. It was built, fine tuned,
+quantized and measured, and Section~\ref{sec:transformer-rung} has its numbers:
+it cleared both accuracy bars of its pre-registered condition, missed the latency
+budget by a factor of nearly three, and therefore did not ship.
 
-The condition for shipping it is stated in advance and is not negotiable
-afterwards: it ships only if it beats a pre-stated metric by a pre-stated margin
-within a pre-stated latency budget. If it does not, the deliverable is the
-paragraph saying so, with the numbers, and that is a successful outcome rather
-than a failed one.
+What that leaves open is not whether a transformer helps on this problem, which
+is now measured, but how much of the help survives shrinking. The engine that was
+measured is a six layer encoder at a hidden width of seven hundred and sixty
+eight, and it spends about \vBertLatencyRatio{} times the n-gram model's
+arithmetic per field to buy \vBertUnseenGain{} on the held out locale and
+\vBertHostileGain{} on the hostile tier. A model at roughly a quarter of that
+arithmetic would sit inside the budget if it kept its accuracy.
 
-Two things the tier profile in Figure~\ref{fig:tier-profile} suggests it should
-be measured against specifically. The mixed tier, where the n-gram model
-underperforms its own tier by tier behaviour and where a model with more context
-might do better. And the held out locale, where a multilingual encoder's
-pretraining is the whole argument for using one.
+The prediction worth registering before that measurement is that it would not
+keep all of it, and the reason to take the measurement anyway is that the
+accuracy it would have to keep is now a committed number rather than a guess. The
+two slices to judge it on are the same two: the held out locale, where a
+multilingual encoder's pretraining is the whole argument for using one, and the
+hostile tier, where labels have been stripped and a bag of character n-grams has
+least to work with.
 
 \section{More templates per family}
 

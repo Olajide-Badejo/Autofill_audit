@@ -74,6 +74,16 @@ The language model's block is zero and zero, for the reason given in
 Chapter~\ref{ch:classifiers}: a self reported confidence is forbidden from
 gating anything, and the engine still needs two numbers.
 
+The fourth block belongs to an engine this build does not offer, and it is here
+on purpose. The transformer of Section~\ref{sec:transformer-rung} was measured
+against the test split with that boundary in place, and a threshold file that
+dropped the block afterwards would make a committed result impossible to
+reproduce from this repository. The block was written before the run and its
+retention was decided before the verdict, precisely so that keeping it could not
+look like a decision taken afterwards. A block here is not a claim that the tool
+offers the engine; the engine list in the classifier ladder is what makes that
+claim, and the basis string in the block says which of the two states it is in.
+
 \begin{table}[htbp]
   \centering
   \caption{The n-gram engine's derived boundary and what it bought on the
