@@ -9,6 +9,153 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Nothing yet.
 
+## [1.0.0] - 2026-08-27
+
+The documentation release. No behaviour changes: the classifiers, the audit
+engine, the thresholds and the renderers are byte-identical in behaviour to
+`0.4.0`, and the only change to shipped output is the version string.
+
+What lands is the evidence layer that makes the previous six phases readable by
+somebody who was not there. Three compiled reports, the full documentation set,
+all seven architecture decision records, a demo and a sample report generated
+from a committed fixture, and the table and figure generators that make law 3
+mechanical for a typeset document rather than a matter of care.
+
+**The `v1.0.0` git tag is deliberately not applied.** Spec section 0.5 forbids
+tagging a stable release while any dependency is a git ref rather than a
+released version, `ml-experiment-triage` is still unpublished, and that rule was
+written on the first day of this project and holds now that it is inconvenient.
+The version is bumped here and in code; the tag waits on
+[the publication task](docs/cross-repo-tasks.md). Vendoring the three functions
+this project uses would remove the blocker and would delete the evidence the
+boundary exists to produce, which is why it is refused rather than merely not
+done.
+
+### Added
+
+- **`report/main.pdf` and its source.** The public write-up of spec section
+  17.2: the problem, the taxonomy and its provenance, the corpus design and the
+  split, the extractor and its blind spots, the classifier ladder, the audit
+  engine's decision procedure and threshold policy, the headline experiment in
+  full with per-locale and per-tier grids and the confusion tables, the
+  statistical procedure with every comparison in the corrected family, the
+  pre-registered predictions beside their outcomes, the limitations and the
+  future work. Chapters under `report/chapters/`, bibliography in
+  `report/refs.bib`.
+- **`report_debug/debug_report.pdf` and its source.** The record of what went
+  wrong, of spec section 17.3, grouped by theme rather than by date: DOM
+  traversal and shadow boundaries, waiting and flake, normalisation and the rule
+  vocabulary, generator determinism, export fidelity, thresholds and
+  reliability, language model schema behaviour and serving, the package
+  boundary, the corpus power repair, the enforcement checks themselves, and a
+  final chapter of what is still open. Each entry states the symptom, the
+  diagnosis, the fix, and what was considered and refused.
+- **`scripts/make_report_tables.py` and `scripts/make_report_figures.py`.** Every
+  table and every figure in the reports is generated from a committed file under
+  `experiments/results/` or `models/`. Two conventions make the output survive
+  the CI checks that scan LaTeX sources: every emitted line carrying a digit ends
+  in a comment naming the file its digits came from, and no two adjacent hyphens
+  are ever written. The generators also emit `report/tables/values.tex`, one
+  macro per number the prose quotes, so **the chapters of all three reports
+  contain no digits at all**.
+- **`docs/adr/0002-taxonomy-is-the-autocomplete-spec.md`**,
+  **`docs/adr/0003-classifier-ladder-order.md`** and
+  **`docs/adr/0004-triage-stays-external.md`**. Written now, from the recorded
+  evidence, for decisions taken at P1, P3 and P5. An ADR is supposed to be
+  written when the decision is made; the lateness is recorded in each file
+  rather than hidden, and each names the artefacts it was reconstructed from.
+  All seven records are now present and dated.
+- **`docs/assets/demo.gif`** and `scripts/make_demo_gif.sh`. The animation is a
+  real run against `tests/fixtures/checkout_hostile.html`: the script captures
+  the tool's own stdout and exit status and renders them as frames. Frames
+  rather than a terminal recorder, because a recorder captures wall clock
+  timings and a committed asset that cannot be reproduced byte for byte is a
+  committed asset nobody can check.
+- **`docs/examples/checkout_hostile_report.html`.** The HTML renderer's output
+  on the same fixture, committed so a reader can see what the tool produces
+  without installing it.
+- **`CONTRIBUTING.md`**, covering the phase-gate discipline, the four laws, the
+  dash rule and its LaTeX collision, and the synthetic-data-only rule.
+- **Issue templates** under `.github/ISSUE_TEMPLATE/`: bug, false positive,
+  false negative, new locale. The false-positive template is the important one,
+  because it is the feedback channel that improves the thing the tool is judged
+  on.
+- **`make tables`, `make reports` and `make reports-clean`.** `make reports`
+  regenerates the tables and figures from result files and then builds every
+  report present, with `latexmk -auxdir=build` so that intermediates land in
+  each report's gitignored `build/` directory and the compiled PDF sits beside
+  its source where it is committed. `make reports-clean` removes everything the
+  target produces, so `make reports-clean reports` is a build from nothing.
+
+### Changed
+
+- **Version bumped to `1.0.0`.** The golden snapshots are refreshed for it and
+  the diff is the version string and nothing else, across nine files, which is
+  the evidence that no behaviour moved.
+- **`README.md` rewritten around the reports.** The demo is above the fold, the
+  three write-ups are linked in a table near the top under the heading a reader
+  actually asks, the worked before-and-after is one attribute on one input, and
+  a mermaid diagram of the real pipeline names the modules and marks
+  `FieldDescriptor` as the load-bearing contract between the extractor and the
+  classifiers. The status section is corrected: `--engine auto` is the default
+  and the measurements recommend the n-gram model, which the previous text
+  predated.
+- **`docs/report.md` completed.** It was a policy note and a draft answer; it is
+  now the full markdown write-up of spec section 17: method, corpus, the three
+  engines and the three decisions that decide whether the comparison measures
+  anything, the reporting policy, the results, the limitations including the
+  double-classification note, and what would be measured next.
+- **`docs/cross-repo-tasks.md`** carries a P7 status review of all five issues
+  and the publication task, each checked rather than assumed. Nothing has
+  closed. The section also records the *Used by* cross-link now present on the
+  other repository's README.
+- **`docs/environment.md`** records the exact LaTeX packages the three documents
+  use, which ADR 0001 promised P7 would supply so that a machine without a full
+  TeX installation can reach the same result; how `make reports` is wired and
+  why the auxiliary directory is separated from the deliverable; the demo
+  animation's mechanism; and the Ollama serving route as resolved at P6.
+- **`docs/references.md`** re-verified from the build machine on the release
+  date. Every entry answered the same status as at P0 and none had moved. The
+  bibliography in `report/refs.bib` is assembled from this file and from nothing
+  else.
+- **`docs/model-card.md`** now opens with the fact that the training manifest of
+  the shipped model is marked dirty, why, exactly what follows from it, and why
+  it is recorded rather than repaired. The dev-split numbers in the card sit one
+  notch below the test-split numbers on this project's own scale, and a reader
+  is entitled to know that without going and finding it.
+- `requirements.lock` regenerated to add `matplotlib` and its transitive
+  packages to the `dev` extra, for the report figures. It is a development
+  dependency for the same reason the evaluation harness is one: the audit path
+  never imports it, and a `pipx` install of a command line auditor has no
+  business carrying a plotting stack. `Pillow` arrives with it and is what
+  renders the demo animation.
+- The `check-added-large-files` pre-commit hook now excludes `report/` and
+  `report_debug/`. The compiled PDFs are deliverables rather than build output,
+  their sources and generated inputs are all committed so the PDF is
+  reproducible rather than opaque, and requiring a multi-gigabyte typesetting
+  installation to read a report is a worse trade than half a megabyte in the
+  repository.
+
+### Known limitations, stated in the release rather than discovered after it
+
+- **The evaluation runner classifies every form twice**, once directly and once
+  through the audit engine, so a row's `pred_label` and its `finding_codes` come
+  from two different draws for a non-deterministic engine. Measured on the
+  headline run against the deterministic rule engine as a control, the excess
+  disagreement is on the order of two fields in seven hundred. It is not fixed
+  here, because changing what the runner does for every engine after seeing the
+  results is the regeneration spec section 18 forbids. The fix is to pass the
+  first pass's predictions into the audit rather than letting the audit
+  re-classify.
+- **The shipped wheel cannot compute its own significance tests**, because the
+  evaluation harness sits in the `dev` extra.
+- **A published wheel carries no model**, so an install runs the rule baseline
+  until the user trains one or points `AUTOFILL_AUDIT_MODEL_DIR` at a bundle.
+  Documented behaviour rather than a silent fallback, and on the future-work
+  list.
+- **Real-world accuracy is unmeasured** and is stated as unmeasured everywhere a
+  number appears.
+
 ## [0.4.0] - 2026-08-26
 
 The research layer, and the headline experiment the project was built to run. A
@@ -480,7 +627,14 @@ follows to a result file, to its manifest, and to a commit.
   table row to the full width; a hook that trimmed those spaces would rewrite the
   committed expectation on every commit.
 
-[Unreleased]: https://github.com/Olajide-Badejo/autofill-audit/compare/v0.3.1...HEAD
+Note on the link below for `1.0.0`: it compares against `main` rather than
+against a tag, because **there is no `v1.0.0` tag**. The reason is in that
+release's entry and in `docs/cross-repo-tasks.md`, and the link is written this
+way rather than pointing at a tag that does not exist.
+
+[Unreleased]: https://github.com/Olajide-Badejo/autofill-audit/compare/v0.4.0...HEAD
+[1.0.0]: https://github.com/Olajide-Badejo/autofill-audit/compare/v0.4.0...main
+[0.4.0]: https://github.com/Olajide-Badejo/autofill-audit/compare/v0.3.1...v0.4.0
 [0.3.1]: https://github.com/Olajide-Badejo/autofill-audit/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/Olajide-Badejo/autofill-audit/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/Olajide-Badejo/autofill-audit/compare/v0.1.0...v0.2.0

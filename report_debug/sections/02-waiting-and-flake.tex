@@ -1,0 +1,95 @@
+\chapter{Waiting, flake, and process isolation}
+
+The most expensive twenty minutes of the project were spent looking in the wrong
+place because an error message named a symptom that had nothing to do with its
+cause. That entry is first.
+
+\begin{defect}{An error message about the wrong API}
+\symptom{Adding a session scoped browser fixture to the audit test suite made the
+extractor test suite fail with a message saying the synchronous browser API was
+being used inside an asynchronous event loop, and recommending the asynchronous
+API instead. Nothing anywhere was using the asynchronous API.}
+\diagnosis{The synchronous wrapper drives a coroutine scheduler on one event loop
+per thread. A second live browser session in the same thread finds that loop
+already running and reports it in the only vocabulary it has, which is the
+vocabulary of the asynchronous API. The message is accurate about the state it
+found and useless about how the state arose.}
+\resolution{One browser fixture in the root test configuration, shared by every
+suite.}
+\instead{Making each suite's fixture function scoped. That would have paid a
+browser launch per test, and it would have left the same landmine for the next
+person who added a second session concurrently rather than sequentially.}
+\end{defect}
+
+\begin{defect}{The end to end tests could not run the tool}
+\symptom{Following on from the entry above: the command line tool opens a browser
+of its own, and it cannot do that while the test session's browser is alive in
+the same thread.}
+\diagnosis{Same root cause, different consequence. It is not a defect in the
+tool; it is a property of the synchronous wrapper.}
+\resolution{The end to end tests run the tool in a subprocess. That turned out to
+be an improvement rather than a workaround: a subprocess exercises the real exit
+codes as a shell sees them, which is the actual contract the tool publishes, and
+an in process call would have tested a function's return value instead.}
+\instead{Running the end to end tests in a separate thread. It would have worked
+and it would have tested a code path no user ever takes.}
+\end{defect}
+
+\begin{defect}{Choosing waiting constants that are neither flaky nor slow}
+\symptom{Not a defect so much as a set of decisions that would have become
+defects if they had been guessed. A page that never settles must not hang the
+tool, and a page that is merely slow must not be cut off mid load.}
+\diagnosis{Each constant is answering a different question and they should not be
+derived from one another.}
+\resolution{Each is a named constant with the reasoning beside it:
+
+\begin{itemize}
+  \item A generous load timeout, because a slow page is a real page, and a bound
+    on it, because a page that never loads must not hang a command line tool.
+  \item A network idle wait that gives up rather than failing, because plenty of
+    healthy pages hold a socket open forever and giving up on idle is not an
+    error.
+  \item A DOM quiet period longer than an animation frame and shorter than the
+    gap a page leaves before injecting a field it means a user to see.
+  \item A total settle budget, so that an animation which mutates forever cannot
+    hold the quiet period off indefinitely.
+  \item A cap on controls, well above any real form, reported when reached and
+    never silent.
+  \item A frame depth bound, because three deep is an ordinary advertising stack
+    and eight is pathological.
+\end{itemize}}
+\instead{One timeout for everything, tuned until the suite went green. That is
+how a project acquires a constant nobody can explain and nobody dares change.}
+\end{defect}
+
+\begin{defect}{A window that would expire}
+\symptom{A card expiry select has to offer years near the present, and the
+extractor detects an expiry pair against the current year. A hardcoded window
+would have made the corpus regenerate differently once the year turned, and the
+reachability check and the committed sample would both have gone red on a
+calendar boundary with no code change.}
+\diagnosis{The corpus is required to be a deterministic function of its seed. A
+clock is not a function of a seed.}
+\resolution{The base year is a generator argument defaulting to the current year
+and recorded in the manifest. The corpus is a deterministic function of the seed
+and the base year together, and passing the manifest's base year back reproduces
+the bytes exactly, indefinitely. The reachability check and the committed sample
+both pin it.}
+\instead{Freezing the year to a literal. The corpus would then have been
+reproducible and progressively less realistic, and the expiry detection it exists
+to exercise would have stopped being exercised.}
+\end{defect}
+
+\begin{defect}{The whitespace hook ate the golden snapshots}
+\symptom{The first commit of the terminal renderer's golden snapshots rewrote
+every one of them and left the test suite failing against its own repository.}
+\diagnosis{The terminal rendering library pads a table row out to the full
+terminal width. The pre-commit trailing whitespace hook trims it. Both are
+behaving correctly and the combination is a snapshot that can never match.}
+\resolution{The hook skips the golden directory. That is a narrow exemption for
+the one directory whose entire purpose is to be byte exact.}
+\instead{Stripping trailing whitespace when writing and when comparing
+snapshots. That hides a real class of rendering defect, which is a renderer that
+starts emitting different padding, and the whole point of a golden snapshot is to
+notice exactly that.}
+\end{defect}

@@ -1,0 +1,18 @@
+\begingroup\small\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lr}
+\toprule
+\textbf{Calibration quantity} & \textbf{Value} \\
+\midrule
+Classes fitted & 42 \\  % results: models/dev_metrics.json
+Isotonic switchover, dev positives & 100 \\  % results: models/dev_metrics.json
+Classes calibrated by identity & 2 \\  % results: models/dev_metrics.json
+Classes calibrated by isotonic & 1 \\  % results: models/dev_metrics.json
+Classes calibrated by sigmoid & 39 \\  % results: models/dev_metrics.json
+Expected calibration error before & 0.0281 \\  % results: models/dev_metrics.json
+Expected calibration error after & 0.0454 \\  % results: models/dev_metrics.json
+Dev macro-F1 before calibration & 0.7690 \\  % results: models/dev_metrics.json
+Dev macro-F1 after calibration & 0.7866 \\  % results: models/dev_metrics.json
+\bottomrule
+\end{tabular}
+\endgroup
+\par\smallskip\noindent{\footnotesize Source: \rpath{models/dev_metrics.json}}

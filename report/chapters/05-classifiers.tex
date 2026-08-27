@@ -1,0 +1,259 @@
+\chapter{The classifier ladder}
+\label{ch:classifiers}
+
+The ladder is fixed in build order and was not reordered: a rule table, then an
+n-gram logistic regression, then, only if the measured ceiling justified it, a
+language model. The ordering is a claim about what a project owes its users, and
+it is defended here rather than assumed.
+
+\section{Why rules first}
+
+A rule table is a table of regular expressions with a tier and a signal name on
+every row. It has no probabilities and does not pretend to. It is also the
+version of the tool that is genuinely useful to somebody who just wants their
+checkout page fixed, and it shipped before any machine learning existed.
+
+That ordering means the project can answer a question most projects cannot: is
+the model solving a problem anybody has? A project that ships the model first
+and the product last has no baseline to answer it with, and every subsequent
+measurement is a comparison against nothing.
+
+\subsection{Ties are the safety mechanism, not a shortcoming}
+
+The rule engine has six precedence tiers. A tier decides when it yields a unique
+match and otherwise falls through, and a tie surviving every tier is
+\code{UNKNOWN}. That reads like a tidy up clause. It is the single most load
+bearing rule in the engine.
+
+German writes \emph{Stra\ss{}e und Hausnummer} for both a whole street address
+and the first of several address lines. French writes \emph{Adresse} for both. A
+field labelled only \emph{Password} is a login field on one page and a
+registration field on the next. In each of those the wording genuinely does not
+distinguish two labels, and the correct answer is that the tool does not know.
+
+Once that is accepted the table changes shape. Instead of writing one pattern
+per label and hoping they do not overlap, the overlaps become deliberate: both
+labels carry the same phrase at the same weight, the tier ties by construction,
+and the engine falls through to a tier that might separate them. The property
+that a correct page produces no finding above the lowest severity fell out of
+that design rather than being tuned into existence, and it passed the first time
+it was run across the entire correct markup slice.
+
+The alternative would have been to break each tie by picking a favourite. That
+produces a confident instruction to write the wrong token into somebody's
+production markup, and it would have looked like better coverage on every metric
+except the one that matters.
+
+\subsection{An honest dead rule}
+
+The specification names the Japanese postal mark among the strings the postal
+code label should match. It cannot fire: normalisation treats a lone symbol
+character as a delimiter, so the mark never reaches a token stream, and the
+Japanese postal field is reached through its word form instead.
+
+The rule is in the table anyway, with a comment saying it cannot fire and why,
+and a test asserting both halves of that. Making it reachable means changing what
+counts as a token character, which changes every golden snapshot and every
+committed fixture expectation. That is a deliberate decision with a cost rather
+than a quiet fix, and it is recorded as one.
+
+\section{Why an n-gram logistic regression before a transformer}
+
+Three reasons, in the order they matter.
+
+\textbf{It fits in a wheel.} The exported model plus its vocabulary and
+calibration is small enough to install without comment, and inference needs an
+array library and a runtime and nothing else. A tool that requires a large
+download or a GPU to audit a form is a tool nobody installs.
+
+\textbf{It is inspectable.} A linear model's weights name the character and word
+n-grams behind a prediction, which is exactly what law 1 requires a finding to
+carry. That property is not incidental to the design; it is why the rung exists
+at that height.
+
+\textbf{It sets a floor that a bigger model has to beat.} Without it, any
+transformer result is a comparison against a rule table alone, and the
+interesting question, whether the extra capacity buys anything on a task whose
+whole input is a short list of attribute strings, never gets asked.
+
+\subsection{Features}
+
+Five blocks: character n-grams over the normalised token stream, word n-grams
+over the same, one hot categorical signals, option shape booleans, and
+structural buckets. Table~\ref{tab:training} gives the realised widths.
+
+\begin{table}[htbp]
+  \centering
+  \caption{The training run that produced the shipped model.}
+  \label{tab:training}
+  \input{tables/training.tex}
+\end{table}
+
+\begin{table}[htbp]
+  \centering
+  \caption{The pre-registered hyperparameter sweep, on development macro-F1.
+  The grid was registered before the model existed and was not widened
+  afterwards.}
+  \label{tab:sweep}
+  \input{tables/sweep.tex}
+\end{table}
+
+\textbf{The sweep chose the edge of its own grid.} Table~\ref{tab:sweep} shows
+the chosen value sitting at the largest value the grid offered. The grid was
+pre-registered, so it was not widened afterwards: widening a pre-registered grid
+because the answer landed at its edge is how a sweep becomes a search for a
+number. The consequence is recorded instead, in the model card and here, and it
+is that this model may be less regularised than a wider grid would have chosen.
+A later phase that revisits it re-registers first.
+
+\subsection{The export route, and why the fallback was the design}
+
+The plan anticipated a fight with the converter for text vectorizers
+\cite{skl2onnx} and named a fallback: move the whole text pipeline into hand
+written code, export only the linear layer, and take that quickly rather than
+spending a day coaxing a converter.
+
+The fight never started, because the feature set was never convertible. Three of
+the five feature blocks are categorical one hots, option shape booleans and
+structural buckets, which no standard transformer produces. Putting the whole
+featurisation in the graph would have meant writing custom converters for three
+bespoke transformers \emph{and} trusting the vectorizer converters, which is a
+larger version of exactly the risk the fallback exists to avoid.
+
+So the fallback's hand written featuriser is not a retreat from the design. It
+is the only design in which one implementation serves both training and
+inference, which the feature specification required from the beginning. The
+second argument arrived for free and will matter longer: a vectorizer anywhere in
+the inference path puts a full machine learning framework on the dependency list
+of a tool people install with one command \cite{scikit-learn,onnxruntime}.
+
+The cost is real and is tested rather than waved past. A hand written analyser is
+slower than a compiled one, and its faithfulness to the reference analyser is a
+claim rather than an identity, so the claim is asserted character for character
+over inputs including empty strings, words shorter than the n-gram length, and
+Japanese text. The detail an independent reimplementation gets wrong is the
+short word rule: a word shorter than the n-gram length yields its padded self
+once rather than once per length, and getting that wrong silently triples the
+weight of every two letter token.
+
+\begin{table}[htbp]
+  \centering
+  \caption{The parity gate: the exported graph against the training time
+  pipeline, on the full development split.}
+  \label{tab:parity}
+  \input{tables/parity.tex}
+\end{table}
+
+Table~\ref{tab:parity} is the gate that makes the export believable. The opset
+was chosen by probing downward from the newest the installed toolchain defines
+and taking the first that both converts and opens in a session; the converter
+warns at every attempt that the requested opset is above the newest it has been
+tested against. That warning is recorded rather than filtered, because it is
+precisely the case where a successful export proves nothing and only the parity
+gate proves something.
+
+\subsection{A graph that cannot read its own weights}
+
+Worth recording because it changed a design. The exported graph holds its
+coefficients, intercepts and class order in a node's \emph{attributes} rather
+than in graph initialisers, and the runtime does not hand a caller a node's
+attributes. So the inference path cannot read its own weights, and naming the
+n-grams behind a prediction would otherwise have required the full model format
+library at runtime to produce one line of a report.
+
+The resolution is a separate evidence table, written by the same training run,
+holding each class's highest weighted features. A derived file is a drift risk,
+so the parity suite reads the weights back out of the graph and asserts the
+table agrees with them. A stale evidence file now fails the build rather than
+naming the wrong n-grams in a finding, which would have satisfied law 1 in form
+and violated it in substance.
+
+\section{Calibration, and the part that got worse}
+
+\begin{table}[htbp]
+  \centering
+  \caption{What calibration did to the model on the development split,
+  including the summary statistic that moved the wrong way.}
+  \label{tab:calibration}
+  \input{tables/calibration.tex}
+\end{table}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.62\textwidth]{calibration_ngram.pdf}
+  \caption[Reliability of the n-gram engine on the development split]{%
+  Reliability of the n-gram engine on the development split, before and
+  after calibration. Only this engine appears: the rule baseline has no
+  probability at all, and the language model's confidence is self reported, so
+  neither belongs on an axis of calibrated probability. Generated by
+  \code{scripts/make\_report\_figures.py} from
+  \rpath{models/dev_metrics.json}.}
+  \label{fig:calibration}
+\end{figure}
+
+Expected calibration error was \emph{lower before calibration than after it}
+(Table~\ref{tab:calibration}, Figure~\ref{fig:calibration}). The uncalibrated
+model on this corpus is already close to honest, and refitting a one versus rest
+sigmoid per class on a development split of one template per family, then
+renormalising, moves classes that were already well behaved.
+
+The calibrator stayed, for two reasons that are both stated rather than assumed.
+Macro-F1 is higher with it. And the argument for calibrating at all is about the
+number a single finding quotes to a developer, not about an average gap across a
+split. What changed is the model card, which now says the error went the wrong
+way and by how much. Dropping the calibrator because its summary statistic got
+worse, without re-registering, would be tuning on the thing being measured.
+
+One class reached the isotonic switchover, the label covering search boxes and
+consent checkboxes. Every other class is calibrated by a sigmoid, and a handful
+with no development positives at all are uncalibrated and named as such in the
+card.
+
+\section{The third rung, and what it is not}
+
+The third engine is a twelve billion parameter instruction model at four bit
+quantization, served locally through a runtime that enforces a JSON response
+schema at decode time \cite{ollama-api}. It is optional at runtime, never
+required for an audit, and never exercised by continuous integration.
+
+\begin{table}[htbp]
+  \centering
+  \caption{What each engine says about itself. A run log records this block,
+  because a comparison table that named neither the model tag nor the
+  quantization would not say what it had measured.}
+  \label{tab:engine-describe}
+  \input{tables/engine_describe.tex}
+\end{table}
+
+Three design points decide whether the comparison measures anything at all.
+
+\textbf{The declaration is dropped from what the model sees.} Leaving it in lets
+the model read the answer off the page on every clean tier form. The obvious
+check, a substring search for the declared token in the serialised payload, is
+wrong in both directions: a field named \code{email} that also declares
+\code{autocomplete="email"} would trip it, and that combination is common enough
+in a clean corpus that the check would have fired on the first real run and been
+switched off, while a declaration reaching the payload through a derived value
+would not trip it at all. So the property checked is \emph{independence}: pruning
+a descriptor and pruning the same descriptor with its declaration stripped must
+produce identical payloads. That has neither failure mode and is asserted on
+every request rather than reviewed once.
+
+\textbf{The keep list is a floor, not a ceiling.} The specification's list of
+what pruning keeps omits several signals the featuriser feeds to the n-gram
+model. Withholding a signal one engine has from the other tilts the comparison
+exactly as far as handing over the whole document would, in the opposite
+direction and with a better conscience. The rule applied is that the language
+model sees what the featuriser sees and nothing more.
+
+\textbf{Its threshold block is zero and zero, and that was registered before the
+run.} The decision procedure is engine agnostic by confidence value and needs
+two numbers, and the specification forbids a self reported confidence from
+feeding the threshold policy. The only pair satisfying both is zero and zero.
+The two consequences were written down in advance: the language model gets no
+threshold protection and accuses on every committed prediction, and the low
+confidence finding becomes unreachable for it. Deriving a boundary on the self
+reported scale against a precision target, the way the n-gram engine's was
+derived, would probably have raised its finding level precision. That it would
+have flattered the engine is exactly why it had to be refused before the
+measurement rather than after.

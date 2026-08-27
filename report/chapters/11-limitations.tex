@@ -1,0 +1,159 @@
+\chapter{Limitations}
+\label{ch:limitations}
+
+The answer in Chapter~\ref{ch:headline} is narrower than it sounds, and the
+limits are part of the answer rather than a disclaimer appended to it. They are
+in the same document as the result, and the most important ones are repeated in
+the same paragraph as the result where they first appear.
+
+\section{What the accuracy result does not license}
+
+\textbf{It does not license any claim that language models are bad at this
+task.} What was measured is one twelve billion parameter model at four bit
+quantization, with one prompt, no fine tuning, on a synthetic corpus, where the
+entire input is a short list of attribute strings.
+
+That input shape is close to the worst case for a system whose advantage is world
+knowledge, and close to the best case for one that memorises naming conventions.
+A language model asked to reason about a page would have the page. This one had a
+pruned descriptor, because giving it the raw document while the n-gram model got
+a feature vector would have measured something else entirely.
+
+\textbf{The two classical engines were fitted on this corpus's own training
+split. The language model met the corpus for the first time at inference.} That
+is a real asymmetry and it points in the direction of the observed result, not
+against it. A fine tuned model, a better prompt, a larger model, a higher
+precision quantization, or real pages could each move the result, and none of
+them was varied.
+
+\textbf{One prompt was tested.} There is no prompt sweep, and there deliberately
+is not one, because a prompt sweep chosen after seeing the first result is a
+search for a number. Testing several prompts is future work and it requires a
+pre-registration of its own.
+
+\section{The corpus is synthetic, and that is the load bearing limitation}
+
+Behaviour on real world pages is unmeasured. Every number in this report is a
+measurement on forms this repository generated.
+
+The corpus was designed to be adversarial in the places that matter, and the
+markup quality tiers exist precisely so that the easy case does not dominate the
+average. But a generated corpus has a generator's habits, and a classifier fitted
+on it learns those habits along with the phenomenon. The rule table has the same
+exposure in a different form: its vocabulary was written by the same author as
+the locale profiles that produce the label text it matches.
+
+That shared authorship is the strongest single reason to distrust the accuracy
+gap between the classical engines and the language model, and it is why the
+runtime finding is presented as the more robust one.
+
+\section{Six locales is not multilingual}
+
+Six locales, one of them held out. Every locale in the corpus uses either Latin
+or Japanese script. There is no right to left locale, no Indic script, no Cyrillic
+locale, and no locale whose address grammar differs from the ones present in ways
+the generator does not model.
+
+The normalisation layer was hardened against the whole basic multilingual plane
+after two property test failures outside the corpus's own alphabet, so the
+tokeniser is not the weak point. The locale profiles are, and they are hand
+written per locale, which means adding a locale is a real piece of work rather
+than a configuration change.
+
+\section{What the tool cannot see}
+
+Repeated here from Chapter~\ref{ch:extractor} because a reader who skipped to the
+results should still meet them:
+
+\begin{itemize}
+  \item Closed shadow roots are invisible to any script on the page, including
+    this one.
+  \item Cross origin frames are detected but not read. A hosted payment field is
+    a common and correct pattern, and the finding says so rather than implying a
+    defect.
+  \item Canvas rendered form like widgets are reported as undetectable rather
+    than guessed at.
+  \item Only the step of a multi step form that is currently in the document is
+    audited. There is no click through, because clicking is filling.
+  \item \textbf{The tool does not verify that a browser actually autofills.} It
+    verifies that the markup gives the browser what it needs. Those are different
+    claims and only the second one is made.
+\end{itemize}
+
+\section{The evaluation's own limitations}
+
+\textbf{The design resolves large effects, not small ones.} \vClusters{}
+clusters give \vArrangements{} arrangements. That is enough to certify the
+differences reported as certified in Chapter~\ref{ch:statistics} and not enough
+to resolve the ones reported as not certified. More templates per family is the
+only thing that helps; more resamples do not, because the test is already
+exhaustive.
+
+\textbf{Two statistical components run on this side of the package boundary.}
+The clustered null and the absolute practical gate are computed here rather than
+in the harness, because the harness has no public entry point for either. Both
+are labelled in every result file they produce. The alternative, degrading
+silently to unclustered resampling, would have made every comparison look more
+significant than it is, and it was the one outcome ruled out before the phase
+began.
+
+\textbf{The evaluation runner classifies every form twice.} This is a real defect
+and it is documented here rather than in an issue nobody reads. The runner
+classifies once directly, which is where the run log's predicted label and per
+field latency come from, and once through the audit engine, which is where the
+finding codes come from. For the two deterministic engines the passes agree by
+construction and cost microseconds. For the language model it doubled the
+inference: the run made twice as many requests as there are forms, and about half
+its wall clock is the second pass.
+
+Two consequences follow, and the second matters to a reader of
+Table~\ref{tab:findings}:
+
+\begin{itemize}
+  \item The language model benchmark cost about twice what it needed to.
+  \item \textbf{A row's predicted label and its finding codes come from two
+    different draws of a model that is not guaranteed to be deterministic.}
+    Measured on this run, using the deterministic rule engine as a control for
+    the check's own edge cases, the excess disagreement between the two passes is
+    on the order of two fields in seven hundred. Small, real, and it should be
+    known before anyone builds on the finding level numbers.
+\end{itemize}
+
+It is not fixed in this report's phase, and the reason is a rule rather than a
+preference: fixing it changes what the evaluation runner does for every engine,
+and doing that after seeing the results is the regeneration that this project's
+reproducibility rules forbid. The fix is in Chapter~\ref{ch:future} and it is to
+pass the first pass's predictions into the audit rather than letting the audit
+reclassify, which also turns the two numbers into one fact.
+
+\section{Development split evidence is one notch weaker}
+
+Stated in full in Chapter~\ref{ch:method} and repeated here so that it is met
+twice: the training manifest of the shipped model is marked as produced from a
+working tree with uncommitted changes. The model artefacts and the corpus are
+content addressed into every evaluation manifest, so the identity of what was
+measured is not in doubt, but the development split tables in
+Chapter~\ref{ch:classifiers} rest on a run whose tree state was not pinned to a
+commit. They are reported and they are flagged.
+
+\section{Class imbalance and small denominators}
+
+Several labels in the taxonomy are carried by one template in one position, so
+their per label rows in Table~\ref{tab:per-label} rest on small denominators.
+Macro-F1 weights every label equally, which means those rows have the same weight
+in the headline average as the labels that appear on every form.
+
+That is a deliberate choice rather than an oversight: a label weighted average is
+the one that notices when an engine quietly stops predicting a rare class. It
+does mean the macro average is noisier than the micro average, and it is another
+reason both are reported.
+
+\section{Cost was not measured because nothing was billed}
+
+The monetary cost column is null for every engine. The two classical engines have
+no provider and the language model ran locally. Zero is a measurement and the
+electricity was not free; null is the absence of one. No vendor price page was
+retrieved during this work, so no list price estimate is computed anywhere, and
+the price table document in this repository contains no prices on purpose. If a
+cost column with a number in it is wanted, that is a retrieval with a date, not a
+recollection.

@@ -70,7 +70,17 @@ repos:
         # result too large to commit is a result nothing may cite, and the
         # directory is append-only history rather than a working area: a wrong
         # result gets a new run id and the old one stays.
-        exclude: ^(models|experiments/results)/
+        #
+        # report/ and report_debug/ hold the compiled PDFs of spec section 17.
+        # They are deliverables rather than build output, and spec section 17.1
+        # requires them to be committed so that a reader arriving from a clone
+        # does not need a LaTeX toolchain to read the write-up. Their sources,
+        # their generated tables and their generated figures are all here too,
+        # so the PDF is reproducible rather than opaque; it is committed because
+        # requiring a multi-gigabyte typesetting installation to read a report
+        # is a worse trade than half a megabyte in the repository. The size is
+        # not padding: it is embedded font subsets and six vector figures.
+        exclude: ^(models|experiments/results|report|report_debug)/
       - id: check-merge-conflict
       - id: check-toml
       - id: check-yaml

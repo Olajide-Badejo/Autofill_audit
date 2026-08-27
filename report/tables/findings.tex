@@ -1,0 +1,16 @@
+\begingroup\small\setlength{\tabcolsep}{4pt}
+\begin{tabular}{llrrrrr}
+\toprule
+\textbf{Code} & \textbf{Engine} & \textbf{Accusations} & \textbf{Correct} & \textbf{Needed} & \textbf{Precision} & \textbf{Recall} \\
+\midrule
+\texttt{MISSING\_AUTOCOMPLETE} & \texttt{rules} & 449 & 449 & 790 & 1.0000 & 0.5684 \\  % results: experiments/results/bench/2026-08-26T20-32-48Z_bench_6457ac7/benchmark.json
+ & \texttt{ngram} & 334 & 325 & 790 & 0.9731 & 0.4114 \\  % results: experiments/results/bench/2026-08-26T20-32-48Z_bench_6457ac7/benchmark.json
+ & \texttt{llm} & 692 & 540 & 790 & 0.7803 & 0.6835 \\  % results: experiments/results/bench/2026-08-26T20-32-48Z_bench_6457ac7/benchmark.json
+\midrule
+\texttt{WRONG\_AUTOCOMPLETE} & \texttt{rules} & 28 & 28 & 30 & insufficient data & 0.9333 \\  % results: experiments/results/bench/2026-08-26T20-32-48Z_bench_6457ac7/benchmark.json
+ & \texttt{ngram} & 23 & 21 & 30 & insufficient data & 0.7000 \\  % results: experiments/results/bench/2026-08-26T20-32-48Z_bench_6457ac7/benchmark.json
+ & \texttt{llm} & 125 & 29 & 30 & 0.2320 & 0.9667 \\  % results: experiments/results/bench/2026-08-26T20-32-48Z_bench_6457ac7/benchmark.json
+\bottomrule
+\end{tabular}
+\endgroup
+\par\smallskip\noindent{\footnotesize Source: \rpath{experiments/results/bench/2026-08-26T20-32-48Z_bench_6457ac7/benchmark.json}}

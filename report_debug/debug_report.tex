@@ -1,0 +1,86 @@
+% The debug report of spec section 17.3. Build with `make reports` from the
+% repository root, `make` in this directory, or
+% `latexmk -pdf -cd report_debug/debug_report.tex`.
+%
+% Grouped by theme rather than by date, because chronology is how the problems
+% were met and theme is how they are useful to anybody else. The source of every
+% entry is docs/ENGINEERING_LOG.md, which was written as the work happened.
+%
+% The preamble and the generated value macros are shared with the main report.
+% See ../report/preamble.tex for the dash rule and the number rule that govern
+% every LaTeX source in this repository.
+\documentclass[11pt,a4paper,oneside]{report}
+
+\input{../report/preamble.tex}
+\input{../report/tables/values.tex}
+
+% One defect, in the four parts that make a defect report useful to somebody
+% who did not hit it: what was seen, how it was diagnosed, what was done, and
+% what else was considered and refused. The fourth part is the one that is
+% usually missing and is usually the reason the entry was worth writing.
+\newenvironment{defect}[1]{%
+  \par\medskip\noindent\textbf{#1}\par\nopagebreak\smallskip%
+  \begin{list}{}{%
+    \setlength{\leftmargin}{1.2em}%
+    \setlength{\labelwidth}{0pt}%
+    \setlength{\labelsep}{0pt}%
+    \setlength{\itemindent}{0pt}%
+    \setlength{\listparindent}{0pt}%
+    \setlength{\parsep}{2pt}%
+    \setlength{\itemsep}{2pt}%
+  }\item[]%
+}{%
+  \end{list}\par\medskip%
+}
+
+\newcommand{\symptom}[1]{\par\noindent\emph{Symptom.} #1}
+\newcommand{\diagnosis}[1]{\par\noindent\emph{Diagnosis.} #1}
+\newcommand{\resolution}[1]{\par\noindent\emph{Fix.} #1}
+\newcommand{\instead}[1]{\par\noindent\emph{Considered and refused.} #1}
+
+\title{%
+  \Large\textbf{autofill-audit: the debug report}\\[.6em]
+  \large What went wrong, how it was found, and what was done about it\\[.4em]
+  \normalsize Grouped by theme rather than by date
+}
+\author{Olajide Badejo}
+\date{2026-08-27}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+\noindent
+This is the record of the defects, surprises and reversed decisions of the
+project, drawn from an engineering log that was written as the work happened
+rather than reconstructed afterwards. It is grouped by theme, because
+chronology is how the problems were met and theme is how they are useful to
+anyone else.
+
+Every entry states the symptom, how it was diagnosed, what was done, and what
+else was considered and refused. The fourth of those is the part that is
+ordinarily missing from a defect record and is usually the reason the entry was
+worth keeping: a fix without its rejected alternatives is a fact, and a fix with
+them is an argument somebody can disagree with.
+
+The document is a first class deliverable rather than an appendix. The
+honest record of what went wrong is the part of a project that ordinarily
+evaporates, and almost nobody publishes one.
+\end{abstract}
+
+\tableofcontents
+
+\input{sections/01-dom-and-shadow.tex}
+\input{sections/02-waiting-and-flake.tex}
+\input{sections/03-normalisation-and-vocabulary.tex}
+\input{sections/04-generator-determinism.tex}
+\input{sections/05-onnx-fidelity.tex}
+\input{sections/06-thresholds-and-reliability.tex}
+\input{sections/07-llm-schema-and-serving.tex}
+\input{sections/08-package-boundary.tex}
+\input{sections/09-the-power-repair.tex}
+\input{sections/10-the-checks-themselves.tex}
+\input{sections/11-what-is-still-open.tex}
+
+\end{document}

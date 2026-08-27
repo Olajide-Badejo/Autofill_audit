@@ -1,0 +1,47 @@
+\footnotesize
+\begin{longtable}{>{\raggedright\arraybackslash}p{.13\textwidth}>{\raggedright\arraybackslash}p{.11\textwidth}>{\raggedright\arraybackslash}p{.15\textwidth}rrr>{\raggedright\arraybackslash}p{.15\textwidth}}
+\toprule
+\textbf{Comparison} & \textbf{Metric} & \textbf{Slice} & \textbf{Effect} & \textbf{p} & \textbf{adjusted p} & \textbf{Verdict} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Comparison} & \textbf{Metric} & \textbf{Slice} & \textbf{Effect} & \textbf{p} & \textbf{adjusted p} & \textbf{Verdict} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+rules over llm & \ident{macro_f1} & \ident{all} & 0.1558 & 0.00781 & 0.02578 & improvement \\  % results: experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json
+rules over llm & \ident{macro_f1} & \ident{seen_locales} & 0.1618 & 0.00586 & 0.02578 & improvement \\  % results: experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json
+rules over llm & \ident{macro_f1} & \ident{unseen_locale} & 0.1231 & 0.05664 & 0.08496 & no significant change \\  % results: experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json
+rules over llm & \ident{macro_f1} & \ident{tier:clean} & 0.1981 & 0.01758 & 0.04143 & improvement \\  % results: experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json
+rules over llm & \ident{macro_f1} & \ident{tier:partial} & 0.2155 & 0.01562 & 0.04143 & improvement \\  % results: experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json
+rules over llm & \ident{macro_f1} & \ident{tier:mixed} & 0.1653 & 0.05664 & 0.08496 & no significant change \\  % results: experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json
+rules over llm & \ident{macro_f1} & \ident{tier:hostile} & -0.0584 & 0.19531 & 0.23872 & no significant change \\  % results: experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json
+rules over llm & \ident{finding_precision} & \ident{MISSING_AUTOCOMPLETE} & 0.2197 & 0.00781 & 0.02578 & improvement \\  % results: experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json
+rules over llm & \ident{finding_recall} & \ident{MISSING_AUTOCOMPLETE} & -0.1152 & 0.00195 & 0.02578 & regression \\  % results: experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json
+rules over llm & \ident{finding_precision} & \ident{WRONG_AUTOCOMPLETE} & 0.7680 & 0.00781 & 0.02578 & improvement \\  % results: experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json
+rules over llm & \ident{finding_recall} & \ident{WRONG_AUTOCOMPLETE} & -0.0333 & 1.00000 & 1.00000 & no significant change \\  % results: experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json
+ngram over llm & \ident{macro_f1} & \ident{all} & 0.1041 & 0.08594 & 0.11816 & no significant change \\  % results: experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json
+ngram over llm & \ident{macro_f1} & \ident{seen_locales} & 0.1362 & 0.03516 & 0.06445 & no significant change \\  % results: experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json
+ngram over llm & \ident{macro_f1} & \ident{unseen_locale} & -0.0409 & 0.37500 & 0.41250 & no significant change \\  % results: experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json
+ngram over llm & \ident{macro_f1} & \ident{tier:clean} & 0.2654 & 0.00391 & 0.02578 & improvement \\  % results: experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json
+ngram over llm & \ident{macro_f1} & \ident{tier:partial} & 0.2768 & 0.00391 & 0.02578 & improvement \\  % results: experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json
+ngram over llm & \ident{macro_f1} & \ident{tier:mixed} & 0.0799 & 0.30664 & 0.34894 & no significant change \\  % results: experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json
+ngram over llm & \ident{macro_f1} & \ident{tier:hostile} & 0.0143 & 0.79102 & 0.81573 & no significant change \\  % results: experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json
+ngram over llm & \ident{finding_precision} & \ident{MISSING_AUTOCOMPLETE} & 0.1927 & 0.00781 & 0.02578 & improvement \\  % results: experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json
+ngram over llm & \ident{finding_recall} & \ident{MISSING_AUTOCOMPLETE} & -0.2722 & 0.00195 & 0.02578 & regression \\  % results: experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json
+ngram over llm & \ident{finding_precision} & \ident{WRONG_AUTOCOMPLETE} & 0.6810 & 0.00781 & 0.02578 & improvement \\  % results: experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json
+ngram over llm & \ident{finding_recall} & \ident{WRONG_AUTOCOMPLETE} & -0.2667 & 0.03125 & 0.06066 & no significant change \\  % results: experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json
+ngram over rules & \ident{macro_f1} & \ident{all} & -0.0517 & 0.22656 & 0.26702 & no significant change \\  % results: experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json
+ngram over rules & \ident{macro_f1} & \ident{seen_locales} & -0.0256 & 0.59375 & 0.63206 & no significant change \\  % results: experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json
+ngram over rules & \ident{macro_f1} & \ident{unseen_locale} & -0.1640 & 0.02148 & 0.04727 & regression \\  % results: experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json
+ngram over rules & \ident{macro_f1} & \ident{tier:clean} & 0.0673 & 0.02344 & 0.04834 & improvement \\  % results: experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json
+ngram over rules & \ident{macro_f1} & \ident{tier:partial} & 0.0613 & 0.05469 & 0.08496 & no significant change \\  % results: experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json
+ngram over rules & \ident{macro_f1} & \ident{tier:mixed} & -0.0854 & 0.15820 & 0.20080 & no significant change \\  % results: experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json
+ngram over rules & \ident{macro_f1} & \ident{tier:hostile} & 0.0727 & 0.08203 & 0.11770 & no significant change \\  % results: experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json
+ngram over rules & \ident{finding_precision} & \ident{MISSING_AUTOCOMPLETE} & -0.0269 & 0.01758 & 0.04143 & regression \\  % results: experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json
+ngram over rules & \ident{finding_recall} & \ident{MISSING_AUTOCOMPLETE} & -0.1570 & 0.01758 & 0.04143 & regression \\  % results: experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json
+ngram over rules & \ident{finding_precision} & \ident{WRONG_AUTOCOMPLETE} & -0.0870 & 0.04688 & 0.08141 & no significant change \\  % results: experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json
+ngram over rules & \ident{finding_recall} & \ident{WRONG_AUTOCOMPLETE} & -0.2333 & 0.09375 & 0.12375 & no significant change \\  % results: experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json
+\end{longtable}
+\par\smallskip\noindent{\footnotesize Source: \rpath{experiments/results/analysis/2026-08-26T21-20-11Z_p6-analysis_6457ac7/analysis.json}}

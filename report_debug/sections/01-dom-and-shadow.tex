@@ -1,0 +1,142 @@
+\chapter{DOM traversal and shadow boundaries}
+
+The traversal itself was right almost immediately. Everything in this chapter is
+a case where the DOM said something true and the code drew the wrong conclusion
+from it.
+
+\begin{defect}{A label attached itself to the wrong control}
+\symptom{On a fixture with two elements carrying the same identifier, a control
+with no label of its own was reported with somebody else's label text, and the
+classification that followed was confident and wrong.}
+\diagnosis{The first implementation built a map from identifier to label and
+handed the same label to every element carrying a duplicated identifier. That is
+not what the platform does. A label's \ident{for} attribute names exactly one
+element, the one the document's own lookup would return, and a duplicated
+identifier does not make two elements labelled. It makes one labelled and one
+not.}
+\resolution{Resolve the association the way the platform resolves it: first
+element wins, everything else has no label from that source and falls through to
+the next source in the precedence order.}
+\instead{Reporting a duplicate identifier as a defect and refusing to associate
+either. That is a real finding and it is emitted, but it is a warning about the
+page rather than a reason to withhold a label from the element that legitimately
+owns it.}
+\end{defect}
+
+\begin{defect}{The canvas rule would have unbalanced every hostile checkout}
+\symptom{The specification says a canvas rendered form like widget is reported
+as undetectable rather than guessed at. Implemented literally, that emitted one
+synthetic descriptor per large canvas, and every hostile checkout form in the
+corpus then reported one more field than its answer key held. The extraction
+reconciliation the phase gate asks for could never balance.}
+\diagnosis{The specification describes a page whose form \emph{is} a canvas. The
+corpus contains pages with plenty of real controls that also happen to carry a
+canvas, which is a different shape, and the rule was being applied to both.}
+\resolution{A canvas is always recorded as a region, on every page. The page
+level undetectable descriptor is emitted only when the page yielded no controls
+at all. The information is present either way; what changes is whether it counts
+as a field.}
+\instead{Excluding synthetic descriptors from the reconciliation. That would have
+made the gate pass by making the gate weaker, and the gate exists to catch
+exactly the class of error where the extractor and the answer key disagree about
+how many fields a page has.}
+\end{defect}
+
+\begin{defect}{The frame accessibility test was asking the wrong question}
+\symptom{The plan assumed the browser automation layer would fail to evaluate
+inside a cross origin frame, and that this failure was how the tool would detect
+one.}
+\diagnosis{It does not fail. The automation layer drives each frame through its
+own session, so it can evaluate inside a cross origin frame perfectly well. The
+thing that makes such a frame unreadable to \emph{this tool} is not the
+automation layer. It is the page's own same origin policy, and a tool that reads
+across it would be reporting on a document the page cannot see either.}
+\resolution{Make the accessibility test from inside the parent document, by
+asking for the frame's document in a guarded block. That is exactly the check a
+script on that page would make, and it is what the specification means by
+\emph{cannot be accessed}.}
+\instead{Using the automation layer's cross frame access and reporting on the
+hosted document. It would have produced more findings and every one of them
+would have been about a document the page's own author cannot reach from their
+markup, which is advice nobody can act on.}
+\end{defect}
+
+\begin{defect}{Two offline fixtures for a problem that seemed to need a server}
+\symptom{Testing frame behaviour appeared to require two origins, which appeared
+to require a network or at least two local servers, which the testing rules
+forbid.}
+\diagnosis{Origins are cheaper than they look. A frame declared with inline
+document markup inherits its parent's origin and so is same origin even under a
+file scheme, where two separate local files are opaque origins to each other and
+would not be. A frame loaded from a data address gets an opaque origin and so is
+unreadable.}
+\resolution{Two fixtures, both offline, both reproducing their case exactly, with
+the reasoning recorded in the environment document so nobody replaces them with
+a server later.}
+\instead{A local server fixture in the test suite. It would have worked and it
+would have made the whole suite depend on a port being free, which is the kind
+of dependency that turns a green suite into an intermittently red one on somebody
+else's machine.}
+\end{defect}
+
+\begin{defect}{One selector, four times, for a group of four radios}
+\symptom{A radio group produced the same selector once per member.}
+\diagnosis{The selector preference order includes a rank that selects on the
+control's name attribute. Every member of a radio group shares one name, so that
+rank produces one selector for the whole group and hands it to each member. The
+sketch of the preference order in the specification does not mention this,
+because the case does not arise for the controls it was written against.}
+\resolution{Rank two requires the name to be unique within the form. A group
+falls through to the next rank, which distinguishes its members.}
+\instead{Special casing radio groups in the selector generator. The uniqueness
+requirement is the general statement of the same rule and it covers checkbox
+groups and any other shared name case without a second branch.}
+\end{defect}
+
+\begin{defect}{A child combinator that matched nothing}
+\symptom{The second rank of the selector order, written literally from the
+specification's sketch as a form element followed by a child combinator,
+resolved to no element on every form the generator emits.}
+\diagnosis{A child combinator matches only a control that is an immediate child
+of the form element. Every form this generator emits, and essentially every form
+on the web, wraps its controls in layout containers.}
+\resolution{A descendant combinator. The deviation is recorded in the selector
+module and in the handoff notes, because the extractor has to reproduce the
+generator's selector convention exactly rather than approximately, and a
+difference between the two would silently lose fields.}
+\instead{Emitting forms without layout containers so that the literal reading
+works. That would make the corpus unrepresentative of the thing being measured
+in order to preserve a sketch.}
+\end{defect}
+
+\begin{defect}{Field order disagrees on exactly one tier, and it is not a defect}
+\symptom{Reconciling extracted descriptors against answer keys showed an order
+difference on the mixed markup tier and nowhere else.}
+\diagnosis{The extractor returns document order, which the traversal
+specification requires. An answer key lists its fields in the generator's slot
+order, which appends a tier's extra controls to the end of the list. On the mixed
+tier a hostile block sits in the middle of a form whose extra controls belong to
+that block, so they render in the middle and the key lists them last.}
+\resolution{The reconciliation compares selectors as a set and reports order
+differences separately. The selectors are the contract; the order of the list is
+not. That every affected form is on the mixed tier is asserted rather than
+assumed, so a future order difference somewhere else fails the check.}
+\instead{Sorting both sides before comparing. That would have hidden a real
+future defect: an extractor that returned fields in an order unrelated to the
+document would pass a sorted comparison forever.}
+\end{defect}
+
+\begin{defect}{Five signals with nowhere to go}
+\symptom{The signal collection specification names several signals that the
+descriptor schema has no field for.}
+\diagnosis{Two sections of the specification disagree, and both are load bearing:
+the collection list is what the traversal should gather, and the descriptor is
+the fixed downstream contract that every golden test inherits.}
+\resolution{Collect them, keep them on the raw record, and stop before the
+descriptor. One of them, whether a select accepts multiple values, turned out to
+be genuinely useful: a multi select with twelve options is a month picker to a
+careless detector and a multiple choice control to a careful one.}
+\instead{Widening the descriptor. That is a schema change that invalidates every
+committed fixture expectation, and it should be made when something needs the
+field rather than when something collects it.}
+\end{defect}

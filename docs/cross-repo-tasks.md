@@ -137,7 +137,51 @@ transferred without a scratch.
 
 ---
 
-At P7 the other side of the link is added: that repository's README gains a
-"used by" entry pointing here with a one-line description of what this project
-uses it for. Without it the second-consumer claim is invisible to a reader who
-lands on either repository alone.
+## Status at P7
+
+Reviewed on 2026-08-27, before the reports were compiled and before the version
+was bumped. **Nothing has closed.** All five issues are open and the publication
+task is open, and each was checked rather than assumed.
+
+| Task | Issue | Status at P7 | Effect on this release |
+|---|---|---|---|
+| Publish `ml-experiment-triage` to a package index | [#5](https://github.com/Olajide-Badejo/ML-Experiment-Triage/issues/5) | open | **Blocking.** The dependency is a git ref, so `v1.0.0` may not be tagged |
+| Ingestion of a cross-sectional run log | [#1](https://github.com/Olajide-Badejo/ML-Experiment-Triage/issues/1) | open | none; the bridge reads its own JSONL |
+| Paired permutation with clustered resampling | [#2](https://github.com/Olajide-Badejo/ML-Experiment-Triage/issues/2) | open | none; the null is built here and labelled in every result file |
+| An absolute practical-effect threshold | [#3](https://github.com/Olajide-Badejo/ML-Experiment-Triage/issues/3) | open | none; applied here, with the harness running alongside as a cross check |
+| `classify()` reorders its output | [#4](https://github.com/Olajide-Badejo/ML-Experiment-Triage/issues/4) | open | none; the bridge rejoins on object identity |
+| Ship `py.typed` | [#5](https://github.com/Olajide-Badejo/ML-Experiment-Triage/issues/5) | open | the mypy override stands, and the bridge is the one module whose external calls are unchecked |
+| Split the ingestion and report dependencies into extras | [#5](https://github.com/Olajide-Badejo/ML-Experiment-Triage/issues/5) | open | the dependency stays in the `dev` extra, so the shipped tool cannot compute its own significance tests |
+
+**Issue 3 still produced no verdict disagreement.** The relative gate and the
+absolute one agree on every comparison in the P6 analysis:
+`harness_cross_check.disagreements` is empty. That is not a reason to withdraw
+the issue. A gap that happens not to bite on one dataset is still a gap, and the
+dataset it would bite on is any slice with a small baseline, which is most of
+what a wider benchmark would add.
+
+### The one that blocks the release, stated plainly
+
+The build specification forbids tagging `v1.0.0` here while any dependency is a
+git ref rather than a released version. That rule was written on the first day of
+this project, recorded in ADR 0001 on the day the obstacle was discovered, and it
+is now the only thing standing between this repository and its first stable tag.
+
+**The version is bumped to 1.0.0 in code and in the changelog and the tag is not
+applied.** The rule holds when holding it is the expensive option, which is the
+only circumstance in which a rule tells anybody anything.
+
+The cheap way out is still available and is still refused: vendoring the three
+functions this project uses would remove the blocker, and it would delete the
+evidence the boundary exists to produce. See
+[`adr/0004-triage-stays-external.md`](adr/0004-triage-stays-external.md).
+
+## The cross-link, added at P7
+
+The other side of the link is in place: that repository's README carries a
+**Used by** section pointing here with a one-line description of what this
+project uses it for, and a note about the friction the boundary exposed with a
+link back to this ledger.
+
+Without it the second-consumer claim is invisible to a reader who lands on either
+repository alone, and an invisible claim is an unfalsifiable one.

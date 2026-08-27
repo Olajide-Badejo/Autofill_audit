@@ -1,0 +1,128 @@
+\chapter{Generator determinism}
+
+Same seed, same bytes. The gate is the generator run twice with a recursive diff
+of the two outputs, and it is a gate rather than a test because a determinism
+defect that reaches the corpus invalidates every measurement taken afterwards.
+
+Two of the entries below are defects that had not yet caused a wrong byte and
+would have, and those are the dangerous kind.
+
+\begin{defect}{A shared value provider was a latent determinism defect}
+\symptom{None yet, which is the point.}
+\diagnosis{The first implementation cached one value provider per locale and
+reseeded it per form. That is safe only while exactly one provider is alive at a
+time. Nothing in the call path broke that invariant, which is what made it
+dangerous: it would have broken the same seed same bytes rule silently, the first
+time a caller built two forms concurrently, and the failure would have appeared
+as a corpus that did not reproduce rather than as an exception anybody could
+trace.}
+\resolution{Each provider owns its own instance. Constructing one costs well
+under a millisecond, so the whole grid pays a fraction of a second for an
+invariant that cannot be broken from outside.}
+\instead{Documenting the constraint and relying on callers to respect it. A
+documented invariant that only one code path currently satisfies is an invariant
+waiting for a second code path. Found by a test asserting that two providers
+built with the same seed produce the same value, which they did not.}
+\end{defect}
+
+\begin{defect}{The mixed tier could produce a form with no clean section}
+\symptom{Two templates out of the twenty five then in the grid produced
+uniformly hostile forms carrying a mixed tier label.}
+\diagnosis{The mixed tier draw forces at least one hostile section and at least
+one clean one. The clean pass looked for a section that was not already hostile,
+and when every section had drawn hostile there was no such candidate, so it
+silently did nothing.}
+\resolution{A section may now be promoted to clean unless it is the only hostile
+one, and because a template is required to carry at least two sections there is
+always a legal choice.}
+\instead{Redrawing until a legal configuration appears. That changes the number
+of draws taken, which changes the state of the generator, which changes every
+subsequent form. A repair that consumes a variable amount of randomness is a
+determinism defect wearing a fix's clothing.
+
+The frequency is the part worth keeping: two templates in twenty five is exactly
+the rate at which a defect gets shipped. The parametrised test covers all
+templates rather than a sample, which is how it was caught.}
+\end{defect}
+
+\begin{defect}{Infinite recursion comparing two elements}
+\symptom{A stack overflow while resolving a positional selector in the small HTML
+tree used to check that generated selectors resolve.}
+\diagnosis{Every element in that tree carries a pointer to its parent, and the
+element type was a plain data class with a generated equality method. Resolving a
+positional selector asks a list for the index of an element, which compares
+elements, which compares parents, which compares children, and so on up and down
+the tree.}
+\resolution{Elements are identity objects. Equality generation is switched off
+and the reason is in the class docstring, so nobody switches it back on for
+convenience.}
+\instead{Excluding the parent pointer from the comparison. That produces an
+equality that says two structurally identical elements in different parts of the
+tree are the same element, which is false and would have produced wrong selector
+indices instead of a stack overflow. A crash is a better failure than a silently
+wrong answer.}
+\end{defect}
+
+\begin{defect}{A module shadowed a data directory}
+\symptom{Loading the locale tables looked one directory level too high and found
+nothing.}
+\diagnosis{The specification names the data directory with a plural noun, and the
+obvious name for the module that loads it was the same plural noun with a source
+extension, beside it. Importing the package qualified name then resolves to the
+module rather than the directory, and asking the resource machinery for the
+module's files walks to the package root.}
+\resolution{The module is renamed, the directory keeps the name the specification
+gives it, and the reason is in the module docstring so that nobody renames it
+back on tidiness grounds.}
+\instead{Renaming the directory. The directory name is specified and is part of
+the layout other people read; the module name is not.}
+\end{defect}
+
+\begin{defect}{Two templates of one family drew the same values}
+\symptom{Two structurally different templates of the same family, at the same
+locale, tier and variant, produced identical sample values.}
+\diagnosis{The specification writes the per form seed's input as the tuple of
+family, locale, tier and variant. With several templates per family that tuple no
+longer identifies a form.}
+\resolution{The template identifier joins the digest input and the family stays
+in it, so the input is a superset of the specification's rather than a
+replacement for it.}
+\instead{Replacing the family with the template identifier. Keeping both costs
+nothing and means a future change to how templates are named cannot silently
+collapse two families onto one seed.}
+\end{defect}
+
+\begin{defect}{Selector resolution checked without a browser}
+\symptom{Not a defect. A design decision that prevents a whole class of them.}
+\diagnosis{An answer key whose selectors do not resolve is worse than no answer
+key at all: every downstream measurement silently loses the fields it could not
+find, and the loss looks like a classifier failure rather than a corpus defect.
+That check has to run in the phase that generates the keys, and that phase has no
+browser.}
+\resolution{A small resolver that handles exactly the subset of the selector
+language this generator emits, and raises on anything else rather than quietly
+returning no match for syntax it does not understand.}
+\instead{Requiring a browser in the generator's gate. That would couple the
+corpus phase's gate to the extractor phase's dependency and would stop the
+reachability check from being able to check anything on a machine without a
+browser installed.}
+\end{defect}
+
+\begin{defect}{A dependency classification that was reversed}
+\symptom{The value provider library was recorded as a development dependency on
+the reasoning that the generator runs from a checkout and never from an installed
+package.}
+\diagnosis{That was wrong, and it only became visible once the command surface
+was wired up: corpus generation is a documented subcommand of the shipped
+console entry point. A documented command that raises an import error on an
+installed package is worse for a user than one extra dependency is for the
+package.}
+\resolution{The library moves to the runtime dependency set. Regenerating the
+lock file afterwards produced a byte identical file, because the lock is compiled
+with the development extra already and the resolver annotates both cases the same
+way, so there is no lock commit. That is the right outcome rather than a skipped
+step: regenerating a lock that does not change should not create a commit.}
+\instead{A lazy import with a graceful refusal. That buys a smaller package at
+the cost of a code path that only ever runs on a misconfigured install, which is
+a code path nobody will test.}
+\end{defect}

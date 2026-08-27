@@ -1,0 +1,43 @@
+\begingroup\small\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lllr}
+\toprule
+\textbf{Engine} & \textbf{Answer key} & \textbf{Predicted} & \textbf{Fields} \\
+\midrule
+\texttt{rules} & \texttt{NOT\_AUTOFILLABLE} & \texttt{UNKNOWN} & 71 \\  % results: experiments/results/test/2026-08-26T21-15-35Z_p6-rules_6457ac7/metrics.json
+ & \texttt{current-password} & \texttt{UNKNOWN} & 48 \\  % results: experiments/results/test/2026-08-26T21-15-35Z_p6-rules_6457ac7/metrics.json
+ & \texttt{new-password} & \texttt{UNKNOWN} & 43 \\  % results: experiments/results/test/2026-08-26T21-15-35Z_p6-rules_6457ac7/metrics.json
+ & \texttt{street-address} & \texttt{UNKNOWN} & 40 \\  % results: experiments/results/test/2026-08-26T21-15-35Z_p6-rules_6457ac7/metrics.json
+ & \texttt{postal-code} & \texttt{UNKNOWN} & 37 \\  % results: experiments/results/test/2026-08-26T21-15-35Z_p6-rules_6457ac7/metrics.json
+ & \texttt{country-name} & \texttt{country} & 36 \\  % results: experiments/results/test/2026-08-26T21-15-35Z_p6-rules_6457ac7/metrics.json
+ & \texttt{cc-csc} & \texttt{UNKNOWN} & 32 \\  % results: experiments/results/test/2026-08-26T21-15-35Z_p6-rules_6457ac7/metrics.json
+ & \texttt{cc-number} & \texttt{UNKNOWN} & 31 \\  % results: experiments/results/test/2026-08-26T21-15-35Z_p6-rules_6457ac7/metrics.json
+ & \texttt{address-level2} & \texttt{UNKNOWN} & 28 \\  % results: experiments/results/test/2026-08-26T21-15-35Z_p6-rules_6457ac7/metrics.json
+ & \texttt{one-time-code} & \texttt{UNKNOWN} & 18 \\  % results: experiments/results/test/2026-08-26T21-15-35Z_p6-rules_6457ac7/metrics.json
+\midrule
+\texttt{ngram} & \texttt{country} & \texttt{address-level1} & 30 \\  % results: experiments/results/test/2026-08-26T21-17-53Z_p6-ngram_6457ac7/metrics.json
+ & \texttt{username} & \texttt{given-name} & 17 \\  % results: experiments/results/test/2026-08-26T21-17-53Z_p6-ngram_6457ac7/metrics.json
+ & \texttt{cc-number} & \texttt{cc-name} & 13 \\  % results: experiments/results/test/2026-08-26T21-17-53Z_p6-ngram_6457ac7/metrics.json
+ & \texttt{street-address} & \texttt{one-time-code} & 12 \\  % results: experiments/results/test/2026-08-26T21-17-53Z_p6-ngram_6457ac7/metrics.json
+ & \texttt{address-level1} & \texttt{country} & 11 \\  % results: experiments/results/test/2026-08-26T21-17-53Z_p6-ngram_6457ac7/metrics.json
+ & \texttt{UNKNOWN} & \texttt{one-time-code} & 10 \\  % results: experiments/results/test/2026-08-26T21-17-53Z_p6-ngram_6457ac7/metrics.json
+ & \texttt{UNKNOWN} & \texttt{address-line2} & 9 \\  % results: experiments/results/test/2026-08-26T21-17-53Z_p6-ngram_6457ac7/metrics.json
+ & \texttt{country-name} & \texttt{address-level2} & 9 \\  % results: experiments/results/test/2026-08-26T21-17-53Z_p6-ngram_6457ac7/metrics.json
+ & \texttt{current-password} & \texttt{new-password} & 8 \\  % results: experiments/results/test/2026-08-26T21-17-53Z_p6-ngram_6457ac7/metrics.json
+ & \texttt{NOT\_AUTOFILLABLE} & \texttt{email} & 7 \\  % results: experiments/results/test/2026-08-26T21-17-53Z_p6-ngram_6457ac7/metrics.json
+\midrule
+\texttt{llm} & \texttt{UNKNOWN} & \texttt{NOT\_AUTOFILLABLE} & 91 \\  % results: experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json
+ & \texttt{country} & \texttt{country-name} & 76 \\  % results: experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json
+ & \texttt{cc-type} & \texttt{NOT\_AUTOFILLABLE} & 43 \\  % results: experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json
+ & \texttt{street-address} & \texttt{address-line1} & 40 \\  % results: experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json
+ & \texttt{COMPOSITE\_UNSPLIT} & \texttt{address-line1} & 36 \\  % results: experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json
+ & \texttt{CC\_EXP\_SPLIT\_MONTH} & \texttt{cc-exp-month} & 22 \\  % results: experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json
+ & \texttt{CC\_EXP\_SPLIT\_YEAR} & \texttt{cc-exp-year} & 22 \\  % results: experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json
+ & \texttt{new-password} & \texttt{current-password} & 20 \\  % results: experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json
+ & \texttt{one-time-code} & \texttt{NOT\_AUTOFILLABLE} & 15 \\  % results: experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json
+ & \texttt{current-password} & \texttt{new-password} & 14 \\  % results: experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json
+\bottomrule
+\end{tabular}
+\endgroup
+\par\noindent{\footnotesize Source: \rpath{experiments/results/test/2026-08-26T21-15-35Z_p6-rules_6457ac7/metrics.json}}
+\par\noindent{\footnotesize Source: \rpath{experiments/results/test/2026-08-26T21-17-53Z_p6-ngram_6457ac7/metrics.json}}
+\par\noindent{\footnotesize Source: \rpath{experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json}}

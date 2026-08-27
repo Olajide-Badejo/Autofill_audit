@@ -7,6 +7,19 @@ original is kept beside it so the move is visible rather than quietly rewritten.
 
 Retrieval date for every entry: **2026-08-25**.
 
+**Re-verified 2026-08-27**, at P7, before the bibliography of the compiled
+reports was assembled from this file. Every entry above the literature section
+answered `200` again from this machine and none had moved since the first
+retrieval, so the addresses below are unchanged. The one entry whose status is
+not `200` is the journal article, and it behaves exactly as it did at P0: the
+DOI resolver redirects and the publisher answers `403` to an automated request.
+That is a robot policy rather than a broken link and it is recorded that way.
+
+The re-verification matters because the bibliography in
+[`../report/refs.bib`](../report/refs.bib) is assembled from this file and from
+nothing else. A citation this project has not read appears in neither, and one
+that has moved is recorded as having moved rather than quietly rewritten.
+
 New references are added here when they are actually read, with their own
 retrieval date, and never before. A citation this project has not read does not
 appear in this file, in `docs/report.md`, or in any bibliography.
@@ -110,6 +123,20 @@ Status: the DOI resolver redirects to the publisher, which answered HTTP `403`
 to an automated request from this machine. This is a publisher paywall and
 robot policy rather than a broken link: the DOI itself resolves. Recorded
 honestly rather than reported as reachable.
+
+## Added at P7
+
+**17. Matplotlib documentation.** The plotting library the report figure
+generator uses. Read for the figure API and the vector output backend when
+`scripts/make_report_figures.py` was written; it is a `dev` dependency and the
+audit path never imports it.
+<https://matplotlib.org/stable/>
+Status: reachable, HTTP `200`. Retrieved 2026-08-27.
+
+It is listed here rather than in `report/refs.bib` because it is a build tool for
+this project's own figures rather than a source for any claim the reports make.
+The bibliography is the reading list behind the argument; this entry belongs to
+the toolchain.
 
 ## On fabricated citations
 

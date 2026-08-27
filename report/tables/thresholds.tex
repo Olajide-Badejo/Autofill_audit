@@ -1,0 +1,12 @@
+\begingroup\small\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lrrr>{\raggedright\arraybackslash}p{.36\textwidth}}
+\toprule
+\textbf{Engine} & \textbf{tau high} & \textbf{tau low} & \textbf{Target} & \textbf{Basis} \\
+\midrule
+\texttt{rules} & 0.7000 & 0.4000 & null & rule-tier-band-mapping \\  % results: src/autofill_audit/audit/thresholds.json
+\texttt{ngram} & 0.8964 & 0.6278 & 0.9800 & dev split of the seed 20260825 corpus, calibrated n-gram engine \\  % results: src/autofill_audit/audit/thresholds.json
+\texttt{llm} & 0.0000 & 0.0000 & null & not a boundary: the self-reported scale decides nothing (spec section 12.1) \\  % results: src/autofill_audit/audit/thresholds.json
+\bottomrule
+\end{tabular}
+\endgroup
+\par\smallskip\noindent{\footnotesize Source: \rpath{src/autofill_audit/audit/thresholds.json}}

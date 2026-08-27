@@ -1,0 +1,147 @@
+\chapter{Future work}
+\label{ch:future}
+
+Ordered by what would change a conclusion in this report, rather than by what
+would be pleasant to build.
+
+\section{Measure something real}
+
+\textbf{The single most valuable next measurement is a small, hand labelled set
+of real pages.} Every accuracy number in this report is a measurement on a
+synthetic corpus, and the strongest objection to all of them is that a generated
+corpus has a generator's habits.
+
+This does not require scraping, which is out of scope and stays out of scope.
+It requires a small set of pages, labelled by hand against the token set, with
+the labelling protocol and the disagreement rate published alongside. A hundred
+real forms with a published inter annotator agreement would tell a reader more
+about whether the tool works than another thousand generated ones.
+
+The prediction that goes with it should be registered first, and the honest
+registration is that the rule table's advantage will shrink, because a
+substantial part of it is that its vocabulary and the corpus's label text were
+written by the same person.
+
+\section{Fix the double classification in the evaluation runner}
+
+Described in Chapter~\ref{ch:limitations}. The runner classifies each form twice
+and the two passes are separate draws for a non deterministic engine, which puts
+an excess disagreement on the order of two fields in seven hundred between a
+row's predicted label and its finding codes.
+
+The fix is to pass the first pass's predictions into the audit rather than
+letting the audit reclassify. It is small, it makes the two numbers one fact, and
+it halves the cost of any future language model benchmark. It was not done in the
+phase that found it because changing what the runner does for every engine after
+seeing the results is exactly the regeneration this project's rules forbid, and
+because the honest place for it is a phase that re-registers its predictions and
+re-runs everything.
+
+\section{Vary the one thing that was held fixed}
+
+The language model result rests on one model, one quantization and one prompt.
+Three variations would each answer a different question, and each needs its own
+pre-registration:
+
+\begin{itemize}
+  \item \textbf{A higher precision quantization of the same model.} Isolates the
+    quantization from the model. Cheap to run and answers an objection that will
+    otherwise be raised forever.
+  \item \textbf{A second prompt, registered before it is run.} A prompt sweep
+    chosen after seeing a result is a search for a number; a second prompt
+    registered in advance, with a stated hypothesis about which slice it should
+    move, is a measurement.
+  \item \textbf{A fine tuned small model.} The comparison as it stands is
+    between two engines fitted on the corpus and one that met it at inference.
+    Removing that asymmetry is the fairest version of the experiment and it is
+    also the most expensive.
+\end{itemize}
+
+\section{The transformer rung}
+
+The classifier ladder specifies a small multilingual encoder, fine tuned and
+exported with dynamic integer quantization, as an optional fourth engine
+\cite{onnxruntime-quantization}. It has not been built, which is why the fourth
+row of Table~\ref{tab:headline} reads \emph{absent} in words.
+
+The condition for shipping it is stated in advance and is not negotiable
+afterwards: it ships only if it beats a pre-stated metric by a pre-stated margin
+within a pre-stated latency budget. If it does not, the deliverable is the
+paragraph saying so, with the numbers, and that is a successful outcome rather
+than a failed one.
+
+Two things the tier profile in Figure~\ref{fig:tier-profile} suggests it should
+be measured against specifically. The mixed tier, where the n-gram model
+underperforms its own tier by tier behaviour and where a model with more context
+might do better. And the held out locale, where a multilingual encoder's
+pretraining is the whole argument for using one.
+
+\section{More templates per family}
+
+The design resolves large effects and not small ones, and the only thing that
+improves that is more templates in the test partition. The arithmetic is in
+Table~\ref{tab:power-repair}: the relationship between templates and the smallest
+attainable p value is steep at the low end and flattens quickly.
+
+The cost is the one already paid once: a regeneration, a retraining, a threshold
+rederivation and a re-measurement, with every recorded number moving at once and
+an explanation owed in advance.
+
+\section{Close the cross repository tasks}
+
+Five issues are open on the evaluation harness, each with a concrete API
+proposal, and two of them block things this project would like to state
+plainly:
+
+\begin{itemize}
+  \item \textbf{Publication of the harness to a package index.} Until then the
+    dependency is a source reference rather than a released version, and the
+    project's own rule forbids tagging a stable release while that is true. This
+    is the one open task that is a hard blocker rather than an improvement.
+  \item \textbf{A narrower dependency set for the harness.} It currently pulls
+    more than a dozen transitive packages including a training metrics logging
+    stack, which is why it sits in the development extra and why the shipped tool
+    cannot compute its own significance tests.
+  \item Clustered and paired resampling as a public entry point, an absolute
+    practical effect threshold, a stable join key on the verdict output, and a
+    typing marker so that values crossing the boundary are checked.
+\end{itemize}
+
+\section{Smaller things worth doing}
+
+\begin{itemize}
+  \item \textbf{Make the Japanese postal mark reachable.} It is in the rule table
+    with a comment saying it cannot fire, because normalisation treats a lone
+    symbol as a delimiter. Making it reachable means changing what counts as a
+    token character, which churns every golden snapshot and every committed
+    fixture expectation, so it is a deliberate change with a cost rather than a
+    quiet fix.
+  \item \textbf{Ship a model with the wheel, or a documented way to fetch one.}
+    A published wheel currently carries no model, so an install runs the rule
+    baseline until the user trains one or points the tool at a bundle. The
+    behaviour is documented and prints a line rather than failing silently, but
+    it means the default install is not the default engine the measurements
+    recommend.
+  \item \textbf{Widen the hyperparameter grid, with a fresh registration.} The
+    sweep chose the edge of its own grid, so the shipped model may be less
+    regularised than a wider grid would have chosen. Widening it now would be
+    searching for a number; widening it inside a phase that registers first is a
+    measurement.
+  \item \textbf{Report the reliability curve per class rather than pooled.}
+    Calibration made the pooled expected calibration error worse while improving
+    macro-F1, and a per class view would say which classes moved and in which
+    direction.
+\end{itemize}
+
+\section{What is deliberately not future work}
+
+Named so that they stay named and stay out.
+
+Crawling. Form filling. Markup rewriting. Scraping training data. A browser
+extension that duplicates the extractor in a second language and doubles the
+surface that has to be kept in agreement. Each of those is a boundary rather than
+a missing feature, and each is stated as a boundary in the project's own
+documentation.
+
+A form filling agent is a genuinely interesting successor and it is named here so
+that it stays a separate project rather than becoming a flag on this one.

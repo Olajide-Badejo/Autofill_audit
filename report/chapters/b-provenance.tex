@@ -1,0 +1,79 @@
+\chapter{Provenance}
+\label{app:provenance}
+
+\section{Every result file this report cites}
+
+Law 3 says that no number appears in this report unless it is reproducible from
+a committed file under \code{experiments/results/} whose manifest names a commit
+this repository can produce. Table~\ref{tab:provenance} is that chain, written
+out.
+
+\begin{center}
+\small
+\input{tables/provenance.tex}
+\captionof{table}{Every run cited in this report, its engine, the commit its
+manifest names, and whether the working tree was clean when it was produced. A
+run marked dirty is not citable and the traceability job fails on a citation of
+one.}
+\label{tab:provenance}
+\end{center}
+
+The check is not a pattern match on the shape of a citation. It walks the whole
+chain for every reference in every prose file and every LaTeX source: the path
+must exist, a manifest must sit beside it or above it, that manifest must name a
+commit this repository can produce an object for, and the manifest must not mark
+the run dirty.
+
+That distinction was learned the hard way. The job went red on a check that had
+passed locally minutes earlier, because the clone had been made at the default
+depth of one, so it held only the tip commit and every citation of a run taken in
+an earlier commit failed with a message saying the commit does not resolve in
+this repository. That sentence was true of the clone and false of the repository.
+The failure was reproduced locally before anything was changed, because a
+failure that is fixed without being reproduced is a failure that is guessed at.
+
+\section{The result files that are here and are not cited}
+
+Two earlier sets of test split runs are in this repository and nothing in this
+report cites them.
+
+The first pair was taken on a corpus whose test partition held one template per
+family. Those results were correctly taken and are correctly reported as the
+first, underpowered measurement. They are not edited, not moved and not deleted,
+because result files are append only history and the honest description of them
+is what they are rather than something to be tidied away.
+
+The second pair was taken after the corpus repair and before the language model
+existed. Chapter~\ref{ch:corpus} cites those two for exactly one purpose, which
+is to show what the repair did to each engine, and
+Table~\ref{tab:engines-moved} is that comparison with the caveat attached that
+the two columns are not two measurements of the same thing.
+
+\section{Version strings in the committed run logs}
+
+A reader looking at the older run logs will find a tool version string that does
+not match the release the results are associated with. That is consistent rather
+than wrong: those runs were taken before the version bump, the engine
+description records the version that was actually running, and the manifest's
+commit resolves to a tree in which that string is correct.
+
+Re-running them to make the string prettier is exactly the regeneration this
+project forbids, so they stay, and this paragraph is the explanation.
+
+\section{How to reproduce any number in this report}
+
+\begin{enumerate}
+  \item Clone the repository at the commit a manifest names.
+  \item Regenerate the corpus from the seed recorded in the corpus manifest and
+    the base year recorded beside it. The output is byte identical or the
+    generator has a defect.
+  \item Install from the committed lock file.
+  \item Run the evaluation for the engine and split named in the manifest's
+    command line, which is recorded verbatim.
+  \item Compare the metrics document against the committed one.
+\end{enumerate}
+
+The language model engine is the one step that will not reproduce bit for bit,
+and that is recorded rather than papered over: the serving runtime does not
+guarantee determinism, temperature and seed are pinned and are recorded in the
+run, and the engine description says in words that determinism is not claimed.

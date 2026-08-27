@@ -24,8 +24,12 @@ click==8.4.2
     # via
     #   autofill-audit (pyproject.toml)
     #   pip-tools
+contourpy==1.3.3
+    # via matplotlib
 coverage==7.15.4
     # via pytest-cov
+cycler==0.12.1
+    # via matplotlib
 distlib==0.4.3
     # via virtualenv
 faker==40.37.0
@@ -36,6 +40,8 @@ filelock==3.32.4
     #   virtualenv
 flatbuffers==25.12.19
     # via onnxruntime
+fonttools==4.63.0
+    # via matplotlib
 greenlet==3.5.5
     # via playwright
 grpcio==1.83.0
@@ -62,6 +68,8 @@ jinja2==3.1.6
     #   ml-experiment-triage
 joblib==1.5.3
     # via scikit-learn
+kiwisolver==1.5.0
+    # via matplotlib
 librt==0.15.0
     # via mypy
 markdown==3.10.3
@@ -72,6 +80,8 @@ markupsafe==3.0.3
     # via
     #   jinja2
     #   werkzeug
+matplotlib==3.11.1
+    # via autofill-audit (pyproject.toml)
 mdurl==0.1.2
     # via markdown-it-py
 ml-dtypes==0.6.0
@@ -91,6 +101,8 @@ nodeenv==1.10.0
 numpy==2.5.2
     # via
     #   autofill-audit (pyproject.toml)
+    #   contourpy
+    #   matplotlib
     #   ml-dtypes
     #   ml-experiment-triage
     #   onnx
@@ -106,6 +118,7 @@ onnxruntime==1.29.0
 packaging==26.3
     # via
     #   build
+    #   matplotlib
     #   onnxruntime
     #   plotly
     #   pytest
@@ -116,7 +129,9 @@ pandas==3.0.5
 pathspec==1.1.1
     # via mypy
 pillow==12.3.0
-    # via tensorboard
+    # via
+    #   matplotlib
+    #   tensorboard
 pip-tools==7.6.1
     # via autofill-audit (pyproject.toml)
 platformdirs==4.11.4
@@ -142,6 +157,8 @@ pygments==2.21.0
     # via
     #   pytest
     #   rich
+pyparsing==3.3.2
+    # via matplotlib
 pyproject-hooks==1.2.0
     # via
     #   build
@@ -153,7 +170,9 @@ pytest==9.1.1
 pytest-cov==7.1.0
     # via autofill-audit (pyproject.toml)
 python-dateutil==2.9.0.post0
-    # via pandas
+    # via
+    #   matplotlib
+    #   pandas
 python-discovery==1.5.3
     # via virtualenv
 pyyaml==6.0.3

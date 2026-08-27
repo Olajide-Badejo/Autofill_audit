@@ -1,0 +1,133 @@
+\chapter{The checks, and the checks on the checks}
+
+Enforcement infrastructure has a failure mode of its own: a check that cannot
+pass its own rule gets an exemption, and an exemption is where enforcement starts
+to rot. Three entries below are about checks that had to be built so that they
+could survive themselves.
+
+\begin{defect}{The dash checker was its own first violation}
+\symptom{The first draft of the checker that forbids two specific characters
+declared those two characters as string literals, which made the file an
+immediate violation of the rule it enforces.}
+\diagnosis{A checker that names what it forbids will contain what it forbids.}
+\resolution{Build the characters from their codepoints at import.}
+\instead{Exempting the checker from its own scan. The same reasoning applies to
+the commit message checker, whose blocklist would otherwise have been the one
+file in the repository carrying every string the repository forbids; its patterns
+are stored encoded and decoded at import. Two tests do the same thing for the
+same reason. This is a small point and it is a real one.}
+\end{defect}
+
+\begin{defect}{A traceability check that states its rule positively}
+\symptom{The obvious design flags every numeric literal in prose and then excuses
+most of them.}
+\diagnosis{The exclusion list grows until the check means nothing. That is not a
+hypothetical: it is the failure mode of essentially every lint rule that starts
+by flagging everything.}
+\resolution{State the rule positively. Three shapes count as a measurement: a
+percentage, a probability shaped decimal, and a number sharing a line with a
+measurement word. Years, dates, version strings, reference numbers, list markers,
+code blocks and addresses are never flagged at all. A line is cleared either by a
+result file reference or by an explicit annotation carrying a written reason, so
+that waving the check through leaves a written trace with a name on it.}
+\instead{Flag everything and maintain an exclusion list. Chosen against
+deliberately, and the reasoning is in the checker's own docstring so that the
+next person to be annoyed by a false negative knows what the trade was.}
+\end{defect}
+
+\begin{defect}{The traceability check passed on citations of files that did not
+exist}
+\symptom{Until the first result files existed the check could only look for the
+\emph{shape} of a citation, and a check that matches a shape passes on a citation
+of a file nobody committed.}
+\diagnosis{That is the same thing as no citation at all, with more characters.}
+\resolution{A resolve mode that walks the whole chain for every reference: the
+path must exist, a manifest must sit beside it or above it, the manifest must
+name a commit this repository can produce an object for, and the manifest must
+not mark the run dirty. The scan and the resolve are separate so that the
+scanner's own tests can run over strings with no repository behind them.}
+\instead{Leaving it as a shape match. It had been green since the first phase and
+would have stayed green forever, because it never asked the version control
+system for anything.}
+\end{defect}
+
+\begin{defect}{The first genuinely red gate, and it was correct}
+\symptom{The traceability job went red on a push, on a check that had passed
+locally minutes earlier, reporting that a manifest's commit does not resolve in
+this repository.}
+\diagnosis{The job checked out at the default depth of one, so the clone held
+only the tip commit and every citation of a run taken in an earlier commit
+failed. The message was true of the clone and false of the repository.}
+\resolution{Full history on that job, the same setting the ancestry job already
+carried for the same reason: both checks ask questions about history, and history
+is the input.}
+\instead{Fixing it from the error message without reproducing it. The failure was
+reproduced locally with a shallow clone before anything was changed, because a
+failure that is fixed without being reproduced is a failure that is guessed at.
+
+Worth recording for a second reason. It is the first time a gate in this project
+went red on a real defect rather than on a deliberately broken branch, so the
+argument for proving that each gate can fail now has a natural example beside its
+manufactured ones.}
+\end{defect}
+
+\begin{defect}{The proof of failure exercise found two real problems}
+\symptom{Each continuous integration job was deliberately broken on a scratch
+branch, one at a time, to prove it can go red. Two of the runs found something
+that was not the intended breakage.}
+\diagnosis{The packaging job's first attempt assumed the installer would place
+the console script at a fixed path, which is a guess and was wrong on the runner.
+Separately, a deliberate taxonomy breakage failed both the reachability job and
+the test job.}
+\resolution{The packaging job now sets its own installer home and binary
+directory, which both fixes the assumption and gives the built artefact a
+genuinely clean environment to install into. The double failure was left alone,
+because it is the correct outcome: the property is asserted in two independent
+places on purpose, and a defect that only one of them noticed would mean the other
+was not doing its job.}
+\instead{Skipping the exercise on the grounds that all six jobs were green. A
+gate that has only ever been green is indistinguishable from a gate that always
+returns green, and the run links for each observed failure are recorded in the
+repository so that the claim is checkable rather than asserted.}
+\end{defect}
+
+\begin{defect}{Placeholder modules that sank the coverage gate}
+\symptom{Measured coverage of the library sat well below the gate at a point when
+the library was a taxonomy, a small command line surface, and a set of empty
+module placeholders.}
+\diagnosis{The placeholders were written with a single future import each. That
+is one executable statement per file, thirty of them, none ever imported.}
+\resolution{Strip the import. The placeholders then have zero statements, which
+is what the coverage gate should see: the phases that fill them bring their own
+tests.}
+\instead{Lowering the gate for the first phase, or excluding the placeholders in
+the coverage configuration. Both would have needed to be undone later and one of
+them would have been forgotten.}
+\end{defect}
+
+\begin{defect}{A reachability check that does more than it was asked to}
+\symptom{Not a defect. A deliberate strengthening, recorded because it has a
+sharp edge.}
+\diagnosis{The rule that the taxonomy has exactly one definition in code is
+enforceable mechanically by scanning the source and the scripts for label
+literals written anywhere else.}
+\resolution{It does that. The scan is limited to tokens that cannot be confused
+with ordinary prose, meaning the hyphenated specification tokens and the
+uppercase extras.}
+\instead{Scanning for every token. Several specification tokens are also ordinary
+English words, and a check that fires on one of them in a comment is a check
+somebody turns off. A check that cries wolf is worse than no check, because it
+trains its reader to ignore it.}
+\end{defect}
+
+\begin{defect}{A first remote that was abandoned}
+\symptom{The repository was initially pushed to a remote whose name differed in
+case and separator from the one intended.}
+\diagnosis{A naming mistake, caught before any run link had been recorded
+anywhere.}
+\resolution{The remote was repointed before anything referenced it, so no
+recorded continuous integration link refers to the abandoned repository.}
+\instead{Deleting the abandoned remote. The credentials in use do not carry
+delete scope, so it is left in place and recorded here rather than quietly
+forgotten.}
+\end{defect}

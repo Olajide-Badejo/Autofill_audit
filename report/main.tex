@@ -1,0 +1,86 @@
+% The main report of spec section 17.2. Build with `make reports` from the
+% repository root, or `latexmk -pdf -cd report/main.tex`.
+%
+% Every number in this document is generated. See preamble.tex for the two
+% mechanical rules that govern these sources and why they are shaped this way.
+\documentclass[11pt,a4paper,oneside]{report}
+
+\input{preamble.tex}
+\input{tables/values.tex}
+
+\graphicspath{{figures/}}
+
+\title{%
+  \Large\textbf{autofill-audit}\\[.6em]
+  \large Does a fifty kilobyte linear model get close enough to a twelve
+  billion parameter one to be the right default for a developer tool?\\[.4em]
+  \normalsize A rule baseline, an n-gram model and a local language model,
+  measured against each other on a seeded synthetic corpus of HTML forms
+}
+\author{Olajide Badejo}
+\date{2026-08-27}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+\noindent
+A browser autofills a form field only when the markup gives it enough to
+recognise the field. \textbf{autofill-audit} loads a page in a real browser,
+walks the DOM including same origin frames and open shadow roots, classifies
+every control against the WHATWG autofill token set, and reports the controls
+that will not autofill together with the attribute to add. This report is the
+measurement half of that project.
+
+Three classifiers are compared on the held out test split of a seeded synthetic
+corpus: a table of regular expressions, a calibrated character and word n-gram
+logistic regression exported to ONNX, and a twelve billion parameter
+instruction model at four bit quantization served locally. The comparison is
+paired, clustered at the template level, corrected across the whole family of
+comparisons, and gated on a practical effect size fixed before any of it ran.
+
+The language model came third. It lost to both classical engines on the label
+weighted average, on the field weighted average, on every markup quality tier,
+and on the locales the classical engines had seen, and most of those margins
+survive correction. The one slice it led the n-gram model on is the held out
+locale, and that difference does not survive correction. The result that
+generalises furthest is not the accuracy gap, which depends on the corpus being
+synthetic, but the runtime inversion: for the classical engines the browser is
+essentially the whole wall clock and the classifier is a rounding error on a
+page load, and for the language model that reverses.
+
+Half of the eight predictions registered before the benchmark were wrong, and
+the report says which and why. \syntheticnote
+\end{abstract}
+
+\tableofcontents
+\listoftables
+\listoffigures
+
+\input{chapters/01-problem.tex}
+\input{chapters/02-taxonomy.tex}
+\input{chapters/03-corpus.tex}
+\input{chapters/04-extractor.tex}
+\input{chapters/05-classifiers.tex}
+\input{chapters/06-audit-engine.tex}
+\input{chapters/07-method.tex}
+\input{chapters/08-headline.tex}
+\input{chapters/09-statistics.tex}
+\input{chapters/10-predictions.tex}
+\input{chapters/11-limitations.tex}
+\input{chapters/12-future-work.tex}
+
+\appendix
+\input{chapters/a-tables.tex}
+\input{chapters/b-provenance.tex}
+
+% Every entry in refs.bib was actually retrieved and read, and docs/references.md
+% carries the retrieval date and the observed status for each. They are all
+% listed here rather than only the ones a sentence happens to cite, because the
+% bibliography is the reading list of the project rather than a footnote index.
+\nocite{*}
+\bibliographystyle{plain}
+\bibliography{refs}
+
+\end{document}

@@ -1,0 +1,198 @@
+\chapter{Method}
+\label{ch:method}
+
+\section{What one run is}
+
+An evaluation run takes one split, one engine and one seed, loads every form in
+that split through a real browser, extracts descriptors, classifies every keyed
+field, runs the audit engine over the same page, and writes five files: a run
+log with one row per classified field, a manifest, a metrics document, a
+confusion document, and a findings file.
+
+The run log row carries the form identifier, the template, the locale, the tier,
+the field selector, the answer key label, the predicted label, the confidence,
+the kind of confidence, the runner up, the declared token, the per field
+classification latency, and the engine's own name. The manifest carries the
+schema version, the commit and whether the tree was dirty, resolved dependency
+versions, the corpus manifest digest, the split file digest, the seed, the
+engine's self description, the command line, a machine descriptor and the start
+and end timestamps.
+
+Three of those deserve a sentence each.
+
+\textbf{The engine field carries the engine's own name.} The specification uses
+one label in its run log schema and a different one in its headline table for
+the same engine. Carrying two names for one engine across a repository is how a
+comparison table becomes ambiguous, so the run log records what the engine calls
+itself and a report labels its column however it likes.
+
+\textbf{The confidence kind is mapped rather than copied.} The schema's
+vocabulary and the engines' own words are not the same strings, because the
+engines' words were made load bearing in the renderers first. The mapping is
+written down once and is total: an engine whose word is not in it raises rather
+than defaulting to something plausible.
+
+\textbf{The findings file is a fifth artefact the specification does not list.}
+Whether a page \emph{needed} an accusation depends on the difference between
+declaring nothing, declaring off, and declaring a token outside the
+specification, and the run log row carries a declared token that is null in all
+three cases. Without the extra file the finding level significance test could not
+be reproduced from committed artefacts, and a number nobody can recompute is a
+number law 3 does not allow into a report.
+
+\section{Metrics}
+
+Macro-F1 and micro-F1 over the union of observed labels, per slice; per label
+precision, recall and F1; a confusion table; abstention rate and accuracy on the
+fields the engine did commit to; finding level precision and recall per finding
+code; and per field latency percentiles beside the wall clock breakdown.
+
+\textbf{Both averages are always reported.} They disagree here about which of
+the two classical engines leads, and a table carrying one of them would be
+picking a winner by picking a denominator. The mechanism of the disagreement is
+the abstention asymmetry and it is explained where the numbers are, in
+Chapter~\ref{ch:headline}.
+
+\textbf{A cell is reported only when it holds enough fields.} Below the
+reporting minimum a cell renders the words \emph{insufficient data}, not a
+blank, because a blank reads as an oversight and this is a decision. The
+threshold is a single constant in the metrics module, imported by everything
+that reports, with no per table override, and it was chosen before any corpus
+had been generated and before any accuracy had been computed, which is the only
+point at which it could be chosen without knowledge of its effect. On this
+benchmark it fires on exactly one thing, and what it fires on is itself a
+finding: see Section~\ref{sec:accusations}.
+
+\section{The statistical procedure}
+
+The unit of resampling is the template, because fields inside one template share
+an author. The test is a paired sign flip permutation at the cluster level,
+exhaustive when the arrangement space is small enough to enumerate, with
+Benjamini and Hochberg step up correction across the whole comparison family
+\cite{benjamini1995}, and a practical effect gate expressed as an absolute
+difference in the metric.
+
+\begin{table}[htbp]
+  \centering
+  \caption{The pre-registered statistical policy and the power the realised
+  design has. Every value in the upper half was fixed before the runs.}
+  \label{tab:design}
+  \input{tables/design.tex}
+\end{table}
+
+Two decisions in Table~\ref{tab:design} were fixed while fixing them was still
+costless, and both would have been contaminated by seeing the numbers.
+
+\textbf{The comparison family is all three engine pairs over the same eleven
+comparisons, corrected together.} A three engine benchmark could reasonably have
+corrected across one pair, or two, or all three. The temptation is specific and
+foreseeable: the comparison this project exists to make is the one against the
+language model, and a family containing only that pair would be a third the size
+and would produce smaller adjusted p values for exactly the comparisons the
+project most wants to be able to report. The size was therefore fixed in the
+prediction file, along with the stated consequence that every comparison between
+the two classical engines would carry a larger adjusted p than the same
+comparison had carried when it was corrected inside a smaller family. It did, and
+nobody can report that as a change in the underlying result, because the file
+said it would happen.
+
+\textbf{The practical effect gate is absolute.} The external harness's gate is a
+relative percentage; this project registered an absolute difference in the
+metric. A relative gate turns one pre-registered rule into a different rule in
+every slice, because it means something different against a large baseline than
+against a small one.
+
+\section{The dependency boundary, and what it cost}
+
+Permutation testing, multiple comparison correction and the verdict vocabulary
+are not implemented here. They live in a separate, independently released
+evaluation harness \cite{triage} that this project consumes as an ordinary
+dependency: not vendored, not submoduled, not copied file by file.
+
+That separation is a deliberate engineering claim. A piece of infrastructure
+with exactly one consumer has not been shown to be infrastructure; it has been
+shown to be part of that one program. This project is the second consumer, across
+a real package boundary, and the friction the boundary exposes is the actual
+finding. Vendoring the code would have destroyed that evidence by making the
+boundary unobservable.
+
+The friction split cleanly, and the split is more interesting than either
+outcome would have been alone.
+
+\textbf{The statistical primitives fit exactly and were used unchanged.} The p
+value estimator takes the null distribution as an argument, which is precisely
+the seam a caller with its own resampling scheme needs. The correction procedure
+needed nothing at all. Its verdict vocabulary already contained the three
+categories required plus a fourth for a design whose smallest attainable p value
+sits above alpha, which turned out to be the category every comparison in the
+first analysis landed in.
+
+\textbf{Everything shaped like a training run did not fit.} The ingestion layer
+claims a run log of this shape and then refuses it for having no step field, and
+there is no step to add, because the file has no time axis. No public entry point
+accepts a cluster assignment. Neither comparison mode is paired, and both reduce
+a metric series to a final window mean, which a categorical per field outcome
+does not have.
+
+Five issues are filed on that repository, each with a concrete API proposal, and
+the ledger in this repository records each one with its status and the
+workaround, if any, that stands here in the meantime. Two workarounds exist and
+both are labelled in every result file they produce, because a workaround that is
+invisible in the output is indistinguishable from a capability: the clustered
+null is built here and handed to the harness's estimator, and the practical
+effect gate is applied here because the harness's is relative.
+
+The anticipated friction was aimed one layer too low. The ledger predicted,
+before the integration began, that categorical outcome support in the permutation
+machinery would be the problem. It was not needed at all: the estimator never
+sees an outcome, only an effect and a null, both numbers. The categorical part of
+the problem lives entirely in the statistic and the statistic is the caller's.
+What actually broke was one layer above, in the data model.
+
+One consequence of the boundary is stated here rather than discovered later. The
+harness is a development dependency, not a runtime one, because installing it
+pulls more than a dozen transitive packages including a training metrics logging
+stack, and the audit path never imports it. \textbf{The shipped tool therefore
+cannot compute its own significance tests.} The narrower extra that would fix it
+is proposed in the ledger.
+
+\section{Reproducibility, and the one artefact that is marked dirty}
+
+One seed reaches the generator, the split assignment, the training script and
+any sampling in evaluation, through explicitly passed generator objects. The lock
+file is committed and continuous integration installs from it. Every result
+directory carries a manifest. Model artefacts are content addressed into every
+run that used them. Nothing is ever regenerated to fix a number: if a result is
+wrong, a new run is made with a new identifier and the old one stays, because
+result files are append only history.
+
+A run produced from a working tree with uncommitted changes is marked dirty in
+its manifest and is not citable, and the traceability job fails on a citation of
+one. Every evaluation result cited anywhere in this report is marked clean.
+
+\textbf{One artefact is not, and it is the training manifest of the shipped
+model.} The model was fitted in the same working session that authored the new
+corpus templates, so the tree carried uncommitted changes at the moment of
+fitting, and the manifest says so honestly rather than hiding it. What follows
+from that is worth being precise about rather than either ignoring or
+overstating:
+
+\begin{itemize}
+  \item The model artefacts themselves are committed and are content addressed
+    into every evaluation run manifest by digest, so \emph{which} model produced
+    the headline numbers is not in doubt.
+  \item The corpus is content addressed the same way, and its digest in the
+    training manifest matches the digest in every evaluation manifest, so the
+    model was fitted on the same corpus it was evaluated against.
+  \item What is genuinely weaker is the development split evidence: the numbers
+    in Tables~\ref{tab:training}, \ref{tab:sweep}, \ref{tab:calibration} and
+    \ref{tab:parity} come from a run whose tree state was not pinned to a
+    commit. They are reported because they describe how the shipped model was
+    built and they should not be silently dropped, and they are flagged here
+    because a reader is entitled to know that they sit one notch below the test
+    split numbers on the same scale the project applies to everything else.
+  \item The fix is procedural rather than technical, it is not applied
+    retroactively because that would be a regeneration, and it is listed in
+    Chapter~\ref{ch:future}: commit the corpus change first, then train from the
+    clean tree.
+\end{itemize}

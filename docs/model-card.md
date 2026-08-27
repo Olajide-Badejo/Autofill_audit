@@ -16,6 +16,30 @@ fenced block that names the file it came from.
 > the model learned that corpus. It does not say how well it will read the next
 > checkout page on the open web, and no number in this repository does.
 
+> **The training manifest of this model is marked dirty, and that is stated here
+> rather than left to be found.** `models/train_manifest.json` records
+> `git_dirty: true`, because the model was fitted in the same working session
+> that authored the new corpus templates at P5R and those templates were in the
+> tree and not yet committed at the moment of fitting. Spec section 18 makes a
+> run produced from a dirty tree not citable, so the honest reading of every
+> dev-split number in sections 4 to 6 of this card is that it sits one notch
+> below the test-split numbers on the scale this project applies to everything
+> else.
+>
+> What follows from it is bounded and worth being precise about rather than
+> either ignoring or overstating. The model artefacts are committed and are
+> content-addressed by sha into every evaluation run manifest, so *which* model
+> produced the test-split numbers is not in doubt. The corpus digest in the
+> training manifest matches the digest in every evaluation manifest, so the model
+> was fitted on the same corpus it was evaluated against. What is genuinely
+> weaker is the dev-split evidence, which rests on a run whose tree state was not
+> pinned to a commit.
+>
+> It is not repaired, because refitting now would produce a different model from
+> the one every committed evaluation result was measured against, which is worse
+> than the flag. The procedural fix is one sentence and it is on the future-work
+> list: commit the corpus change first, then train from the clean tree.
+
 ---
 
 ## 1. What it is, and what it is for

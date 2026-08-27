@@ -1,0 +1,132 @@
+\chapter{The extractor and its blind spots}
+\label{ch:extractor}
+
+\section{The seam that makes everything downstream testable}
+
+The extractor turns a page into a list of field descriptors, and that list is
+the only interface anything downstream ever sees. A classifier never sees the
+DOM and never sees an answer key. It sees a descriptor.
+
+The implementation splits at exactly that boundary, and it was the single most
+useful decision of the phase that built it. An in page traversal script reads
+the document and returns plain records. Everything after that is ordinary Python
+over those records, and the function that turns records into descriptors takes
+the same input a browser would have produced and does the rest with no browser
+at all.
+
+The consequence is that selector generation, group detection, the honeypot rule,
+declaration parsing and every normalisation step are covered by tests that run
+in milliseconds, and the browser driven tests are left to prove the one thing
+only a browser can prove: that a real page does say what the records claim. It
+also means the coverage gate does not rest on a browser being installed, which
+matters the first time a browser automation upgrade goes sideways
+\cite{playwright-python}.
+
+\section{What is collected}
+
+Per control: the identifier and name, every label source in a documented
+precedence order, placeholder, ARIA attributes \cite{aria-apg}, input type,
+pattern, length constraints, required and readonly flags, option lists for
+selects, the declared \code{autocomplete} value parsed into its token grammar,
+the surrounding heading and legend context, the frame and shadow root the
+control lives in, and a stable selector.
+
+Two collection decisions are worth naming.
+
+\textbf{Option lists are truncated at twice the largest list this project
+reasons about.} The descriptor has no field for a total option count, so the
+only way to tell a complete list of twelve months from the first twelve of five
+thousand is to put the cut where a meaningful list never reaches.
+
+\textbf{Several signals are collected and deliberately stop before the
+descriptor.} They are collected because the signal specification says to and
+they stop because the descriptor is a fixed downstream contract that every
+golden test inherits. One of them, whether a select accepts multiple values, is
+genuinely load bearing: a multi select with twelve options is a month picker to
+a careless detector and a multiple choice control to a careful one.
+
+\section{Normalisation, and two bugs a property test found}
+
+Text normalisation is unglamorous and turned out to be where the only genuinely
+subtle defects of the extractor lived. The published step order is compatibility
+normalisation, case folding, camel case splitting, delimiter splitting, then a
+stoplist. Taken literally that order destroys its own worked example: folding
+the whole string before looking for lower to upper transitions turns
+\code{firstName} into \code{firstname}, in which no boundary exists. The
+implemented reading inserts boundaries first and folds each resulting token,
+which loses nothing the fold was there for, because both properties it provides
+are per character.
+
+Idempotence is asserted as a property, and it earned its place twice.
+
+\textbf{Combining marks were being treated as separators.} The splitter was
+built on the language's word character class, which excludes combining marks.
+The failing case found by the property test was the Turkish dotted capital I:
+folding it yields a letter followed by a combining dot, splitting on that dot
+drops the dot, and a second pass over the same text returns something different
+from the first. The interesting part is what else the bug broke. Splitting on
+combining marks shreds Devanagari, Thai, pointed Hebrew and anything in
+decomposed form. It would never have shown up in this project's six locales, and
+it would have been waiting for the first person to point the tool at a page
+outside them.
+
+\textbf{Case folding does not always produce lowercase.} Cherokee folds upward,
+so folding a lowercase Latin letter beside a Cherokee capital leaves a case
+transition that the camel case pass, which runs before the fold, never saw. Feed
+the output back in and it splits differently. The fix is to bracket the fold with
+boundary insertion rather than to run it once before, which is the only order
+that satisfies both constraints.
+
+The reaction to the first counterexample matters more than the fix. The first
+instinct was to narrow the property to the six locales the corpus covers and
+call idempotence a practical guarantee. Both counterexamples were outside those
+locales and both were real defects, so the strategy went the other way instead
+and now sweeps the whole basic multilingual plane, each codepoint alone and
+beside four neighbours in both orders.
+
+\section{The blind spots, stated as blind spots}
+
+These are the cases where the tool cannot see, and each produces a named outcome
+rather than silence.
+
+\begin{description}
+  \item[Closed shadow roots.] Unreachable by design of the platform, for this
+    tool and for every other script on the page. Reported as
+    \ident{UNDETECTABLE_FIELD}, with the reason recorded and a fix that suggests
+    exposing the control in light DOM or declaring the attribute on the host.
+  \item[Cross origin frames.] The frame is detected, its contents are not read,
+    and the finding says that a hosted payment field is a common and correct
+    pattern rather than implying a defect. The accessibility test is made from
+    inside the parent document by asking for the frame's document in a guarded
+    block, which is exactly the check a script on that page would make.
+  \item[Canvas rendered widgets.] A canvas is always recorded as a region. A
+    page level undetectable descriptor is emitted only when the page yielded no
+    controls at all, because emitting one per large canvas would make every
+    hostile checkout report one more field than its answer key holds and the
+    reconciliation would never balance.
+  \item[Multi step forms.] Only the step currently in the document is audited.
+    There is no click through, because clicking is filling.
+  \item[Whether the browser actually autofills.] The tool verifies that the
+    markup gives the browser what it needs. It does not verify the browser's
+    behaviour, and it never claims to.
+\end{description}
+
+One reconciliation discrepancy is worth recording because it looks like a defect
+and is not. The extractor returns document order; an answer key lists fields in
+the generator's slot order, which appends a tier's extra controls to the end.
+Those agree everywhere except the mixed tier, where a hostile block sits in the
+middle of a form whose extra controls belong to that block. The selectors are
+the contract; the order of the list is not, and the property that every such
+form is on the mixed tier is asserted rather than assumed.
+
+\section{What the phase turned out to be about}
+
+The DOM walk itself is a few dozen lines and was right almost immediately. What
+took the time was deciding what counts as a honeypot, which label source wins,
+when a canvas counts as a field, whether two adjacent selects are an expiry pair,
+and what \emph{cannot be accessed} means for a frame.
+
+Every one of those is a judgement that ends up in a report somebody reads, and
+none of them is discoverable from the platform API. The corollary is that the
+tests worth having are the ones that pin the judgements, not the ones that pin
+the traversal, and the test suite is shaped accordingly.

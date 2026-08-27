@@ -1,0 +1,96 @@
+\chapter{Export fidelity and the featuriser fallback}
+
+The phase that expected a fight with a converter and got a different problem
+instead.
+
+\begin{defect}{The fallback was the design, not a retreat}
+\symptom{The plan anticipated a fight with the converter for text vectorizers and
+named a fallback: move the whole text pipeline into hand written code, export
+only the linear layer, and take that quickly rather than spending a day coaxing a
+converter.}
+\diagnosis{The fight never started, because the feature set was never
+convertible. Three of the five feature blocks are categorical one hots, option
+shape booleans and structural buckets, and no standard transformer produces
+those. Putting the whole featurisation in the graph would have meant writing
+custom converters for three bespoke transformers \emph{and} trusting the
+vectorizer converters, which is a larger version of exactly the risk the fallback
+exists to avoid.}
+\resolution{The hand written featuriser, shared by training and inference. It is
+the only design in which one implementation serves both paths, which the feature
+specification required from the beginning.}
+\instead{Writing the custom converters. The second argument against arrived for
+free and will matter longer: a vectorizer anywhere in the inference path puts a
+full machine learning framework on the dependency list of a tool that installs
+with one command. The route taken means an installed package needs an array
+library and a runtime and nothing else.}
+\end{defect}
+
+\begin{defect}{A reimplementation that is a claim rather than an identity}
+\symptom{A hand written character n-gram analyser is slower than a compiled one,
+and its faithfulness to the reference analyser is an assertion.}
+\diagnosis{So assert it, in a test, rather than in a comment.}
+\resolution{A test asserts, over inputs including empty strings, words shorter
+than the n-gram length, and Japanese text, that this project's enumeration is
+character for character the reference implementation's.}
+\instead{Spot checking a few strings. The detail an independent reimplementation
+gets wrong is the short word rule: a word shorter than the n-gram length yields
+its padded self once rather than once per length. Getting that wrong silently
+triples the weight of every two letter token, and it would not show up in a spot
+check of ordinary words.}
+\end{defect}
+
+\begin{defect}{An opset probe, and a warning that is recorded rather than
+suppressed}
+\symptom{The export is specified to use the newest opset the resolved runtime
+accepts, determined by probe. The probe walks down from the newest the installed
+format library defines and takes the first that both converts and opens in a
+session. The converter warns at every attempt that the requested opset is above
+the newest it has been tested against.}
+\diagnosis{The warning is not noise. It is precisely the case where a successful
+export proves nothing: the converter is saying it has no test coverage for the
+combination it just produced.}
+\resolution{The warning is recorded in the decision record rather than filtered,
+and the thing that proves something is the parity gate. That is why the export
+phase has a gate rather than a deliverable.}
+\instead{Suppressing the warning and trusting the successful conversion. A
+conversion that succeeds and produces different numbers is the failure mode the
+whole gate exists for.}
+\end{defect}
+
+\begin{defect}{The graph cannot read its own weights}
+\symptom{Naming the n-grams behind a prediction, which is what the evidence
+requirement in this project's first law demands, could not be done from the
+inference path.}
+\diagnosis{The exported graph is one classifier node followed by a normaliser,
+and the coefficients, the intercepts and the class order live in the node's
+\emph{attributes} rather than in graph initialisers. The runtime does not hand a
+caller a node's attributes. Reading them would have required the full model
+format library at runtime to produce one line of a report.}
+\resolution{A separate evidence table, holding each class's highest weighted
+features, written by the same training run that produces the model.}
+\instead{Adding the model format library as a runtime dependency, or dropping the
+evidence line from findings. The first inflates every install for one line of
+output; the second violates the law the tool is built around.
+
+A derived file is a drift risk, so the parity suite reads the weights back out of
+the graph and asserts that the table agrees with them. A stale evidence file now
+fails the build rather than naming the wrong n-grams in a finding, which would
+have satisfied the evidence law in form and violated it in substance.}
+\end{defect}
+
+\begin{defect}{The first training run was thrown away}
+\symptom{The manifest of the first full training run recorded that the working
+tree was dirty.}
+\diagnosis{The reproducibility rules say a result produced from a dirty tree is
+marked dirty and is not citable. The flag did exactly what it exists for.}
+\resolution{The run was discarded and repeated from a clean tree.}
+\instead{Citing it with a note. The flag needed one fix of its own to be honest:
+the output directory is untracked on a first run, so counting it would have
+marked every first training run dirty by construction and made the flag mean
+nothing. It now excludes the output directory and only that.
+
+This entry has a sequel. See the open item in
+Chapter~\ref{ch:still-open} about the training manifest of the currently shipped
+model, which is marked dirty for a different and less avoidable reason and was
+not thrown away.}
+\end{defect}

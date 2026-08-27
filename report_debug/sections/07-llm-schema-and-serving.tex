@@ -1,0 +1,170 @@
+\chapter{Language model schema behaviour and serving}
+
+The chapter whose most interesting entry is a failure mode that did not occur.
+
+\begin{defect}{A seven and a half gigabyte model on disk and unreachable}
+\symptom{The serving runtime was already installed on the host operating system
+with the model pulled. From inside the Linux subsystem the model blob was
+visible on the filesystem and the server was unreachable over the network.}
+\diagnosis{The host installation binds to loopback only, and loopback inside the
+subsystem is not the host's loopback.}
+\resolution{Install the runtime inside the subsystem and point its model
+directory at the host's store. The existing blob is reused with no re-pull.}
+\instead{Re-pulling the model inside the subsystem, or reconfiguring the host
+server's bind address. The first costs the download again and doubles the disk;
+the second changes a setting on the developer's own machine outside the
+repository, which is the kind of environment drift that makes a result
+irreproducible for the next person.}
+\end{defect}
+
+\begin{defect}{A keep alive long enough to be convenient and short enough to give
+the card back}
+\symptom{A long keep alive holds three quarters of the accelerator for as long as
+it lasts. A short one puts a model load into the next call.}
+\diagnosis{These are the two failure modes and they are not symmetric: an
+occupied accelerator is a nuisance, and a cold load inside a measured run is a
+corrupted latency distribution.}
+\resolution{A bounded keep alive of a few minutes, an explicit unload when a run
+finishes, and every latency figure taken against a warmed session so that the
+reload costs nothing methodologically as long as the warm up precedes the
+timing.}
+\instead{An unbounded keep alive. It would have made the measurement identical
+and left the accelerator occupied indefinitely, which is a decision that belongs
+to whoever owns the machine rather than to the benchmark.}
+\end{defect}
+
+\begin{defect}{The engine order in the benchmark is a methodological choice}
+\symptom{The benchmark runs the language model first, which is not the order the
+tables present.}
+\diagnosis{The two classical engines take a couple of minutes each of browser
+time with no inference call in them. Running the language model last would have
+meant several idle minutes before its first call, against a keep alive of a few
+minutes, so the keep alive could expire inside the measured run and put a cold
+model load into the per field latency distribution.}
+\resolution{Warm immediately before, run it first, and record the ordering and
+its reason in the run's own notes so that the table's presentation order cannot
+be mistaken for the execution order.}
+\instead{Presenting the tables in execution order. The tables are ordered for a
+reader; the execution is ordered for the measurement, and conflating the two
+would have made one of them worse for no gain.}
+\end{defect}
+
+\begin{defect}{The obvious leak check is wrong in both directions}
+\symptom{The declared attribute value must be dropped from what the model sees,
+or it reads the answer off the page on every clean tier form. The obvious check
+is a substring search for the declared token in the serialised payload.}
+\diagnosis{That check has two failure modes and both are fatal. A field named
+\ident{email} that also declares an email autofill token would trip it, and that
+combination is common enough in a clean corpus that the check would have fired on
+the first real run and been switched off within the hour. Meanwhile a declaration
+reaching the payload through some derived value would not trip it at all.}
+\resolution{Check \emph{independence} instead: pruning a descriptor and pruning
+the same descriptor with its declaration stripped must produce identical
+payloads. That has neither failure mode, and it is asserted on every request
+rather than reviewed once.}
+\instead{The substring check with an allow list of tokens that are also common
+identifiers. The allow list grows until the check means nothing, which is the
+same failure the traceability checker was designed to avoid.}
+\end{defect}
+
+\begin{defect}{The keep list is a floor, not a ceiling}
+\symptom{The specification's list of what pruning keeps omits several signals
+that the featuriser feeds to the n-gram model.}
+\diagnosis{Withholding a signal one engine has from the other tilts the
+comparison exactly as far as handing over the whole document would, in the
+opposite direction and with a better conscience.}
+\resolution{The rule applied is that the language model sees what the featuriser
+sees and nothing more. The three named drops stand, because none of them reaches
+the featuriser either. The deviation from a literal reading of the list is
+recorded in the prompt module's docstring with the reason.}
+\instead{Following the list literally. It would have been defensible by citation
+and indefensible as a measurement, and the specification's own reason for having
+the list is fairness rather than the list itself.}
+\end{defect}
+
+\begin{defect}{A threshold block that had to be unflattering}
+\symptom{The threshold loader raises for an engine with no block, by design. The
+language model needed two numbers and the specification forbids its self reported
+confidence from feeding the threshold policy.}
+\diagnosis{The only pair satisfying both constraints is zero and zero.}
+\resolution{Zero and zero, registered in the prediction file before the run, with
+both consequences written down in advance: the engine gets no threshold
+protection and accuses on every committed prediction, and the low confidence
+finding becomes unreachable for it.}
+\instead{Deriving a boundary on the self reported scale against a precision
+target, the way the n-gram engine's was derived. It would probably have raised
+the engine's finding level precision substantially. That it would have flattered
+the engine is exactly why it had to be refused before the measurement rather than
+after, and why the decision is in a committed file with a timestamp rather than
+in a paragraph written afterwards.}
+\end{defect}
+
+\begin{defect}{The failure mode the retry ladder exists for did not occur}
+\symptom{Across \vLlmRequests{} requests, \vLlmRetried{} needed a retry and
+\vLlmFailed{} failed after one. The registered prediction was that between none
+and one in twenty would need a retry.}
+\diagnosis{Passing the response schema with the request lets the server constrain
+decoding, which appears to remove the failure mode rather than reduce it.}
+\resolution{Report the zero. The retry ladder is still there and is still tested
+against a dozen recorded transcripts including deliberately malformed ones, so
+its behaviour is covered without a network and without a key; on this run it
+never fired.}
+\instead{Reporting robustness in prose, or removing the untriggered ladder. A
+benchmark whose most interesting failure mode did not occur is a result, and the
+honest report of it is the zero rather than a paragraph about how robust the
+implementation is. Removing the ladder would leave the next serving route, which
+may not constrain decoding, with no handling at all.}
+\end{defect}
+
+\begin{defect}{The prompt fingerprint that fails on purpose}
+\symptom{Editing the system prompt fails a test that holds a digest of the
+assembled prompt and schema.}
+\diagnosis{Working as intended. The prompt is part of what a result means, so a
+silent prompt edit would invalidate every committed language model result without
+anything going red.}
+\resolution{The correct response is to bump the prompt version, update the
+literal, and record the change in the changelog. Updating the literal alone is
+the one thing the test exists to prevent.}
+\instead{Comparing the prompt loosely, or leaving it untested. The whole reason a
+result file records a prompt version is so that two results can be compared, and
+a version that does not change when the prompt does is worse than no version at
+all.}
+\end{defect}
+
+\begin{defect}{Cost is null, and null is not zero}
+\symptom{The cost column is empty for every engine in every table.}
+\diagnosis{The two classical engines have no provider and the language model ran
+locally. Nothing was billed.}
+\resolution{Record null. Zero is a measurement and the electricity was not free;
+null is the absence of one. The price table document in this repository
+deliberately contains no prices, because no vendor page was retrieved during this
+work and a remembered price is a fabricated number.}
+\instead{Writing zero, or computing a list price estimate from a remembered rate
+card. The second is worse than the first: it produces a plausible number with a
+currency symbol on it, which is exactly the shape of claim that survives review.}
+\end{defect}
+
+\begin{defect}{The evaluation runner pays for the language model twice}
+\symptom{The run made twice as many requests as there are forms, and about half
+its wall clock is a second inference pass.}
+\diagnosis{The evaluation runner classifies every form twice: once directly,
+which is where the run log's predicted label and per field latency come from, and
+once through the audit engine, which is where the finding codes come from. For
+the two deterministic engines the passes agree by construction and cost
+microseconds. For a language model it doubles the inference.
+
+There is a second consequence and it is the one that matters to a reader of the
+finding level tables. A row's predicted label and its finding codes come from two
+different draws of a model that is not guaranteed to be deterministic. Measured
+on this run, using the deterministic rule engine as a control for the check's own
+edge cases, the excess disagreement is on the order of two fields in seven
+hundred.}
+\resolution{Not fixed. Documented in the main report's limitations chapter, in
+this report, and in the future work list, with the measured magnitude.}
+\instead{Fixing it in the phase that found it. Fixing it changes what the
+evaluation runner does for every engine, and doing that after seeing the results
+is the regeneration this project's reproducibility rules forbid. The fix is to
+pass the first pass's predictions into the audit rather than letting the audit
+reclassify, which also turns the two numbers into one fact, and it belongs to a
+phase that re-registers its predictions and re-runs everything.}
+\end{defect}

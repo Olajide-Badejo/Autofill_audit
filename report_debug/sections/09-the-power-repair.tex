@@ -1,0 +1,120 @@
+\chapter{The power repair}
+
+The largest single defect in the project was not in any line of code. It was in
+the shape of the corpus, it was found by arithmetic rather than by a failing
+test, and it invalidated the ability of an entire phase to certify anything.
+
+\begin{defect}{A design that could not reach its own significance level}
+\symptom{Every one of the \vOldFamilySize{} comparisons in the first analysis
+came back inconclusive, several of them sitting exactly at the design floor,
+meaning the observed difference was more extreme than every other arrangement the
+design permits and was still not significance.}
+\diagnosis{Pure arithmetic, and it needed no test split measurement at all. The
+resampling unit is the template. Whole templates are assigned to partitions, and
+the realised grid put one template per family in the test partition, so the test
+split held \vOldClusters{} templates. A paired sign flip permutation over that
+many clusters has \vOldArrangements{} arrangements, so the smallest attainable
+two sided p value is \vOldMinAttainableP{}, and the pre-registered false
+discovery level is \vAlpha{}.
+
+\textbf{More resamples do not help.} At that cluster count the test is already
+exhaustive. Only more clusters help.}
+\resolution{Widen the corpus. The test partition now holds \vTestTemplates{}
+templates, giving \vArrangements{} arrangements and a smallest attainable p of
+\vMinAttainableP{}, and \vUnderpowered{} comparisons in the headline analysis are
+reported as inconclusive for design reasons.}
+\instead{Two other options were on the table and both were refused in writing.
+
+\emph{Accept the floor and report every comparison as inconclusive.} That leaves
+the headline experiment answering its question with effect sizes and no
+significance at all, which is a legitimate paper and a poor engineering result.
+
+\emph{Pre-register a different alpha.} A level one order of magnitude looser
+would clear the floor. It would also have been chosen \emph{after} discovering
+that the original level was unreachable, which is indistinguishable from moving
+the goalposts however carefully it is worded.}
+\end{defect}
+
+\begin{defect}{Computing the power before the runs rather than after them}
+\symptom{Not a defect. The decision that made the entry above reportable.}
+\diagnosis{The arithmetic above was computed and written into the statistical
+policy file \emph{before} the test split runs, from the split assignment alone.}
+\resolution{Publish it as a finding.}
+\instead{Discovering it after the runs came back inconclusive and writing it up
+then. The two documents would have contained the same sentences and would have
+had entirely different evidential value. Writing it afterwards would have been
+indistinguishable from an excuse.}
+\end{defect}
+
+\begin{defect}{Every recorded number in the repository moved at once}
+\symptom{Widening the corpus changes the manifest digest, which invalidates the
+descriptor cache, which changes the training partition, which changes the model,
+its vocabulary, its calibration and its evidence table, which changes both
+derived thresholds, which changes every metric in the model card, and separately
+changes the test partition, which moves both engines' test split numbers in
+either direction.}
+\diagnosis{All of it follows mechanically from one deliberate change, and none of
+it is a regression. But a reader comparing the project against its own history a
+month later would otherwise see every number change at once with no stated
+cause.}
+\resolution{The explanation, the changelog entry and the prediction file are one
+commit and it is the \emph{first} commit of the phase, before the templates, the
+regeneration and the retraining. Then the model artefacts and the model card in a
+single commit, as the model card rule requires. Then the new runs and the new
+analysis.}
+\instead{Doing the work and writing the explanation at the end. The ordering of
+the commits is the part that matters, because it is the part a reader can check.}
+\end{defect}
+
+\begin{defect}{Three labels the model had never seen}
+\symptom{Three labels sat at zero rows in the training partition, which means the
+model had been asked about classes it could only ever get wrong.}
+\diagnosis{Nothing in the growth rule required a training floor. Every clause was
+about existence somewhere in the system, not about presence in the partition the
+model actually learns from.}
+\resolution{A new clause: every label a model can predict must appear in the
+training partition with at least a full template's worth of rows. The constant is
+arithmetic rather than taste. A template is generated in six locales and four
+tiers at one variant, and the held out locale is lifted out of training, so one
+training template contributes exactly that many training rows for a field it
+carries in every locale. The constant therefore says \emph{at least one whole
+training template carries this label}, which is the smallest statement about a
+label that is not an accident of one locale profile. The new templates were
+designed to carry the starved labels deliberately rather than to acquire them by
+luck.}
+\instead{Dropping the three labels from the model's output space. They are
+specification tokens that real forms use, and a tool that cannot name a field
+because its own corpus was thin is a tool with a gap in the middle of its
+taxonomy.}
+\end{defect}
+
+\begin{defect}{What deliberately did not move}
+\symptom{Not a defect. The list is here because it is the part that makes the
+repair honest.}
+\diagnosis{A phase that moved a threshold and a corpus at the same time would
+have produced two changes and no attribution.}
+\resolution{The seed stays where it was set. The held out locale stays the same
+locale. The excluded partition keeps its rule. The alpha, the false discovery
+rate, the absolute practical effect threshold, the clustering unit and the target
+precision behind the high threshold are all exactly what the earlier phases
+pre-registered.}
+\instead{Taking the opportunity to adjust anything else while the numbers were
+going to move anyway. It is the most tempting moment in a project to do that, and
+it is the moment at which a repair becomes a rewrite.}
+\end{defect}
+
+\begin{defect}{The old result files were kept}
+\symptom{Two test split runs in the repository were taken on a corpus that no
+longer exists in that shape, and their numbers are not comparable to anything
+current.}
+\diagnosis{They were correctly taken and correctly reported.}
+\resolution{They stay, unedited. Result files are append only history. The honest
+description of them is the first, underpowered measurement, and they are cited in
+exactly one place for exactly one purpose, which is to show what the repair did
+to each engine, with the caveat attached that the two columns are not two
+measurements of the same thing.}
+\instead{Deleting them, or regenerating them against the new corpus. The
+reproducibility rules forbid regenerating to fix a number, and deleting them
+would remove the only evidence that the project found its own design defect
+rather than being told about it.}
+\end{defect}

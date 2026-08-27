@@ -124,8 +124,63 @@ rejects forbidden dash characters and attribution artifacts in the message.
 TeX Live is installed in full, with `latexmk` at `/usr/bin/latexmk`. That is the
 fallback condition the specification names, so `latexmk` is the resolved engine
 and `make reports` wraps it. `tectonic` is also present at
-`/usr/local/bin/tectonic` and is not used. The reasoning is in ADR 0001. No
-report is built before P7.
+`/usr/local/bin/tectonic` and is not used. The reasoning is in ADR 0001.
+
+### What the three documents actually need, resolved at P7
+
+ADR 0001 promised this list, because choosing `latexmk` means the report build
+depends on a distribution this repository does not provision. Everything below is
+in the standard distribution and is what `tectonic` would fetch on a machine
+without one:
+
+`fontenc`, `inputenc`, `lmodern`, `geometry`, `microtype`, `booktabs`,
+`longtable`, `array`, `graphicx`, `xcolor`, `caption`, `enumitem`, `fancyvrb`,
+`parskip`, `hyperref` and the `url` package it loads.
+
+Nothing else is used, no class beyond the standard `report` class, and no font
+beyond the Latin Modern set that ships with the distribution.
+
+### How `make reports` is wired
+
+```bash
+make reports        # regenerate tables and figures, then build every report present
+make reports-clean  # remove everything the above produces, so a rebuild starts from nothing
+```
+
+Two properties of that target are deliberate.
+
+**Tables and figures are regenerated first, every time.** They are produced from
+committed result files by `scripts/make_report_tables.py` and
+`scripts/make_report_figures.py`, and a hand-typed table is a law 3 violation
+whatever it looks like, so generation is a prerequisite of the build rather than
+a step somebody remembers.
+
+**`latexmk -auxdir=build` separates intermediates from deliverables.** Every
+auxiliary file goes to each report's own `build/` directory, which `.gitignore`
+ignores, and the compiled PDF is left beside its source, where it is committed.
+Spec section 17.2 names the main report's deliverable path as
+`report/build/main.pdf` and section 17.3 names the debug report's as
+`report_debug/debug_report.pdf`, which are two different conventions; the
+`.gitignore` committed at P0 ignores `build/` directories, so the two
+deliverables sit at symmetric paths beside their sources rather than one of them
+living inside an ignored directory behind a negation rule.
+
+`report_for_me/` is built when it is present and is never committed. Its absence
+is not an error and `make reports` says so and carries on.
+
+### The demo animation
+
+`scripts/make_demo_gif.sh` runs the tool for real against
+`tests/fixtures/checkout_hostile.html`, captures its stdout and its exit status,
+and hands both to `scripts/make_demo_gif.py`, which renders the transcript as
+frames with Pillow. Nothing in the animation is written by hand.
+
+Frames rather than a terminal recorder, for two reasons. A recorder captures wall
+clock timings, so two runs of the same command produce two different artefacts
+and the committed asset can never be reproduced byte for byte. And it would add a
+binary that is not in the lock file to the set of things a contributor needs
+before they can regenerate a committed asset. Pillow arrives with matplotlib,
+which is already in the `dev` extra for the report figures.
 
 ## Ollama
 
@@ -133,7 +188,24 @@ Not installed inside the guest at P0, and not needed before P6. The language
 model comparison is a research-mode feature: it is never required to run the
 tool, never required by the test suite, and never touched by CI. The model tag,
 its quantization, and the observed memory headroom are resolved at P6 and
-recorded in an ADR of their own at that point.
+recorded in [`adr/0007-llm-model-and-quantization.md`](adr/0007-llm-model-and-quantization.md).
+
+### As resolved at P6
+
+Ollama was already installed on the Windows host with the model pulled, and the
+Windows build binds to loopback only, so from inside the guest the model blob was
+visible on disk and unreachable over the network. Installing Ollama inside WSL2
+and pointing `OLLAMA_MODELS` at the Windows store reuses the blob with no
+re-pull.
+
+Three settings, all in ADR 0007 with their reasoning: the systemd unit is
+disabled and the server is started by hand for a run, the keep-alive is bounded
+at ten minutes with an explicit unload when a run finishes, and the context
+length is set explicitly rather than left to the default.
+
+The live LLM tests need two conditions, `AUTOFILL_AUDIT_LLM_TESTS=1` **and** a
+reachable server carrying the tag. CI has neither and must keep having neither.
+The default everywhere is a skip with the reason printed.
 ## Playwright, as resolved at P2
 
 Full Chromium, not the headless shell, per spec section 3.3. The corpus depends
