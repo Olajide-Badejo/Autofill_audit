@@ -519,7 +519,19 @@ def _artefact_shas(model_dir: Path | None) -> dict[str, str]:
     if thresholds_path.is_file():
         shas["thresholds.json"] = runlog.sha256_of(thresholds_path)
     if model_dir is not None:
-        for name in (MODEL_FILE, VOCAB_FILE, CALIBRATION_FILE, LABEL_MAP_FILE):
+        # The n-gram bundle's four files, then the P8 bundle's three. Named
+        # rather than globbed: a directory listing would put whatever happened
+        # to be beside the model into the manifest, and a manifest that records
+        # a stray file is a manifest a reader has to interpret.
+        for name in (
+            MODEL_FILE,
+            VOCAB_FILE,
+            CALIBRATION_FILE,
+            LABEL_MAP_FILE,
+            "model.int8.onnx",
+            "tokenizer.json",
+            "bert_config.json",
+        ):
             path = model_dir / name
             if path.is_file():
                 shas[name] = runlog.sha256_of(path)
@@ -532,7 +544,13 @@ def _arguments(argv: Sequence[str] | None) -> argparse.Namespace:
     parser.add_argument("--corpus", type=Path, default=Path("corpus"))
     parser.add_argument("--split-file", type=Path, default=None)
     parser.add_argument("--split", choices=("dev", "test"), required=True)
-    parser.add_argument("--engine", choices=("rules", "ngram", "llm"), required=True)
+    parser.add_argument("--engine", choices=("rules", "ngram", "llm", "bert"), required=True)
+    parser.add_argument(
+        "--bert-model",
+        type=Path,
+        default=None,
+        help="the P8 encoder bundle; the engine is loaded from scripts/, not from the package",
+    )
     parser.add_argument(
         "--llm-endpoint",
         type=str,
@@ -583,6 +601,40 @@ def _llm_config(args: argparse.Namespace) -> Any:
     )
 
 
+BERT_ENGINE_NAME = "bert"
+"""The P8 engine's name. It is a string here rather than an ``EngineChoice``
+member on purpose.
+
+`EngineChoice` is the package's list of engines the installed tool offers, and
+spec section 10.7 makes the transformer conditional: it joins that list only if
+the pre-registered ship condition of
+`experiments/predictions/p8-transformer.md` is met. Until then it is a research
+engine this runner can measure and the tool does not have, which is exactly the
+state `scripts/bert_engine.py` is in and exactly why that module lives beside
+this one. `docs/adr/0008-transformer-stretch.md` records the decision."""
+
+
+def _load(args: argparse.Namespace) -> Any:
+    """Return the engine named on the command line, from wherever it lives.
+
+    Three of the four come out of the package's ladder, which owns the fallback
+    rule of spec section 10.1 and the refusal rule for a named engine that
+    cannot run. The fourth is imported from the script directory, because it is
+    not part of the package yet and importing it here rather than teaching the
+    package about it is what keeps that true.
+    """
+    if args.engine == BERT_ENGINE_NAME:
+        import bert_engine
+
+        return bert_engine.load_bert_engine(args.bert_model)
+    load = load_engine(
+        EngineChoice(args.engine), model_dir=args.model, llm_config=_llm_config(args)
+    )
+    if load.notice:
+        print(f"eval.py: {load.notice}")
+    return load.classifier
+
+
 def _llm_block(engine: Any) -> dict[str, Any] | None:
     """The cost and schema-compliance accounting, or None for a local engine.
 
@@ -617,11 +669,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     corpus_manifest_sha = train._corpus_manifest_sha(corpus_dir)
     train.bind_cache(args.cache, corpus_manifest_sha)
 
-    choice = EngineChoice(args.engine)
-    load = load_engine(choice, model_dir=args.model, llm_config=_llm_config(args))
-    if load.notice:
-        print(f"eval.py: {load.notice}")
-    engine = load.classifier
+    engine = _load(args)
     describe = engine.describe()
     thresholds = load_thresholds(args.engine)
 

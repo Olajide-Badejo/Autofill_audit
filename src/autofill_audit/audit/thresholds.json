@@ -35,6 +35,21 @@
       "dev_recall": null,
       "corpus_manifest_sha": null,
       "derived_on": null
+    },
+    "bert": {
+      "basis": "dev split of the seed 20260825 corpus, calibrated INT8 encoder. Derived under the identical policy of experiments/predictions/p4-threshold-derivation.md, before the test-split run and before the ship condition of spec section 10.7 was evaluated",
+      "tau_high": 0.8812712211543366,
+      "tau_low": 0.46089195269361716,
+      "target_precision": 0.98,
+      "dev_precision": 0.9816272965879265,
+      "dev_recall": 0.6437177280550774,
+      "dev_accusations": 381,
+      "dev_fields_needing_accusation": 581,
+      "dev_recall_at_any_confidence": 0.7710843373493976,
+      "band_fraction_target": 0.5,
+      "band_recall_captured": 0.06540447504302926,
+      "corpus_manifest_sha": "15c3136f75d2d9c6807dbc70a28ab507bca1c784df53c134650e4f9898e6e035",
+      "derived_on": "2026-08-27"
     }
   },
   "tier_values": {
@@ -101,6 +116,21 @@
     "derived the n-gram engine's, was rejected in advance rather than after seeing whether",
     "it would have helped. It is the thing spec section 12.1 forbids, and that it would",
     "probably raise the language model's finding-level precision is the reason to refuse it",
-    "before the measurement rather than a reason to reconsider after one."
+    "before the measurement rather than a reason to reconsider after one.",
+    "",
+    "The bert block, added at P8, is derived exactly as the n-gram block was: on the dev",
+    "split, against the same 0.98 precision target, by the same script under the policy",
+    "pre-registered in experiments/predictions/p4-threshold-derivation.md. Its confidences",
+    "are calibrated probabilities from the quantized encoder, which is the same kind of",
+    "quantity the n-gram block's boundary sits on, so the comparison between those two",
+    "blocks is a fair one in a way the comparison against the llm block is not.",
+    "",
+    "The block is here whether or not the engine ships, and that was pre-registered in",
+    "experiments/predictions/p8-transformer.md before the test-split run, because it would",
+    "otherwise look like a decision taken afterwards. The committed test-split result was",
+    "produced with these two numbers, and a file that dropped them would make that result",
+    "unreproducible from this repository, which is what law 3 forbids. A block here is not",
+    "a claim that the tool offers the engine: EngineChoice in classify/__init__.py is what",
+    "makes that claim, and the basis string above says which state this one is in."
   ]
 }

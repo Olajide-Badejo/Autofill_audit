@@ -233,16 +233,47 @@ def choose_tau_low(rows: Sequence[Row], tau_high: float, fraction: float) -> flo
     return best
 
 
-def _write_block(path: Path, block: dict[str, Any]) -> None:
-    """Insert the n-gram block into the committed thresholds document.
+def _write_block(path: Path, block: dict[str, Any], engine: str = ENGINE_NAME) -> None:
+    """Insert one engine's block into the committed thresholds document.
 
-    The rule block is left exactly as it is. A phase that retuned the rule
+    Every other block is left exactly as it is. A phase that retuned the rule
     boundary while adding an engine would churn every golden snapshot and every
-    reported finding for a reason that had nothing to do with the rules.
+    reported finding for a reason that had nothing to do with the rules, and the
+    same argument applies in the other direction when P8 adds a fourth.
     """
     document = json.loads(path.read_text(encoding="utf-8"))
-    document["engines"][ENGINE_NAME] = block
+    document["engines"][engine] = block
     path.write_text(json.dumps(document, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
+BERT_ENGINE_NAME = "bert"
+"""The P8 engine's name, a string for the reason `scripts/eval.py` gives beside
+its own copy: the transformer joins the package's engine list only if the
+pre-registered ship condition is met, and until then it is measurable from here
+and absent from the tool."""
+
+
+def _load_engine(engine: str, model_dir: Path) -> Any:
+    """Return the engine whose confidences the boundary will be derived on."""
+    if engine == BERT_ENGINE_NAME:
+        import bert_engine
+
+        return bert_engine.load_bert_engine(model_dir)
+    return load_ngram_engine(model_dir)
+
+
+_BASIS = {
+    ENGINE_NAME: "dev split of the seed 20260825 corpus, calibrated n-gram engine",
+    BERT_ENGINE_NAME: (
+        "dev split of the seed 20260825 corpus, calibrated INT8 encoder. Derived under "
+        "the identical policy of experiments/predictions/p4-threshold-derivation.md, "
+        "before the test-split run and before the ship condition of spec section 10.7 "
+        "was evaluated"
+    ),
+}
+"""What each block says about where its two numbers came from. Required by the
+loader and never a default: a threshold that cannot say what produced it is
+folklore with a JSON key."""
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -251,6 +282,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--corpus", type=Path, default=Path("corpus"))
     parser.add_argument("--split-file", type=Path, default=None)
     parser.add_argument("--model", type=Path, default=Path("models"))
+    parser.add_argument(
+        "--engine",
+        choices=(ENGINE_NAME, BERT_ENGINE_NAME),
+        default=ENGINE_NAME,
+        help="whose confidences the boundary is derived on, and which block it is written to",
+    )
     parser.add_argument("--cache", type=Path, default=None)
     parser.add_argument("--target-precision", type=float, default=TARGET_PRECISION)
     parser.add_argument("--band-fraction", type=float, default=RECALL_BAND_FRACTION)
@@ -270,7 +307,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     dev = train.build_dataset(corpus_dir, split, train.DEV, guard, args.cache, base_year)
     print(f"derive_thresholds: {dev.forms} dev forms, {len(dev.examples)} rows")
 
-    engine = load_ngram_engine(args.model)
+    engine = _load_engine(args.engine, args.model)
     predictions = engine.predict(dev.descriptors)
     rows = build_rows(dev.examples, predictions)
 
@@ -313,7 +350,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     print(f"  band fraction       {band / (recall_all - recall) if recall_all > recall else 0:.4f}")
 
     block = {
-        "basis": "dev split of the seed 20260825 corpus, calibrated n-gram engine",
+        "basis": _BASIS[args.engine],
         "tau_high": tau_high,
         "tau_low": tau_low,
         "target_precision": args.target_precision,
@@ -335,8 +372,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     print(json.dumps(block, indent=2))
 
     if args.write:
-        _write_block(_REPO_ROOT / THRESHOLDS_PATH, block)
-        print(f"derive_thresholds: wrote the {ENGINE_NAME} block to {THRESHOLDS_PATH}")
+        _write_block(_REPO_ROOT / THRESHOLDS_PATH, block, args.engine)
+        print(f"derive_thresholds: wrote the {args.engine} block to {THRESHOLDS_PATH}")
     else:
         print("derive_thresholds: nothing written; pass --write to update the committed file")
     return 0 if met else 1

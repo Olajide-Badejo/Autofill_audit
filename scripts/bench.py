@@ -81,13 +81,24 @@ DEFAULT_ENGINES = ("rules", "ngram", "llm")
 
 ABSENT_ENGINES: Mapping[str, str] = {
     "bert-onnx-int8": (
-        "absent: the transformer of spec section 10.7 is phase P8 and has not been built. "
-        "Spec section 13.4 requires the row to say absent rather than be left blank, "
-        "because a blank cell reads as a measurement of zero."
+        "absent: the transformer of spec section 10.7 was built and measured at P8 and did "
+        "not ship. It cleared both accuracy bars of its pre-registered ship condition and "
+        "missed the latency budget by nearly threefold, so it is not an engine this build "
+        "offers and it is not in this benchmark. The measurement is committed at "
+        "experiments/results/test/2026-08-27T03-32-53Z_p8-bert_ab32195 and the arithmetic "
+        "that rejected it is in docs/report.md. Spec section 13.4 requires the row to say "
+        "absent rather than be left blank, because a blank cell reads as a measurement of "
+        "zero, and this row is absent for a different reason from the one it used to carry: "
+        "the number exists and the engine does not."
     )
 }
 """Engines the headline table of spec section 13.4 names and this build does not
-have. Reported by name with a reason, never omitted."""
+have. Reported by name with a reason, never omitted.
+
+The reason changed at P8 and the wording changed with it. Until then the
+transformer had not been built. Now it has been built, measured, and rejected by
+a condition fixed before it existed, so a row that still said "not built" would
+be false in the one place a reader trusts most."""
 
 
 @dataclass(frozen=True, slots=True)

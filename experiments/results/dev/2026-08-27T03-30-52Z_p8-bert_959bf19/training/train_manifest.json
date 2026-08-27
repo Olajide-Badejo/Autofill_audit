@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "tool_version": "1.0.0",
+  "engine": "bert",
+  "git_sha": "a063966df980c595bf402f78488249d13f3a32dd",
+  "git_dirty": false,
+  "seed": 20260825,
+  "corpus_manifest_sha256": "15c3136f75d2d9c6807dbc70a28ab507bca1c784df53c134650e4f9898e6e035",
+  "split_file_sha256": "c4c797ee27cec1162bc57ca3c53dc2a2392899199cbbe390e2674daba38a0ab8",
+  "split_counts": {
+    "dev": 120,
+    "excluded": 100,
+    "test": 240,
+    "train": 500
+  },
+  "held_out_locale": "fr-FR",
+  "excluded_partition_used_for": "nothing at P8, as at P4",
+  "base_model": "distilbert-base-multilingual-cased",
+  "serialisation": "scripts/bert_engine.py::field_text",
+  "sweep_grid": {
+    "learning_rates": [
+      2e-05,
+      3e-05,
+      5e-05
+    ],
+    "sequence_lengths": [
+      32,
+      64
+    ],
+    "max_epochs": 8
+  },
+  "chosen_hyperparameters": {
+    "learning_rate": 5e-05,
+    "max_length": 64,
+    "epochs": 4,
+    "batch_size": 32,
+    "optimizer": "AdamW",
+    "weight_decay": 0.01,
+    "schedule": "linear decay with a warmup of a tenth of the total steps",
+    "loss": "cross entropy with balanced class weights",
+    "max_grad_norm": 1.0
+  },
+  "calibration_switchover": 100,
+  "onnx_opset": 23,
+  "quantization": {
+    "fp32_bytes": 541548274,
+    "int8_bytes": 135764168,
+    "weight_type": "QInt8",
+    "mode": "dynamic: weights quantized, activations quantized at run time",
+    "pre_process": "quant_pre_process with skip_symbolic_shape=True"
+  },
+  "dependencies": {
+    "python": "3.14.4",
+    "numpy": "2.5.2",
+    "onnx": "1.22.0",
+    "onnxruntime": "1.29.0",
+    "playwright": "1.62.0",
+    "scikit-learn": "1.9.0",
+    "tokenizers": "0.23.1",
+    "torch": "2.13.0",
+    "transformers": "5.16.1"
+  },
+  "machine": {
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "processor": "unrecorded",
+    "cpu_count": 28,
+    "gpu_used": true,
+    "torch": "2.13.0+cu130",
+    "torch_cuda": "13.0",
+    "cudnn": 92000,
+    "compiled_architectures": [
+      "sm_75",
+      "sm_80",
+      "sm_86",
+      "sm_90",
+      "sm_100",
+      "sm_120"
+    ],
+    "device": "cuda",
+    "gpu_name": "NVIDIA GeForce RTX 5070",
+    "compute_capability": "12.0",
+    "total_vram_mib": 12226,
+    "peak_vram_mib": 2668
+  },
+  "determinism": "seeds set for python, numpy and torch; cudnn deterministic; use_deterministic_algorithms with warn_only, because some encoder backward kernels have no deterministic implementation on this hardware",
+  "command_line": "train_bert.py --corpus corpus --split-file corpus/split.json --seed 20260825 --out .scratch/p8/bundle --cache .scratch/descriptor-cache",
+  "started_at": "2026-08-27T03:12:45.874824+00:00",
+  "finished_at": "2026-08-27T03:22:39.545525+00:00",
+  "wall_seconds": 593.670701
+}

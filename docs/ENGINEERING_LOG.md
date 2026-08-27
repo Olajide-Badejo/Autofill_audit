@@ -1764,3 +1764,137 @@ Applied as directed. The deviation is recorded in `docs/cross-repo-tasks.md`
 beside the rule it deviates from, which is where a reader checking the rule will
 find it. Nothing else about the release changes: the tree at the tag is the P7
 tree, the gates were green on it, and the publication task remains open.
+
+## 2026-08-27: P8 opens with the condition, not with the model
+
+The phase brief and spec section 10.7 agree on the shape of this phase and it is
+an unusual one: the deliverable is a decision, and both values of the decision
+are a pass. So the first commit is
+`experiments/predictions/p8-transformer.md`, which fixes three bars on the test
+split and states the arithmetic that reads a verdict off them, before the
+optional dependencies were installed and before a weight was touched.
+
+Writing that file first is not ceremony. By the time three numbers exist, a
+person holding them has an opinion about which way they should have gone, and the
+whole apparatus of law 4 exists because that opinion is invisible in the output.
+Fixing the bars while they are still cheap to fix is the only moment at which
+they can be fixed honestly.
+
+### What was decided and what was left open
+
+The prediction file fixes the bars, the parity contract, the partition
+discipline, the calibration and threshold policy, and the size of the corrected
+comparison family. It deliberately leaves the model, the dependency arrangement,
+and where the inference code lives to `docs/adr/0008-transformer-stretch.md`,
+because none of those three can bias a comparison whose metric and margin are
+already nailed down, and pretending to pre-register them would have padded the
+file with decisions that had not been made yet.
+
+The one decision in the record that could have biased the outcome is the model,
+and it went the way that makes the phase harder rather than easier. A smaller
+encoder would help the latency arm and hurt the accuracy arm, and the accuracy
+arm is the reason to ship at all. The primary candidate stays.
+
+### The Blackwell check came first
+
+The card is an RTX 5070 and a torch wheel that predates that architecture does
+not fail at import; it fails at the first kernel launch, which on a long run is
+an hour in. So the check ran before anything else: a CUDA matmul against a CPU
+reference and one autograd step, on a wheel whose compiled architecture list was
+printed and read. `torch 2.13.0+cu130` carries `sm_120` and the card reports
+`sm_120`. The alternative was pre-decided and would have been a legitimate
+no-ship with evidence.
+
+### The gigabytes that do not enter the lock file
+
+torch, transformers and tokenizers went into a `bert-train` extra that the lock
+target in the Makefile does not compile and that CI therefore never installs.
+The cost is that two scripts are only exercised on this machine, which is stated
+in the decision record rather than discovered later by somebody wondering why
+the coverage report does not mention them.
+
+### Where the engine lives, and why that is a decision
+
+`scripts/bert_engine.py` rather than `src/autofill_audit/classify/`. A
+conditional engine that has already moved into the package has quietly decided
+the condition. It would also put a tokenizer on the runtime dependency list, a
+second model format in the wheel, and a fourth name in the help text of a tool
+that has not established it has a fourth engine. The move into `src/` is what
+the ship branch is for, and if there is no ship branch the module stays where it
+is and is correctly labelled: the code that produced a committed measurement.
+
+## 2026-08-27: P8 closes, and the answer is no-ship
+
+Two of three bars cleared. The encoder beat the n-gram model on the held-out
+locale by three times the margin the condition asked for, beat it on the whole
+split when it only had to avoid regressing, and then missed the latency budget by
+nearly threefold. The condition is a conjunction and the verdict is arithmetic,
+so the transformer is not an engine this tool has.
+
+Writing the condition down first is what made that a five-minute step instead of
+an argument. Holding three numbers where two are excellent and one is bad is
+exactly the situation in which a person starts reasoning about whether the third
+bar was really the right bar, and by then there is no way to tell the difference
+between a good argument and a motivated one. The file settled it in advance, and
+the value of it was only visible at the moment it cost something.
+
+### What the phase actually learned, as opposed to what it decided
+
+**The linear model's ceiling is not the problem's ceiling.** That was suspected
+and is now measured: on the held-out locale the encoder is more than fifteen
+points of macro-F1 ahead, and on the hostile tier more than eleven. Those are the
+two slices the specification predicted the advantage would sit in, and it did.
+
+**The clean tier moved more than the specification predicted**, which is the one
+contradiction in the phase. It is small and it is the interesting kind: it says
+the remaining clean-tier gap is not about which model can see the label, because
+both can, but about how each generalises from having seen it.
+
+**The runtime inversion from P6 held up under a much heavier engine.** The
+encoder is roughly fifty-five times the n-gram model per field and the browser is
+still seventy percent of the wall clock. The finding that survives contact with
+real pages is still that the page load dominates, and P8 is a stress test of it
+rather than a counterexample.
+
+### The quantizer missed its own bound, and that was recorded rather than moved
+
+Dynamic INT8 was required in advance to agree with the FP32 graph on at least
+ninety-nine percent of dev rows and to cost at most a hundredth of dev macro-F1.
+It agreed on a little under ninety-eight percent and cost a little under one and
+a half hundredths. Both misses are small and both are outside the bound.
+
+The temptation there is real and worth naming: the bound was written by the same
+person who wanted the export to work, the misses are within a rounding error of
+the bar, and nobody would have noticed a bar quietly written as ninety-seven and
+a half. What made it easy to leave alone is that the bound had already failed the
+phase for a second reason, so nothing turned on it. That is luck rather than
+virtue, and the honest note is that the discipline was not tested as hard here as
+it looks.
+
+### Things that went differently from the plan, and why
+
+**The engine module stayed in `scripts/`.** The plan allowed for it moving into
+the package if the condition was met. It was not, so it did not, and the module
+is labelled as what it is: the code that produced a committed measurement.
+
+**No fourth confidence kind was added.** The handoff into this phase expected
+one. Reading the mapping rather than assuming it showed a fourth word would have
+asserted a distinction that does not exist between two sets of calibrated
+probabilities produced by the same procedure, and the whole point of that key is
+that it separates scales that really are different.
+
+**The training artefacts live inside the dev run's directory.** They are not
+run-log shaped and had nowhere else to be that a citation could resolve through.
+The run's own manifest records the shas of the exact graph, tokenizer,
+calibration and label map, so the association is checkable rather than asserted.
+
+**The latency estimate registered in the prediction file was slightly wrong**, in
+the direction that flatters the transformer: the measured value landed just below
+the bottom of the range. The direction held, the magnitude did not, and the range
+was registered precisely so that saying this would be possible.
+
+### The GPU
+
+Peak 2668 MiB of a 12226 MiB card, ten minutes of wall time for six fine-tuning
+runs of eight epochs each, and the card released at the end of the run with no
+process left holding it.

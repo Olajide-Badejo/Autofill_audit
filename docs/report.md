@@ -28,16 +28,25 @@ The build specification puts the question directly:
 **The premise did not survive. The linear model did not have to get close,
 because it won.** And the rule table beat both.
 
+A fourth engine was added to the table later, at P8: a fine-tuned multilingual
+encoder, quantized to eight-bit integers. It is the most accurate classifier in
+the table by a clear margin and it is not in the tool, because it is about fifty
+times slower per field than the linear model and that was disqualifying under a
+budget fixed before it was trained. Both of those sentences are the point.
+
 | Engine | macro-F1 | micro-F1 | unseen locale | abstention | p95 latency | cost | Result file |
 |---|---|---|---|---|---|---|---|
 | `rules` | 0.7911 | 0.7678 | 0.7276 | 0.2620 | 134.0 | null | [metrics.json](../experiments/results/test/2026-08-26T21-15-35Z_p6-rules_6457ac7/metrics.json) |
 | `ngram` | 0.7394 | 0.8226 | 0.5637 | 0.0363 | 261.5 | null | [metrics.json](../experiments/results/test/2026-08-26T21-17-53Z_p6-ngram_6457ac7/metrics.json) |
 | `llm` | 0.6353 | 0.6953 | 0.6045 | 0.0255 | 674727.4 | null | [metrics.json](../experiments/results/test/2026-08-26T20-32-48Z_p6-llm_6457ac7/metrics.json) |
-| `bert-onnx-int8` | absent | absent | absent | absent | absent | absent | not built, phase P8 |
+| `bert-onnx-int8` | 0.8026 | 0.8895 | 0.7192 | 0.0406 | 14303.1 | null | [metrics.json](../experiments/results/test/2026-08-27T03-32-53Z_p8-bert_ab32195/metrics.json) |
 
-Latency is microseconds per field. The fourth row is absent rather than blank
-because it is phase P8 and has not been built, and a blank cell reads as a
-measurement of zero.
+Latency is microseconds per field. The fourth row was absent until P8 and now
+carries a measurement, and the measurement is the reason the engine is still not
+in the tool. **It leads the table on both averages and it did not ship.** It
+missed a latency budget that was written down before it existed, by nearly
+threefold. The three numbers and the arithmetic that rejected it are in the
+section on the transformer below.
 
 Macro-F1 and micro-F1 are both reported because they disagree about which of the
 two classical engines leads, and a table carrying one of them would be picking a
@@ -93,13 +102,18 @@ localised. One control per form is deliberately undeterminable and predicting
 `UNKNOWN` on it is correct. If every hostile control were equally hopeless the
 tier would measure nothing except that the tier is hard.
 
-### The three engines
+### The engines
+
+The first three were benchmarked together at P6. The fourth was added at P8, was
+measured against the same test split through the same runner, and did not ship;
+its section is below.
 
 | Engine | What it is |
 |---|---|
 | `rules` | A table of regular expressions with a tier and a signal name on every row, six precedence tiers, and a locale tag on every row whose wording belongs to one language. No probabilities, so it prints none. A tie surviving every tier is `UNKNOWN`, and the ties are deliberate. |
 | `ngram` | Character and word n-grams over the normalised token stream plus categorical, option-shape and structural features, a logistic regression, per-class calibration, exported to ONNX and run on the CPU execution provider. |
 | `llm` | `mistral-nemo:12b-instruct-2407-q4_K_M`, a 12-billion-parameter instruction model at 4-bit quantization, served locally through Ollama with the response schema enforced by the server, temperature zero, seed recorded, determinism not claimed. |
+| `bert-onnx-int8` | `distilbert-base-multilingual-cased`, fine tuned on the same training split with balanced class weights, calibrated per class on dev, exported to ONNX and quantized to eight-bit integers with dynamic activations, run on the same pinned single-thread CPU session. Trained on the GPU, served on the CPU like everything else. Measured at P8 and not shipped. |
 
 Three decisions decide whether the language model comparison measures anything at
 all, and all three were fixed before the run.
@@ -379,6 +393,19 @@ anticonservative everywhere it appears, because clustering by form asserts that
 two locales of one template are independent. Nothing in this repository cites it
 as evidence.
 
+**P8 re-ran the correction over four engines rather than three**, which is six
+pairs and a family of sixty-six comparisons rather than three pairs and
+thirty-three, in one step-up call
+([analysis.json](../experiments/results/analysis/2026-08-27T03-38-22Z_p8-analysis_623303a/analysis.json)).
+The consequence was pre-registered before the transformer classified a field and
+it is the uncomfortable direction: **every adjusted p value in the three original
+pairs is larger in the larger family.** The underlying p values did not move, the
+P6 analysis file is untouched, and both files are in the repository. The
+alternative, correcting the transformer's comparisons inside a family that held
+only them, would have produced smaller adjusted p values for exactly the
+comparisons P8 most wanted to report, which is why the family size was fixed
+while fixing it was still free.
+
 ### What was predicted, and what was wrong
 
 Eight predictions were committed in
@@ -401,6 +428,131 @@ The ones that held were the ones where the mechanism was already understood: pag
 load dominates because a browser is slow; the n-gram engine is slower per field
 because it enumerates n-grams in interpreted code. The ones that failed were the
 ones where a mechanism was assumed rather than measured.
+
+### The transformer that led the table and did not ship
+
+Phase P8 fine-tuned a distilled multilingual encoder,
+`distilbert-base-multilingual-cased`, on the same training split, exported it to
+ONNX and quantized it to eight-bit integers, and measured it on the test split
+through the same runner every other engine went through. It is the most accurate
+classifier this project has measured. It is not in the tool.
+
+The reason it is not in the tool was written down before it existed. The
+condition was fixed in
+[`p8-transformer.md`](../experiments/predictions/p8-transformer.md), the first
+commit of the phase, ahead of the training dependencies being installed. It is a
+conjunction of three bars and the verdict is arithmetic:
+
+| Bar | Requirement | Measured | Met | Baseline from | Measured in |
+|---|---|---|---|---|---|
+| A, unseen locale | fr-FR macro-F1 at least 0.6137, the n-gram baseline plus 0.05 | 0.7192 | yes | [n-gram run](../experiments/results/test/2026-08-26T21-17-53Z_p6-ngram_6457ac7/metrics.json) | [P8 run](../experiments/results/test/2026-08-27T03-32-53Z_p8-bert_ab32195/metrics.json) |
+| B, no regression | overall macro-F1 at least 0.7294, the n-gram baseline less 0.01 | 0.8026 | yes | [n-gram run](../experiments/results/test/2026-08-26T21-17-53Z_p6-ngram_6457ac7/metrics.json) | [P8 run](../experiments/results/test/2026-08-27T03-32-53Z_p8-bert_ab32195/metrics.json) |
+| C, latency budget | p95 microseconds per field at most 5000.0 | 14303.1 | **no** | none, a budget rather than a comparison | [P8 run](../experiments/results/test/2026-08-27T03-32-53Z_p8-bert_ab32195/metrics.json) |
+
+**Two of three is a no-ship.** The condition is a conjunction and the file says
+so, specifically because two-of-three with a wide margin on the two is the case
+where it would be tempting to reconsider. The margins are wide: bar A was cleared
+by more than twice its own margin, and the engine beat the n-gram model on every
+locale and every tier of the grid. It still does not ship, because the third bar
+is a budget rather than a target, and a budget that bends when the numbers are
+good was never a budget.
+
+#### What it cost and what it bought
+
+Per field it is about fifty-five times the n-gram engine at the ninety-fifth
+percentile and about seventy-eight times at the median, on the same pinned
+single-thread CPU session. In whole-page terms the picture is less dramatic and
+more interesting: classification goes from a third of a percent of the run's wall
+clock to about fifteen percent, and the browser is still seventy percent of it.
+Both figures are in the `latency_us_per_field` and `wall_time` blocks of the two
+result files linked above. So the honest version of the cost is not that it would
+make the tool feel slow. It is that it would multiply the classifier's share of
+the work by forty, for a tool whose own measurements say the classifier was never
+the bottleneck, while adding a tokenizer, a second model format, and a model file
+too large to keep in this repository.
+
+What it bought is real and is worth stating precisely rather than dismissing.
+Against the n-gram engine on the same test split, every figure from
+[the P8 analysis](../experiments/results/analysis/2026-08-27T03-38-22Z_p8-analysis_623303a/analysis.json):
+
+- the held-out locale improves by 0.1555, and survives correction ([analysis](../experiments/results/analysis/2026-08-27T03-38-22Z_p8-analysis_623303a/analysis.json))
+- the hostile tier improves by 0.1123, and survives correction ([analysis](../experiments/results/analysis/2026-08-27T03-38-22Z_p8-analysis_623303a/analysis.json))
+- the recall of `MISSING_AUTOCOMPLETE` improves by 0.2709 at unchanged precision, and survives correction ([analysis](../experiments/results/analysis/2026-08-27T03-38-22Z_p8-analysis_623303a/analysis.json))
+- the whole-split macro-F1 improves by 0.0632, and does not survive correction ([analysis](../experiments/results/analysis/2026-08-27T03-38-22Z_p8-analysis_623303a/analysis.json))
+
+The correction is Benjamini Hochberg across a family of sixty-six comparisons,
+six engine pairs over eleven comparisons each, whose size was fixed in the
+prediction file before the transformer classified a field. The recall figure is
+the difference between finding two fifths of the missing declarations and
+finding two thirds of them.
+
+#### What the specification predicted about it, and what happened
+
+<!-- traceability: a specification section number, not a measurement -->
+Spec section 10.7 predicted, before any of this, that the advantage would be
+concentrated in the held-out locale and the hostile tier and would be small or
+negative on the clean tier where the n-gram model already has the label text.
+
+The first two held and the third did not. The held-out-locale gain and the
+hostile-tier gain are both larger than the whole-split gain, which is what
+"concentrated" has to mean to be checkable. The clean tier was predicted to move by less than 0.02 and moved by 0.0279, from [the P8 run](../experiments/results/test/2026-08-27T03-32-53Z_p8-bert_ab32195/metrics.json) against [the n-gram run](../experiments/results/test/2026-08-26T21-17-53Z_p6-ngram_6457ac7/metrics.json).
+It is a small contradiction and it points somewhere: on a clean page the encoder is
+not reading anything the linear model cannot see, so the gap that remains there
+is about how the two generalise from a label they have both been shown, and not
+about which of them can see it.
+
+Two predictions this phase added to the specification's own also matter. The
+latency estimate was registered as a range and the measured value fell just below
+the bottom of it, so the direction held and the magnitude was wrong in the
+direction that flatters the transformer. And the four confusion pairs predicted
+at spec section 13.2 were expected to persist: only `tel` against `tel-national`
+did, and the other three did not appear for the n-gram engine either, so their
+absence says something about the corpus rather than about the encoder.
+
+#### The quantization did not meet its own contract
+
+The parity contract was written in two parts before either export existed,
+because demanding exactness from a quantizer is demanding that it not work.
+
+The first part passed cleanly. The FP32 ONNX graph agreed with PyTorch on the
+argmax of every one of the 1596 dev rows, with a maximum absolute logit
+difference of 1.5e-05 against a ceiling of 1e-3.
+
+The second part did not. Every figure in this paragraph is from the `parity` and
+`quantization` blocks of
+[the training record](../experiments/results/dev/2026-08-27T03-30-52Z_p8-bert_959bf19/training/dev_metrics.json).
+Dynamic INT8 was required to agree with the FP32 graph on at least 99.0 percent of dev rows and to give up at most 0.01 of dev macro-F1 ([training record](../experiments/results/dev/2026-08-27T03-30-52Z_p8-bert_959bf19/training/dev_metrics.json)).
+It agreed on 97.87 percent and gave up 0.0139 ([training record](../experiments/results/dev/2026-08-27T03-30-52Z_p8-bert_959bf19/training/dev_metrics.json)).
+Both bounds are missed, neither by much, and both were recorded rather than
+adjusted. Under the pre-registered rule that is a second and independent failure
+of bar C, which is defined on the quantized engine.
+
+It is worth being exact about what this does and does not mean. It does not mean
+the accuracy above is wrong: the test-split run was made with the quantized
+engine, so what the table reports is what that engine actually does. It means the
+quantized engine is measurably not the model that was trained, by a little more
+than the phase said it would tolerate, and that a shipping version would have had
+to accept either a higher-precision quantization, and therefore a worse latency
+number, or a re-registered bound.
+
+#### Why this outcome is the deliverable
+
+<!-- traceability: a specification section number, not a measurement -->
+Spec section 10.7 says a model that is one point better and forty times slower
+does not ship, and that it gets a paragraph explaining why, which is a more
+useful contribution than a slower default. This one is six points better and
+about fifty-five times slower, and the paragraph is this section.
+
+The result that generalises past this corpus is not the accuracy number, which
+depends on the corpus being synthetic in the same way every other accuracy number
+here does. It is the shape of the trade. A pretrained multilingual encoder buys
+most of its advantage exactly where a bag of character n-grams is weakest, on a
+locale it was never trained on and on markup stripped of its labels, and it
+charges two orders of magnitude of arithmetic for it. For a developer tool
+running in a terminal beside a browser that is already the slowest thing in the
+loop, that is a bad trade at this size and it might be a good one at a quarter of
+the size. That is a measurement somebody could take next, and this section is
+what it would be compared against.
 
 ---
 
@@ -526,13 +678,15 @@ Ordered by what would change a conclusion.
    small model removes the fitting asymmetry and is the fairest and most
    expensive version of the experiment.
 
-4. **The transformer rung (P8).** Not built. It ships only if it beats a
-   pre-stated metric by a pre-stated margin within a pre-stated latency budget,
-   and if it does not, the deliverable is the paragraph saying so with the
-   numbers. The two slices to aim it at are the mixed tier, where the n-gram
-   model underperforms its own tier-by-tier behaviour, and the held-out locale,
-   where a multilingual encoder's pretraining is the whole argument for using
-   one.
+4. **A smaller encoder than the one P8 measured.** P8 is done and the section
+   above has its numbers: the distilled multilingual encoder cleared both
+   accuracy bars and missed the latency budget by nearly threefold, so it did
+   not ship. The open question it leaves is not whether a transformer helps,
+   which is now measured, but how much of the help survives shrinking. A model
+   at roughly a quarter of the arithmetic per field would sit inside the budget
+   if it kept its accuracy, and the prediction to register first is that it
+   would not keep all of it. That measurement has a baseline to be compared
+   against now, which it did not before.
 
 5. **More templates per family**, to resolve smaller effects. The cost is another
    regeneration, retraining, threshold rederivation and re-measurement, with the

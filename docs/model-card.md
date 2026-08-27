@@ -629,3 +629,38 @@ right far more often when it did.
 
 That is the trade section 6 of this card exists to document, measured against a
 system that has no equivalent of it.
+
+## 12. How this model compares against a fine-tuned transformer
+
+Added at P8. **There is no model card for the transformer, because there is no
+committed transformer.** Ground rule 8 requires a card beside any committed
+model, and the encoder P8 fine-tuned did not clear its pre-registered ship
+condition, so nothing of it is committed here except the measurement. That
+measurement, its training record and the arithmetic that rejected it are in
+[the P8 test run](../experiments/results/test/2026-08-27T03-32-53Z_p8-bert_ab32195/metrics.json),
+[its training record](../experiments/results/dev/2026-08-27T03-30-52Z_p8-bert_959bf19/training/dev_metrics.json),
+and the transformer section of [the report](report.md).
+
+What belongs on **this** card is what that comparison says about this model, and
+it is not flattering.
+
+**The transformer beat this model everywhere it was measured:** on both averages,
+on every locale, and on every markup-quality tier of the test split. The two
+gains that survived correction across the family are the held-out locale and the
+hostile tier, which are precisely two of the failure modes section 8 of this card
+names. It also raised the recall of `MISSING_AUTOCOMPLETE` by two thirds without
+giving up precision, and that is the metric closest to what a user experiences.
+
+**Two things this model keeps, and together they are why it is still the engine
+that ships.** It answers in hundreds of microseconds per field where the encoder
+needs tens of milliseconds, on the same pinned single-thread CPU session. And it
+can name the features behind an answer, because a contribution is the feature's
+value times the class weight and that is the term that entered the logit; the
+encoder cannot, and its predictions carry an explicit marker saying so. Law 1
+asks every finding for a named evidence list, and only one of the two engines can
+give a real one.
+
+The honest summary for a reader of this card is that the accuracy ceiling
+documented above is not the ceiling of the problem. It is the ceiling of a small
+linear model, and the distance from there to a distilled multilingual encoder has
+now been measured rather than guessed at.

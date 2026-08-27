@@ -49,10 +49,18 @@ classifier, and it is also several thousand times faster, needs no accelerator,
 and adds nothing meaningful to an install.
 
 The fourth row of Table~\ref{tab:headline} reads \emph{absent} in words rather
-than being left blank. A transformer rung was specified as an optional later
-phase and has not been built. A blank cell in a comparison table reads as a
-measurement of zero, which would be a fabricated number in the one place a
-reader trusts most.
+than being left blank. A blank cell in a comparison table reads as a measurement
+of zero, which would be a fabricated number in the one place a reader trusts
+most.
+
+That row is absent for a different reason from the one it originally carried, and
+the difference is worth a sentence here rather than only later. The transformer
+rung was specified as an optional later phase, and it was then built, fine tuned,
+quantized and measured against this same test split. It is the most accurate
+classifier this project has produced and it did not ship, because it missed a
+latency budget that was fixed before it was trained. This table is the three
+engine benchmark it was not part of. Its own run, its result file, and the
+arithmetic that rejected it are in Section~\ref{sec:transformer-rung}.
 
 \section{The two averages disagree, and the disagreement is the mechanism}
 
@@ -330,3 +338,78 @@ than recomputed.
 
 That was not the purpose of re-running them. It is the strongest reproducibility
 evidence this project has produced and it is worth the sentence.
+
+\section{The transformer that led the table and did not ship}
+\label{sec:transformer-rung}
+
+A distilled multilingual encoder was fine tuned on the same training split,
+exported to ONNX, quantized to eight bit integers with dynamic activations, and
+measured against this same test split through the same runner
+\cite{onnxruntime-quantization}. It scores \vBertMacroF{} macro-F1 and
+\vBertMicroF{} micro-F1, which makes it the most accurate classifier this project
+has measured, and it is not an engine the tool offers.
+
+The condition that rejected it was fixed before it existed, in the first commit
+of the phase, ahead of the training dependencies being installed. It is a
+conjunction of three bars and the verdict is arithmetic rather than editorial.
+The unseen locale had to beat the n-gram model's \vNgramUnseenMacroF{} by at
+least \vBertUnseenMargin{}, that is reach \vBertBarUnseen{}, and it reached
+\vBertUnseenMacroF{}. The whole split had to stay within \vBertOverallTolerance{}
+of the n-gram model's \vNgramMacroF{}, that is not fall below \vBertBarOverall{},
+and it reached \vBertMacroF{}. The ninety fifth percentile latency per field had
+to sit at or under \vBertBarLatency{} microseconds, and it measured
+\vBertLatencyNinetyFive{}.
+
+Two of three is a no ship, and the condition says so in as many words
+specifically because two of three with a wide margin on the two is the case where
+it would be tempting to reconsider. The margins are wide. The engine beat the n
+gram model on every locale and on every tier: the held out locale by
+\vBertUnseenGain{}, the hostile tier by \vBertHostileGain{}, the whole split by
+\vBertOverallGain{}, and the recall of \code{MISSING\_AUTOCOMPLETE} by
+\vBertMissingRecallGain{} at a precision of \vBertMissingPrecision{} against the
+n-gram model's \vNgramMissingPrecision{}. Corrected across a family of
+\vBertFamilySize{} comparisons over \vBertPairs{} engine pairs, the held out
+locale, the hostile tier and the recall gain survive and the whole split
+difference does not.
+
+It still does not ship, because the third bar is a budget rather than a target,
+and a budget that bends when the numbers are good was never a budget. Per field
+the engine costs about \vBertLatencyRatio{} times the n-gram model at the same
+percentile on the same pinned single thread session. In whole page terms that
+turns classification from a fraction of a percent of the run into
+\vBertClassifyShare{} of it, with the browser still \vBertLoadShare{}. So the
+cost is not that the tool would feel slow. It is that the classifier's share of
+the work would grow by a factor of forty in a tool whose own measurements say the
+classifier was never the bottleneck, while adding a tokenizer, a second model
+format, and a model file of \vBertIntEightMegabytes{} megabytes that this
+repository cannot hold.
+
+The parity contract was written in two parts before either export existed,
+because demanding exactness from a quantizer is demanding that it not work. The
+first part passed: the FP32 graph agreed with the trained model on the argmax of
+every one of the \vBertParityRows{} development rows, with a maximum absolute
+logit difference of \vBertParityDelta{} against a ceiling of
+\vBertParityTolerance{}. The second part did not. Dynamic INT8 was required to
+agree with the FP32 graph on at least \vBertIntEightAgreementBar{} of development
+rows and to give up at most \vBertIntEightDropBar{} of development macro-F1; it
+agreed on \vBertIntEightAgreement{} and gave up \vBertIntEightDrop{}. Both bounds
+are missed, neither by much, and both are recorded rather than adjusted. Under
+the pre-registered rule that is a second and independent failure of the latency
+bar, which is defined on the quantized engine.
+
+What the specification predicted about this rung was that the advantage would be
+concentrated in the held out locale and the hostile tier and would be small or
+negative on the clean tier, where the n-gram model already has the label text.
+The first two held: both gains are larger than the whole split gain, which is
+what concentration has to mean to be checkable. The third did not. The clean tier
+gained \vBertCleanGain{}, where the phase had predicted less than
+\vPracticalThreshold{}. It is a small contradiction and it points somewhere: on a
+clean page the encoder is not seeing anything the linear model cannot see, so the
+gap that remains is about how the two generalise from a label they have both been
+shown.
+
+The result that survives this corpus being synthetic is not the accuracy number.
+It is the shape of the trade. A pretrained multilingual encoder buys most of its
+advantage exactly where a bag of character n-grams is weakest, on a locale it was
+never trained on and on markup stripped of its labels, and it charges two orders
+of magnitude of arithmetic for it.
