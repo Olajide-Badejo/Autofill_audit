@@ -7,7 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-Nothing yet.
+The P8 transformer stretch of spec section 10.7, which is a conditional phase:
+its deliverable is a decision, and both values of that decision are a pass.
+
+### Added
+
+- **`experiments/predictions/p8-transformer.md`**, the first commit of the
+  phase. Three bars on the test split, fixed before the optional dependencies
+  were installed and before a weight was touched: the held-out locale beaten by
+  a stated margin, the whole split not regressed by more than a stated
+  tolerance, and a stated p95 per field through dynamic INT8. A conjunction, and
+  an arithmetic verdict read off it.
+- **`docs/adr/0008-transformer-stretch.md`**, which records the encoder chosen
+  and why the smaller alternate was refused, the dependency arrangement, the
+  Blackwell compute-capability check that ran before any long run, where the
+  inference code lives before the condition is evaluated, and the fact that this
+  engine cannot name the features behind an answer.
+- **A `bert-train` optional extra** carrying torch, transformers and tokenizers.
+  It is outside the `dev` extra and outside `requirements.lock` by construction:
+  the lock target compiles `--extra dev --extra llm` and nothing else, so CI
+  never installs a training stack.
+- **`scripts/train_bert.py`**, the fine-tuning, export and quantization program,
+  under the same test-partition guard and the same audit hook as
+  `scripts/train.py`, whose loaders it imports rather than reimplements.
+- **`scripts/bert_engine.py`**, the field serialiser, the pinned-thread CPU
+  session, and the engine behind the `Classifier` protocol.
 
 ## [1.0.0] - 2026-08-27
 

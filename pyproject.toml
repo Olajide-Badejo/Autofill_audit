@@ -50,6 +50,35 @@ dependencies = [
 llm = [
     "httpx>=0.28.1",
 ]
+# The P8 transformer stretch (spec section 10.7). Deliberately its own extra,
+# outside `dev`, and deliberately absent from requirements.lock, which is the
+# file CI installs. The `lock` target in the Makefile compiles `--extra dev
+# --extra llm` and nothing else, so this extra stays out of the lock by
+# construction rather than by remembering.
+#
+# The reason is arithmetic rather than taste. Installing it pulls torch with its
+# CUDA runtime, cuDNN, cuBLAS, NCCL and Triton, which is several gigabytes
+# against roughly a tenth of that for the whole of `dev`. CI runs six jobs on
+# every push and not one of them fine-tunes anything, so putting these three
+# lines in the lock file would multiply every job's install time and cache size
+# for a code path that only ever runs on the build machine's GPU.
+#
+# The consequence is stated here rather than discovered later: `scripts/
+# train_bert.py` and `scripts/bert_engine.py` are not exercised by CI beyond
+# import and serialisation, and the tests that need a real tokenizer skip
+# themselves when the wheel is absent. The exact versions this phase resolved
+# are recorded in `docs/adr/0008-transformer-stretch.md` and in the train
+# manifest beside the model, because a manifest is what law 3 reads and a lock
+# file this extra is not in cannot answer for it.
+#
+# Install by hand, into the project venv:
+#
+#     pip install 'autofill-audit[bert-train]'
+bert-train = [
+    "tokenizers>=0.23.1",
+    "torch>=2.13.0",
+    "transformers>=5.16.1",
+]
 dev = [
     "build>=1.5.0",
     "hypothesis>=6.165.10",

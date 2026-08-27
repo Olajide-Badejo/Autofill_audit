@@ -1764,3 +1764,61 @@ Applied as directed. The deviation is recorded in `docs/cross-repo-tasks.md`
 beside the rule it deviates from, which is where a reader checking the rule will
 find it. Nothing else about the release changes: the tree at the tag is the P7
 tree, the gates were green on it, and the publication task remains open.
+
+## 2026-08-27: P8 opens with the condition, not with the model
+
+The phase brief and spec section 10.7 agree on the shape of this phase and it is
+an unusual one: the deliverable is a decision, and both values of the decision
+are a pass. So the first commit is
+`experiments/predictions/p8-transformer.md`, which fixes three bars on the test
+split and states the arithmetic that reads a verdict off them, before the
+optional dependencies were installed and before a weight was touched.
+
+Writing that file first is not ceremony. By the time three numbers exist, a
+person holding them has an opinion about which way they should have gone, and the
+whole apparatus of law 4 exists because that opinion is invisible in the output.
+Fixing the bars while they are still cheap to fix is the only moment at which
+they can be fixed honestly.
+
+### What was decided and what was left open
+
+The prediction file fixes the bars, the parity contract, the partition
+discipline, the calibration and threshold policy, and the size of the corrected
+comparison family. It deliberately leaves the model, the dependency arrangement,
+and where the inference code lives to `docs/adr/0008-transformer-stretch.md`,
+because none of those three can bias a comparison whose metric and margin are
+already nailed down, and pretending to pre-register them would have padded the
+file with decisions that had not been made yet.
+
+The one decision in the record that could have biased the outcome is the model,
+and it went the way that makes the phase harder rather than easier. A smaller
+encoder would help the latency arm and hurt the accuracy arm, and the accuracy
+arm is the reason to ship at all. The primary candidate stays.
+
+### The Blackwell check came first
+
+The card is an RTX 5070 and a torch wheel that predates that architecture does
+not fail at import; it fails at the first kernel launch, which on a long run is
+an hour in. So the check ran before anything else: a CUDA matmul against a CPU
+reference and one autograd step, on a wheel whose compiled architecture list was
+printed and read. `torch 2.13.0+cu130` carries `sm_120` and the card reports
+`sm_120`. The alternative was pre-decided and would have been a legitimate
+no-ship with evidence.
+
+### The gigabytes that do not enter the lock file
+
+torch, transformers and tokenizers went into a `bert-train` extra that the lock
+target in the Makefile does not compile and that CI therefore never installs.
+The cost is that two scripts are only exercised on this machine, which is stated
+in the decision record rather than discovered later by somebody wondering why
+the coverage report does not mention them.
+
+### Where the engine lives, and why that is a decision
+
+`scripts/bert_engine.py` rather than `src/autofill_audit/classify/`. A
+conditional engine that has already moved into the package has quietly decided
+the condition. It would also put a tokenizer on the runtime dependency list, a
+second model format in the wheel, and a fourth name in the help text of a tool
+that has not established it has a fourth engine. The move into `src/` is what
+the ship branch is for, and if there is no ship branch the module stays where it
+is and is correctly labelled: the code that produced a committed measurement.
