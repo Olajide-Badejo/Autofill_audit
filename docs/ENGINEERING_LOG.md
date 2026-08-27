@@ -1750,3 +1750,16 @@ and the sentence explaining it.
 The condition for shipping it does not move: it ships only if it beats a
 pre-stated metric by a pre-stated margin within a pre-stated latency budget, and
 if it does not, the deliverable is the paragraph saying so with the numbers.
+
+## 2026-08-27: the v1.0.0 tag, applied by direction
+
+The P7 entry above records why the tag was withheld: section 0.5 forbids a
+stable tag while any dependency is a git ref, and `ml-experiment-triage` is one.
+The project owner has directed that the tag be applied now, with the pin in
+place, because the index publication will not happen for a while and the stable
+tag is needed on the repository today.
+
+Applied as directed. The deviation is recorded in `docs/cross-repo-tasks.md`
+beside the rule it deviates from, which is where a reader checking the rule will
+find it. Nothing else about the release changes: the tree at the tag is the P7
+tree, the gates were green on it, and the publication task remains open.

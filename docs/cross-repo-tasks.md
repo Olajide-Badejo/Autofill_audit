@@ -185,3 +185,19 @@ link back to this ledger.
 
 Without it the second-consumer claim is invisible to a reader who lands on either
 repository alone, and an invisible claim is an unfalsifiable one.
+
+## The gate, waived at the tag
+
+The rule above was written to make the git-ref pin expensive, and it did its job:
+the cost surfaced, was recorded, and was put to the project owner as a decision
+rather than being quietly absorbed. The owner directed that v1.0.0 be tagged with
+the pin still in place, on the grounds that publishing the harness to an index is
+work that will not happen for a while and a stable tag is needed now.
+
+So the deviation is recorded here, in the ledger that exists for exactly this:
+**v1.0.0 is tagged while `ml-experiment-triage` is consumed from its git tag
+rather than from a package index.** The publication task stays open below and is
+the first item of post-1.0 housekeeping. The dependency sits in the `dev` extra,
+so the shipped wheel is unaffected; what is affected is the reproducibility
+guarantee of the evaluation toolchain, which now rests on a git tag rather than
+on an immutable index release.
