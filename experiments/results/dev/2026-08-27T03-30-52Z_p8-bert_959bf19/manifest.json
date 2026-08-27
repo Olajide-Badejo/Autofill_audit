@@ -1,0 +1,77 @@
+{
+  "schema_version": "1.0.0",
+  "run_id": "2026-08-27T03-30-52Z_p8-bert_959bf19",
+  "command_line": "eval.py --corpus corpus --split dev --engine bert --bert-model .scratch/p8/bundle --cache .scratch/descriptor-cache --run-id 2026-08-27T03-30-52Z_p8-bert_959bf19 --note the P8 encoder on the dev split, INT8 quantized, before the test split was looked at",
+  "split": "dev",
+  "engine": "bert",
+  "engine_describe": {
+    "engine": "bert",
+    "tool_version": "1.0.0",
+    "model_dir": ".scratch/p8/bundle",
+    "providers": "CPUExecutionProvider",
+    "intra_op_threads": "1",
+    "calibration_fitted_on": "dev",
+    "tokenizer": "0.23.1",
+    "evidence_note": "this engine cannot name the features behind a decision. The signals on each prediction name the input segments the field carried, which is what the model was shown and not a decomposition of what it did.",
+    "confidence_kind": "calibrated-probability",
+    "model_file": "model.int8.onnx",
+    "model_sha256": "32086eccfe244e0c70dad40cdecb101d01ca640b75ef67cd1da663313b66bc65",
+    "tokenizer_sha256": "bf1b59b7b11c95f194f51708d918eea378e09d05f84c0e1656dc5180e8117088",
+    "calibration_sha256": "1029ec3ad6ca8eff77531c56d2cb67421a7bec8975d1ce44aad2fd86790df7df",
+    "label_map_sha256": "666976229f8676aff4ada3eb1eda70f3933ed2cb412343a5576651bc28d419f8",
+    "base_model": "distilbert-base-multilingual-cased",
+    "quantization": "int8-dynamic",
+    "max_length": "64",
+    "class_count": "42"
+  },
+  "threshold_describe": {
+    "tau_high": "0.8812712211543366",
+    "tau_low": "0.46089195269361716",
+    "basis": "dev split of the seed 20260825 corpus, calibrated INT8 encoder. Derived under the identical policy of experiments/predictions/p4-threshold-derivation.md, before the test-split run and before the ship condition of spec section 10.7 was evaluated",
+    "source": "thresholds.json",
+    "measured": "true"
+  },
+  "artefact_sha256": {
+    "thresholds.json": "1750876fae1497dc47386acdb4e155aaf2f849f6188da2ece3816b1beeb01897",
+    "model.onnx": "ac0ed248c54bf899290812f91b028bd0af99bae58f8f7ddbc3f847cd78696906",
+    "calibration.json": "1029ec3ad6ca8eff77531c56d2cb67421a7bec8975d1ce44aad2fd86790df7df",
+    "label_map.json": "666976229f8676aff4ada3eb1eda70f3933ed2cb412343a5576651bc28d419f8",
+    "model.int8.onnx": "32086eccfe244e0c70dad40cdecb101d01ca640b75ef67cd1da663313b66bc65",
+    "tokenizer.json": "bf1b59b7b11c95f194f51708d918eea378e09d05f84c0e1656dc5180e8117088",
+    "bert_config.json": "f4f110e85d2eb3d4fb743f83279292d873b5880bf0d332356a59bcc17c03153b"
+  },
+  "corpus_manifest_sha": "15c3136f75d2d9c6807dbc70a28ab507bca1c784df53c134650e4f9898e6e035",
+  "split_file_sha": "c4c797ee27cec1162bc57ca3c53dc2a2392899199cbbe390e2674daba38a0ab8",
+  "seed": 20260825,
+  "git": {
+    "commit": "959bf1949d68aa3b88c71ea0bd990bf26297a6e0",
+    "dirty": false
+  },
+  "dependency_versions": {
+    "python": "3.14.4",
+    "numpy": "2.5.2",
+    "onnxruntime": "1.29.0",
+    "playwright": "1.62.0",
+    "click": "8.4.2",
+    "rich": "15.0.0",
+    "jinja2": "3.1.6",
+    "ml-experiment-triage": "1.0.0"
+  },
+  "machine": {
+    "os": "Linux 6.18.33.2-microsoft-standard-WSL2",
+    "machine": "x86_64",
+    "python": "3.14.4",
+    "python_implementation": "CPython",
+    "cpu_model": "Intel(R) Core(TM) i7-14700K",
+    "cpu_count": "28",
+    "gpu_present": "NVIDIA GeForce RTX 5070"
+  },
+  "started_at": "2026-08-27T03:30:52Z",
+  "finished_at": "2026-08-27T03:31:33Z",
+  "row_count": 1596,
+  "form_count": 120,
+  "notes": [
+    "the P8 encoder on the dev split, INT8 quantized, before the test split was looked at",
+    "descriptors came from the cache, so the load and extract columns of wall_time are zero and the browser figures belong to the run that populated it"
+  ]
+}

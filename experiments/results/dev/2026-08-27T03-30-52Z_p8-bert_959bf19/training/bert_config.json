@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "base_model": "distilbert-base-multilingual-cased",
+  "max_length": 64,
+  "quantization": "int8-dynamic",
+  "serialisation": "scripts/bert_engine.py::field_text, the P6 field view rendered as a string. The declared autocomplete value is never rendered and the independence of the rendering from it is asserted before training.",
+  "quantization_detail": {
+    "fp32_bytes": 541548274,
+    "int8_bytes": 135764168,
+    "weight_type": "QInt8",
+    "mode": "dynamic: weights quantized, activations quantized at run time",
+    "pre_process": "quant_pre_process with skip_symbolic_shape=True"
+  }
+}
