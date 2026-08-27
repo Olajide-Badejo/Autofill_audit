@@ -454,12 +454,22 @@ def quantize(source: Path, destination: Path) -> dict[str, Any]:
     inference on, and the failure is recorded here rather than worked around
     silently: the shapes it cannot infer are the dynamic batch and sequence axes
     that are the whole point of the export.
+
+    The whole step runs with the working directory moved into the bundle. Both
+    of these tools drop intermediate graphs and external-data blobs beside the
+    process rather than beside their output, and a repository whose root grows a
+    stray hundred-megabyte file during a run is a repository whose next result
+    manifest is marked dirty for a reason that has nothing to do with the result.
     """
+    import contextlib
+
     from onnxruntime.quantization import QuantType, quantize_dynamic
     from onnxruntime.quantization.shape_inference import quant_pre_process
 
+    source = source.resolve()
+    destination = destination.resolve()
     prepared = source.with_name("prepared.onnx")
-    with warnings.catch_warnings():
+    with warnings.catch_warnings(), contextlib.chdir(source.parent):
         warnings.simplefilter("ignore")
         quant_pre_process(str(source), str(prepared), skip_symbolic_shape=True)
         quantize_dynamic(str(prepared), str(destination), weight_type=QuantType.QInt8)
