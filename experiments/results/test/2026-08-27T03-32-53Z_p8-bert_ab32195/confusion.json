@@ -1,0 +1,232 @@
+{
+  "labels": [
+    "CC_EXP_SPLIT_MONTH",
+    "CC_EXP_SPLIT_YEAR",
+    "COMPOSITE_UNSPLIT",
+    "NOT_AUTOFILLABLE",
+    "UNKNOWN",
+    "additional-name",
+    "address-level1",
+    "address-level2",
+    "address-line1",
+    "address-line2",
+    "address-line3",
+    "bday",
+    "cc-csc",
+    "cc-exp",
+    "cc-exp-month",
+    "cc-exp-year",
+    "cc-name",
+    "cc-number",
+    "cc-type",
+    "country",
+    "country-name",
+    "current-password",
+    "email",
+    "family-name",
+    "given-name",
+    "honorific-suffix",
+    "name",
+    "new-password",
+    "nickname",
+    "one-time-code",
+    "organization",
+    "postal-code",
+    "sex",
+    "street-address",
+    "tel",
+    "tel-country-code",
+    "tel-national",
+    "url",
+    "username"
+  ],
+  "rows": 2317,
+  "cells": {
+    "CC_EXP_SPLIT_MONTH": {
+      "CC_EXP_SPLIT_MONTH": 48
+    },
+    "CC_EXP_SPLIT_YEAR": {
+      "CC_EXP_SPLIT_MONTH": 2,
+      "CC_EXP_SPLIT_YEAR": 46
+    },
+    "COMPOSITE_UNSPLIT": {
+      "COMPOSITE_UNSPLIT": 48
+    },
+    "NOT_AUTOFILLABLE": {
+      "NOT_AUTOFILLABLE": 325,
+      "UNKNOWN": 1,
+      "email": 10
+    },
+    "UNKNOWN": {
+      "UNKNOWN": 87,
+      "cc-csc": 1,
+      "honorific-suffix": 1,
+      "nickname": 6,
+      "one-time-code": 10,
+      "organization": 10,
+      "tel-national": 5
+    },
+    "address-level1": {
+      "address-level1": 64
+    },
+    "address-level2": {
+      "COMPOSITE_UNSPLIT": 2,
+      "address-level2": 72,
+      "address-line2": 1,
+      "country-name": 2,
+      "one-time-code": 1,
+      "organization": 4,
+      "username": 2
+    },
+    "address-line1": {
+      "address-level2": 1,
+      "address-line1": 19,
+      "address-line2": 3,
+      "organization": 1
+    },
+    "address-line2": {
+      "address-line2": 20,
+      "address-line3": 3,
+      "organization": 1
+    },
+    "address-line3": {
+      "address-line2": 3,
+      "address-line3": 17,
+      "organization": 4
+    },
+    "bday": {
+      "bday": 22,
+      "family-name": 2
+    },
+    "cc-csc": {
+      "UNKNOWN": 2,
+      "cc-csc": 91,
+      "cc-name": 2,
+      "organization": 1
+    },
+    "cc-exp": {
+      "cc-csc": 3,
+      "cc-exp": 21
+    },
+    "cc-exp-month": {
+      "cc-exp-month": 22,
+      "cc-name": 2
+    },
+    "cc-exp-year": {
+      "address-line1": 8,
+      "cc-exp-year": 15,
+      "one-time-code": 1
+    },
+    "cc-name": {
+      "cc-csc": 1,
+      "cc-name": 47
+    },
+    "cc-number": {
+      "UNKNOWN": 1,
+      "cc-csc": 4,
+      "cc-exp-month": 2,
+      "cc-exp-year": 2,
+      "cc-name": 11,
+      "cc-number": 76
+    },
+    "cc-type": {
+      "cc-type": 72
+    },
+    "country": {
+      "country": 96
+    },
+    "country-name": {
+      "UNKNOWN": 1,
+      "address-level2": 2,
+      "country-name": 43,
+      "username": 2
+    },
+    "current-password": {
+      "current-password": 44,
+      "new-password": 4
+    },
+    "email": {
+      "email": 132,
+      "family-name": 1,
+      "given-name": 10,
+      "tel-national": 1
+    },
+    "family-name": {
+      "address-line1": 1,
+      "cc-csc": 2,
+      "family-name": 62,
+      "given-name": 1,
+      "name": 6,
+      "one-time-code": 1,
+      "organization": 4,
+      "tel-national": 7
+    },
+    "given-name": {
+      "NOT_AUTOFILLABLE": 1,
+      "additional-name": 1,
+      "cc-name": 1,
+      "given-name": 70,
+      "one-time-code": 5,
+      "organization": 1,
+      "tel-national": 5
+    },
+    "name": {
+      "name": 24
+    },
+    "new-password": {
+      "current-password": 2,
+      "new-password": 94
+    },
+    "one-time-code": {
+      "address-line1": 1,
+      "one-time-code": 47
+    },
+    "organization": {
+      "organization": 48
+    },
+    "postal-code": {
+      "address-level2": 2,
+      "address-line2": 6,
+      "country-name": 3,
+      "one-time-code": 2,
+      "organization": 1,
+      "postal-code": 88,
+      "username": 3
+    },
+    "sex": {
+      "sex": 24
+    },
+    "street-address": {
+      "COMPOSITE_UNSPLIT": 1,
+      "UNKNOWN": 2,
+      "address-level2": 1,
+      "address-line1": 1,
+      "country-name": 3,
+      "one-time-code": 11,
+      "organization": 1,
+      "street-address": 48,
+      "username": 4
+    },
+    "tel": {
+      "tel": 16,
+      "tel-national": 8
+    },
+    "tel-country-code": {
+      "tel-country-code": 24
+    },
+    "tel-national": {
+      "tel": 3,
+      "tel-national": 21
+    },
+    "url": {
+      "given-name": 6,
+      "url": 18
+    },
+    "username": {
+      "NOT_AUTOFILLABLE": 5,
+      "given-name": 10,
+      "one-time-code": 7,
+      "username": 50
+    }
+  }
+}
