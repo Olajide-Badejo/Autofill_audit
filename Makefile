@@ -81,6 +81,22 @@ tables:
 # author's standing instruction. Its absence is not an error.
 REPORTS := report/main.tex report_debug/debug_report.tex report_for_me/report_for_me.tex
 
+# Rebuilding a report produces the same bytes, and the mechanism deliberately
+# lives in the sources rather than here.
+#
+# pdftex stamps a creation timestamp and a random trailer id into every PDF, and
+# matplotlib's PDF backend stamps a creation date. Either would make a
+# regenerated artefact differ from the committed one on every run, so
+# `make reports-clean reports` would always leave a dirty tree and nobody could
+# tell a rebuild of unchanged sources from one that actually changed something.
+#
+# Both are suppressed at the point of writing rather than by exporting a build
+# epoch here: report/preamble.tex sets the pdftex primitives that omit the
+# timestamps and fix the trailer id, and scripts/make_report_figures.py passes
+# metadata that omits the creation date. That is stronger than an environment
+# variable, because it also holds when somebody runs latexmk or the figure
+# script by hand instead of going through this file.
+
 reports: tables
 	@for source in $(REPORTS); do \
 		if [ -f "$$source" ]; then \

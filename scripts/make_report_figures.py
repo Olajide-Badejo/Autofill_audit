@@ -7,8 +7,9 @@ from a number that is not in a committed file under ``experiments/results/`` or
 so a reader arriving from a clone needs neither a plotting library nor a LaTeX
 toolchain to see the pictures.
 
-Four of the figures are the ones the P6 handoff argued the numbers actually
-support, and the reasoning is worth keeping beside the code:
+Six figures go to the report as PDF, and three of them are written again as PNG
+for the README. The reasoning behind the choice of figures is worth keeping
+beside the code:
 
 1. Both averages, side by side, because they disagree about which classical
    engine leads and a chart carrying one of them would pick a winner by picking
@@ -28,7 +29,7 @@ it, and putting a self-reported number on the same axis as a calibrated
 probability would draw two different quantities as though they were one.
 
 Usage:
-    make_report_figures.py [--root DIR] [--out DIR]
+    make_report_figures.py [--root DIR] [--out DIR] [--readme-out DIR]
 """
 
 from __future__ import annotations
@@ -45,6 +46,7 @@ import matplotlib
 matplotlib.use("Agg")
 
 import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
 
 BENCH = "experiments/results/bench/2026-08-26T20-32-48Z_bench_6457ac7/benchmark.json"
 DEV_METRICS = "models/dev_metrics.json"
@@ -88,6 +90,47 @@ def prepare() -> None:
     )
 
 
+# The three figures the README embeds, written as PNG beside the PDFs.
+#
+# PNG rather than SVG on purpose. An SVG is text, so it would be walked by the
+# dash check and by the traceability scan, and a plotting library's generated
+# path data is not prose that can be held to either rule. A PNG is binary, is
+# skipped by both, and renders in a README on every client.
+README_FIGURES: tuple[str, ...] = ("engine_f1", "tier_profile", "latency")
+
+# Written into every figure so that two runs of this script produce identical
+# bytes. The PDF backend stamps a creation timestamp by default, which would
+# make a regenerated figure differ from the committed one on every run, and a
+# committed artefact that cannot be reproduced byte for byte is a committed
+# artefact nobody can check. Omitting the date outright is stronger than pinning
+# it through the environment, because it does not depend on the caller having
+# exported anything before running this script.
+DETERMINISTIC_METADATA: dict[str, str | None] = {"CreationDate": None}
+
+# The PNG backend stamps a Software tag instead of a date, so it needs its own
+# omission to be equally reproducible.
+DETERMINISTIC_PNG_METADATA: dict[str, str | None] = {"Software": None}
+
+# Set by build() for the duration of one run. A figure whose stem is in
+# README_FIGURES is also written here as PNG by the same builder call, which is
+# what keeps the README's pictures and the report's pictures from drifting:
+# there is one piece of drawing code per figure and it runs once.
+_README_DIR: Path | None = None
+
+
+def save(figure: Figure, target: Path) -> Path:
+    """Write one figure deterministically and return its path."""
+    figure.savefig(target, metadata=DETERMINISTIC_METADATA)
+    if _README_DIR is not None and target.stem in README_FIGURES:
+        figure.savefig(
+            _README_DIR / f"{target.stem}.png",
+            dpi=200,
+            metadata=DETERMINISTIC_PNG_METADATA,
+        )
+    plt.close(figure)
+    return target
+
+
 def figure_engine_f1(bench: Mapping[str, Any], out: Path) -> Path:
     """Both averages for all three engines, side by side and never alone."""
     engines = bench["grid"]["engines"]
@@ -123,10 +166,7 @@ def figure_engine_f1(bench: Mapping[str, Any], out: Path) -> Path:
     axes.set_ylabel("F1 on the test split")
     axes.set_ylim(0.0, 1.0)
     axes.legend(loc="upper right", ncol=2)
-    target = out / "engine_f1.pdf"
-    figure.savefig(target)
-    plt.close(figure)
-    return target
+    return save(figure, out / "engine_f1.pdf")
 
 
 def figure_tier_profile(bench: Mapping[str, Any], out: Path) -> Path:
@@ -152,10 +192,7 @@ def figure_tier_profile(bench: Mapping[str, Any], out: Path) -> Path:
     axes.set_ylabel("macro-F1")
     axes.set_ylim(0.4, 1.0)
     axes.legend(loc="lower left", ncol=3)
-    target = out / "tier_profile.pdf"
-    figure.savefig(target)
-    plt.close(figure)
-    return target
+    return save(figure, out / "tier_profile.pdf")
 
 
 def figure_locale_profile(bench: Mapping[str, Any], out: Path) -> Path:
@@ -192,10 +229,7 @@ def figure_locale_profile(bench: Mapping[str, Any], out: Path) -> Path:
     axes.set_ylabel("macro-F1")
     axes.set_ylim(0.0, 1.05)
     axes.legend(loc="lower right", ncol=3)
-    target = out / "locale_profile.pdf"
-    figure.savefig(target)
-    plt.close(figure)
-    return target
+    return save(figure, out / "locale_profile.pdf")
 
 
 def figure_finding_pr(bench: Mapping[str, Any], out: Path) -> Path:
@@ -226,10 +260,7 @@ def figure_finding_pr(bench: Mapping[str, Any], out: Path) -> Path:
     axes.set_ylabel("precision")
     axes.set_xlim(0.0, 1.0)
     axes.set_ylim(0.0, 1.08)
-    target = out / "finding_pr.pdf"
-    figure.savefig(target)
-    plt.close(figure)
-    return target
+    return save(figure, out / "finding_pr.pdf")
 
 
 def figure_latency(bench: Mapping[str, Any], out: Path) -> Path:
@@ -270,10 +301,7 @@ def figure_latency(bench: Mapping[str, Any], out: Path) -> Path:
     right.set_xticklabels(list(ENGINES))
     right.set_ylim(0.0, 1.1)
     right.set_ylabel("share of wall time spent loading and extracting")
-    target = out / "latency.pdf"
-    figure.savefig(target)
-    plt.close(figure)
-    return target
+    return save(figure, out / "latency.pdf")
 
 
 def figure_calibration(dev: Mapping[str, Any], out: Path) -> Path:
@@ -306,26 +334,38 @@ def figure_calibration(dev: Mapping[str, Any], out: Path) -> Path:
     axes.set_xlim(0.0, 1.0)
     axes.set_ylim(0.0, 1.0)
     axes.legend(loc="upper left")
-    target = out / "calibration_ngram.pdf"
-    figure.savefig(target)
-    plt.close(figure)
-    return target
+    return save(figure, out / "calibration_ngram.pdf")
 
 
-def build(root: Path, out: Path) -> list[Path]:
-    """Generate every figure and return the files written."""
+def build(root: Path, out: Path, readme_out: Path | None = None) -> list[Path]:
+    """Generate every figure and return the files written.
+
+    The README's subset is written as PNG beside the PDFs by the same builder
+    functions, so the two can never drift: there is one piece of drawing code
+    per figure and it is called once.
+    """
+    global _README_DIR
     bench = load(root, BENCH)
     dev = load(root, DEV_METRICS)
     out.mkdir(parents=True, exist_ok=True)
+    if readme_out is not None:
+        readme_out.mkdir(parents=True, exist_ok=True)
     prepare()
-    return [
-        figure_engine_f1(bench, out),
-        figure_tier_profile(bench, out),
-        figure_locale_profile(bench, out),
-        figure_finding_pr(bench, out),
-        figure_latency(bench, out),
-        figure_calibration(dev, out),
-    ]
+    _README_DIR = readme_out
+    try:
+        written = [
+            figure_engine_f1(bench, out),
+            figure_tier_profile(bench, out),
+            figure_locale_profile(bench, out),
+            figure_finding_pr(bench, out),
+            figure_latency(bench, out),
+            figure_calibration(dev, out),
+        ]
+    finally:
+        _README_DIR = None
+    if readme_out is not None:
+        written.extend(sorted(readme_out.glob("*.png")))
+    return written
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -333,9 +373,16 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Generate report figures from result files.")
     parser.add_argument("--root", type=Path, default=Path.cwd(), help="repository root")
     parser.add_argument("--out", type=Path, default=None, help="output directory")
+    parser.add_argument(
+        "--readme-out",
+        type=Path,
+        default=None,
+        help="also render the README's subset here as PNG; default docs/figures",
+    )
     args = parser.parse_args(argv)
     out = args.out if args.out is not None else args.root / "report" / "figures"
-    written = build(args.root, out)
+    readme_out = args.readme_out if args.readme_out is not None else args.root / "docs" / "figures"
+    written = build(args.root, out, readme_out)
     for path in sorted(written):
         print(f"wrote {path.relative_to(args.root)}")
     print(f"make_report_figures: {len(written)} figures generated from committed result files")
